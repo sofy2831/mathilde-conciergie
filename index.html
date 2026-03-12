@@ -26,10 +26,10 @@
       --accent:#c9784d;
       --accent-dark:#a65f3b;
       --green:#7ab33b;
+      --green-dark:#5d8f2a;
       --gold:#f0a32f;
       --bluebar:#50657f;
       --pill:#5f6676;
-      --cleanup:#0a86c6;
     }
 
     *{
@@ -271,57 +271,12 @@
       background:linear-gradient(180deg, var(--accent), var(--accent-dark));
     }
 
+    .banner.green{
+      background:linear-gradient(180deg, var(--green), var(--green-dark));
+    }
+
     .banner.blue{
       background:linear-gradient(180deg, #627894, #485d76);
-    }
-
-    .partner{
-      text-align:center;
-      padding:26px 0 12px;
-      position:relative;
-    }
-
-    .partner::before,
-    .partner::after{
-      content:"";
-      position:absolute;
-      top:46px;
-      width:28%;
-      height:1px;
-      background:var(--line);
-    }
-
-    .partner::before{ left:0; }
-    .partner::after{ right:0; }
-
-    .partner-line{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      font-size:26px;
-      color:#3f5971;
-      background:transparent;
-      padding:0 14px;
-    }
-
-    .partner-line strong{
-      color:var(--cleanup);
-      font-size:58px;
-      font-weight:800;
-      line-height:1;
-    }
-
-    .partner-icon{
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      border:4px solid var(--cleanup);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      color:var(--cleanup);
-      font-weight:800;
-      font-size:18px;
     }
 
     .contact{
@@ -455,10 +410,6 @@
       .stat-text{
         font-size:18px;
       }
-
-      .partner-line strong{
-        font-size:42px;
-      }
     }
 
     @media (max-width:720px){
@@ -500,20 +451,9 @@
         font-size:18px;
       }
 
-      .partner::before,
-      .partner::after,
       .contact-title::before,
       .contact-title::after{
         display:none;
-      }
-
-      .partner-line{
-        flex-wrap:wrap;
-        justify-content:center;
-      }
-
-      .partner-line strong{
-        font-size:36px;
       }
 
       .contact-title{
@@ -618,7 +558,7 @@
       </article>
     </section>
 
-    <section id="proprietaires" class="banner orange">
+    <section id="proprietaires" class="banner green">
       <h2>Plateforme dédiée propriétaires</h2>
       <p>Espace en ligne pour tout suivre facilement.</p>
     </section>
@@ -628,16 +568,8 @@
       <p>100% de vos revenus, 0% de commission.</p>
     </section>
 
-    <section class="partner">
-      <div class="partner-line">
-        <span class="partner-icon">⌂</span>
-        <span>Partenaire</span>
-        <strong>CleanUp</strong>
-      </div>
-    </section>
-
     <section class="contact">
-      <h2 class="contact-title">Contactez-nous&nbsp;!</h2>
+      <h2 class="contact-title">Échangeons sur votre logement</h2>
 
       <a
         class="mail-btn"
@@ -692,7 +624,7 @@
     </section>
 
     <section class="section">
-      <div id="proprietaires" class="section-box owners-box">
+      <div id="espace-proprietaires" class="section-box owners-box">
         <h2>Espace propriétaires</h2>
         <p>
           Un suivi simple, clair et centralisé pour consulter les informations utiles,
