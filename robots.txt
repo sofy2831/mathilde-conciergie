@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lesclesdemathilde.fr/sitemap.xml
+Sitemap: https://conciergerie45.cleanup-manager.fr/sitemap.xml
