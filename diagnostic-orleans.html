@@ -98,6 +98,10 @@ button.secondary{
   outline:none;
   background:#FCFCFD;
 }
+.field input[readonly]{
+  background:#F3F4F6;
+  color:#475467;
+}
 .field textarea{min-height:88px;resize:vertical}
 .field.full{grid-column:span 4}
 .field.half{grid-column:span 2}
@@ -524,35 +528,35 @@ p{line-height:1.55}
   </div>
 
   <div class="editor">
-    <h2>1. Informations du logement</h2>
+    <h2>1. Informations renseignées par le propriétaire</h2>
     <div class="grid-form">
       <div class="field half">
         <label>Adresse du bien</label>
-        <input id="addressInput" value="6 impasse Notre-Dame du Chemin, 45000 Orléans" oninput="syncText('addressInput','addressText')">
+        <input id="addressInput" value="24 hameau de Danis, 09700 Saverdun" oninput="syncText('addressInput','addressText'); autoCalculate()">
       </div>
       <div class="field">
         <label>Surface</label>
-        <input id="surfaceInput" value="54 m²" oninput="syncText('surfaceInput','surfaceText')">
+        <input id="surfaceInput" value="118 m²" oninput="syncText('surfaceInput','surfaceText'); autoCalculate()">
       </div>
       <div class="field">
         <label>Capacité</label>
-        <input id="capacityInput" value="6 voyageurs" oninput="syncText('capacityInput','capacityText'); syncGuestFromCapacity()">
+        <input id="capacityInput" value="6 voyageurs" oninput="syncText('capacityInput','capacityText'); syncGuestFromCapacity(); autoCalculate()">
       </div>
       <div class="field">
-        <label>Prix moyen concurrence</label>
-        <input id="avgCompInput" type="number" value="128">
+        <label>Prix moyen concurrence généré</label>
+        <input id="avgCompInput" type="number" value="128" readonly>
       </div>
       <div class="field">
-        <label>Qualité équipement /10</label>
-        <input id="qualityInput" type="number" min="1" max="10" value="8">
+        <label>Qualité équipement /10 générée</label>
+        <input id="qualityInput" type="number" min="1" max="10" value="8" readonly>
       </div>
       <div class="field">
-        <label>Occupation cible %</label>
-        <input id="occupancyInput" type="number" min="1" max="100" value="60">
+        <label>Occupation cible % générée</label>
+        <input id="occupancyInput" type="number" min="1" max="100" value="60" readonly>
       </div>
       <div class="field">
         <label>Capacité voyageurs chiffrée</label>
-        <input id="guestInput" type="number" value="6">
+        <input id="guestInput" type="number" value="6" readonly>
       </div>
     </div>
 
@@ -578,19 +582,15 @@ p{line-height:1.55}
       </div>
     </div>
 
-    <h2 style="margin-top:18px">3. Images du rapport</h2>
+    <h2 style="margin-top:18px">3. Carte du bien</h2>
     <div class="grid-form">
-      <div class="field half">
-        <label>Photo du logement</label>
-        <input type="file" accept="image/*" onchange="loadImage(event,'homePhoto')">
-      </div>
       <div class="field half">
         <label>Image de la carte</label>
         <input type="file" accept="image/*" onchange="loadImage(event,'mapPhoto')">
       </div>
     </div>
 
-    <p class="notice">Pour la carte : en version SaaS, elle peut être générée automatiquement depuis l’adresse via une API de carte. Pour la photo logement, il faudra soit une photo uploadée par le propriétaire, soit une photo déjà stockée dans la fiche logement.</p>
+    <p class="notice">En version SaaS, la carte sera générée automatiquement depuis l’adresse via une API de carte. L’upload manuel sert uniquement pour cette maquette HTML.</p>
   </div>
 
   <main class="report">
@@ -607,7 +607,13 @@ p{line-height:1.55}
       <div class="hero-grid">
         <div>
           <div class="photo-box">
-            <div id="homePhoto" class="placeholder">Télécharger ici une photo du logement<br><small>salon, chambre ou pièce principale</small></div>
+            <div class="placeholder">
+              <div>
+                <div style="font-size:44px;margin-bottom:10px">🏡</div>
+                <strong>Diagnostic du logement</strong><br>
+                <small>Analyse générée à partir de l’adresse, de la surface, de la capacité et du marché local.</small>
+              </div>
+            </div>
           </div>
           <div class="address"><div class="pin">📍</div><div id="addressText">6 impasse Notre-Dame du Chemin, 45000 Orléans</div></div>
           <div class="info-row">
@@ -807,10 +813,32 @@ function syncGuestFromCapacity(){
 }
 
 function autoCalculate(){
-  const avg = Number(document.getElementById('avgCompInput').value || 128);
+  syncGuestFromCapacity();
+
+  const address = (document.getElementById('addressInput').value || '').toLowerCase();
+  const surfaceRaw = document.getElementById('surfaceInput').value || '';
+  const surfaceMatch = surfaceRaw.match(/\d+/);
+  const surface = surfaceMatch ? Number(surfaceMatch[0]) : 54;
   const guests = Number(document.getElementById('guestInput').value || 6);
-  const quality = Number(document.getElementById('qualityInput').value || 8);
-  const occupancy = Number(document.getElementById('occupancyInput').value || 60);
+
+  // Maquette locale : estimation déterministe.
+  // En SaaS, ces 3 données viendront du moteur de marché : annonces concurrentes + géolocalisation + saisonnalité.
+  let avg = 128;
+  if(address.includes('orléans') || address.includes('orleans')) avg = 128;
+  else if(address.includes('saverdun')) avg = 118;
+  else if(address.includes('toulouse')) avg = 142;
+  else if(address.includes('paris')) avg = 185;
+
+  avg += Math.max(-8, Math.min(18, Math.round((surface - 55) * 0.18)));
+  avg += guests >= 6 ? 8 : guests >= 4 ? 3 : -5;
+  avg = Math.max(75, Math.round(avg));
+
+  const quality = surface >= 100 && guests >= 6 ? 8 : surface >= 55 ? 7 : 6;
+  const occupancy = address.includes('saverdun') ? 52 : address.includes('orléans') || address.includes('orleans') ? 60 : 55;
+
+  document.getElementById('avgCompInput').value = avg;
+  document.getElementById('qualityInput').value = quality;
+  document.getElementById('occupancyInput').value = occupancy;
 
   // Tarif conseillé :
   // base concurrence + prime capacité + prime qualité.
