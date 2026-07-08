@@ -459,6 +459,62 @@ p{line-height:1.55}
     page-break-after:always;
   }
 }
+.floating-print{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:0;
+  border-radius:999px;
+  padding:15px 20px;
+  font-weight:900;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  color:white;
+  box-shadow:0 18px 38px rgba(107,63,242,.32);
+}
+.calc-panel{
+  margin-top:14px;
+  background:#FBFAFF;
+  border:1px solid #E9DFFF;
+  border-radius:18px;
+  padding:14px;
+}
+.calc-panel .mini{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.calc-panel input{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  font:inherit;
+}
+.calc-panel label{
+  display:block;
+  font-size:11px;
+  font-weight:900;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+.auto-result{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:white;
+  border:1px solid var(--line);
+  font-size:13px;
+  font-weight:800;
+  color:var(--navy);
+}
+@media print{
+  .floating-print{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -467,7 +523,7 @@ p{line-height:1.55}
     <div class="logo"><div class="logo-icon">⌂</div><div>CleanUp<br><span style="font-size:12px;letter-spacing:.25em;color:#667085">MANAGER</span></div></div>
     <div class="actions">
       <button class="secondary" onclick="document.querySelector('.editor').scrollIntoView({behavior:'smooth'})">Modifier les données</button>
-      <button onclick="window.print()">Télécharger / imprimer PDF</button>
+      <button onclick="window.print()">Imprimer / PDF</button>
     </div>
   </div>
 
@@ -507,7 +563,34 @@ p{line-height:1.55}
         <textarea id="diagnosticInput" oninput="syncText('diagnosticInput','diagnosticText')">Le logement présente un excellent potentiel en location courte durée grâce à ses trois chambres, son emplacement proche du centre-ville et sa capacité d’accueil adaptée aux familles, groupes et professionnels.</textarea>
       </div>
     </div>
-    <p class="notice">Les images sont chargées localement dans ton navigateur. Pour conserver le rendu final, utilise le bouton “Télécharger / imprimer PDF”.</p>
+
+    <div class="calc-panel">
+      <h2 style="margin-top:0">Calcul automatique recommandé</h2>
+      <div class="mini">
+        <div>
+          <label>Prix moyen concurrence</label>
+          <input id="avgCompInput" type="number" value="128" oninput="autoCalculate()">
+        </div>
+        <div>
+          <label>Capacité voyageurs</label>
+          <input id="guestInput" type="number" value="6" oninput="autoCalculate()">
+        </div>
+        <div>
+          <label>Qualité équipement /10</label>
+          <input id="qualityInput" type="number" min="1" max="10" value="8" oninput="autoCalculate()">
+        </div>
+        <div>
+          <label>Occupation cible %</label>
+          <input id="occupancyInput" type="number" min="1" max="100" value="60" oninput="autoCalculate()">
+        </div>
+      </div>
+      <div class="auto-result" id="autoResult">
+        Tarif conseillé automatique : 135 € / nuit · Indice CleanUp : 87/100
+      </div>
+      <button style="margin-top:10px" onclick="autoCalculate()">Recalculer le diagnostic</button>
+    </div>
+
+    <p class="notice">Les images sont chargées localement dans ton navigateur. Pour conserver le rendu final, utilise le bouton “Imprimer / PDF”.</p>
   </div>
 
   <main class="report">
@@ -626,9 +709,9 @@ p{line-height:1.55}
       <div class="section">
         <h2>Prévisions financières</h2>
         <div class="bars">
-          <div class="bar orange" style="height:105px"><span>18 860 €</span><em>Prudent</em></div>
-          <div class="bar green" style="height:150px"><span>27 375 €</span><em>Réaliste</em></div>
-          <div class="bar" style="height:205px"><span>36 990 €</span><em>Optimiste</em></div>
+          <div class="bar orange" style="height:105px"><span id="caPrudentBar">18 860 €</span><em>Prudent</em></div>
+          <div class="bar green" style="height:150px"><span id="caRealBar">27 375 €</span><em>Réaliste</em></div>
+          <div class="bar" style="height:205px"><span id="caOptBar">36 990 €</span><em>Optimiste</em></div>
         </div>
       </div>
 
@@ -636,9 +719,9 @@ p{line-height:1.55}
         <table class="table">
           <thead><tr><th>Scénario</th><th>Occupation</th><th>Prix moyen</th><th>CA annuel</th><th>Net estimé</th></tr></thead>
           <tbody>
-            <tr><td>Prudent</td><td>45 %</td><td>115 €</td><td>18 860 €</td><td>13 960 €</td></tr>
-            <tr><td>Réaliste</td><td>60 %</td><td>125 €</td><td>27 375 €</td><td>20 475 €</td></tr>
-            <tr><td>Optimiste</td><td>75 %</td><td>135 €</td><td>36 990 €</td><td>27 690 €</td></tr>
+            <tr><td>Prudent</td><td id="occPrudent">45 %</td><td id="pmPrudent">115 €</td><td id="caPrudent">18 860 €</td><td id="netPrudent">13 960 €</td></tr>
+            <tr><td>Réaliste</td><td id="occReal">60 %</td><td id="pmReal">125 €</td><td id="caReal">27 375 €</td><td id="netReal">20 475 €</td></tr>
+            <tr><td>Optimiste</td><td id="occOpt">75 %</td><td id="pmOpt">135 €</td><td id="caOpt">36 990 €</td><td id="netOpt">27 690 €</td></tr>
           </tbody>
         </table>
       </div>
@@ -686,7 +769,11 @@ p{line-height:1.55}
   </main>
 </div>
 
+<button class="floating-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+
 <script>
+const eur = n => Math.round(n).toLocaleString('fr-FR') + ' €';
+
 function loadImage(event,targetId){
   const file = event.target.files && event.target.files[0];
   if(!file) return;
@@ -707,6 +794,83 @@ function updateScore(){
   document.getElementById('scoreText').textContent=val;
   document.getElementById('scoreDonut').style.setProperty('--score',val);
 }
+
+function setText(id,value){
+  const el=document.getElementById(id);
+  if(el) el.textContent=value;
+}
+
+function autoCalculate(){
+  const avg = Number(document.getElementById('avgCompInput').value || 128);
+  const guests = Number(document.getElementById('guestInput').value || 6);
+  const quality = Number(document.getElementById('qualityInput').value || 8);
+  const occupancy = Number(document.getElementById('occupancyInput').value || 60);
+
+  // Tarif conseillé :
+  // base concurrence + prime capacité + prime qualité.
+  // Plafond prudent pour éviter une recommandation absurde.
+  const capacityBonus = guests >= 6 ? 1.06 : guests >= 4 ? 1.02 : 0.97;
+  const qualityBonus = 1 + ((quality - 7) * 0.025);
+  const suggested = Math.round(Math.min(avg * capacityBonus * qualityBonus, avg * 1.20));
+
+  // Indice CleanUp :
+  // pondération simple : marché / capacité / qualité / occupation cible.
+  const marketScore = Math.min(100, Math.round((avg / 145) * 100));
+  const capacityScore = guests >= 6 ? 92 : guests >= 4 ? 82 : 70;
+  const qualityScore = Math.min(100, quality * 10);
+  const occScore = Math.min(100, Math.round((occupancy / 75) * 100));
+  const score = Math.round((marketScore * .25) + (capacityScore * .25) + (qualityScore * .25) + (occScore * .25));
+
+  document.getElementById('nightInput').value = suggested + ' €';
+  syncText('nightInput','nightText');
+
+  document.getElementById('scoreInput').value = score;
+  updateScore();
+
+  // Prévisions financières automatiques
+  const prudentOcc = Math.max(30, occupancy - 15);
+  const realOcc = occupancy;
+  const optOcc = Math.min(85, occupancy + 15);
+
+  const prudentPrice = Math.round(suggested * .90);
+  const realPrice = Math.round(suggested * .96);
+  const optPrice = Math.round(suggested * 1.05);
+
+  const calcCA = (occ, price) => 365 * (occ/100) * price;
+  const prudentCA = calcCA(prudentOcc, prudentPrice);
+  const realCA = calcCA(realOcc, realPrice);
+  const optCA = calcCA(optOcc, optPrice);
+
+  // Charges estimatives : plateformes, ménage net, consommables, entretien.
+  const net = ca => ca * .75;
+
+  setText('occPrudent', Math.round(prudentOcc) + ' %');
+  setText('occReal', Math.round(realOcc) + ' %');
+  setText('occOpt', Math.round(optOcc) + ' %');
+
+  setText('pmPrudent', prudentPrice + ' €');
+  setText('pmReal', realPrice + ' €');
+  setText('pmOpt', optPrice + ' €');
+
+  setText('caPrudent', eur(prudentCA));
+  setText('caReal', eur(realCA));
+  setText('caOpt', eur(optCA));
+  setText('netPrudent', eur(net(prudentCA)));
+  setText('netReal', eur(net(realCA)));
+  setText('netOpt', eur(net(optCA)));
+
+  setText('caPrudentBar', eur(prudentCA));
+  setText('caRealBar', eur(realCA));
+  setText('caOptBar', eur(optCA));
+
+  const diagnostic = `Le logement présente un potentiel ${score >= 85 ? 'excellent' : score >= 75 ? 'solide' : 'correct'} en location courte durée. Au regard du marché local, de la capacité d’accueil et du niveau d’équipement renseigné, le tarif conseillé est de ${suggested} € par nuit, avec un objectif réaliste de ${Math.round(realOcc)} % d’occupation.`;
+  document.getElementById('diagnosticInput').value = diagnostic;
+  syncText('diagnosticInput','diagnosticText');
+
+  document.getElementById('autoResult').textContent = `Tarif conseillé automatique : ${suggested} € / nuit · Indice CleanUp : ${score}/100 · CA réaliste estimé : ${eur(realCA)}`;
+}
+
+autoCalculate();
 </script>
 </body>
 </html>
