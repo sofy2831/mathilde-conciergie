@@ -3,22 +3,21 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CleanUp Manager — Diagnostic Page 1</title>
+<title>CleanUp Manager — Diagnostic page 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --purple:#6B35F2;
-  --purple-dark:#4217A7;
+  --purple:#5F2BEA;
+  --purple2:#7A4EF6;
   --green:#25B573;
-  --blue:#102A56;
+  --blue:#0B1F4D;
   --text:#101828;
-  --muted:#667085;
   --line:#E4E7EC;
-  --shadow:0 18px 44px rgba(16,24,40,.12);
+  --shadow:0 18px 42px rgba(16,24,40,.13);
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 html,body{margin:0;font-family:Inter,Arial,sans-serif;background:#ECEEF4;color:var(--text)}
 body{padding:22px}
 .toolbar{
@@ -35,16 +34,16 @@ button{
 }
 .panel h2{margin:0 0 14px;color:var(--purple);font-size:18px}
 .grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
-.field label{display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:6px}
+.field label{display:block;font-size:12px;font-weight:900;color:#667085;margin-bottom:6px}
 .field input{width:100%;border:1px solid #D0D5DD;border-radius:13px;padding:12px;font:inherit}
 
 .a4{
   width:210mm;height:297mm;margin:0 auto;background:white;box-shadow:var(--shadow);
-  padding:12mm 14mm 10mm;position:relative;overflow:hidden;
+  padding:12mm 13mm 9mm;position:relative;overflow:hidden;
 }
 .logo{
   display:flex;align-items:center;gap:9px;color:var(--purple);
-  font-weight:900;line-height:.9;margin-bottom:10mm;
+  font-weight:900;line-height:.9;margin-bottom:9mm;
 }
 .logo-house{width:34px;height:34px;position:relative;flex:0 0 auto}
 .logo-house:before{
@@ -56,56 +55,57 @@ button{
   border-left:4px solid var(--purple);border-top:4px solid var(--purple);
   transform:rotate(45deg);border-radius:3px;
 }
-.logo-text{font-size:25px;letter-spacing:-.06em}
-.logo-text small{display:block;font-size:8px;letter-spacing:.38em;color:#6B7280;margin-top:4px}
+.logo-text{font-size:26px;letter-spacing:-.06em}
+.logo-text small{display:block;font-size:8px;letter-spacing:.38em;color:#111827;margin-top:5px}
 
+.title-block{margin-bottom:7mm}
 .kicker{
   color:var(--blue);font-weight:900;text-transform:uppercase;
-  font-size:18px;letter-spacing:.02em;
+  font-size:28px;line-height:.95;letter-spacing:-.045em;
 }
 h1{
-  margin:5px 0 7mm;color:var(--blue);
-  font-size:57px;line-height:.88;letter-spacing:-.075em;font-weight:900;
+  margin:2px 0 0;color:var(--blue);
+  font-size:58px;line-height:.88;letter-spacing:-.075em;font-weight:900;
   text-transform:uppercase;
 }
 h1 span{
-  display:block;color:var(--purple);font-size:30px;
-  line-height:1.05;letter-spacing:-.045em;margin-top:6px;
+  display:block;color:var(--purple);font-size:31px;
+  line-height:1.05;letter-spacing:-.05em;margin-top:7px;
   text-transform:uppercase;
 }
 
 .hero{
-  display:grid;grid-template-columns:1.28fr .72fr;gap:7mm;margin-bottom:6mm;align-items:stretch;
+  display:grid;grid-template-columns:1.36fr .64fr;gap:7mm;margin-bottom:5mm;align-items:stretch;
 }
 .street{
-  height:78mm;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+  height:76mm;border-radius:18px;overflow:hidden;border:1px solid var(--line);
   box-shadow:0 10px 22px rgba(16,24,40,.06);background:#F2F4F7;
 }
 .street img,.map img{width:100%;height:100%;object-fit:cover;display:block}
 .score-card{
-  height:78mm;border:1px solid var(--line);border-radius:18px;background:white;
+  height:76mm;border:1px solid var(--line);border-radius:18px;background:white;
   box-shadow:0 10px 24px rgba(16,24,40,.07);display:grid;place-items:center;text-align:center;padding:12px;
 }
-.score-title{font-size:13px;font-weight:900;color:var(--purple);text-transform:uppercase;margin-bottom:3mm}
+.score-title{font-size:13px;font-weight:900;color:var(--purple);text-transform:uppercase;margin-bottom:2mm}
 .donut{
-  width:48mm;height:48mm;border-radius:50%;display:grid;place-items:center;
+  width:46mm;height:46mm;border-radius:50%;display:grid;place-items:center;
   background:conic-gradient(var(--green) calc(var(--score)*1%),#E8ECF3 0);
 }
 .donut-in{width:34mm;height:34mm;border-radius:50%;background:white;display:grid;place-items:center}
-.score-num{font-size:32px;font-weight:900;color:var(--blue);line-height:1}
+.score-num{font-size:33px;font-weight:900;color:var(--blue);line-height:1}
 .score-num small{font-size:11px}
 .score-label{font-size:8px;font-weight:900;color:#027A48;text-transform:uppercase}
-.stars{font-size:23px;color:var(--purple);letter-spacing:2px;margin-top:4mm}
+.stars{font-size:23px;color:var(--purple);letter-spacing:2px;margin-top:3mm}
 
 .address{
-  display:flex;align-items:center;gap:9px;margin-bottom:6mm;
-  font-size:17px;font-weight:900;color:var(--text);
+  display:flex;align-items:center;gap:10px;margin-bottom:5mm;
+  font-size:17px;font-weight:900;color:var(--blue);
 }
 .addr-pin{
-  width:36px;height:36px;border-radius:50%;background:var(--purple);color:white;
-  display:grid;place-items:center;font-size:21px;box-shadow:0 9px 16px rgba(107,53,242,.25);
+  width:37px;height:37px;border-radius:50%;background:var(--purple);color:white;
+  display:grid;place-items:center;font-size:22px;box-shadow:0 9px 16px rgba(107,53,242,.25);
 }
-.address small{display:block;font-size:12px;font-weight:600;color:var(--text);margin-top:2px}
+.address small{display:block;font-size:13px;font-weight:600;color:#111827;margin-top:2px}
 
 .info-grid{
   display:grid;grid-template-columns:repeat(4,1fr);gap:0;
@@ -113,33 +113,30 @@ h1 span{
   box-shadow:0 8px 20px rgba(16,24,40,.04);overflow:hidden;margin-bottom:5mm;
 }
 .info{
-  min-height:31mm;text-align:center;display:grid;place-items:center;padding:8px;
+  min-height:32mm;text-align:center;display:grid;place-items:center;padding:8px;
   border-right:1px solid var(--line);
 }
 .info:last-child{border-right:0}
-.icon{
-  width:34px;height:34px;margin:0 auto 6px;color:var(--purple);
-}
-.icon svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2.55;stroke-linecap:round;stroke-linejoin:round}
-.info b{display:block;font-size:16px;color:var(--blue);margin-bottom:2px}
-.info span{display:block;font-size:10px;font-weight:800;color:#344054}
+.icon{width:36px;height:36px;margin:0 auto 6px;color:var(--purple)}
+.icon svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2.65;stroke-linecap:round;stroke-linejoin:round}
+.info b{display:block;font-size:17px;color:var(--blue);margin-bottom:2px}
+.info span{display:block;font-size:10.5px;font-weight:800;color:#111827}
 
 .map{
   height:38mm;border-radius:15px;overflow:hidden;border:1px solid var(--line);
   box-shadow:0 8px 20px rgba(16,24,40,.04);margin-bottom:5mm;background:#F2F4F7;
 }
 .notice{
-  display:grid;grid-template-columns:26px 1fr;gap:13px;align-items:center;
-  background:linear-gradient(135deg,var(--purple),#8B5CF6);
-  color:white;border-radius:16px;padding:15px 17px;
+  display:grid;grid-template-columns:30px 1fr;gap:14px;align-items:center;
+  background:linear-gradient(135deg,var(--purple),var(--purple2));
+  color:white;border-radius:16px;padding:16px 18px;
 }
-.notice-star{font-size:31px;line-height:1}
-.notice p{margin:0;color:white;font-size:12px;line-height:1.35;font-weight:700}
+.notice-star{font-size:34px;line-height:1;color:white}
+.notice p{margin:0;color:white;font-size:13px;line-height:1.35;font-weight:800}
 
 .page-no{
-  position:absolute;bottom:7mm;left:50%;transform:translateX(-50%);
-  width:24px;height:24px;border-radius:50%;background:var(--purple);
-  color:white;display:grid;place-items:center;font-size:11px;font-weight:900;
+  position:absolute;bottom:6mm;left:50%;transform:translateX(-50%);
+  color:#111827;display:grid;place-items:center;font-size:13px;font-weight:600;
 }
 
 @page{size:A4;margin:0}
@@ -153,7 +150,7 @@ h1 span{
 <body>
 
 <div class="toolbar">
-  <strong>Page 1 CleanUp — modèle v3</strong>
+  <strong>Page 1 CleanUp — version PDF ajustée</strong>
   <button onclick="window.print()">Imprimer / PDF</button>
 </div>
 
@@ -181,8 +178,10 @@ h1 span{
     <div class="logo-text">CleanUp<small>MANAGER</small></div>
   </div>
 
-  <div class="kicker">Diagnostic</div>
-  <h1>De rentabilité<span>Location courte durée</span></h1>
+  <div class="title-block">
+    <div class="kicker">Diagnostic</div>
+    <h1>De rentabilité<span>Location courte durée</span></h1>
+  </div>
 
   <div class="hero">
     <div class="street">
@@ -192,10 +191,10 @@ h1 span{
     <aside class="score-card">
       <div>
         <div class="score-title">Score CleanUp</div>
-        <div class="donut" id="donut" style="--score:87">
+        <div class="donut" id="donut" style="--score:88">
           <div class="donut-in">
             <div>
-              <div class="score-num"><span id="scoreText">87</span><small>/100</small></div>
+              <div class="score-num"><span id="scoreText">88</span><small>/100</small></div>
               <div class="score-label" id="scoreLabel">Excellent potentiel</div>
             </div>
           </div>
@@ -208,8 +207,8 @@ h1 span{
   <div class="address">
     <div class="addr-pin">⌖</div>
     <div>
-      <div id="addressLine1">6 Imp. Notre Dame du Chemin</div>
-      <small id="addressLine2">45000 Orléans</small>
+      <div id="addressLine1">6 Imp. Notre Dame du Chemin, 45000 Orléans</div>
+      <small id="addressLine2">Orléans, Centre-Val de Loire</small>
     </div>
   </div>
 
@@ -254,7 +253,7 @@ h1 span{
 
   <div class="notice">
     <div class="notice-star">★</div>
-    <p id="summaryText">Ce logement présente un excellent potentiel pour une exploitation en location courte durée grâce à sa capacité d’accueil, sa surface et son positionnement sur le marché orléanais.</p>
+    <p id="summaryText">Ce logement présente un excellent potentiel pour une exploitation en location courte durée grâce à sa capacité d’accueil, sa surface et son positionnement local.</p>
   </div>
 
   <div class="page-no">1</div>
@@ -267,20 +266,15 @@ function stars(score){
   const full = Math.max(1, Math.min(5, Math.round(score/20)));
   return '★★★★★'.slice(0,full)+'☆☆☆☆☆'.slice(0,5-full);
 }
-function splitAddress(address){
-  const parts = address.split(',');
-  return [parts[0]?.trim() || address, parts.slice(1).join(',').trim() || ''];
-}
 function render(){
   const address=document.getElementById('addressInput').value.trim();
   const surfaceRaw=document.getElementById('surfaceInput').value.trim();
   const capacityRaw=document.getElementById('capacityInput').value.trim();
   const surface=num(surfaceRaw);
   const guests=num(capacityRaw);
-  const [line1,line2]=splitAddress(address);
 
-  set('addressLine1', line1 || 'Adresse du bien');
-  set('addressLine2', line2 || 'Ville');
+  set('addressLine1', address || 'Adresse du bien');
+  set('addressLine2', address.toLowerCase().includes('orl') ? 'Orléans, Centre-Val de Loire' : '');
   set('surfaceText', surfaceRaw || '—');
   set('capacityText', guests ? guests : '—');
   set('roomsText', guests >= 6 ? '3 chambres' : guests >= 4 ? '2 chambres' : guests ? '1 chambre' : '—');
@@ -291,7 +285,6 @@ function render(){
     return;
   }
 
-  // Score réel simplifié sur les données : Orléans + 54 m² + 3 chambres + 6 voyageurs.
   const locationScore = address.toLowerCase().includes('orl') ? 88 : 76;
   const capacityScore = guests >= 6 ? 92 : guests >= 4 ? 80 : 68;
   const surfaceScore = surface >= 100 ? 86 : surface >= 54 ? 82 : 72;
