@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diagnostic Orléans | CleanUp Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --violet:#6B3FF2;
+  --violet2:#8B5CF6;
+  --dark:#101828;
+  --navy:#102A56;
+  --muted:#667085;
+  --line:#E4E7EC;
+  --bg:#F6F4FF;
+  --card:#FFFFFF;
+  --green:#22B573;
+  --orange:#F59E0B;
+  --red:#EF4444;
+  --shadow:0 18px 45px rgba(16,24,40,.10);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  color:var(--dark);
+  background:linear-gradient(135deg,#F8F7FF,#EEF2FF);
+}
+.app{
+  max-width:1220px;
+  margin:0 auto;
+  padding:28px 20px 60px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:24px;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  color:var(--violet);
+  font-size:24px;
+}
+.logo-icon{
+  width:42px;height:42px;border-radius:14px;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  color:white;display:grid;place-items:center;font-size:23px;
+}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button,.btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 18px;
+  font-weight:800;
+  cursor:pointer;
+  background:var(--violet);
+  color:#fff;
+  box-shadow:0 10px 22px rgba(107,63,242,.22);
+}
+button.secondary{
+  background:white;
+  color:var(--violet);
+  border:1px solid #DDD6FE;
+  box-shadow:none;
+}
+.editor{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:26px;
+}
+.editor h2{margin:0 0 12px;font-size:18px}
+.grid-form{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.field label{
+  display:block;
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.field input,.field textarea{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  font:inherit;
+  outline:none;
+  background:#FCFCFD;
+}
+.field textarea{min-height:88px;resize:vertical}
+.field.full{grid-column:span 4}
+.field.half{grid-column:span 2}
+
+.report{
+  display:grid;
+  gap:24px;
+}
+.page{
+  width:100%;
+  min-height:1120px;
+  background:white;
+  border-radius:26px;
+  box-shadow:var(--shadow);
+  padding:34px;
+  position:relative;
+  overflow:hidden;
+  page-break-after:always;
+}
+.page:before{
+  content:"";
+  position:absolute;inset:0 0 auto 0;height:9px;
+  background:linear-gradient(90deg,var(--violet),var(--green));
+}
+.page-number{
+  position:absolute;
+  bottom:18px;left:50%;transform:translateX(-50%);
+  width:34px;height:34px;border-radius:999px;
+  background:var(--violet);color:white;
+  display:grid;place-items:center;
+  font-weight:900;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:34px;
+}
+.kicker{
+  color:var(--violet);
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  font-size:13px;
+}
+h1{
+  margin:10px 0 0;
+  font-size:54px;
+  line-height:.98;
+  color:var(--navy);
+  letter-spacing:-.05em;
+}
+h1 span{color:var(--violet)}
+h2{
+  font-size:28px;
+  color:var(--violet);
+  margin:0 0 18px;
+  letter-spacing:-.03em;
+}
+h3{margin:0 0 10px;font-size:17px;color:var(--navy)}
+p{line-height:1.55}
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.45fr .75fr;
+  gap:24px;
+}
+.photo-box,.map-box{
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#F2F4F7;
+}
+.photo-box{height:330px}
+.map-box{height:190px}
+.photo-box img,.map-box img{width:100%;height:100%;object-fit:cover;display:block}
+.placeholder{
+  width:100%;height:100%;
+  display:grid;place-items:center;
+  color:var(--muted);
+  font-weight:800;
+  text-align:center;
+  padding:25px;
+  background:
+    radial-gradient(circle at 18% 30%,rgba(107,63,242,.16),transparent 28%),
+    radial-gradient(circle at 80% 60%,rgba(34,181,115,.16),transparent 30%),
+    #F8FAFC;
+}
+.score-card,.card{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 12px 30px rgba(16,24,40,.06);
+  padding:22px;
+}
+.score-card{
+  height:330px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+.donut{
+  width:170px;height:170px;border-radius:50%;
+  background:conic-gradient(var(--green) calc(var(--score)*1%),#E8ECF3 0);
+  display:grid;place-items:center;
+  margin:12px auto;
+}
+.donut-inner{
+  width:122px;height:122px;border-radius:50%;
+  background:white;
+  display:grid;place-items:center;
+  text-align:center;
+}
+.score-number{
+  font-size:42px;font-weight:900;color:var(--navy);line-height:1;
+}
+.score-number small{font-size:16px}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 13px;
+  border-radius:999px;
+  background:#ECFDF3;
+  color:#027A48;
+  font-size:13px;
+  font-weight:900;
+}
+.address{
+  margin:20px 0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:19px;
+  font-weight:900;
+}
+.address .pin{
+  width:42px;height:42px;border-radius:14px;
+  display:grid;place-items:center;
+  background:#F0EAFF;color:var(--violet);
+}
+.info-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin:18px 0;
+}
+.info-item{
+  background:#FBFAFF;
+  border:1px solid #E9DFFF;
+  border-radius:18px;
+  padding:17px;
+  text-align:center;
+}
+.info-item strong{display:block;font-size:22px;color:var(--violet);margin-bottom:4px}
+.info-item span{font-size:12px;color:var(--muted);font-weight:800}
+.highlight{
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  color:white;
+  border-radius:24px;
+  padding:24px;
+  margin-top:20px;
+  font-weight:700;
+}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-bottom:34px;
+}
+.metric{text-align:center}
+.metric .circle{
+  width:122px;height:122px;margin:0 auto 12px;
+  border-radius:50%;
+  background:conic-gradient(var(--green) 88%,#E8ECF3 0);
+  display:grid;place-items:center;
+}
+.metric:nth-child(2) .circle{background:conic-gradient(var(--green) 90%,#E8ECF3 0)}
+.metric:nth-child(3) .circle{background:conic-gradient(var(--green) 87%,#E8ECF3 0)}
+.metric:nth-child(4) .circle{background:conic-gradient(var(--green) 89%,#E8ECF3 0)}
+.metric .inner{
+  width:88px;height:88px;background:white;border-radius:50%;
+  display:grid;place-items:center;
+  font-weight:900;font-size:22px;color:var(--navy);
+}
+.metric b{color:var(--navy)}
+.cards4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+.client-card{
+  border:1px solid #DDD6FE;
+  border-radius:22px;
+  padding:22px 16px;
+  text-align:center;
+  min-height:170px;
+}
+.client-card .ico{font-size:38px;margin-bottom:12px}
+.client-card strong{display:block;color:var(--navy);margin-bottom:8px}
+.client-card p{font-size:13px;margin:0;color:var(--muted)}
+.section{margin-top:34px}
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:18px;
+}
+.table th{
+  background:var(--violet);
+  color:white;
+  text-align:left;
+  padding:14px;
+  font-size:13px;
+}
+.table td{
+  padding:15px 14px;
+  border-top:1px solid var(--line);
+  font-weight:700;
+}
+.table td:last-child{text-align:right}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{
+  padding:9px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  background:#F4F3FF;
+  color:var(--violet);
+}
+.competition{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+.comp-card{
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  background:#FCFCFF;
+}
+.comp-card .price{font-size:27px;font-weight:900;color:var(--violet);margin:10px 0}
+.comp-card small{color:var(--muted);font-weight:700}
+.analysis-box{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.price-box{
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:20px;
+  background:#FBFAFF;
+}
+.price-big{
+  font-size:42px;
+  color:var(--violet);
+  font-weight:900;
+}
+.bars{
+  display:flex;
+  align-items:end;
+  gap:22px;
+  height:230px;
+  padding:25px;
+  border:1px solid var(--line);
+  border-radius:22px;
+}
+.bar{
+  flex:1;
+  border-radius:14px 14px 0 0;
+  background:linear-gradient(180deg,var(--violet2),var(--violet));
+  min-height:30px;
+  position:relative;
+}
+.bar.orange{background:linear-gradient(180deg,#FDBA74,var(--orange))}
+.bar.green{background:linear-gradient(180deg,#6EE7B7,var(--green))}
+.bar span{
+  position:absolute;
+  top:-28px;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:900;
+  color:var(--navy);
+  white-space:nowrap;
+}
+.bar em{
+  position:absolute;
+  bottom:-25px;
+  left:50%;
+  transform:translateX(-50%);
+  font-style:normal;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.reco-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.reco-card{
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:24px;
+  min-height:185px;
+  text-align:center;
+}
+.reco-card .ico{
+  width:64px;height:64px;border-radius:24px;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  color:white;display:grid;place-items:center;
+  margin:0 auto 14px;
+  font-size:30px;
+}
+.final{
+  margin-top:30px;
+  background:linear-gradient(135deg,#4C1D95,var(--violet));
+  color:white;
+  border-radius:28px;
+  padding:30px;
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:28px;
+}
+.final .big{font-size:62px;font-weight:900;color:#FDE68A}
+.final p{margin:0;color:#F4F3FF}
+.notice{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:10px;
+}
+@media(max-width:900px){
+  .grid-form,.hero-grid,.metrics,.cards4,.competition,.analysis-box,.reco-grid,.final{
+    grid-template-columns:1fr;
+  }
+  .field,.field.half,.field.full{grid-column:span 1}
+  h1{font-size:40px}
+  .page{min-height:auto;padding:24px}
+  .info-row{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+  body{background:white}
+  .topbar,.editor{display:none!important}
+  .app{padding:0;max-width:none}
+  .report{gap:0}
+  .page{
+    width:210mm;
+    min-height:297mm;
+    box-shadow:none;
+    border-radius:0;
+    margin:0;
+    page-break-after:always;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><div class="logo-icon">⌂</div><div>CleanUp<br><span style="font-size:12px;letter-spacing:.25em;color:#667085">MANAGER</span></div></div>
+    <div class="actions">
+      <button class="secondary" onclick="document.querySelector('.editor').scrollIntoView({behavior:'smooth'})">Modifier les données</button>
+      <button onclick="window.print()">Télécharger / imprimer PDF</button>
+    </div>
+  </div>
+
+  <div class="editor">
+    <h2>Données du diagnostic — logement Orléans</h2>
+    <div class="grid-form">
+      <div class="field half">
+        <label>Photo du logement</label>
+        <input type="file" accept="image/*" onchange="loadImage(event,'homePhoto')">
+      </div>
+      <div class="field half">
+        <label>Image de la carte</label>
+        <input type="file" accept="image/*" onchange="loadImage(event,'mapPhoto')">
+      </div>
+      <div class="field half">
+        <label>Adresse du bien</label>
+        <input id="addressInput" value="6 impasse Notre-Dame du Chemin, 45000 Orléans" oninput="syncText('addressInput','addressText')">
+      </div>
+      <div class="field">
+        <label>Surface</label>
+        <input id="surfaceInput" value="54 m²" oninput="syncText('surfaceInput','surfaceText')">
+      </div>
+      <div class="field">
+        <label>Capacité</label>
+        <input id="capacityInput" value="6 voyageurs" oninput="syncText('capacityInput','capacityText')">
+      </div>
+      <div class="field">
+        <label>Tarif conseillé / nuit</label>
+        <input id="nightInput" value="135 €" oninput="syncText('nightInput','nightText')">
+      </div>
+      <div class="field">
+        <label>Indice CleanUp</label>
+        <input id="scoreInput" value="87" oninput="updateScore()">
+      </div>
+      <div class="field full">
+        <label>Diagnostic synthétique</label>
+        <textarea id="diagnosticInput" oninput="syncText('diagnosticInput','diagnosticText')">Le logement présente un excellent potentiel en location courte durée grâce à ses trois chambres, son emplacement proche du centre-ville et sa capacité d’accueil adaptée aux familles, groupes et professionnels.</textarea>
+      </div>
+    </div>
+    <p class="notice">Les images sont chargées localement dans ton navigateur. Pour conserver le rendu final, utilise le bouton “Télécharger / imprimer PDF”.</p>
+  </div>
+
+  <main class="report">
+
+    <section class="page">
+      <div class="header">
+        <div>
+          <div class="kicker">Diagnostic CleanUp Manager</div>
+          <h1>Rentabilité<br><span>location courte durée</span></h1>
+        </div>
+        <div class="badge">● Excellent potentiel</div>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <div class="photo-box">
+            <div id="homePhoto" class="placeholder">Télécharger ici une photo du logement<br><small>salon, chambre ou pièce principale</small></div>
+          </div>
+          <div class="address"><div class="pin">📍</div><div id="addressText">6 impasse Notre-Dame du Chemin, 45000 Orléans</div></div>
+          <div class="info-row">
+            <div class="info-item"><strong id="surfaceText">54 m²</strong><span>Surface</span></div>
+            <div class="info-item"><strong id="capacityText">6 voyageurs</strong><span>Capacité</span></div>
+            <div class="info-item"><strong>3 chambres</strong><span>Configuration</span></div>
+            <div class="info-item"><strong>LCD</strong><span>Exploitation</span></div>
+          </div>
+        </div>
+        <aside class="score-card">
+          <h3>Score CleanUp</h3>
+          <div class="donut" id="scoreDonut" style="--score:87">
+            <div class="donut-inner">
+              <div>
+                <div class="score-number"><span id="scoreText">87</span><small>/100</small></div>
+                <div style="font-weight:900;color:var(--green);font-size:12px">Excellent potentiel</div>
+              </div>
+            </div>
+          </div>
+          <div class="chips"><span class="chip">Familial premium</span><span class="chip">Orléans centre</span></div>
+        </aside>
+      </div>
+
+      <div class="map-box" style="margin-top:20px">
+        <div id="mapPhoto" class="placeholder">Télécharger ici l’image de la carte<br><small>localisation du bien</small></div>
+      </div>
+
+      <div class="highlight" id="diagnosticText">
+        Le logement présente un excellent potentiel en location courte durée grâce à ses trois chambres, son emplacement proche du centre-ville et sa capacité d’accueil adaptée aux familles, groupes et professionnels.
+      </div>
+      <div class="page-number">1</div>
+    </section>
+
+    <section class="page">
+      <h2>II. Potentiel locatif</h2>
+      <div class="metrics">
+        <div class="metric"><div class="circle"><div class="inner">8,8</div></div><b>Emplacement</b></div>
+        <div class="metric"><div class="circle"><div class="inner">9,0</div></div><b>Transports</b></div>
+        <div class="metric"><div class="circle"><div class="inner">8,7</div></div><b>Potentiel locatif</b></div>
+        <div class="metric"><div class="circle"><div class="inner">8,9</div></div><b>Rentabilité</b></div>
+      </div>
+
+      <div class="section">
+        <h2>Clientèle cible</h2>
+        <div class="cards4">
+          <div class="client-card"><div class="ico">👨‍👩‍👧</div><strong>Familles</strong><p>Hébergement confortable proche du centre-ville.</p></div>
+          <div class="client-card"><div class="ico">👥</div><strong>Groupes</strong><p>Séjours pour découvrir Orléans et les bords de Loire.</p></div>
+          <div class="client-card"><div class="ico">💼</div><strong>Professionnels</strong><p>Missions de quelques jours dans la métropole.</p></div>
+          <div class="client-card"><div class="ico">🏰</div><strong>Touristes</strong><p>Châteaux de la Loire et événements locaux.</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Diagnostic de concurrence</h2>
+        <div class="competition">
+          <div class="comp-card"><h3>Concurrent A</h3><small>Airbnb · 4 pers. · Standard</small><div class="price">108 €</div><small>Note observée : 4,7/5</small></div>
+          <div class="comp-card"><h3>Concurrent B</h3><small>Airbnb · 6 pers. · Familial</small><div class="price">124 €</div><small>Note observée : 4,8/5</small></div>
+          <div class="comp-card"><h3>Concurrent C</h3><small>Booking · 6 pers. · Confort</small><div class="price">149 €</div><small>Note observée : 9,1/10</small></div>
+          <div class="comp-card"><h3>Concurrent D</h3><small>Airbnb · 6 pers. · Premium</small><div class="price">158 €</div><small>Note observée : 4,9/5</small></div>
+        </div>
+        <p><b>Lecture :</b> les meilleurs logements 6 voyageurs se situent entre 125 € et 160 € par nuit. Le bien peut viser un positionnement familial haut de gamme avec une annonce optimisée.</p>
+      </div>
+      <div class="page-number">2</div>
+    </section>
+
+    <section class="page">
+      <h2>III. Tarifs, événements & revenus estimés</h2>
+
+      <div class="analysis-box">
+        <div class="price-box">
+          <h3>Tarif conseillé à la nuitée</h3>
+          <div class="price-big" id="nightText">135 €</div>
+          <p>Tarif cible après mise en valeur du logement et obtention des premiers avis positifs.</p>
+          <div class="chips">
+            <span class="chip">Lancement : 119 €</span>
+            <span class="chip">Courant : 135–145 €</span>
+            <span class="chip">Événements : 165–185 €</span>
+          </div>
+        </div>
+        <div class="price-box">
+          <h3>Conditions recommandées</h3>
+          <p>Minimum 2 nuits les week-ends, minimum 3 nuits lors des grands événements, ouverture du calendrier 6 à 12 mois à l’avance, ajustement hebdomadaire des prix.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Événements à surveiller</h2>
+        <table class="table">
+          <thead><tr><th>Événement</th><th>Période</th><th>Impact prix conseillé</th></tr></thead>
+          <tbody>
+            <tr><td>Fêtes de Jeanne d’Arc</td><td>29 avril au 10 mai</td><td>+25 à +40 %</td></tr>
+            <tr><td>Grand PianO Festival</td><td>Fin juin</td><td>+15 à +25 %</td></tr>
+            <tr><td>Festival de Loire</td><td>Fin septembre · années impaires</td><td>+35 à +50 %</td></tr>
+            <tr><td>Marché de Noël</td><td>Fin novembre à décembre</td><td>+20 à +30 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Prévisions financières</h2>
+        <div class="bars">
+          <div class="bar orange" style="height:105px"><span>18 860 €</span><em>Prudent</em></div>
+          <div class="bar green" style="height:150px"><span>27 375 €</span><em>Réaliste</em></div>
+          <div class="bar" style="height:205px"><span>36 990 €</span><em>Optimiste</em></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <table class="table">
+          <thead><tr><th>Scénario</th><th>Occupation</th><th>Prix moyen</th><th>CA annuel</th><th>Net estimé</th></tr></thead>
+          <tbody>
+            <tr><td>Prudent</td><td>45 %</td><td>115 €</td><td>18 860 €</td><td>13 960 €</td></tr>
+            <tr><td>Réaliste</td><td>60 %</td><td>125 €</td><td>27 375 €</td><td>20 475 €</td></tr>
+            <tr><td>Optimiste</td><td>75 %</td><td>135 €</td><td>36 990 €</td><td>27 690 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="page-number">3</div>
+    </section>
+
+    <section class="page">
+      <h2>IV. Plan d’action CleanUp</h2>
+      <div class="reco-grid">
+        <div class="reco-card"><div class="ico">📷</div><h3>Photos professionnelles</h3><p>Indispensable pour déclencher les clics et améliorer le taux de réservation.</p></div>
+        <div class="reco-card"><div class="ico">🛋️</div><h3>Décoration soignée</h3><p>Ambiance claire, moderne et homogène. Pas besoin de luxe, besoin de cohérence.</p></div>
+        <div class="reco-card"><div class="ico">🔐</div><h3>Serrure connectée</h3><p>Arrivée autonome, moins de contraintes de gestion, meilleure expérience client.</p></div>
+        <div class="reco-card"><div class="ico">📲</div><h3>Check-in autonome</h3><p>Guide d’arrivée, codes, informations pratiques et assistance claire.</p></div>
+        <div class="reco-card"><div class="ico">⚙️</div><h3>Automatisation</h3><p>Messages, calendrier, rappels ménage, suivi des interventions et tarification.</p></div>
+        <div class="reco-card"><div class="ico">⭐</div><h3>Avis voyageurs</h3><p>Objectif : obtenir rapidement des avis 5 étoiles pour améliorer la visibilité.</p></div>
+      </div>
+
+      <div class="section">
+        <h2>Ce qu’il manque souvent dans les diagnostics</h2>
+        <table class="table">
+          <thead><tr><th>Point à vérifier</th><th>Pourquoi c’est important</th></tr></thead>
+          <tbody>
+            <tr><td>Règlement de copropriété</td><td>Vérifier les restrictions éventuelles sur la location courte durée.</td></tr>
+            <tr><td>Déclaration mairie / réglementation locale</td><td>Sécuriser l’exploitation avant diffusion de l’annonce.</td></tr>
+            <tr><td>Charges réelles</td><td>Affiner le revenu net : ménage, linge, consommables, plateformes, entretien.</td></tr>
+            <tr><td>Qualité literie / Wi-Fi / cuisine</td><td>Ces éléments impactent directement les avis et donc la rentabilité.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="final">
+        <div>
+          <div>INDICE CLEANUP</div>
+          <div class="big">87<small style="font-size:20px;color:white">/100</small></div>
+          <b>Excellent potentiel</b>
+        </div>
+        <div>
+          <h3 style="color:white">Conclusion</h3>
+          <p>Avec une mise en valeur adaptée, une gestion optimisée et une tarification dynamique, le logement peut se positionner sur le segment familial haut de gamme et générer une rentabilité attractive.</p>
+          <p style="margin-top:16px"><b>Recommandation :</b> mise en location favorable, sous réserve de validation des équipements, de la réglementation locale et du niveau réel de charges.</p>
+        </div>
+      </div>
+      <div class="page-number">4</div>
+    </section>
+  </main>
+</div>
+
+<script>
+function loadImage(event,targetId){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const target = document.getElementById(targetId);
+    target.outerHTML = `<img id="${targetId}" src="${e.target.result}" alt="">`;
+  };
+  reader.readAsDataURL(file);
+}
+function syncText(inputId,targetId){
+  const input=document.getElementById(inputId);
+  const target=document.getElementById(targetId);
+  if(target) target.textContent=input.value;
+}
+function updateScore(){
+  const val=Math.max(0,Math.min(100,parseInt(document.getElementById('scoreInput').value||0,10)));
+  document.getElementById('scoreText').textContent=val;
+  document.getElementById('scoreDonut').style.setProperty('--score',val);
+}
+</script>
+</body>
+</html>
