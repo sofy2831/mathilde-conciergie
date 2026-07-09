@@ -9,485 +9,483 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --purple:#5F2BEA;--purple2:#7A4EF6;--green:#25B573;--blue:#0B1F4D;--text:#101828;--muted:#667085;--line:#E4E7EC;--soft:#F8F7FF;--orange:#F59E0B;--red:#EF4444;--shadow:0 18px 42px rgba(16,24,40,.13)
+  --purple:#5F2BEA;
+  --purple2:#6D35F2;
+  --green:#049B4F;
+  --blue:#071A49;
+  --text:#101828;
+  --muted:#667085;
+  --line:#E4E7EC;
+  --soft:#F8F7FF;
+  --orange:#F59E0B;
+  --red:#EF4444;
+  --shadow:0 18px 42px rgba(16,24,40,.13);
 }
 *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-html,body{margin:0;font-family:Inter,Arial,sans-serif;background:#ECEEF4;color:var(--text)}body{padding:22px}
-.toolbar{width:210mm;margin:0 auto 16px;display:flex;justify-content:space-between;align-items:center}.toolbar strong{color:var(--blue)}
+html,body{margin:0;font-family:Inter,Arial,sans-serif;background:#ECEEF4;color:var(--text)}
+body{padding:22px}
+.toolbar{width:210mm;margin:0 auto 16px;display:flex;justify-content:space-between;align-items:center}
+.toolbar strong{color:var(--blue)}
 button{border:0;border-radius:999px;padding:12px 18px;background:linear-gradient(135deg,var(--purple),#8B5CF6);color:white;font-weight:900;cursor:pointer;box-shadow:0 12px 24px rgba(107,53,242,.25)}
-.panel{width:210mm;margin:0 auto 18px;background:white;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}.panel h2{margin:0 0 14px;color:var(--purple);font-size:18px}.grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.field label{display:block;font-size:12px;font-weight:900;color:#667085;margin-bottom:6px}.field input{width:100%;border:1px solid #D0D5DD;border-radius:13px;padding:12px;font:inherit}
-.report{width:210mm;margin:0 auto;display:grid;gap:18px}.a4{width:210mm;height:297mm;background:white;box-shadow:var(--shadow);padding:12mm 13mm 9mm;position:relative;overflow:hidden}
-.logo{display:flex;align-items:center;gap:9px;color:var(--purple);font-weight:900;line-height:.9;margin-bottom:8mm}.logo-house{width:34px;height:34px;position:relative;flex:0 0 auto}.logo-house:before{content:"";position:absolute;left:6px;top:13px;width:20px;height:16px;border:4px solid var(--purple);border-top:0;border-radius:3px}.logo-house:after{content:"";position:absolute;left:7px;top:4px;width:19px;height:19px;border-left:4px solid var(--purple);border-top:4px solid var(--purple);transform:rotate(45deg);border-radius:3px}.logo-text{font-size:26px;letter-spacing:-.06em}.logo-text small{display:block;font-size:8px;letter-spacing:.38em;color:#111827;margin-top:5px}
-.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7mm}.header .logo{margin-bottom:0}.badge{background:#ECFDF3;color:#027A48;border-radius:999px;padding:7px 11px;font-size:10px;font-weight:900;white-space:nowrap}
-.title-block{margin-bottom:7mm}.kicker{color:var(--blue);font-weight:900;text-transform:uppercase;font-size:36px;line-height:.95;letter-spacing:-.035em}h1{margin:2px 0 0;color:var(--blue);font-size:54px;line-height:.9;letter-spacing:-.065em;font-weight:900;text-transform:uppercase}h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter-spacing:-.018em;margin-top:8px;text-transform:uppercase;word-spacing:3px}
-h2{font-size:23px;margin:0 0 6mm;color:var(--purple);letter-spacing:-.04em;text-transform:uppercase}h3{font-size:14px;margin:0 0 6px;color:var(--blue)}p{margin:0;color:#344054;font-size:11px;line-height:1.45}.page-no{position:absolute;bottom:6mm;left:50%;transform:translateX(-50%);background:var(--purple);color:white;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900}
-.cover-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:7mm;align-items:stretch;margin-bottom:6mm}.cover-left{display:grid;gap:5mm}.cover-summary{background:linear-gradient(135deg,#2E1065,var(--purple2));border-radius:22px;padding:19px 20px;color:white;min-height:60mm}.cover-summary h3{color:white;font-size:17px;text-transform:uppercase;margin-bottom:10px}.cover-summary p{color:white;font-weight:750;font-size:13.4px;line-height:1.48;letter-spacing:-.01em}.score-card{border:1px solid var(--line);border-radius:22px;background:white;box-shadow:0 10px 24px rgba(16,24,40,.07);display:grid;place-items:center;text-align:center;padding:18px;min-height:88mm}.score-title{font-size:13px;font-weight:900;color:var(--purple);text-transform:uppercase;margin-bottom:3mm}.donut{width:56mm;height:56mm;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) calc(var(--score)*1%),#E8ECF3 0)}.donut-in{width:41mm;height:41mm;border-radius:50%;background:white;display:grid;place-items:center}.score-num{font-size:39px;font-weight:900;color:var(--blue);line-height:1}.score-num small{font-size:12px}.score-label{font-size:9px;font-weight:900;color:#027A48;text-transform:uppercase}.stars{font-size:25px;color:var(--purple);letter-spacing:2px;margin-top:3mm}
-.address{display:flex;align-items:center;gap:10px;margin-bottom:5mm;font-size:16px;font-weight:900;color:var(--blue)}.addr-pin{width:37px;height:37px;border-radius:50%;background:var(--purple);color:white;display:grid;place-items:center;font-size:22px;box-shadow:0 9px 16px rgba(107,53,242,.25)}.address small{display:block;font-size:12px;font-weight:600;color:#111827;margin-top:2px}
-.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:18px;background:white;box-shadow:0 8px 20px rgba(16,24,40,.04);overflow:hidden;margin-bottom:5mm}.info{min-height:32mm;text-align:center;display:grid;place-items:center;padding:8px;border-right:1px solid var(--line)}.info:last-child{border-right:0}.icon{width:44px;height:44px;margin:0 auto 6px;color:var(--purple);font-size:39px;display:grid;place-items:center;line-height:1}.info b{display:block;font-size:16px;color:var(--blue);margin-bottom:2px}.info span{display:block;font-size:10px;font-weight:800;color:#111827}
-.cover-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-bottom:5mm}.cover-kpi{border:1px solid #DDD6FE;background:#FBFAFF;border-radius:17px;padding:12px;text-align:center}.cover-kpi b{display:block;color:var(--purple);font-size:22px}.cover-kpi span{font-size:10px;font-weight:800;color:#344054}.notice{display:grid;grid-template-columns:30px 1fr;gap:14px;align-items:center;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border-radius:16px;padding:15px 17px}.notice-star{font-size:31px;line-height:1;color:white}.notice p{margin:0;color:white;font-size:12px;line-height:1.35;font-weight:800}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm;margin-bottom:8mm}.metric{text-align:center}.metric .bigico{font-size:32px;color:var(--purple);margin-bottom:2mm}.circle{width:38mm;height:38mm;border-radius:50%;display:grid;place-items:center;margin:0 auto 3mm;background:conic-gradient(var(--green) 88%,#E8ECF3 0)}.circle.c90{background:conic-gradient(var(--green) 90%,#E8ECF3 0)}.circle.c87{background:conic-gradient(var(--green) 87%,#E8ECF3 0)}.circle.c89{background:conic-gradient(var(--green) 89%,#E8ECF3 0)}.circle-in{width:28mm;height:28mm;background:white;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-size:16px;font-weight:900}.metric b{display:block;color:var(--blue);font-size:11px;margin-bottom:2mm}.client-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-bottom:7mm}.client{text-align:center;border:1px solid #DDD6FE;border-radius:16px;padding:11px 9px;min-height:39mm}.client .ico{font-size:29px;color:var(--purple);margin-bottom:5px}.client p{font-size:8.8px;color:#344054;font-weight:600}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:9.5px}.table th{background:var(--purple);color:white;text-align:left;padding:8px;font-size:8.5px;text-transform:uppercase}.table td{padding:8px;border-top:1px solid var(--line);font-weight:700;color:#111827}.table td:last-child,.table th:last-child{text-align:right}.position{margin-top:6mm;background:#F8F7FF;border:1px solid #DDD6FE;border-radius:18px;padding:13px;display:grid;grid-template-columns:41px 1fr;gap:13px;align-items:center}.position .medal{font-size:34px;color:var(--purple)}.position b{color:var(--purple);text-transform:uppercase;font-size:12px}
-.comp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-bottom:6mm}.comp{border:1px solid var(--line);border-radius:16px;padding:11px;background:#FCFCFF;text-align:center}.comp .price{font-size:23px;font-weight:900;color:var(--purple);margin:5px 0}.comp small{font-size:8.8px;color:var(--muted);font-weight:800}.price-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-bottom:6mm}.price-card{border:1px solid #DDD6FE;border-radius:16px;background:#FBFAFF;padding:12px;text-align:center}.price-card b{font-size:21px;color:var(--purple)}.price-card span{display:block;font-size:9.5px;font-weight:800;color:#344054}.market-chart{margin-top:6mm;border:1px solid var(--line);border-radius:18px;padding:12px;background:#FCFCFF}.mini-bars{height:52mm;display:flex;align-items:end;gap:15mm;justify-content:center;padding:8mm 8mm 7mm}.mini-bar{width:29mm;border-radius:11px 11px 0 0;background:var(--purple);position:relative}.mini-bar.orange{background:var(--orange)}.mini-bar.green{background:var(--green)}.mini-bar b{position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;color:var(--blue)}.mini-bar span{position:absolute;bottom:-19px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:900;color:#344054}
-.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-bottom:7mm}.event{border:1px solid var(--line);border-radius:16px;padding:11px;text-align:center;background:#FCFCFF;min-height:45mm}.event .month-label{font-size:10px;font-weight:900;color:var(--purple);text-transform:uppercase}.event b{display:block;font-size:12.5px;color:var(--blue);margin:6px 0}.event .impact{font-size:18px;color:var(--green);font-weight:900}.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3.5mm;margin-bottom:7mm}.month{border:1px solid var(--line);border-radius:14px;padding:8px;text-align:center;background:#FCFCFF}.month b{display:block;color:var(--blue);font-size:10.5px}.month span{color:var(--purple);font-weight:900;font-size:12px}.timeline-note{margin-top:6mm;border:1px solid #DDD6FE;background:#FBFAFF;border-radius:18px;padding:13px;display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start}.timeline-note .ico{font-size:27px;color:var(--purple)}.timeline-note p{font-size:10.5px;font-weight:650}.bars{height:66mm;border:1px solid var(--line);border-radius:18px;padding:12mm 9mm 8mm;display:flex;align-items:end;gap:10mm}.bar{flex:1;border-radius:12px 12px 0 0;position:relative;background:var(--purple);min-height:20mm}.bar.orange{background:var(--orange)}.bar.green{background:var(--green)}.bar b{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;color:var(--blue)}.bar span{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:900;color:#344054}.finance-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:6mm;margin-bottom:7mm}.kpi-grid{display:grid;gap:4mm}.kpi{border:1px solid var(--line);border-radius:15px;padding:12px;background:#FCFCFF}.kpi b{font-size:20px;color:var(--purple);display:block}.kpi span{font-size:9.5px;font-weight:800;color:#344054}
-.reco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-bottom:6mm}.reco{border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;background:#FCFCFF;min-height:40mm}.reco .ico{font-size:29px;color:var(--purple);margin-bottom:5px}.reco p{font-size:9.5px}.check-list{display:grid;grid-template-columns:1fr 1fr;gap:3.5mm;margin-bottom:6mm}.check{border:1px solid #DDD6FE;background:#FBFAFF;border-radius:14px;padding:10px;font-size:10px;font-weight:800;color:#344054}.check span{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--green);color:white;margin-right:6px;font-weight:900}.final{background:linear-gradient(135deg,#2E1065,var(--purple2));border-radius:18px;color:white;padding:16px;display:grid;grid-template-columns:48mm 1fr;gap:15px;margin-top:6mm}.final .big{font-size:43px;font-weight:900;color:#D9F99D}.final p{color:white;font-weight:700}.certif{margin-top:6mm;border:1px solid #DDD6FE;background:#FBFAFF;border-radius:18px;padding:14px}.certif b{color:var(--purple)}
+.panel{width:210mm;margin:0 auto 18px;background:white;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.panel h2{margin:0 0 14px;color:var(--purple);font-size:18px}
+.grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
+.field label{display:block;font-size:12px;font-weight:900;color:#667085;margin-bottom:6px}
+.field input{width:100%;border:1px solid #D0D5DD;border-radius:13px;padding:12px;font:inherit}
 
-/* ===== Page 2 — rendu premium lisible ===== */
-.page2{padding-top:12mm}
-.page2 .header{margin-bottom:9mm}
-.page2-title{font-size:39px;line-height:.95;letter-spacing:-.065em;color:var(--blue);margin:0 0 8mm;text-transform:uppercase;font-weight:900}
-.page2-section-title{font-size:25px;line-height:1;color:var(--purple);margin:0 0 5mm;text-transform:uppercase;font-weight:900;letter-spacing:-.035em}
-.page2 .metrics{grid-template-columns:repeat(4,1fr);gap:7mm;margin-bottom:10mm;padding-bottom:7mm;border-bottom:1.5px solid #DDD6FE}
-.page2 .metric{position:relative;text-align:center}
-.page2 .metric:not(:last-child)::after{content:"";position:absolute;right:-3.5mm;top:21mm;height:46mm;border-right:1px dashed #D6D9E5}
-.page2 .metric .bigico{font-size:42px;line-height:1;color:var(--purple);margin-bottom:3mm}
-.page2 .metric b{font-size:13.5px;color:var(--blue);font-weight:900;margin-bottom:4mm}
-.page2 .circle{width:43mm;height:43mm;margin-bottom:0}
-.page2 .circle-in{width:31mm;height:31mm;font-size:19px;font-weight:900}
-.page2 .client-grid{gap:5mm;margin-bottom:8mm}
-.page2 .client{min-height:52mm;padding:14px 12px;border-radius:18px;background:#FCFCFF}
-.page2 .client .ico{font-size:38px;margin-bottom:8px;line-height:1}
-.page2 .client h3{font-size:17px;margin-bottom:7px;color:var(--blue);letter-spacing:-.02em}
-.page2 .client p{font-size:11.2px;line-height:1.35;font-weight:650;color:#344054}
-.page2 .table{font-size:12px;border-radius:18px;margin-bottom:7mm}
-.page2 .table th{font-size:10.5px;padding:11px 13px}
-.page2 .table td{padding:10.5px 13px;font-size:12px}
-.page2 .table td:first-child{display:flex;align-items:center;gap:10px;font-weight:850}
-.access-ico{width:25px;height:25px;display:inline-grid;place-items:center;color:var(--purple);font-size:20px;flex:0 0 auto}
-.page2 .position{margin-top:0;padding:15px 17px;grid-template-columns:52px 1fr;border-radius:19px}
-.page2 .position .medal{font-size:42px}
-.page2 .position b{font-size:15px;letter-spacing:-.02em}
-.page2 .position p{font-size:12.8px;line-height:1.42;font-weight:650}
+.report{width:210mm;margin:0 auto;display:grid;gap:18px}
+.a4{width:210mm;height:297mm;background:white;box-shadow:var(--shadow);padding:10mm 11.5mm 9.2mm;position:relative;overflow:hidden}
+.header{height:15mm;display:flex;justify-content:space-between;align-items:center;margin-bottom:5.5mm;padding-bottom:2.5mm;border-bottom:1px solid #ECE9FF}
+.logo{display:flex;align-items:center;gap:9px;color:var(--purple);font-weight:900;line-height:.9}
+.logo-house{width:34px;height:34px;position:relative;flex:0 0 auto}
+.logo-house:before{content:"";position:absolute;left:6px;top:13px;width:20px;height:16px;border:4px solid var(--purple);border-top:0;border-radius:3px}
+.logo-house:after{content:"";position:absolute;left:7px;top:4px;width:19px;height:19px;border-left:4px solid var(--purple);border-top:4px solid var(--purple);transform:rotate(45deg);border-radius:3px}
+.logo-text{font-size:25px;letter-spacing:-.06em}
+.logo-text small{display:block;font-size:7.5px;letter-spacing:.38em;color:#111827;margin-top:5px}
+.header .logo{transform:scale(.88);transform-origin:left center}
+.badge{background:#E7F8EE;color:#027A48;border-radius:999px;padding:7px 12px;font-size:10.8px;font-weight:900;white-space:nowrap}
+h2{margin:0 0 5.4mm;color:var(--blue);font-size:30px;line-height:1.02;letter-spacing:-.05em;font-weight:900;text-transform:uppercase}
+h3{margin:0 0 5px;color:var(--blue);font-size:14px;line-height:1.18}
+p{margin:0;color:#344054;font-size:12px;line-height:1.36;font-weight:650}
+.page-no{position:absolute;bottom:6mm;left:50%;transform:translateX(-50%);background:var(--purple);color:white;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900}
 
+/* Page 1 */
+.logo-cover{margin-bottom:8mm}
+.title-block{margin-bottom:7mm}.kicker{color:var(--blue);font-weight:900;text-transform:uppercase;font-size:36px;line-height:.95;letter-spacing:-.035em}
+h1{margin:2px 0 0;color:var(--blue);font-size:54px;line-height:.9;letter-spacing:-.065em;font-weight:900;text-transform:uppercase}
+h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter-spacing:-.018em;margin-top:8px;text-transform:uppercase}
+.cover-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:7mm;align-items:stretch;margin-bottom:6mm}
+.cover-left{display:grid;gap:5mm}
+.cover-summary{background:linear-gradient(135deg,#2E1065,var(--purple2));border-radius:22px;padding:18px 19px;color:white;min-height:60mm}
+.cover-summary h3{color:white;font-size:17px;text-transform:uppercase;margin-bottom:10px}
+.cover-summary p{color:white;font-weight:750;font-size:12.4px;line-height:1.42}
+.score-card{border:1px solid var(--line);border-radius:22px;background:white;box-shadow:0 10px 24px rgba(16,24,40,.07);display:grid;place-items:center;text-align:center;padding:18px;min-height:88mm}
+.score-title{font-size:13px;font-weight:900;color:var(--purple);text-transform:uppercase;margin-bottom:3mm}
+.donut{width:56mm;height:56mm;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) calc(var(--score)*1%),#E8ECF3 0)}
+.donut-in{width:41mm;height:41mm;border-radius:50%;background:white;display:grid;place-items:center}
+.score-num{font-size:39px;font-weight:900;color:var(--blue);line-height:1}.score-num small{font-size:12px}.score-label{font-size:9px;font-weight:900;color:#027A48;text-transform:uppercase}.stars{font-size:25px;color:var(--purple);letter-spacing:2px;margin-top:3mm}
+.address{display:flex;align-items:center;gap:10px;margin-bottom:5mm;font-size:16px;font-weight:900;color:var(--blue)}
+.addr-pin{width:37px;height:37px;border-radius:50%;background:var(--purple);color:white;display:grid;place-items:center;font-size:22px}
+.address small{display:block;font-size:12px;font-weight:600;color:#111827;margin-top:2px}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:18px;background:white;box-shadow:0 8px 20px rgba(16,24,40,.04);overflow:hidden;margin-bottom:5mm}
+.info{min-height:32mm;text-align:center;display:grid;place-items:center;padding:8px;border-right:1px solid var(--line)}.info:last-child{border-right:0}
+.icon{width:44px;height:44px;margin:0 auto 6px;color:var(--purple);font-size:39px;display:grid;place-items:center;line-height:1}
+.info b{display:block;font-size:16px;color:var(--blue);margin-bottom:2px}.info span{display:block;font-size:10px;font-weight:800;color:#111827}
+.cover-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-bottom:5mm}
+.cover-kpi{border:1px solid #DDD6FE;background:#FBFAFF;border-radius:17px;padding:11px 8px;text-align:center}
+.cover-kpi b{display:block;color:var(--purple);font-size:20px;line-height:1;white-space:nowrap;letter-spacing:-.03em}.cover-kpi span{font-size:10px;font-weight:800;color:#344054}
 
+/* Common blocks */
+.notice{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:center;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border-radius:16px;padding:12px 14px}
+.notice-star{font-size:27px;line-height:1;color:white}.notice p{color:white;font-size:11.8px;line-height:1.32;font-weight:800}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-bottom:5.8mm;padding-bottom:5mm;border-bottom:1px solid #DDD6FE}
+.metric{text-align:center;padding:0 2.6mm;border-right:1px dashed #D9D6E8}.metric:last-child{border-right:0}
+.metric .bigico{font-size:30px;color:var(--purple);margin-bottom:1.8mm}.metric b{display:block;color:var(--blue);font-size:11.4px;margin-bottom:2.2mm}
+.circle{width:30mm;height:30mm;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:conic-gradient(var(--green) 88%,#E8ECF3 0)}
+.circle.c90{background:conic-gradient(var(--green) 90%,#E8ECF3 0)}.circle.c87{background:conic-gradient(var(--green) 87%,#E8ECF3 0)}.circle.c89{background:conic-gradient(var(--green) 89%,#E8ECF3 0)}
+.circle-in{width:21.6mm;height:21.6mm;background:white;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-size:13px;font-weight:900}
+.section-title{font-size:21px!important;color:var(--purple)!important;margin-bottom:3.8mm!important;letter-spacing:-.035em}
+.client-grid,.reco-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3.2mm;margin-bottom:5mm}
+.client,.reco{border:1px solid #DDD6FE;border-radius:15px;background:#FCFCFF;text-align:center;padding:9px 8px;min-height:38mm;display:grid;place-items:center}
+.client .ico,.reco .ico{font-size:28px}.client h3,.reco h3{font-size:13.2px}.client p,.reco p{font-size:11.4px;line-height:1.38;font-weight:700}
+.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:15px;overflow:hidden;table-layout:fixed;margin-bottom:4.5mm}
+.table th{background:var(--purple);color:white;text-align:left;padding:8px 10px;font-size:9.6px;text-transform:uppercase}
+.table td{padding:7.4px 10px;border-top:1px solid var(--line);font-weight:850;color:#111827;font-size:11.6px;line-height:1.22}
+.table td:last-child,.table th:last-child{text-align:right}.access-ico{width:18px;height:18px;display:inline-grid;place-items:center;color:var(--purple);font-size:15px;margin-right:7px}
+.position,.timeline-note{border:1px solid #DDD6FE;background:#FBFAFF;border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start}
+.position .medal,.timeline-note .ico{font-size:30px;color:var(--purple)}.position b{color:var(--purple);text-transform:uppercase;font-size:12px}.position p,.timeline-note p{font-size:11.2px;line-height:1.31;font-weight:700}
 
-/* Harmonisation V4 — pages 2 à 6 */
-.a4{padding:11mm 12mm 10mm}
-.header{margin-bottom:7mm;padding-bottom:3mm;border-bottom:1px solid #ECE9FF}
-.header .logo{transform:scale(.92);transform-origin:left top}
-.header .badge{font-size:11px;padding:8px 13px}
-.a4:not(:first-child) h2:first-of-type{font-size:34px;line-height:1;letter-spacing:-.055em;color:var(--blue);margin:0 0 8mm;text-transform:uppercase}
-.a4:not(:first-child) h2:not(:first-of-type){font-size:24px;line-height:1.05;margin:0 0 5mm;color:var(--purple);letter-spacing:-.04em;text-transform:uppercase}
-.a4:not(:first-child) h3{font-size:15px;line-height:1.2}
-.a4:not(:first-child) p{font-size:12px;line-height:1.42}
-.metrics{gap:0;margin-bottom:9mm;border-bottom:1px solid #DDD6FE;padding-bottom:8mm}
-.metric{position:relative;padding:0 4mm}
-.metric:not(:last-child){border-right:1px dashed #D9D6E8}
-.metric .bigico{font-size:39px;margin-bottom:3mm;line-height:1;color:var(--purple)}
-.metric b{font-size:14px;margin-bottom:3mm;line-height:1.1;color:var(--blue)}
-.circle{width:34mm;height:34mm;margin-bottom:0}
-.circle-in{width:25mm;height:25mm;font-size:15px}
-.client-grid{gap:5mm;margin-bottom:8mm}
-.client{min-height:43mm;padding:12px 10px;display:grid;place-items:center}
-.client .ico{font-size:34px;margin-bottom:5px}
-.client h3{font-size:15px;margin-bottom:5px}
-.client p{font-size:10.6px;line-height:1.35;font-weight:650}
-.table{font-size:11.2px;border-radius:16px}
-.table th{font-size:10px;padding:9px 12px}.table td{padding:8.5px 12px}
-.position{margin-top:6mm;padding:14px 15px;grid-template-columns:46px 1fr}
-.position .medal{font-size:36px}.position b{font-size:13.5px}.position p{font-size:11.5px}
-.comp-grid,.price-cards{gap:5mm}.comp,.price-card{min-height:31mm}.comp h3,.price-card h3{font-size:14px}.comp small{font-size:9.8px}.comp .price{font-size:25px}.price-card b{font-size:24px}.price-card span{font-size:10.5px}.market-chart{padding:14px}.mini-bars{height:48mm}
-.timeline{gap:5mm;margin-bottom:8mm}.event{min-height:47mm}.event .month-label{font-size:10.5px}.event b{font-size:13.3px}.event .impact{font-size:17px}.month-grid{gap:4mm}.month{padding:9px}.month b{font-size:11px}.month span{font-size:13px}.timeline-note{padding:14px;margin-top:6mm}.timeline-note p{font-size:11.2px}
-.finance-grid{gap:6mm;margin-bottom:6mm}.bars{height:58mm}.kpi{padding:13px}.kpi b{font-size:22px}.kpi span{font-size:10.8px}.reco-grid{gap:5mm}.reco{min-height:42mm}.reco .ico{font-size:33px}.reco h3{font-size:14.5px}.reco p{font-size:10.6px}.check{font-size:10.8px;line-height:1.35}.final{margin-top:5mm;padding:15px}.certif{margin-top:5mm;padding:13px}.certif p{font-size:10.8px}
-.assumptions{margin-top:5mm;margin-bottom:5mm;border:1px solid #DDD6FE;background:#FBFAFF;border-radius:17px;padding:12px 13px}
-.assumption-head{font-size:12px;font-weight:900;text-transform:uppercase;color:var(--purple);margin-bottom:9px;letter-spacing:.02em}
-.assumption-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 10px}
-.assumption-grid div{border:1px solid #ECE9FF;background:white;border-radius:11px;padding:8px;min-height:38px}
-.assumption-grid b{display:block;font-size:8.5px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
-.assumption-grid span{display:block;font-size:10px;font-weight:850;color:var(--blue);line-height:1.15}
-.report .a4:nth-child(2) .header{margin-bottom:6mm}
-.report .a4:nth-child(2) h2:first-of-type{margin-bottom:7mm}
-.report .a4:nth-child(2) .metrics{margin-bottom:7mm;padding-bottom:6mm}
-.report .a4:nth-child(2) .client-grid{margin-bottom:7mm}
-.report .a4:nth-child(2) .table td{padding:7.2px 12px}
-.report .a4:nth-child(2) .position{margin-top:5mm;padding:12px 14px}
-@media print{.a4{padding:11mm 12mm 10mm}}
+/* Page 3 */
+.comp-grid,.price-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:3.5mm;margin-bottom:5mm}
+.comp,.price-card{border:1px solid var(--line);border-radius:16px;background:#FCFCFF;text-align:center;padding:8px;min-height:27mm;display:flex;flex-direction:column;justify-content:center}
+.comp .price{font-size:23px;font-weight:900;color:var(--purple);margin:4px 0}.comp small{font-size:11.4px;line-height:1.34;font-weight:750;color:var(--muted)}
+.price-card b{font-size:19px;color:var(--purple);line-height:1;margin:2px 0 5px}.price-card span{font-size:10.4px;line-height:1.22;font-weight:700;color:#344054}
+.market-chart{margin-top:10mm;border:1px solid var(--line);border-radius:16px;padding:13px 12px 12px;background:#FCFCFF}
+.market-chart h3{margin-bottom:9mm}.mini-bars{height:41mm;display:flex;align-items:end;gap:15mm;justify-content:center;padding:12mm 6mm 6mm}
+.mini-bar{width:29mm;border-radius:11px 11px 0 0;background:var(--purple);position:relative}.mini-bar.orange{background:var(--orange)}.mini-bar.green{background:var(--green)}
+.mini-bar b{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10.5px;white-space:nowrap;color:var(--blue)}.mini-bar span{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:9.2px;font-weight:900;color:#344054}
 
-@page{size:A4;margin:0}@media print{html,body{background:white;padding:0}.toolbar,.panel{display:none!important}.report{display:block;width:210mm;margin:0}.a4{width:210mm;height:297mm;margin:0;box-shadow:none;page-break-after:always}}
-
-
-/* =========================================================
-   PASS FINALE — harmonisation complète A4 / lisibilité / print
-   ========================================================= */
-:root{
-  --page-pad-x:12mm;
-  --page-pad-y:10.5mm;
-  --card-radius:16px;
-  --card-bg:#FCFCFF;
-  --violet-soft:#FBFAFF;
-}
-.a4{padding:var(--page-pad-y) var(--page-pad-x) 9.5mm!important;overflow:hidden!important}
-.header{height:16mm;margin-bottom:6.2mm!important;padding-bottom:3mm!important;align-items:center!important}
-.header .logo{transform:scale(.88)!important;margin-bottom:0!important}
-.header .badge{font-size:10.5px!important;padding:7px 12px!important;margin-top:1mm!important}
-.a4:not(:first-child) h2:first-of-type,
-.page2-title{
-  font-size:32px!important;
-  line-height:1.02!important;
-  letter-spacing:-.05em!important;
+/* PAGE 4 — rendu identique à ta capture */
+.page4{padding:10mm 11.5mm 8.8mm!important}
+.page4 .header{height:15mm;margin-bottom:5.7mm!important}
+.page4 h2:first-of-type{
+  font-size:35px!important;
+  line-height:.98!important;
+  letter-spacing:-.065em!important;
   color:var(--blue)!important;
-  margin:0 0 6mm!important;
-  text-transform:uppercase!important;
-  font-weight:900!important;
+  margin-bottom:6.1mm!important;
 }
-.a4:not(:first-child) h2:not(:first-of-type),
-.page2-section-title{
-  font-size:20px!important;
-  line-height:1.06!important;
-  letter-spacing:-.035em!important;
-  color:var(--purple)!important;
-  margin:0 0 4mm!important;
-  text-transform:uppercase!important;
-  font-weight:900!important;
-}
-.a4:not(:first-child) h3{font-size:13.2px!important;line-height:1.18!important;margin-bottom:5px!important}
-.a4:not(:first-child) p{font-size:10.9px!important;line-height:1.36!important;font-weight:650!important}
-.notice{border-radius:var(--card-radius)!important;padding:12px 14px!important;gap:11px!important}
-.notice-star{font-size:27px!important}.notice p{font-size:11.2px!important;line-height:1.33!important}
-
-/* Page 2 : anti-débordement + harmonie */
-.page2{padding:var(--page-pad-y) var(--page-pad-x) 9.5mm!important}
-.page2 .header{margin-bottom:5.5mm!important}
-.page2-title{margin-bottom:5.5mm!important}
-.page2 .metrics{
+.page4 .timeline{
   display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:0!important;
-  margin-bottom:6.3mm!important;
-  padding-bottom:5.5mm!important;
-  border-bottom:1px solid #DDD6FE!important;
+  gap:4.3mm!important;
+  margin-bottom:5.3mm!important;
 }
-.page2 .metric{min-width:0!important;padding:0 3mm!important;overflow:hidden!important}
-.page2 .metric:not(:last-child){border-right:1px dashed #D9D6E8!important}
-.page2 .metric:not(:last-child)::after{display:none!important}
-.page2 .metric .bigico{font-size:31px!important;margin-bottom:2mm!important}
-.page2 .metric b{font-size:11.5px!important;line-height:1.05!important;margin-bottom:2.5mm!important}
-.page2 .circle{width:31mm!important;height:31mm!important;margin:0 auto!important}
-.page2 .circle-in{width:22.5mm!important;height:22.5mm!important;font-size:13.2px!important}
-.page2 .client-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3.5mm!important;margin-bottom:5.5mm!important}
-.page2 .client{min-height:38mm!important;padding:10px 8px!important;border-radius:15px!important;overflow:hidden!important}
-.page2 .client .ico{font-size:29px!important;margin-bottom:5px!important}
-.page2 .client h3{font-size:13.4px!important;margin-bottom:4px!important;line-height:1.05!important}
-.page2 .client p{font-size:9.6px!important;line-height:1.28!important;font-weight:650!important}
-.page2 .table{table-layout:fixed!important;width:100%!important;max-width:100%!important;font-size:10.5px!important;border-radius:15px!important;margin-bottom:4.5mm!important}
-.page2 .table th{font-size:9.2px!important;padding:8px 10px!important}
-.page2 .table td{font-size:10.4px!important;padding:7.2px 10px!important;line-height:1.12!important;vertical-align:middle!important}
-.page2 .table th:first-child,.page2 .table td:first-child{width:68%!important;text-align:left!important}
-.page2 .table th:last-child,.page2 .table td:last-child{width:32%!important;text-align:right!important;white-space:nowrap!important}
-.page2 .table td:first-child{display:table-cell!important;font-weight:850!important;white-space:normal!important}
-.access-ico{width:18px!important;height:18px!important;font-size:15px!important;margin-right:7px!important;display:inline-grid!important;vertical-align:middle!important}
-.page2 .position{padding:10px 12px!important;grid-template-columns:38px minmax(0,1fr)!important;border-radius:15px!important;margin-top:0!important}
-.page2 .position .medal{font-size:30px!important}
-.page2 .position b{font-size:12px!important;line-height:1.15!important}
-.page2 .position p{font-size:10.2px!important;line-height:1.3!important}
-
-/* Cartes, tableaux et blocs communs */
-.metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important}
-.client-grid,.comp-grid,.price-cards,.timeline,.month-grid,.reco-grid,.check-list{width:100%!important;max-width:100%!important}
-.table{table-layout:fixed!important;width:100%!important;max-width:100%!important}
-.table th{font-size:9.5px!important;padding:8px 10px!important}
-.table td{font-size:10.5px!important;padding:8px 10px!important;line-height:1.18!important}
-.comp-grid,.price-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4mm!important;margin-bottom:5mm!important}
-.comp,.price-card,.event,.month,.reco,.client,.kpi{border-radius:var(--card-radius)!important;background:var(--card-bg)!important;overflow:hidden!important}
-.comp{padding:10px 8px!important}.comp .price{font-size:23px!important}.comp small{font-size:9.2px!important}
-.price-card{padding:10px 8px!important}.price-card b{font-size:22px!important}.price-card span{font-size:9.7px!important;line-height:1.25!important}
-.market-chart{margin-top:5mm!important;padding:11px!important;border-radius:var(--card-radius)!important}.mini-bars{height:44mm!important;padding:7mm 6mm 6mm!important}.mini-bar b{font-size:10px!important}.mini-bar span{font-size:9px!important}
-.timeline{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4mm!important;margin-bottom:6mm!important}.event{min-height:42mm!important;padding:10px 8px!important}.event .month-label{font-size:9.2px!important;line-height:1.15!important}.event b{font-size:11.5px!important;line-height:1.15!important}.event .impact{font-size:15.5px!important}
-.month-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:3mm!important;margin-bottom:5.5mm!important}.month{padding:7px!important}.month b{font-size:10px!important}.month span{font-size:12px!important}
-.timeline-note{margin-top:4.5mm!important;padding:11px 12px!important;border-radius:var(--card-radius)!important;grid-template-columns:31px minmax(0,1fr)!important}.timeline-note .ico{font-size:24px!important}.timeline-note p{font-size:10.4px!important;line-height:1.32!important}
-.finance-grid{grid-template-columns:1.17fr .83fr!important;gap:5mm!important;margin-bottom:5.5mm!important}.bars{height:49mm!important;padding:10mm 8mm 7mm!important;gap:8mm!important}.bar b{font-size:10px!important}.bar span{font-size:8.8px!important}
-.kpi{padding:10px 11px!important}.kpi b{font-size:20px!important}.kpi span{font-size:9.8px!important;line-height:1.25!important}
-.assumptions{margin:4.5mm 0!important;padding:10px 11px!important;border-radius:var(--card-radius)!important}.assumption-head{font-size:10.5px!important;margin-bottom:7px!important}.assumption-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}.assumption-grid div{padding:7px!important;min-height:34px!important}.assumption-grid b{font-size:7.6px!important}.assumption-grid span{font-size:9.2px!important;line-height:1.12!important}
-.position{padding:11px 12px!important;grid-template-columns:40px minmax(0,1fr)!important;margin-top:4.5mm!important;border-radius:var(--card-radius)!important}.position .medal{font-size:31px!important}.position b{font-size:12.2px!important;line-height:1.18!important}.position p{font-size:10.5px!important;line-height:1.32!important}
-
-/* Pages 5 et 6 : lisibilité sans débordement */
-.report .a4:nth-child(5) h2:first-of-type,.report .a4:nth-child(6) h2:first-of-type{font-size:31px!important;margin-bottom:5.5mm!important}
-.report .a4:nth-child(5) .table th{font-size:9.4px!important}.report .a4:nth-child(5) .table td{font-size:10.7px!important;padding:8px 8px!important}
-.report .a4:nth-child(5) .position,.report .a4:nth-child(5) .timeline-note{margin-top:4mm!important}
-.reco-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4mm!important;margin-bottom:5mm!important}.reco{min-height:38mm!important;padding:10px 9px!important}.reco .ico{font-size:29px!important;margin-bottom:4px!important}.reco h3{font-size:12.5px!important;line-height:1.08!important;margin-bottom:4px!important}.reco p{font-size:9.8px!important;line-height:1.28!important}
-.check-list{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:3mm!important;margin-bottom:5mm!important}.check{font-size:9.8px!important;line-height:1.25!important;padding:8px 9px!important}.check span{width:16px!important;height:16px!important;margin-right:5px!important}
-.final{grid-template-columns:42mm minmax(0,1fr)!important;gap:12px!important;margin-top:4.5mm!important;padding:13px!important;border-radius:var(--card-radius)!important}.final .big{font-size:37px!important}.final p{font-size:10.3px!important;line-height:1.33!important}.certif{margin-top:4.5mm!important;padding:11px 12px!important;border-radius:var(--card-radius)!important}.certif p{font-size:9.9px!important;line-height:1.32!important}
-
-/* Sécurité impression */
-@media print{
-  .a4{padding:var(--page-pad-y) var(--page-pad-x) 9.5mm!important;box-shadow:none!important;break-after:page!important;page-break-after:always!important}
-  .a4:last-child{page-break-after:auto!important;break-after:auto!important}
+.page4 .event{
+  min-height:40.2mm!important;
+  padding:12px 8px 10px!important;
+  border:1px solid #D9DDE8!important;
+  border-radius:16px!important;
+  background:#FCFCFF!important;
+  text-align:center!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
 }
-
-
-/* =========================================================
-   V6 — lisibilité renforcée + sécurité A4
-   Objectif : police plus confortable sans débordement
-   ========================================================= */
-:root{
-  --page-pad-x:11.5mm;
-  --page-pad-y:10mm;
+.page4 .event .month-label{
+  font-size:10.4px!important;
+  line-height:1.12!important;
+  font-weight:900!important;
+  color:var(--purple)!important;
+  text-transform:uppercase!important;
+  min-height:16px!important;
+  margin-bottom:7px!important;
 }
-.a4{padding:var(--page-pad-y) var(--page-pad-x) 9.2mm!important}
-.header{height:15mm!important;margin-bottom:5.5mm!important;padding-bottom:2.5mm!important}
-.header .badge{font-size:10.8px!important;padding:7px 12px!important}
-
-/* Titres harmonisés : lisibles mais pas envahissants */
-.a4:not(:first-child) h2:first-of-type,
-.page2-title{
-  font-size:30px!important;
-  line-height:1.02!important;
-  margin-bottom:5.4mm!important;
+.page4 .event b{
+  display:block!important;
+  font-size:13.4px!important;
+  line-height:1.15!important;
+  color:var(--blue)!important;
+  margin:0 0 9px!important;
+  min-height:31px!important;
 }
-.a4:not(:first-child) h2:not(:first-of-type),
-.page2-section-title{
-  font-size:21px!important;
-  margin-bottom:3.8mm!important;
-}
-.a4:not(:first-child) h3{font-size:14px!important;line-height:1.18!important}
-.a4:not(:first-child) p{font-size:12px!important;line-height:1.36!important;font-weight:650!important}
-
-/* Tableaux : police proche 12 px, lignes compactes */
-.table{font-size:11.7px!important}
-.table th{font-size:10.2px!important;padding:8px 10px!important}
-.table td{font-size:11.4px!important;padding:7.6px 10px!important;line-height:1.16!important}
-
-/* Page 2 : anti-débordement droite + lisibilité */
-.page2 .metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin-bottom:5.8mm!important;padding-bottom:5mm!important}
-.page2 .metric{padding:0 2.6mm!important;min-width:0!important;overflow:hidden!important}
-.page2 .metric .bigico{font-size:30px!important;margin-bottom:1.8mm!important}
-.page2 .metric b{font-size:11.4px!important;margin-bottom:2.2mm!important}
-.page2 .circle{width:30mm!important;height:30mm!important}
-.page2 .circle-in{width:21.6mm!important;height:21.6mm!important;font-size:13px!important}
-.page2 .client-grid{gap:3.2mm!important;margin-bottom:5mm!important}
-.page2 .client{
-  min-height:38mm!important;
-  padding:9px 8px!important;
-}
-.page2 .client .ico{font-size:28px!important}
-.page2 .client h3{font-size:13.2px!important}
-.page2 .client p{
-  font-size:11.4px!important;
-  line-height:1.38!important;
-  font-weight:700!important;
-}
-.page2 .table th{
-  font-size:9.6px!important;
-}
-.page2 .table td{
-  font-size:11.6px!important;
-  line-height:1.22!important;
-  font-weight:850!important;
-  padding:7.4px 10px!important;
-}
-.page2 .position{
-  padding:10px 12px!important;
-}
-.page2 .position p{
-  font-size:11.4px!important;
-  line-height:1.36!important;
-  font-weight:700!important;
-}
-
-/* Pages 3 et 4 : textes un peu plus lisibles sans casser les blocs */
-.comp .price{font-size:23px!important}.comp small{font-size:9.5px!important}.price-card b{font-size:22px!important}.price-card span{font-size:10px!important}
-.notice p{font-size:11.8px!important;line-height:1.32!important}
-.event .month-label{font-size:9.6px!important}.event b{font-size:11.8px!important}.event .impact{font-size:15.8px!important}
-.timeline-note p{font-size:11.2px!important;line-height:1.31!important}
-
-/* Page 5 : correction du graphique qui mordait sur le titre */
-.report .a4:nth-child(5) h2:first-of-type{font-size:29px!important;margin-bottom:4.5mm!important}
-.report .a4:nth-child(5) .finance-grid{grid-template-columns:1.16fr .84fr!important;gap:5mm!important;margin-bottom:5mm!important}
-.report .a4:nth-child(5) .finance-grid h3{font-size:12.8px!important;margin-bottom:2mm!important}
-.report .a4:nth-child(5) .bars{height:47mm!important;padding:11.5mm 8mm 6.5mm!important;gap:8mm!important;overflow:hidden!important}
-.report .a4:nth-child(5) .bar:nth-child(1){height:25mm!important}
-.report .a4:nth-child(5) .bar:nth-child(2){height:33mm!important}
-.report .a4:nth-child(5) .bar:nth-child(3){height:41mm!important}
-.report .a4:nth-child(5) .bar b{top:-18px!important;font-size:9.8px!important}
-.report .a4:nth-child(5) .bar span{bottom:-17px!important;font-size:8.8px!important}
-.report .a4:nth-child(5) .kpi{padding:11px 12px!important}
-.report .a4:nth-child(5) .kpi b{font-size:21px!important}
-.report .a4:nth-child(5) .kpi span{font-size:10.4px!important}
-.report .a4:nth-child(5) .table th{font-size:9.6px!important;padding:7.2px 8px!important}
-.report .a4:nth-child(5) .table td{font-size:10.9px!important;padding:7.2px 8px!important}
-.report .a4:nth-child(5) .assumptions{padding:9px 10px!important;margin:4mm 0!important}
-.report .a4:nth-child(5) .assumption-grid div{min-height:31px!important;padding:6px!important}
-.report .a4:nth-child(5) .assumption-grid b{font-size:7.4px!important}
-.report .a4:nth-child(5) .assumption-grid span{font-size:9.1px!important}
-.report .a4:nth-child(5) .position{display:none!important}
-.report .a4:nth-child(5) .timeline-note{margin-top:3.5mm!important;padding:10px 11px!important}
-.report .a4:nth-child(5) .timeline-note p{font-size:10.9px!important}
-
-/* Page 6 : priorité lisibilité */
-.report .a4:nth-child(6) h2:first-of-type{font-size:29px!important;margin-bottom:5mm!important}
-.reco-grid{gap:4mm!important;margin-bottom:4.8mm!important}
-.reco{min-height:38mm!important;padding:10px 8px!important}
-.reco .ico{font-size:30px!important}
-.reco h3{font-size:12.8px!important;line-height:1.08!important}
-.reco p{font-size:10.2px!important;line-height:1.27!important}
-.check{font-size:10.4px!important;line-height:1.25!important;padding:8px!important}
-.final{padding:12px!important;margin-top:4mm!important;grid-template-columns:39mm minmax(0,1fr)!important}
-.final .big{font-size:36px!important}.final p{font-size:10.4px!important;line-height:1.3!important}
-.certif{padding:10px 11px!important;margin-top:4mm!important}.certif p{font-size:10.2px!important;line-height:1.28!important}
-
-@media print{
-  .a4{padding:var(--page-pad-y) var(--page-pad-x) 9.2mm!important;width:210mm!important;height:297mm!important;overflow:hidden!important}
-}
-/* ===== CORRECTION PAGE 1 ===== */
-
-/* Synthèse + texte bas harmonisés */
-.report .a4:first-child .cover-summary p,
-.report .a4:first-child .notice p{
-  font-family:Inter, Arial, sans-serif!important;
-  font-size:12.4px!important;
-  line-height:1.42!important;
-  font-weight:750!important;
-  letter-spacing:-.01em!important;
-}
-
-/* Bloc synthèse plus propre */
-.report .a4:first-child .cover-summary{
-  padding:18px 19px!important;
-}
-
-/* KPI page 1 : empêche le € de passer à la ligne */
-.report .a4:first-child .cover-kpi b{
-  white-space:nowrap!important;
+.page4 .event .impact{
   font-size:20px!important;
   line-height:1!important;
-  letter-spacing:-.03em!important;
+  color:var(--green)!important;
+  font-weight:900!important;
+  margin-bottom:11px!important;
 }
-
-/* KPI un peu plus respirant */
-.report .a4:first-child .cover-kpi{
-  padding:11px 8px!important;
+.page4 .event-foot{
+  margin-top:auto!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:8px!important;
+  color:var(--blue)!important;
+  font-size:10.8px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
 }
- /* ===== PAGE 3 — correction lisibilité + graphique ===== */
+.page4 .event-foot .cal{
+  color:var(--purple)!important;
+  font-size:16px!important;
+  line-height:1!important;
+}
+.page4 .event-foot span:last-child{white-space:nowrap!important}
 
-.report .a4:nth-child(3) .comp small,
-.report .a4:nth-child(3) .price-card span,
-.report .a4:nth-child(3) .notice p{
-  font-size:11.4px!important;
+.page4 .info-band{
+  margin:0 0 6mm!important;
+  display:grid!important;
+  grid-template-columns:35px 1fr!important;
+  align-items:center!important;
+  gap:13px!important;
+  padding:13px 15px!important;
+  border-radius:17px!important;
+  background:linear-gradient(135deg,#F4EFFF,#EEE8FF)!important;
+}
+.page4 .info-band .i{
+  width:29px!important;height:29px!important;border-radius:50%!important;
+  display:grid!important;place-items:center!important;
+  color:white!important;background:var(--purple)!important;
+  font-size:19px!important;font-weight:900!important;
+}
+.page4 .info-band p{
+  color:var(--blue)!important;
+  font-size:12.3px!important;
   line-height:1.34!important;
-  font-weight:750!important;
+  font-weight:850!important;
 }
 
-.report .a4:nth-child(3) .table td{
-  font-size:11.8px!important;
+.page4 h2:not(:first-of-type){
+  font-size:22px!important;
+  color:var(--purple)!important;
+  letter-spacing:-.045em!important;
+  line-height:1.05!important;
+  margin:0 0 3.7mm!important;
+}
+.page4 .month-grid{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:3.6mm 4.2mm!important;
+  margin-bottom:4.6mm!important;
+}
+.page4 .month{
+  border:1px solid #D9DDE8!important;
+  border-radius:13px!important;
+  background:#FCFCFF!important;
+  text-align:center!important;
+  min-height:14.7mm!important;
+  padding:6px 4px!important;
+}
+.page4 .month b{
+  display:block!important;
+  color:var(--blue)!important;
+  font-size:11.2px!important;
+  line-height:1!important;
+  margin-bottom:4px!important;
+}
+.page4 .month span{
+  color:var(--purple)!important;
+  font-weight:900!important;
+  font-size:16px!important;
+  line-height:1!important;
+}
+
+.page4 .tip-line{
+  display:grid!important;
+  grid-template-columns:26px 1fr!important;
+  gap:11px!important;
+  align-items:center!important;
+  margin:0 0 5.1mm!important;
+  padding:8px 13px!important;
+  border-radius:13px!important;
+  background:linear-gradient(135deg,#F5EFFF,#F1EDFF)!important;
+}
+.page4 .tip-line .trend{
+  color:var(--purple)!important;
+  font-size:21px!important;
+  font-weight:900!important;
+}
+.page4 .tip-line p{
+  color:var(--blue)!important;
+  font-size:11.5px!important;
   line-height:1.22!important;
   font-weight:850!important;
-  padding:7.6px 10px!important;
 }
 
-.report .a4:nth-child(3) .market-chart{
-  margin-top:6.5mm!important;
-  padding:13px 12px 12px!important;
+.page4 .notice{
+  margin-bottom:4mm!important;
+  min-height:16.5mm!important;
+  padding:12px 14px!important;
+  border-radius:16px!important;
+  grid-template-columns:34px 1fr!important;
+  background:linear-gradient(135deg,var(--purple),#6F2CFF)!important;
+}
+.page4 .notice-star{font-size:29px!important}
+.page4 .notice p{
+  font-size:12px!important;
+  line-height:1.46!important;
+  font-weight:850!important;
 }
 
-.report .a4:nth-child(3) .market-chart h3{
-  margin-bottom:9mm!important;
+.page4 .timeline-note{
+  margin:0 0 6.2mm!important;
+  padding:12px 14px!important;
+  border-radius:16px!important;
+  grid-template-columns:36px 1fr!important;
+  border:1px solid #DDD6FE!important;
+  background:#FCFCFF!important;
+}
+.page4 .timeline-note .ico{
+  font-size:27px!important;
+  color:#B7A7DA!important;
+  line-height:1.1!important;
+}
+.page4 .timeline-note h3{
+  font-size:15px!important;
+  line-height:1.1!important;
+  margin:0 0 6px!important;
+  color:var(--blue)!important;
+}
+.page4 .timeline-note p{
+  font-size:11.6px!important;
+  line-height:1.30!important;
+  color:var(--blue)!important;
+  font-weight:780!important;
 }
 
-.report .a4:nth-child(3) .mini-bars{
-  height:41mm!important;
-  padding:6mm 6mm 6mm!important;
+.page4 .season-box{
+  border:1px solid #D9DDE8!important;
+  border-radius:16px!important;
+  background:#FCFCFF!important;
+  min-height:45mm!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  overflow:hidden!important;
 }
-
-.report .a4:nth-child(3) .mini-bar b{
-  top:-18px!important;
-  font-size:10.4px!important;
+.page4 .season{
+  text-align:center!important;
+  padding:12px 10px 9px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  border-right:1px solid #D9DDE8!important;
 }
-
-.report .a4:nth-child(3) .mini-bar span{
-  bottom:-16px!important;
-  font-size:9.2px!important;
-} 
-  /* ===== PAGE 3 - Bloc Analyse de prix ===== */
-
-.report .a4:nth-child(3) .price-cards{
-    gap:3.5mm!important;
-    margin-bottom:5mm!important;
+.page4 .season:last-child{border-right:0!important}
+.page4 .season .round{
+  width:34px!important;height:34px!important;border-radius:50%!important;
+  display:grid!important;place-items:center!important;
+  font-size:21px!important;margin-bottom:8px!important;
 }
-
-.report .a4:nth-child(3) .price-card{
-    min-height:27mm!important;
-    padding:8px 8px!important;
-    display:flex!important;
-    flex-direction:column!important;
-    justify-content:center!important;
+.page4 .season.sun .round{background:#DDFBE6;color:#21A95C}
+.page4 .season.leaf .round{background:#FEF0C7;color:#F59E0B}
+.page4 .season.snow .round{background:#DDEBFF;color:#2F80ED}
+.page4 .season.chart .round{background:#EFE4FF;color:var(--purple)}
+.page4 .season b{
+  font-size:12.3px!important;
+  color:var(--blue)!important;
+  line-height:1.08!important;
+  margin-bottom:5px!important;
 }
-
-.report .a4:nth-child(3) .price-card span:first-child{
-    font-size:10px!important;
-    margin-bottom:4px!important;
-    font-weight:800!important;
+.page4 .season .pct{
+  font-size:18px!important;
+  line-height:1.03!important;
+  font-weight:900!important;
+  margin-bottom:5px!important;
 }
-
-.report .a4:nth-child(3) .price-card b{
-    font-size:19px!important;
-    line-height:1!important;
-    margin:2px 0 5px!important;
+.page4 .season.sun .pct{color:var(--green)}
+.page4 .season.leaf .pct{color:var(--orange)}
+.page4 .season.snow .pct{color:#1D6CE0}
+.page4 .season.chart .pct{color:var(--purple)}
+.page4 .season small{
+  display:block!important;
+  font-size:10.3px!important;
+  line-height:1.24!important;
+  font-weight:760!important;
+  color:var(--blue)!important;
 }
+.page4 .season small.muted{font-weight:650!important;color:#344054!important;margin-top:3px!important}
 
-.report .a4:nth-child(3) .price-card span:last-child{
-    font-size:10.4px!important;
-    line-height:1.22!important;
-    font-weight:700!important;
-}
-  /* ==================================================
-   PAGE 3 - Ajustements finaux
-   ================================================== */
+/* Pages 5 / 6 */
+.finance-grid{display:grid;grid-template-columns:1.16fr .84fr;gap:5mm;margin-bottom:5mm}
+.bars{height:47mm;border:1px solid var(--line);border-radius:16px;padding:11.5mm 8mm 6.5mm;display:flex;align-items:end;gap:8mm;overflow:hidden}
+.bar{flex:1;border-radius:12px 12px 0 0;position:relative;background:var(--purple);min-height:20mm}.bar.orange{background:var(--orange)}.bar.green{background:var(--green)}
+.bar b{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9.8px;white-space:nowrap;color:var(--blue)}.bar span{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:8.8px;font-weight:900;color:#344054}
+.kpi-grid{display:grid;gap:4mm}.kpi{border:1px solid var(--line);border-radius:15px;padding:11px 12px;background:#FCFCFF}.kpi b{font-size:21px;color:var(--purple);display:block}.kpi span{font-size:10.4px;font-weight:800;color:#344054}
+.assumptions{margin:4mm 0;padding:9px 10px;border:1px solid #DDD6FE;background:#FBFAFF;border-radius:16px}
+.assumption-head{font-size:10.5px;font-weight:900;text-transform:uppercase;color:var(--purple);margin-bottom:7px}
+.assumption-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.assumption-grid div{border:1px solid #ECE9FF;background:white;border-radius:11px;padding:6px;min-height:31px}
+.assumption-grid b{display:block;font-size:7.4px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}.assumption-grid span{display:block;font-size:9.1px;font-weight:850;color:var(--blue);line-height:1.12}
+.reco-grid{grid-template-columns:repeat(3,1fr);gap:4mm;margin-bottom:4.8mm}.reco{min-height:38mm}.reco .ico{font-size:30px}.reco h3{font-size:12.8px}.reco p{font-size:10.2px;line-height:1.27}
+.check-list{display:grid;grid-template-columns:repeat(2,1fr);gap:3mm;margin-bottom:5mm}.check{border:1px solid #DDD6FE;background:#FBFAFF;border-radius:14px;padding:8px;font-size:10.4px;font-weight:800;color:#344054;line-height:1.25}.check span{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--green);color:white;margin-right:5px}
+.final{background:linear-gradient(135deg,#2E1065,var(--purple2));border-radius:16px;color:white;padding:12px;display:grid;grid-template-columns:39mm 1fr;gap:12px;margin-top:4mm}.final .big{font-size:36px;font-weight:900;color:#D9F99D}.final p{color:white;font-size:10.4px;line-height:1.3}
+.certif{margin-top:4mm;border:1px solid #DDD6FE;background:#FBFAFF;border-radius:16px;padding:10px 11px}.certif p{font-size:10.2px;line-height:1.28}.certif b{color:var(--purple)}
 
-/* Espace entre le sous-titre et les cartes */
-.report .a4:nth-child(3) > h3{
-    margin-bottom:12px!important;
-}
-
-/* Les cartes comparables un peu plus basses */
-.report .a4:nth-child(3) .comp-grid{
-    margin-top:6px!important;
-    margin-bottom:16px!important;
-}
-
-/* Bandeau violet : texte légèrement plus grand */
-.report .a4:nth-child(3) .notice{
-    padding:14px 16px!important;
-}
-
-.report .a4:nth-child(3) .notice p{
-    font-size:12.2px!important;
-    line-height:1.36!important;
-    font-weight:700!important;
-}
-
-/* Descendre le graphique */
-.report .a4:nth-child(3) .market-chart{
-    margin-top:10mm!important;
-}
-
-/* Descendre également les barres */
-.report .a4:nth-child(3) .mini-bars{
-    padding-top:12mm!important;
-}
-
-/* Les montants au-dessus des barres */
-.report .a4:nth-child(3) .mini-bar b{
-    top:-20px!important;
-    font-size:10.5px!important;
+@page{size:A4;margin:0}
+@media print{
+  html,body{background:white;padding:0}
+  .toolbar,.panel{display:none!important}
+  .report{display:block;width:210mm;margin:0}
+  .a4{width:210mm!important;height:297mm!important;margin:0;box-shadow:none!important;page-break-after:always;break-after:page;overflow:hidden!important}
+  .a4:last-child{page-break-after:auto!important;break-after:auto!important}
 }
 </style>
 </head>
 <body>
 <div class="toolbar"><strong>CleanUp Manager — diagnostic complet 6 pages</strong><button onclick="window.print()">Imprimer / PDF</button></div>
-<section class="panel"><h2>Données du diagnostic</h2><div class="grid"><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div><div class="field"><label>Charges mensuelles</label><input id="inputCharges" placeholder="Optionnel"></div></div></section>
+<section class="panel">
+  <h2>Données du diagnostic</h2>
+  <div class="grid">
+    <div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div>
+    <div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div>
+    <div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div>
+    <div class="field"><label>Charges mensuelles</label><input id="inputCharges" placeholder="Optionnel"></div>
+  </div>
+</section>
+
 <main class="report">
+
 <section class="a4">
-  <div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div>
+  <div class="logo logo-cover"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div>
   <div class="title-block"><div class="kicker">Diagnostic</div><h1>De rentabilité<span>Location courte durée</span></h1></div>
-  <div class="cover-grid"><div class="cover-left"><div class="cover-summary"><h3>Synthèse propriétaire</h3><p id="coverSynthese">Ce rapport présente une lecture claire du potentiel locatif, du positionnement tarifaire et des prévisions financières du logement. L’objectif est simple : décider rapidement si le bien mérite une exploitation en location courte durée.</p></div><div class="cover-kpis"><div class="cover-kpi"><b id="kpiCA">27 594 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><b id="kpiOccupation">60 %</b><span>Occupation cible</span></div><div class="cover-kpi"><b id="kpiPrix">125 €</b><span>Prix moyen</span></div></div></div><aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:87"><div class="donut-in"><div><div class="score-num"><span id="scoreValue">87</span><small>/100</small></div><div class="score-label" id="scoreLabel">Excellent potentiel</div></div></div></div><div class="stars">★★★★☆</div></div></aside></div>
+  <div class="cover-grid">
+    <div class="cover-left">
+      <div class="cover-summary"><h3>Synthèse propriétaire</h3><p id="coverSynthese">Ce rapport présente une lecture claire du potentiel locatif, du positionnement tarifaire et des prévisions financières du logement. L’objectif est simple : décider rapidement si le bien mérite une exploitation en location courte durée.</p></div>
+      <div class="cover-kpis"><div class="cover-kpi"><b id="kpiCA">27 594 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><b id="kpiOccupation">60 %</b><span>Occupation cible</span></div><div class="cover-kpi"><b id="kpiPrix">125 €</b><span>Prix moyen</span></div></div>
+    </div>
+    <aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:87"><div class="donut-in"><div><div class="score-num"><span id="scoreValue">87</span><small>/100</small></div><div class="score-label" id="scoreLabel">Excellent potentiel</div></div></div></div><div class="stars">★★★★☆</div></div></aside>
+  </div>
   <div class="address"><div class="addr-pin">⌖</div><div><div id="adresseFull">6 Imp. Notre Dame du Chemin, 45000 Orléans</div><small id="adresseZone">Orléans, Centre-Val de Loire</small></div></div>
   <div class="info-grid"><div class="info"><div><div class="icon">⌂</div><b id="surfaceValue">54 m²</b><span>Surface</span></div></div><div class="info"><div><div class="icon">👥</div><b id="capacityValue">6</b><span>Voyageurs</span></div></div><div class="info"><div><div class="icon">🛏</div><b id="bedroomValue">3 chambres</b><span>Configuration</span></div></div><div class="info"><div><div class="icon">▣</div><b>LCD</b><span>Location courte durée</span></div></div></div>
-  <div class="notice"><div class="notice-star">★</div><p id="coverNotice">Ce logement présente un excellent potentiel pour une exploitation en location courte durée grâce à sa capacité d’accueil, sa surface et son positionnement local.</p></div><div class="page-no">1</div>
+  <div class="notice"><div class="notice-star">★</div><p id="coverNotice">Ce logement présente un excellent potentiel pour une exploitation en location courte durée grâce à sa capacité d’accueil, sa surface et son positionnement local.</p></div>
+  <div class="page-no">1</div>
 </section>
-<section class="a4 page2"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Potentiel locatif</div></div><h2 class="page2-title">Potentiel locatif</h2><div class="metrics"><div class="metric"><div class="bigico">📍</div><b>Emplacement</b><div class="circle"><div class="circle-in">8,8/10</div></div></div><div class="metric"><div class="bigico">🚆</div><b>Accessibilité</b><div class="circle c90"><div class="circle-in">9,0/10</div></div></div><div class="metric"><div class="bigico">📈</div><b>Potentiel locatif</b><div class="circle c87"><div class="circle-in">8,7/10</div></div></div><div class="metric"><div class="bigico">€</div><b>Rentabilité</b><div class="circle c89"><div class="circle-in">8,9/10</div></div></div></div><h2 class="page2-section-title">Clientèle cible</h2><div class="client-grid"><div class="client"><div class="ico">👨‍👩‍👧</div><h3>Familles</h3><p>Hébergement confortable à proximité du centre-ville.</p></div><div class="client"><div class="ico">👥</div><h3>Groupes d’amis</h3><p>Séjours pour découvrir Orléans et les bords de Loire.</p></div><div class="client"><div class="ico">💼</div><h3>Professionnels</h3><p>Missions de quelques jours dans la métropole.</p></div><div class="client"><div class="ico">🏰</div><h3>Touristes</h3><p>Châteaux de la Loire et événements locaux.</p></div></div><h2 class="page2-section-title">Accessibilité</h2><table class="table"><tr><th>Accès</th><th>Temps estimé</th></tr><tr><td><span class="access-ico">🏙️</span>Centre-ville</td><td>8 min à pied</td></tr><tr><td><span class="access-ico">⛪</span>Cathédrale Sainte-Croix</td><td>10 min à pied</td></tr><tr><td><span class="access-ico">🌊</span>Bords de Loire</td><td>5 min à pied</td></tr><tr><td><span class="access-ico">🚆</span>Gare SNCF Orléans</td><td>12 min à pied</td></tr><tr><td><span class="access-ico">🚋</span>Arrêt de tramway</td><td>3 min à pied</td></tr><tr><td><span class="access-ico">🚗</span>Autoroute A10</td><td>10 min en voiture</td></tr></table><div class="position"><div class="medal">🏅</div><div><b>Positionnement conseillé — Familial haut de gamme</b><p>Le bien dispose d’une capacité rare pour le secteur et peut viser une clientèle familiale, touristique et professionnelle.</p></div></div><div class="page-no">2</div></section>
-<section class="a4"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Marché local</div></div><h2>Concurrence & prix</h2><h3>Logements comparables observés — prix à la nuitée</h3><div class="comp-grid"><div class="comp"><h3>Standard</h3><small>4 voyageurs · Airbnb</small><div class="price">108 €</div><small>/ nuit · ⭐ 4,7</small></div><div class="comp"><h3>Familial</h3><small>6 voyageurs · Airbnb</small><div class="price">124 €</div><small>/ nuit · ⭐ 4,8</small></div><div class="comp"><h3>Confort</h3><small>6 voyageurs · Booking</small><div class="price">149 €</div><small>/ nuit · 9,1/10</small></div><div class="comp"><h3>Premium</h3><small>6 voyageurs · Airbnb</small><div class="price">158 €</div><small>/ nuit · ⭐ 4,9</small></div></div><div class="notice"><div class="notice-star">→</div><p>Les prix indiqués sont des prix à la nuitée. Le positionnement recommandé consiste à démarrer légèrement sous le marché, puis à remonter progressivement après les premiers avis.</p></div><div style="height:6mm"></div><h2>Analyse de prix</h2><div class="price-cards"><div class="price-card"><span>Lancement</span><b>119 €</b><span>Obtenir les premiers avis</span></div><div class="price-card"><span>Tarif courant</span><b>135 €</b><span>Objectif réaliste</span></div><div class="price-card"><span>Week-end</span><b>149 €</b><span>+10 à +15 %</span></div><div class="price-card"><span>Événements</span><b>169 €</b><span>+25 à +40 %</span></div></div><h2>Revenus estimés</h2><table class="table"><tr><th>Scénario</th><th>Chiffre d’affaires annuel estimé</th></tr><tr><td>🟠 Prudent</td><td>19 000 €</td></tr><tr><td>🟢 Réaliste</td><td>26 000 €</td></tr><tr><td>🟣 Optimiste</td><td>34 000 €</td></tr></table><div class="market-chart"><h3>Visualisation des scénarios</h3><div class="mini-bars"><div class="mini-bar orange" style="height:24mm"><b>19 000 €</b><span>Prudent</span></div><div class="mini-bar green" style="height:33mm"><b>26 000 €</b><span>Réaliste</span></div><div class="mini-bar" style="height:42mm"><b>34 000 €</b><span>Optimiste</span></div></div></div><div class="page-no">3</div></section>
-<section class="a4"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Calendrier rentable</div></div><h2>Événements & saisonnalité</h2><div class="timeline"><div class="event"><div class="month-label">29 avr. → 10 mai</div><b>Fêtes de Jeanne d’Arc</b><div class="impact">+25 à +40 %</div></div><div class="event"><div class="month-label">25 → 28 juin</div><b>Grand PianO Festival</b><div class="impact">+15 à +25 %</div></div><div class="event"><div class="month-label">Fin sept. · années impaires</div><b>Festival de Loire</b><div class="impact">+35 à +50 %</div></div><div class="event"><div class="month-label">Fin nov. → déc.</div><b>Marché de Noël</b><div class="impact">+20 à +30 %</div></div></div><h2>Tarif conseillé par mois</h2><div class="month-grid"><div class="month"><b>Jan</b><span>109 €</span></div><div class="month"><b>Fév</b><span>115 €</span></div><div class="month"><b>Mar</b><span>119 €</span></div><div class="month"><b>Avr</b><span>129 €</span></div><div class="month"><b>Mai</b><span>149 €</span></div><div class="month"><b>Juin</b><span>139 €</span></div><div class="month"><b>Juil</b><span>145 €</span></div><div class="month"><b>Août</b><span>149 €</span></div><div class="month"><b>Sept</b><span>149 €</span></div><div class="month"><b>Oct</b><span>125 €</span></div><div class="month"><b>Nov</b><span>115 €</span></div><div class="month"><b>Déc</b><span>139 €</span></div></div><h2>Lecture CleanUp</h2><div class="notice"><div class="notice-star">★</div><p>Le calendrier événementiel constitue un levier majeur d’optimisation. Les périodes de forte demande doivent être paramétrées plusieurs mois à l’avance afin de capter les réservations anticipées.</p></div><div class="timeline-note"><div class="ico">⚙️</div><div><h3>Règles tarifaires recommandées</h3><p>Week-end : +10 à +15 %. Vacances scolaires : +10 à +20 %. Événements majeurs : minimum 2 à 3 nuits, ouverture du calendrier 6 à 12 mois à l’avance et ajustement hebdomadaire selon le remplissage.</p></div></div><div class="page-no">4</div></section>
-<section class="a4"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Prévisions financières</div></div><h2>Prévisions financières</h2><div class="finance-grid"><div><h3>Chiffre d’affaires annuel estimé</h3><div class="bars"><div class="bar orange" style="height:30mm"><b>18 860 €</b><span>Prudent</span></div><div class="bar green" style="height:43mm"><b>27 375 €</b><span>Réaliste</span></div><div class="bar" style="height:58mm"><b>36 990 €</b><span>Optimiste</span></div></div></div><div class="kpi-grid"><div class="kpi"><b>60 %</b><span>Taux d’occupation cible</span></div><div class="kpi"><b>125 €</b><span>Prix moyen réaliste</span></div><div class="kpi"><b>2 280 €</b><span>Revenu brut mensuel moyen</span></div></div></div><h2>Scénarios d’exploitation</h2><table class="table"><tr><th>Scénario</th><th>Occupation</th><th>Prix moyen</th><th>CA annuel</th><th>Net estimé</th></tr><tr><td>Prudent</td><td>45 %</td><td>115 €</td><td>18 860 €</td><td>13 960 €</td></tr><tr><td>Réaliste</td><td>60 %</td><td>125 €</td><td>27 375 €</td><td>20 475 €</td></tr><tr><td>Optimiste</td><td>75 %</td><td>135 €</td><td>36 990 €</td><td>27 690 €</td></tr></table><div class="assumptions"><div class="assumption-head">Hypothèses retenues</div><div class="assumption-grid"><div><b>Adresse</b><span id="hypAdresse">6 Imp. Notre Dame du Chemin, 45000 Orléans</span></div><div><b>Surface</b><span id="hypSurface">54 m²</span></div><div><b>Capacité</b><span id="hypCapacite">6 voyageurs</span></div><div><b>Période</b><span>Estimation annuelle</span></div><div><b>Prix moyen</b><span id="hypPrix">125 € / nuit</span></div><div><b>Occupation</b><span id="hypOccupation">60 %</span></div><div><b>Charges</b><span id="hypCharges">Non intégrées</span></div><div><b>Base marché</b><span>Simulation provisoire</span></div></div></div><div class="position"><div class="medal">💶</div><div><b>Objectif réaliste</b><p>Le scénario de référence retient un chiffre d’affaires annuel autour de 27 375 €, avec 60 % d’occupation et un prix moyen de 125 € par nuit.</p></div></div><div class="timeline-note"><div class="ico">📌</div><div><h3>Lecture propriétaire</h3><p>Le scénario réaliste doit être utilisé comme base de décision. Le prudent sécurise l’hypothèse de lancement ; l’optimiste suppose une excellente présentation, des avis solides et une tarification dynamique bien suivie.</p></div></div><div class="page-no">5</div></section>
-<section class="a4"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Recommandations</div></div><h2>Recommandations CleanUp</h2><div class="reco-grid"><div class="reco"><div class="ico">📷</div><h3>Photos professionnelles</h3><p>Indispensable pour augmenter les clics et les réservations.</p></div><div class="reco"><div class="ico">🛋️</div><h3>Présentation soignée</h3><p>Ambiance homogène, claire et rassurante.</p></div><div class="reco"><div class="ico">🔐</div><h3>Serrure connectée</h3><p>Arrivées autonomes et gain de temps.</p></div><div class="reco"><div class="ico">📲</div><h3>Check-in autonome</h3><p>Guide d’arrivée, codes et informations pratiques.</p></div><div class="reco"><div class="ico">⚙️</div><h3>Automatisation</h3><p>Messages, calendrier, ménage et suivi.</p></div><div class="reco"><div class="ico">⭐</div><h3>Avis voyageurs</h3><p>Objectif : obtenir rapidement des avis 5 étoiles.</p></div></div><div class="check-list"><div class="check"><span>✓</span>Priorité 1 : photos professionnelles avant publication.</div><div class="check"><span>✓</span>Priorité 2 : arrivée autonome ou remise de clés sécurisée.</div><div class="check"><span>✓</span>Priorité 3 : tarif de lancement attractif pour obtenir les premiers avis.</div><div class="check"><span>✓</span>Priorité 4 : hausse tarifaire automatique sur événements et vacances.</div></div><div class="final"><div><div style="font-weight:900;font-size:10px">INDICE CLEANUP</div><div class="big">87/100</div></div><div><h3 style="color:white">Avis final</h3><p>Le score de la première page est repris ici : 87/100. Le logement présente un excellent potentiel pour une exploitation en location courte durée. Une mise en valeur adaptée, une tarification dynamique et une gestion structurée peuvent permettre d’atteindre une rentabilité attractive.</p></div></div><div class="certif"><p><b>Certification CleanUp Manager</b><br>Cette étude a été réalisée selon la méthodologie d'analyse CleanUp Manager. Elle combine une analyse du marché local, du positionnement concurrentiel, des événements, de la stratégie tarifaire et des perspectives de rentabilité afin d'accompagner les propriétaires dans leurs décisions d'exploitation en location courte durée.</p></div><div class="page-no">6</div></section>
+
+<section class="a4 page2">
+  <div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Potentiel locatif</div></div>
+  <h2>Potentiel locatif</h2>
+  <div class="metrics"><div class="metric"><div class="bigico">📍</div><b>Emplacement</b><div class="circle"><div class="circle-in">8,8/10</div></div></div><div class="metric"><div class="bigico">🚆</div><b>Accessibilité</b><div class="circle c90"><div class="circle-in">9,0/10</div></div></div><div class="metric"><div class="bigico">📈</div><b>Potentiel locatif</b><div class="circle c87"><div class="circle-in">8,7/10</div></div></div><div class="metric"><div class="bigico">€</div><b>Rentabilité</b><div class="circle c89"><div class="circle-in">8,9/10</div></div></div></div>
+  <h2 class="section-title">Clientèle cible</h2>
+  <div class="client-grid"><div class="client"><div><div class="ico">👨‍👩‍👧</div><h3>Familles</h3><p>Hébergement confortable à proximité du centre-ville.</p></div></div><div class="client"><div><div class="ico">👥</div><h3>Groupes d’amis</h3><p>Séjours pour découvrir Orléans et les bords de Loire.</p></div></div><div class="client"><div><div class="ico">💼</div><h3>Professionnels</h3><p>Missions de quelques jours dans la métropole.</p></div></div><div class="client"><div><div class="ico">🏰</div><h3>Touristes</h3><p>Châteaux de la Loire et événements locaux.</p></div></div></div>
+  <h2 class="section-title">Accessibilité</h2>
+  <table class="table"><tr><th>Accès</th><th>Temps estimé</th></tr><tr><td><span class="access-ico">🏙️</span>Centre-ville</td><td>8 min à pied</td></tr><tr><td><span class="access-ico">⛪</span>Cathédrale Sainte-Croix</td><td>10 min à pied</td></tr><tr><td><span class="access-ico">🌊</span>Bords de Loire</td><td>5 min à pied</td></tr><tr><td><span class="access-ico">🚆</span>Gare SNCF Orléans</td><td>12 min à pied</td></tr><tr><td><span class="access-ico">🚋</span>Arrêt de tramway</td><td>3 min à pied</td></tr><tr><td><span class="access-ico">🚗</span>Autoroute A10</td><td>10 min en voiture</td></tr></table>
+  <div class="position"><div class="medal">🏅</div><div><b>Positionnement conseillé — Familial haut de gamme</b><p>Le bien dispose d’une capacité rare pour le secteur et peut viser une clientèle familiale, touristique et professionnelle.</p></div></div>
+  <div class="page-no">2</div>
+</section>
+
+<section class="a4">
+  <div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Marché local</div></div>
+  <h2>Concurrence & prix</h2>
+  <h3 style="margin-bottom:12px">Logements comparables observés — prix à la nuitée</h3>
+  <div class="comp-grid"><div class="comp"><h3>Standard</h3><small>4 voyageurs · Airbnb</small><div class="price">108 €</div><small>/ nuit · ⭐ 4,7</small></div><div class="comp"><h3>Familial</h3><small>6 voyageurs · Airbnb</small><div class="price">124 €</div><small>/ nuit · ⭐ 4,8</small></div><div class="comp"><h3>Confort</h3><small>6 voyageurs · Booking</small><div class="price">149 €</div><small>/ nuit · 9,1/10</small></div><div class="comp"><h3>Premium</h3><small>6 voyageurs · Airbnb</small><div class="price">158 €</div><small>/ nuit · ⭐ 4,9</small></div></div>
+  <div class="notice"><div class="notice-star">→</div><p>Les prix indiqués sont des prix à la nuitée. Le positionnement recommandé consiste à démarrer légèrement sous le marché, puis à remonter progressivement après les premiers avis.</p></div>
+  <div style="height:6mm"></div><h2 class="section-title">Analyse de prix</h2>
+  <div class="price-cards"><div class="price-card"><span>Lancement</span><b>119 €</b><span>Obtenir les premiers avis</span></div><div class="price-card"><span>Tarif courant</span><b>135 €</b><span>Objectif réaliste</span></div><div class="price-card"><span>Week-end</span><b>149 €</b><span>+10 à +15 %</span></div><div class="price-card"><span>Événements</span><b>169 €</b><span>+25 à +40 %</span></div></div>
+  <h2 class="section-title">Revenus estimés</h2>
+  <table class="table"><tr><th>Scénario</th><th>Chiffre d’affaires annuel estimé</th></tr><tr><td>🟠 Prudent</td><td>19 000 €</td></tr><tr><td>🟢 Réaliste</td><td>26 000 €</td></tr><tr><td>🟣 Optimiste</td><td>34 000 €</td></tr></table>
+  <div class="market-chart"><h3>Visualisation des scénarios</h3><div class="mini-bars"><div class="mini-bar orange" style="height:24mm"><b>19 000 €</b><span>Prudent</span></div><div class="mini-bar green" style="height:33mm"><b>26 000 €</b><span>Réaliste</span></div><div class="mini-bar" style="height:42mm"><b>34 000 €</b><span>Optimiste</span></div></div></div>
+  <div class="page-no">3</div>
+</section>
+
+<section class="a4 page4">
+  <div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Calendrier rentable</div></div>
+  <h2>Événements & saisonnalité</h2>
+
+  <div class="timeline">
+    <div class="event"><div class="month-label">29 avr. → 10 mai</div><b>Fêtes de Jeanne d’Arc</b><div class="impact">+25 à +40 %</div><div class="event-foot"><span class="cal">▣</span><span>Forte demande</span></div></div>
+    <div class="event"><div class="month-label">25 → 28 juin</div><b>Grand Piano Festival</b><div class="impact">+15 à +25 %</div><div class="event-foot"><span class="cal">▣</span><span>Demande élevée</span></div></div>
+    <div class="event"><div class="month-label">Fin sept. · années impaires</div><b>Festival de Loire</b><div class="impact">+35 à +50 %</div><div class="event-foot"><span class="cal">▣</span><span>Très forte demande</span></div></div>
+    <div class="event"><div class="month-label">Fin nov. → déc.</div><b>Marché de Noël</b><div class="impact">+20 à +30 %</div><div class="event-foot"><span class="cal">▣</span><span>Demande soutenue</span></div></div>
+  </div>
+
+  <div class="info-band"><div class="i">i</div><p>Les périodes événementielles peuvent significativement impacter les tarifs et le taux d’occupation. Anticipez votre stratégie tarifaire pour maximiser vos revenus.</p></div>
+
+  <h2>Tarif conseillé par mois</h2>
+  <div class="month-grid"><div class="month"><b>Jan</b><span>109 €</span></div><div class="month"><b>Fév</b><span>115 €</span></div><div class="month"><b>Mar</b><span>119 €</span></div><div class="month"><b>Avr</b><span>129 €</span></div><div class="month"><b>Mai</b><span>149 €</span></div><div class="month"><b>Juin</b><span>139 €</span></div><div class="month"><b>Juil</b><span>145 €</span></div><div class="month"><b>Août</b><span>149 €</span></div><div class="month"><b>Sept</b><span>149 €</span></div><div class="month"><b>Oct</b><span>125 €</span></div><div class="month"><b>Nov</b><span>115 €</span></div><div class="month"><b>Déc</b><span>139 €</span></div></div>
+
+  <div class="tip-line"><div class="trend">↗</div><p>Ajustez vos tarifs selon la saisonnalité et les événements pour optimiser vos performances.</p></div>
+
+  <h2>Lecture CleanUp</h2>
+  <div class="notice"><div class="notice-star">★</div><p>Le calendrier événementiel constitue un levier majeur d’optimisation. Les périodes de forte demande doivent être paramétrées plusieurs mois à l’avance afin de capter les réservations anticipées.</p></div>
+
+  <div class="timeline-note"><div class="ico">⚙️</div><div><h3>Règles tarifaires recommandées</h3><p>Week-end : +10 à +15 %. Vacances scolaires : +10 à +20 %. Événements majeurs : minimum 2 à 3 nuits, ouverture du calendrier 6 à 12 mois à l’avance et ajustement hebdomadaire selon le remplissage.</p></div></div>
+
+  <h2>Tendance de saisonnalité</h2>
+  <div class="season-box">
+    <div class="season sun"><div class="round">☀</div><b>Haute saison</b><div class="pct">+35 à +50 %</div><small>Mai à Septembre</small><small class="muted">Taux d’occupation élevé<br>et tarifs renforcés</small></div>
+    <div class="season leaf"><div class="round">◌</div><b>Mi-saison</b><div class="pct">+10 à +25 %</div><small>Avril & Octobre</small><small class="muted">Bonne demande,<br>tarifs modérés</small></div>
+    <div class="season snow"><div class="round">❄</div><b>Basse saison</b><div class="pct">−10 à −20 %</div><small>Novembre à Mars</small><small class="muted">Demande plus faible,<br>tarifs ajustés</small></div>
+    <div class="season chart"><div class="round">↗</div><b>Potentiel annuel</b><div class="pct">Élevé</div><small>Rentabilité annuelle</small><small class="muted">Très bon potentiel avec<br>une bonne gestion tarifaire</small></div>
+  </div>
+
+  <div class="page-no">4</div>
+</section>
+
+<section class="a4">
+  <div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Prévisions financières</div></div>
+  <h2>Prévisions financières</h2>
+  <div class="finance-grid"><div><h3>Chiffre d’affaires annuel estimé</h3><div class="bars"><div class="bar orange" style="height:25mm"><b>18 860 €</b><span>Prudent</span></div><div class="bar green" style="height:33mm"><b>27 375 €</b><span>Réaliste</span></div><div class="bar" style="height:41mm"><b>36 990 €</b><span>Optimiste</span></div></div></div><div class="kpi-grid"><div class="kpi"><b>60 %</b><span>Taux d’occupation cible</span></div><div class="kpi"><b>125 €</b><span>Prix moyen réaliste</span></div><div class="kpi"><b>2 280 €</b><span>Revenu brut mensuel moyen</span></div></div></div>
+  <h2 class="section-title">Scénarios d’exploitation</h2>
+  <table class="table"><tr><th>Scénario</th><th>Occupation</th><th>Prix moyen</th><th>CA annuel</th><th>Net estimé</th></tr><tr><td>Prudent</td><td>45 %</td><td>115 €</td><td>18 860 €</td><td>13 960 €</td></tr><tr><td>Réaliste</td><td>60 %</td><td>125 €</td><td>27 375 €</td><td>20 475 €</td></tr><tr><td>Optimiste</td><td>75 %</td><td>135 €</td><td>36 990 €</td><td>27 690 €</td></tr></table>
+  <div class="assumptions"><div class="assumption-head">Hypothèses retenues</div><div class="assumption-grid"><div><b>Adresse</b><span id="hypAdresse">6 Imp. Notre Dame du Chemin, 45000 Orléans</span></div><div><b>Surface</b><span id="hypSurface">54 m²</span></div><div><b>Capacité</b><span id="hypCapacite">6 voyageurs</span></div><div><b>Période</b><span>Estimation annuelle</span></div><div><b>Prix moyen</b><span id="hypPrix">125 € / nuit</span></div><div><b>Occupation</b><span id="hypOccupation">60 %</span></div><div><b>Charges</b><span id="hypCharges">Non intégrées</span></div><div><b>Base marché</b><span>Simulation provisoire</span></div></div></div>
+  <div class="timeline-note"><div class="ico">📌</div><div><h3>Lecture propriétaire</h3><p>Le scénario réaliste doit être utilisé comme base de décision. Le prudent sécurise l’hypothèse de lancement ; l’optimiste suppose une excellente présentation, des avis solides et une tarification dynamique bien suivie.</p></div></div>
+  <div class="page-no">5</div>
+</section>
+
+<section class="a4">
+  <div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Recommandations</div></div>
+  <h2>Recommandations CleanUp</h2>
+  <div class="reco-grid"><div class="reco"><div><div class="ico">📷</div><h3>Photos professionnelles</h3><p>Indispensable pour augmenter les clics et les réservations.</p></div></div><div class="reco"><div><div class="ico">🛋️</div><h3>Présentation soignée</h3><p>Ambiance homogène, claire et rassurante.</p></div></div><div class="reco"><div><div class="ico">🔐</div><h3>Serrure connectée</h3><p>Arrivées autonomes et gain de temps.</p></div></div><div class="reco"><div><div class="ico">📲</div><h3>Check-in autonome</h3><p>Guide d’arrivée, codes et informations pratiques.</p></div></div><div class="reco"><div><div class="ico">⚙️</div><h3>Automatisation</h3><p>Messages, calendrier, ménage et suivi.</p></div></div><div class="reco"><div><div class="ico">⭐</div><h3>Avis voyageurs</h3><p>Objectif : obtenir rapidement des avis 5 étoiles.</p></div></div></div>
+  <div class="check-list"><div class="check"><span>✓</span>Priorité 1 : photos professionnelles avant publication.</div><div class="check"><span>✓</span>Priorité 2 : arrivée autonome ou remise de clés sécurisée.</div><div class="check"><span>✓</span>Priorité 3 : tarif de lancement attractif pour obtenir les premiers avis.</div><div class="check"><span>✓</span>Priorité 4 : hausse tarifaire automatique sur événements et vacances.</div></div>
+  <div class="final"><div><div style="font-weight:900;font-size:10px">INDICE CLEANUP</div><div class="big">87/100</div></div><div><h3 style="color:white">Avis final</h3><p>Le score de la première page est repris ici : 87/100. Le logement présente un excellent potentiel pour une exploitation en location courte durée. Une mise en valeur adaptée, une tarification dynamique et une gestion structurée peuvent permettre d’atteindre une rentabilité attractive.</p></div></div>
+  <div class="certif"><p><b>Certification CleanUp Manager</b><br>Cette étude a été réalisée selon la méthodologie d'analyse CleanUp Manager. Elle combine une analyse du marché local, du positionnement concurrentiel, des événements, de la stratégie tarifaire et des perspectives de rentabilité afin d'accompagner les propriétaires dans leurs décisions d'exploitation en location courte durée.</p></div>
+  <div class="page-no">6</div>
+</section>
 </main>
+
 <script>
 const $ = (id) => document.getElementById(id);
 const onlyNumber = (value, fallback) => {
@@ -495,17 +493,19 @@ const onlyNumber = (value, fallback) => {
   return Number.isFinite(n) ? n : fallback;
 };
 const formatEuro = (n) => Math.round(n).toLocaleString('fr-FR') + ' €';
+
 function estimateByInputs(){
   const adresse = $('inputAdresse').value.trim() || 'Adresse non renseignée';
   const surface = onlyNumber($('inputSurface').value, 54);
   const capacite = onlyNumber($('inputCapacite').value, 6);
   const chambres = Math.max(1, Math.ceil(capacite / 2));
-  // Moteur provisoire : base générique. À remplacer ensuite par API/base marché locale.
+
   const baseLocal = /orl[eé]ans/i.test(adresse) ? 98 : 90;
   const prix = Math.round(baseLocal + capacite * 4 + Math.min(surface, 90) * 0.08);
   const occupation = Math.min(68, Math.max(45, Math.round(50 + capacite * 1.4 + (surface > 45 ? 2 : 0))));
   const ca = prix * Math.round(365 * occupation / 100);
   const score = Math.min(94, Math.max(55, Math.round(62 + capacite * 2.3 + Math.min(surface, 80) * 0.14)));
+
   $('adresseFull').textContent = adresse;
   $('adresseZone').textContent = /orl[eé]ans/i.test(adresse) ? 'Orléans, Centre-Val de Loire' : 'Zone géographique à confirmer';
   $('surfaceValue').textContent = `${Math.round(surface)} m²`;
@@ -514,12 +514,17 @@ function estimateByInputs(){
   $('kpiPrix').textContent = formatEuro(prix);
   $('kpiOccupation').textContent = `${occupation} %`;
   $('kpiCA').textContent = formatEuro(ca);
+
   if($('hypAdresse')) $('hypAdresse').textContent = adresse;
   if($('hypSurface')) $('hypSurface').textContent = `${Math.round(surface)} m²`;
   if($('hypCapacite')) $('hypCapacite').textContent = `${Math.round(capacite)} voyageur${Math.round(capacite)>1?'s':''}`;
   if($('hypPrix')) $('hypPrix').textContent = `${formatEuro(prix)} / nuit`;
   if($('hypOccupation')) $('hypOccupation').textContent = `${occupation} %`;
-  if($('hypCharges')) { const ch=$('inputCharges').value.trim(); $('hypCharges').textContent = ch ? ch : 'Non intégrées'; }
+  if($('hypCharges')) {
+    const ch = $('inputCharges').value.trim();
+    $('hypCharges').textContent = ch ? ch : 'Non intégrées';
+  }
+
   $('scoreValue').textContent = score;
   $('scoreDonut').style.setProperty('--score', score);
   const label = score >= 85 ? 'Excellent potentiel' : score >= 70 ? 'Bon potentiel' : score >= 55 ? 'Potentiel correct' : 'À sécuriser';
