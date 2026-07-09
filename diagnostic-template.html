@@ -306,7 +306,35 @@ h2{font-size:23px;margin:0 0 6mm;color:var(--purple);letter-spacing:-.04em;text-
 @media print{
   .a4{padding:var(--page-pad-y) var(--page-pad-x) 9.2mm!important;width:210mm!important;height:297mm!important;overflow:hidden!important}
 }
+/* ===== CORRECTION PAGE 1 ===== */
 
+/* Synthèse + texte bas harmonisés */
+.report .a4:first-child .cover-summary p,
+.report .a4:first-child .notice p{
+  font-family:Inter, Arial, sans-serif!important;
+  font-size:12.4px!important;
+  line-height:1.42!important;
+  font-weight:750!important;
+  letter-spacing:-.01em!important;
+}
+
+/* Bloc synthèse plus propre */
+.report .a4:first-child .cover-summary{
+  padding:18px 19px!important;
+}
+
+/* KPI page 1 : empêche le € de passer à la ligne */
+.report .a4:first-child .cover-kpi b{
+  white-space:nowrap!important;
+  font-size:20px!important;
+  line-height:1!important;
+  letter-spacing:-.03em!important;
+}
+
+/* KPI un peu plus respirant */
+.report .a4:first-child .cover-kpi{
+  padding:11px 8px!important;
+}
 </style>
 </head>
 <body>
@@ -316,7 +344,7 @@ h2{font-size:23px;margin:0 0 6mm;color:var(--purple);letter-spacing:-.04em;text-
 <section class="a4">
   <div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div>
   <div class="title-block"><div class="kicker">Diagnostic</div><h1>De rentabilité<span>Location courte durée</span></h1></div>
-  <div class="cover-grid"><div class="cover-left"><div class="cover-summary"><h3>Synthèse propriétaire</h3><p id="coverSynthese">Ce rapport présente une lecture claire du potentiel locatif, du positionnement tarifaire et des prévisions financières du logement. L’objectif est simple : décider rapidement si le bien mérite une exploitation en location courte durée.</p></div><div class="cover-kpis"><div class="cover-kpi"><b id="kpiCA">27 375 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><b id="kpiOccupation">60 %</b><span>Occupation cible</span></div><div class="cover-kpi"><b id="kpiPrix">125 €</b><span>Prix moyen</span></div></div></div><aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:87"><div class="donut-in"><div><div class="score-num"><span id="scoreValue">87</span><small>/100</small></div><div class="score-label" id="scoreLabel">Excellent potentiel</div></div></div></div><div class="stars">★★★★☆</div></div></aside></div>
+  <div class="cover-grid"><div class="cover-left"><div class="cover-summary"><h3>Synthèse propriétaire</h3><p id="coverSynthese">Ce rapport présente une lecture claire du potentiel locatif, du positionnement tarifaire et des prévisions financières du logement. L’objectif est simple : décider rapidement si le bien mérite une exploitation en location courte durée.</p></div><div class="cover-kpis"><div class="cover-kpi"><b id="kpiCA">27 594 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><b id="kpiOccupation">60 %</b><span>Occupation cible</span></div><div class="cover-kpi"><b id="kpiPrix">125 €</b><span>Prix moyen</span></div></div></div><aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:87"><div class="donut-in"><div><div class="score-num"><span id="scoreValue">87</span><small>/100</small></div><div class="score-label" id="scoreLabel">Excellent potentiel</div></div></div></div><div class="stars">★★★★☆</div></div></aside></div>
   <div class="address"><div class="addr-pin">⌖</div><div><div id="adresseFull">6 Imp. Notre Dame du Chemin, 45000 Orléans</div><small id="adresseZone">Orléans, Centre-Val de Loire</small></div></div>
   <div class="info-grid"><div class="info"><div><div class="icon">⌂</div><b id="surfaceValue">54 m²</b><span>Surface</span></div></div><div class="info"><div><div class="icon">👥</div><b id="capacityValue">6</b><span>Voyageurs</span></div></div><div class="info"><div><div class="icon">🛏</div><b id="bedroomValue">3 chambres</b><span>Configuration</span></div></div><div class="info"><div><div class="icon">▣</div><b>LCD</b><span>Location courte durée</span></div></div></div>
   <div class="notice"><div class="notice-star">★</div><p id="coverNotice">Ce logement présente un excellent potentiel pour une exploitation en location courte durée grâce à sa capacité d’accueil, sa surface et son positionnement local.</p></div><div class="page-no">1</div>
