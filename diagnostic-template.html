@@ -889,36 +889,178 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 .page1 .notice-star{width:37px!important;height:37px!important;border-radius:50%!important;background:white!important;color:var(--purple)!important;display:grid!important;place-items:center!important;font-size:25px!important}
 .page1 .notice p{font-size:14px!important;line-height:1.35!important;font-weight:850!important}
 
+
+
 /* =========================================================
-   PAGE 2 — premium compact / aucun débordement bas
+   PAGE 2 — correction typographique finale / lisible / sans débordement
    ========================================================= */
-.page2{padding:10mm 11.5mm 8.8mm!important}
-.page2 .header{height:15mm!important;margin-bottom:5.4mm!important}
-.page2 h2:first-of-type{font-size:35px!important;line-height:.98!important;letter-spacing:-.07em!important;color:var(--blue)!important;margin-bottom:5.3mm!important}
-.page2 h2.section-title{font-size:23px!important;color:var(--purple)!important;letter-spacing:-.05em!important;line-height:1.02!important;margin:0 0 3.4mm!important}
-.page2 .metrics{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0 0 5.2mm!important;padding:0!important;border:1px solid #DDD6FE!important;border-radius:18px!important;background:#FCFCFF!important;overflow:hidden!important}
-.page2 .metric{border-right:1px dashed #D9D6E8!important;padding:9px 10px 10px!important;text-align:center!important;min-height:58mm!important;display:flex!important;flex-direction:column!important;align-items:center!important}
+.page2{
+  padding:10mm 11.5mm 8.8mm!important;
+}
+.page2 .header{
+  height:15mm!important;
+  margin-bottom:5.2mm!important;
+}
+.page2 h2:first-of-type{
+  font-size:35px!important;
+  line-height:.98!important;
+  letter-spacing:-.07em!important;
+  color:var(--blue)!important;
+  margin-bottom:5mm!important;
+}
+.page2 h2.section-title{
+  font-size:23.5px!important;
+  color:var(--purple)!important;
+  letter-spacing:-.05em!important;
+  line-height:1.02!important;
+  margin:0 0 3.5mm!important;
+}
+
+/* Bloc scores : un peu moins haut, textes plus lisibles */
+.page2 .metrics{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:0 0 5.1mm!important;
+  padding:0!important;
+  border:1px solid #DDD6FE!important;
+  border-radius:18px!important;
+  background:#FCFCFF!important;
+  overflow:hidden!important;
+}
+.page2 .metric{
+  border-right:1px dashed #D9D6E8!important;
+  padding:8px 10px 9px!important;
+  text-align:center!important;
+  min-height:55mm!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+}
 .page2 .metric:last-child{border-right:0!important}
-.page2 .metric .bigico{font-size:25px!important;line-height:1!important;margin-bottom:5px!important}
-.page2 .metric b{color:var(--purple)!important;font-size:12.8px!important;line-height:1.08!important;margin-bottom:6px!important;font-weight:900!important}
-.page2 .circle{width:28mm!important;height:28mm!important;margin:0 auto 7px!important}
-.page2 .circle-in{width:20.5mm!important;height:20.5mm!important;font-size:12.8px!important}
-.page2 .metric p{margin:0!important;color:var(--blue)!important;font-size:9.8px!important;line-height:1.22!important;font-weight:730!important}
-.page2 .client-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3.5mm!important;margin-bottom:5mm!important}
-.page2 .client{min-height:42mm!important;padding:10px 8px!important;border:1px solid #D8CEFF!important;border-radius:16px!important;background:#FCFCFF!important}
-.page2 .client .ico{width:34px!important;height:34px!important;border-radius:50%!important;display:grid!important;place-items:center!important;margin:0 auto 6px!important;background:#F0E8FF!important;font-size:22px!important}
-.page2 .client h3{font-size:13.5px!important;line-height:1.08!important;margin-bottom:5px!important}
-.page2 .client p{font-size:10.5px!important;line-height:1.28!important;font-weight:720!important;color:var(--blue)!important}
-.page2 .access-table{margin-bottom:4mm!important;border-radius:16px!important}
-.page2 .access-table th{font-size:10.4px!important;padding:8.5px 12px!important}
-.page2 .access-table td{font-size:11.6px!important;padding:7.7px 12px!important;line-height:1.14!important;font-weight:880!important}
+.page2 .metric .bigico{
+  font-size:24px!important;
+  line-height:1!important;
+  margin-bottom:5px!important;
+}
+.page2 .metric b{
+  color:var(--purple)!important;
+  font-size:13.2px!important;
+  line-height:1.05!important;
+  margin-bottom:5.5px!important;
+  font-weight:900!important;
+}
+.page2 .circle{
+  width:27mm!important;
+  height:27mm!important;
+  margin:0 auto 6px!important;
+}
+.page2 .circle-in{
+  width:20mm!important;
+  height:20mm!important;
+  font-size:13px!important;
+}
+.page2 .metric p{
+  margin:0!important;
+  color:var(--blue)!important;
+  font-size:10.4px!important;
+  line-height:1.22!important;
+  font-weight:780!important;
+}
+
+/* Clientèle : polices + lisibles */
+.page2 .client-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:3.5mm!important;
+  margin-bottom:4.8mm!important;
+}
+.page2 .client{
+  min-height:41mm!important;
+  padding:9px 8px!important;
+  border:1px solid #D8CEFF!important;
+  border-radius:16px!important;
+  background:#FCFCFF!important;
+}
+.page2 .client .ico{
+  width:33px!important;
+  height:33px!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  margin:0 auto 6px!important;
+  background:#F0E8FF!important;
+  font-size:21px!important;
+}
+.page2 .client h3{
+  font-size:14px!important;
+  line-height:1.08!important;
+  margin-bottom:5px!important;
+  color:var(--blue)!important;
+}
+.page2 .client p{
+  font-size:11px!important;
+  line-height:1.28!important;
+  font-weight:760!important;
+  color:var(--blue)!important;
+}
+
+/* Tableau : conserver lisibilité sans allonger */
+.page2 .access-table{
+  margin-bottom:3.8mm!important;
+  border-radius:16px!important;
+}
+.page2 .access-table th{
+  font-size:10.6px!important;
+  padding:8.3px 12px!important;
+}
+.page2 .access-table td{
+  font-size:11.8px!important;
+  padding:7.5px 12px!important;
+  line-height:1.12!important;
+  font-weight:880!important;
+}
 .page2 .access-table td:first-child{text-align:left!important}
 .page2 .access-table td:last-child{text-align:right!important;white-space:nowrap!important}
-.page2 .access-ico{width:21px!important;height:21px!important;font-size:16px!important;margin-right:8px!important}
-.page2 .position{grid-template-columns:43px 1fr!important;gap:12px!important;align-items:center!important;border:1px solid #D8CEFF!important;border-radius:16px!important;background:#FBFAFF!important;padding:10px 13px!important;margin:0!important}
-.page2 .position .medal{width:36px!important;height:36px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:#F0E8FF!important;font-size:24px!important}
-.page2 .position b{color:var(--purple)!important;font-size:12.8px!important;line-height:1.08!important;margin-bottom:4px!important}
-.page2 .position p{color:var(--blue)!important;font-size:10.8px!important;line-height:1.25!important;font-weight:760!important}
+.page2 .access-ico{
+  width:21px!important;
+  height:21px!important;
+  font-size:16px!important;
+  margin-right:8px!important;
+}
+
+/* Bandeau bas : plus lisible et compact */
+.page2 .position{
+  grid-template-columns:43px 1fr!important;
+  gap:12px!important;
+  align-items:center!important;
+  border:1px solid #D8CEFF!important;
+  border-radius:16px!important;
+  background:#FBFAFF!important;
+  padding:10px 13px!important;
+  margin:0!important;
+}
+.page2 .position .medal{
+  width:36px!important;
+  height:36px!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#F0E8FF!important;
+  font-size:24px!important;
+}
+.page2 .position b{
+  color:var(--purple)!important;
+  font-size:13.5px!important;
+  line-height:1.08!important;
+  margin-bottom:4px!important;
+}
+.page2 .position p{
+  color:var(--blue)!important;
+  font-size:11.4px!important;
+  line-height:1.25!important;
+  font-weight:780!important;
+}
 
 @page{size:A4;margin:0}
 @media print{
