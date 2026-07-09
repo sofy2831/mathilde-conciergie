@@ -1007,10 +1007,42 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 }
 
 .page1 .page1-insights{
-  gap:3.4mm!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:3.5mm!important;
   margin-bottom:4mm!important;
 }
+.page1 .page1-insights.compact > div{
+  border:1px solid #DDD6FE!important;
+  background:#FCFCFF!important;
+  border-radius:14px!important;
+  padding:9px 10px!important;
+  min-height:19mm!important;
+}
 
+.page1 .page1-insights.compact b{
+  display:block!important;
+  color:var(--blue)!important;
+  font-size:11.2px!important;
+  line-height:1.1!important;
+  margin-bottom:4px!important;
+  font-weight:900!important;
+}
+.page1 .page1-insights.compact span{
+  display:block!important;
+  color:#344054!important;
+  font-size:9.4px!important;
+  line-height:1.22!important;
+  font-weight:750!important;
+}
+  .page1 .page1-decision{
+  padding:9px 13px!important;
+}
+
+.page1 .page1-decision p{
+  font-size:10.4px!important;
+  line-height:1.25!important;
+}
 .page1 .insight-card{
   grid-template-columns:30px 1fr!important;
   gap:9px!important;
