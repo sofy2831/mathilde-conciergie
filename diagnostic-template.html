@@ -102,6 +102,116 @@ h2{font-size:23px;margin:0 0 6mm;color:var(--purple);letter-spacing:-.04em;text-
 @media print{.a4{padding:11mm 12mm 10mm}}
 
 @page{size:A4;margin:0}@media print{html,body{background:white;padding:0}.toolbar,.panel{display:none!important}.report{display:block;width:210mm;margin:0}.a4{width:210mm;height:297mm;margin:0;box-shadow:none;page-break-after:always}}
+
+
+/* =========================================================
+   PASS FINALE — harmonisation complète A4 / lisibilité / print
+   ========================================================= */
+:root{
+  --page-pad-x:12mm;
+  --page-pad-y:10.5mm;
+  --card-radius:16px;
+  --card-bg:#FCFCFF;
+  --violet-soft:#FBFAFF;
+}
+.a4{padding:var(--page-pad-y) var(--page-pad-x) 9.5mm!important;overflow:hidden!important}
+.header{height:16mm;margin-bottom:6.2mm!important;padding-bottom:3mm!important;align-items:center!important}
+.header .logo{transform:scale(.88)!important;margin-bottom:0!important}
+.header .badge{font-size:10.5px!important;padding:7px 12px!important;margin-top:1mm!important}
+.a4:not(:first-child) h2:first-of-type,
+.page2-title{
+  font-size:32px!important;
+  line-height:1.02!important;
+  letter-spacing:-.05em!important;
+  color:var(--blue)!important;
+  margin:0 0 6mm!important;
+  text-transform:uppercase!important;
+  font-weight:900!important;
+}
+.a4:not(:first-child) h2:not(:first-of-type),
+.page2-section-title{
+  font-size:20px!important;
+  line-height:1.06!important;
+  letter-spacing:-.035em!important;
+  color:var(--purple)!important;
+  margin:0 0 4mm!important;
+  text-transform:uppercase!important;
+  font-weight:900!important;
+}
+.a4:not(:first-child) h3{font-size:13.2px!important;line-height:1.18!important;margin-bottom:5px!important}
+.a4:not(:first-child) p{font-size:10.9px!important;line-height:1.36!important;font-weight:650!important}
+.notice{border-radius:var(--card-radius)!important;padding:12px 14px!important;gap:11px!important}
+.notice-star{font-size:27px!important}.notice p{font-size:11.2px!important;line-height:1.33!important}
+
+/* Page 2 : anti-débordement + harmonie */
+.page2{padding:var(--page-pad-y) var(--page-pad-x) 9.5mm!important}
+.page2 .header{margin-bottom:5.5mm!important}
+.page2-title{margin-bottom:5.5mm!important}
+.page2 .metrics{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  margin-bottom:6.3mm!important;
+  padding-bottom:5.5mm!important;
+  border-bottom:1px solid #DDD6FE!important;
+}
+.page2 .metric{min-width:0!important;padding:0 3mm!important;overflow:hidden!important}
+.page2 .metric:not(:last-child){border-right:1px dashed #D9D6E8!important}
+.page2 .metric:not(:last-child)::after{display:none!important}
+.page2 .metric .bigico{font-size:31px!important;margin-bottom:2mm!important}
+.page2 .metric b{font-size:11.5px!important;line-height:1.05!important;margin-bottom:2.5mm!important}
+.page2 .circle{width:31mm!important;height:31mm!important;margin:0 auto!important}
+.page2 .circle-in{width:22.5mm!important;height:22.5mm!important;font-size:13.2px!important}
+.page2 .client-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3.5mm!important;margin-bottom:5.5mm!important}
+.page2 .client{min-height:38mm!important;padding:10px 8px!important;border-radius:15px!important;overflow:hidden!important}
+.page2 .client .ico{font-size:29px!important;margin-bottom:5px!important}
+.page2 .client h3{font-size:13.4px!important;margin-bottom:4px!important;line-height:1.05!important}
+.page2 .client p{font-size:9.6px!important;line-height:1.28!important;font-weight:650!important}
+.page2 .table{table-layout:fixed!important;width:100%!important;max-width:100%!important;font-size:10.5px!important;border-radius:15px!important;margin-bottom:4.5mm!important}
+.page2 .table th{font-size:9.2px!important;padding:8px 10px!important}
+.page2 .table td{font-size:10.4px!important;padding:7.2px 10px!important;line-height:1.12!important;vertical-align:middle!important}
+.page2 .table th:first-child,.page2 .table td:first-child{width:68%!important;text-align:left!important}
+.page2 .table th:last-child,.page2 .table td:last-child{width:32%!important;text-align:right!important;white-space:nowrap!important}
+.page2 .table td:first-child{display:table-cell!important;font-weight:850!important;white-space:normal!important}
+.access-ico{width:18px!important;height:18px!important;font-size:15px!important;margin-right:7px!important;display:inline-grid!important;vertical-align:middle!important}
+.page2 .position{padding:10px 12px!important;grid-template-columns:38px minmax(0,1fr)!important;border-radius:15px!important;margin-top:0!important}
+.page2 .position .medal{font-size:30px!important}
+.page2 .position b{font-size:12px!important;line-height:1.15!important}
+.page2 .position p{font-size:10.2px!important;line-height:1.3!important}
+
+/* Cartes, tableaux et blocs communs */
+.metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.client-grid,.comp-grid,.price-cards,.timeline,.month-grid,.reco-grid,.check-list{width:100%!important;max-width:100%!important}
+.table{table-layout:fixed!important;width:100%!important;max-width:100%!important}
+.table th{font-size:9.5px!important;padding:8px 10px!important}
+.table td{font-size:10.5px!important;padding:8px 10px!important;line-height:1.18!important}
+.comp-grid,.price-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4mm!important;margin-bottom:5mm!important}
+.comp,.price-card,.event,.month,.reco,.client,.kpi{border-radius:var(--card-radius)!important;background:var(--card-bg)!important;overflow:hidden!important}
+.comp{padding:10px 8px!important}.comp .price{font-size:23px!important}.comp small{font-size:9.2px!important}
+.price-card{padding:10px 8px!important}.price-card b{font-size:22px!important}.price-card span{font-size:9.7px!important;line-height:1.25!important}
+.market-chart{margin-top:5mm!important;padding:11px!important;border-radius:var(--card-radius)!important}.mini-bars{height:44mm!important;padding:7mm 6mm 6mm!important}.mini-bar b{font-size:10px!important}.mini-bar span{font-size:9px!important}
+.timeline{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4mm!important;margin-bottom:6mm!important}.event{min-height:42mm!important;padding:10px 8px!important}.event .month-label{font-size:9.2px!important;line-height:1.15!important}.event b{font-size:11.5px!important;line-height:1.15!important}.event .impact{font-size:15.5px!important}
+.month-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:3mm!important;margin-bottom:5.5mm!important}.month{padding:7px!important}.month b{font-size:10px!important}.month span{font-size:12px!important}
+.timeline-note{margin-top:4.5mm!important;padding:11px 12px!important;border-radius:var(--card-radius)!important;grid-template-columns:31px minmax(0,1fr)!important}.timeline-note .ico{font-size:24px!important}.timeline-note p{font-size:10.4px!important;line-height:1.32!important}
+.finance-grid{grid-template-columns:1.17fr .83fr!important;gap:5mm!important;margin-bottom:5.5mm!important}.bars{height:49mm!important;padding:10mm 8mm 7mm!important;gap:8mm!important}.bar b{font-size:10px!important}.bar span{font-size:8.8px!important}
+.kpi{padding:10px 11px!important}.kpi b{font-size:20px!important}.kpi span{font-size:9.8px!important;line-height:1.25!important}
+.assumptions{margin:4.5mm 0!important;padding:10px 11px!important;border-radius:var(--card-radius)!important}.assumption-head{font-size:10.5px!important;margin-bottom:7px!important}.assumption-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}.assumption-grid div{padding:7px!important;min-height:34px!important}.assumption-grid b{font-size:7.6px!important}.assumption-grid span{font-size:9.2px!important;line-height:1.12!important}
+.position{padding:11px 12px!important;grid-template-columns:40px minmax(0,1fr)!important;margin-top:4.5mm!important;border-radius:var(--card-radius)!important}.position .medal{font-size:31px!important}.position b{font-size:12.2px!important;line-height:1.18!important}.position p{font-size:10.5px!important;line-height:1.32!important}
+
+/* Pages 5 et 6 : lisibilité sans débordement */
+.report .a4:nth-child(5) h2:first-of-type,.report .a4:nth-child(6) h2:first-of-type{font-size:31px!important;margin-bottom:5.5mm!important}
+.report .a4:nth-child(5) .table th{font-size:9.4px!important}.report .a4:nth-child(5) .table td{font-size:10.7px!important;padding:8px 8px!important}
+.report .a4:nth-child(5) .position,.report .a4:nth-child(5) .timeline-note{margin-top:4mm!important}
+.reco-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4mm!important;margin-bottom:5mm!important}.reco{min-height:38mm!important;padding:10px 9px!important}.reco .ico{font-size:29px!important;margin-bottom:4px!important}.reco h3{font-size:12.5px!important;line-height:1.08!important;margin-bottom:4px!important}.reco p{font-size:9.8px!important;line-height:1.28!important}
+.check-list{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:3mm!important;margin-bottom:5mm!important}.check{font-size:9.8px!important;line-height:1.25!important;padding:8px 9px!important}.check span{width:16px!important;height:16px!important;margin-right:5px!important}
+.final{grid-template-columns:42mm minmax(0,1fr)!important;gap:12px!important;margin-top:4.5mm!important;padding:13px!important;border-radius:var(--card-radius)!important}.final .big{font-size:37px!important}.final p{font-size:10.3px!important;line-height:1.33!important}.certif{margin-top:4.5mm!important;padding:11px 12px!important;border-radius:var(--card-radius)!important}.certif p{font-size:9.9px!important;line-height:1.32!important}
+
+/* Sécurité impression */
+@media print{
+  .a4{padding:var(--page-pad-y) var(--page-pad-x) 9.5mm!important;box-shadow:none!important;break-after:page!important;page-break-after:always!important}
+  .a4:last-child{page-break-after:auto!important;break-after:auto!important}
+}
+
 </style>
 </head>
 <body>
