@@ -104,7 +104,111 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 .market-chart h3{margin-bottom:9mm}.mini-bars{height:41mm;display:flex;align-items:end;gap:15mm;justify-content:center;padding:12mm 6mm 6mm}
 .mini-bar{width:29mm;border-radius:11px 11px 0 0;background:var(--purple);position:relative}.mini-bar.orange{background:var(--orange)}.mini-bar.green{background:var(--green)}
 .mini-bar b{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10.5px;white-space:nowrap;color:var(--blue)}.mini-bar span{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:9.2px;font-weight:900;color:#344054}
+/* PAGE 3 - Visualisation scénarios + taux d’occupation */
+.a4:nth-of-type(3) .scenario-visual{
+  display:grid!important;
+  grid-template-columns:1.35fr .65fr!important;
+  gap:4mm!important;
+  margin-top:7mm!important;
+  padding:12px!important;
+  min-height:67mm!important;
+}
 
+.a4:nth-of-type(3) .scenario-bars{
+  border-right:1px solid #E4E7EC!important;
+  padding-right:4mm!important;
+}
+
+.a4:nth-of-type(3) .scenario-bars h3,
+.a4:nth-of-type(3) .occupation-card h3{
+  text-transform:uppercase!important;
+  text-align:center!important;
+  color:var(--purple)!important;
+  font-size:12.5px!important;
+  margin:0 0 5mm!important;
+}
+
+.a4:nth-of-type(3) .scenario-visual .mini-bars{
+  height:48mm!important;
+  padding:10mm 4mm 6mm!important;
+  gap:10mm!important;
+}
+
+.a4:nth-of-type(3) .scenario-visual .mini-bar{
+  width:21mm!important;
+}
+
+.a4:nth-of-type(3) .occupation-card{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+}
+
+.a4:nth-of-type(3) .occupation-donut{
+  width:37mm!important;
+  height:37mm!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  background:conic-gradient(var(--orange) 0 23%, var(--green) 23% 62%, var(--purple) 62% 100%)!important;
+  margin-bottom:4mm!important;
+}
+
+.a4:nth-of-type(3) .occupation-inner{
+  width:27mm!important;
+  height:27mm!important;
+  border-radius:50%!important;
+  background:white!important;
+  display:grid!important;
+  place-items:center!important;
+  text-align:center!important;
+}
+
+.a4:nth-of-type(3) .occupation-inner b{
+  display:block!important;
+  color:var(--blue)!important;
+  font-size:21px!important;
+  line-height:1!important;
+  font-weight:900!important;
+}
+
+.a4:nth-of-type(3) .occupation-inner span{
+  display:block!important;
+  color:#344054!important;
+  font-size:7.8px!important;
+  line-height:1.12!important;
+  font-weight:800!important;
+}
+
+.a4:nth-of-type(3) .occupation-legend{
+  width:100%!important;
+  display:grid!important;
+  gap:5px!important;
+}
+
+.a4:nth-of-type(3) .occupation-legend p{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  color:var(--blue)!important;
+  font-size:9.4px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
+}
+
+.a4:nth-of-type(3) .occupation-legend i{
+  width:9px!important;
+  height:9px!important;
+  border-radius:50%!important;
+  display:inline-block!important;
+  flex:0 0 auto!important;
+}
+
+.a4:nth-of-type(3) .occupation-legend i.orange{background:var(--orange)!important}
+.a4:nth-of-type(3) .occupation-legend i.green{background:var(--green)!important}
+.a4:nth-of-type(3) .occupation-legend i.purple{background:var(--purple)!important}
+  
 /* PAGE 4 - rendu identique à ta capture */
 .page4{padding:10mm 11.5mm 8.8mm!important}
 .page4 .header{height:15mm;margin-bottom:5.7mm!important}
