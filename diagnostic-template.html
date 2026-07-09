@@ -845,268 +845,80 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 }
 
 
+
+
 /* =========================================================
-   PAGE 1 — couverture optimisée / textes agrandis / A4 sécurisé
+   PAGE 1 — couverture validée / polices uniformisées / sans blanc
    ========================================================= */
-.page1{
-  padding:9.5mm 11.5mm 8.8mm!important;
-}
+.page1{padding:9mm 11.5mm 8.8mm!important}
+.page1 .page1-header{height:14mm!important;margin-bottom:7mm!important;padding-bottom:2.4mm!important}
+.page1 .logo-cover{margin-bottom:0!important}
+.page1 .title-block{margin-bottom:5.3mm!important}
+.page1 .kicker{font-size:41px!important;line-height:.86!important;letter-spacing:-.075em!important}
+.page1 h1{font-size:54px!important;line-height:.82!important;letter-spacing:-.085em!important;margin:2px 0 0!important}
+.page1 h1 span{display:block!important;font-size:28px!important;line-height:1!important;margin-top:6px!important;color:var(--purple)!important;letter-spacing:-.045em!important}
+.page1 .cover-grid{grid-template-columns:1.05fr .95fr!important;gap:6mm!important;margin-bottom:4.8mm!important}
+.page1 .cover-left{gap:4mm!important}
+.page1 .cover-summary{min-height:56mm!important;border-radius:18px!important;padding:16px 18px!important;display:grid!important;grid-template-columns:45px 1fr!important;gap:14px!important;align-items:start!important}
+.page1 .summary-icon{width:37px!important;height:37px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:white!important;color:var(--purple)!important;font-size:22px!important;font-weight:900!important}
+.page1 .cover-summary h3{font-size:17.5px!important;line-height:1!important;margin-bottom:10px!important}
+.page1 .cover-summary p{color:white!important;font-size:13.2px!important;line-height:1.38!important;font-weight:820!important;margin-bottom:10px!important}
+.page1 .cover-summary p:last-child{margin-bottom:0!important}
+.page1 .score-card{min-height:83mm!important;border-radius:18px!important;padding:16px!important;box-shadow:0 14px 30px rgba(16,24,40,.10)!important}
+.page1 .score-title{font-size:14px!important;margin-bottom:4mm!important}
+.page1 .donut{width:58mm!important;height:58mm!important}
+.page1 .donut-in{width:42mm!important;height:42mm!important}
+.page1 .score-num{font-size:43px!important}
+.page1 .score-num small{font-size:13px!important}
+.page1 .score-label{font-size:10px!important}
+.page1 .stars{font-size:29px!important;margin-top:4mm!important}
+.page1 .cover-kpis{gap:4mm!important;margin-bottom:0!important}
+.page1 .cover-kpi{min-height:28mm!important;border-radius:15px!important;padding:10px 8px!important;display:grid!important;place-items:center!important}
+.page1 .kpi-ico{width:30px!important;height:30px!important;border-radius:50%!important;display:grid!important;place-items:center!important;border:1px solid #D8CEFF!important;color:var(--purple)!important;font-size:19px!important;margin-bottom:6px!important}
+.page1 .cover-kpi b{font-size:24px!important;line-height:1!important}
+.page1 .cover-kpi span{font-size:11px!important;line-height:1.22!important;font-weight:850!important}
+.page1 .address{margin-bottom:4.8mm!important;padding:11px 14px!important;border:1px solid var(--line)!important;border-radius:17px!important;box-shadow:0 8px 18px rgba(16,24,40,.07)!important;font-size:17px!important}
+.page1 .addr-pin{width:40px!important;height:40px!important;font-size:23px!important}
+.page1 .address small{font-size:12px!important;margin-top:3px!important}
+.page1 .info-grid{margin-bottom:5mm!important;border-radius:17px!important}
+.page1 .info{min-height:40mm!important;padding:10px!important}
+.page1 .icon{width:42px!important;height:42px!important;font-size:36px!important;margin-bottom:7px!important}
+.page1 .info b{font-size:20px!important;line-height:1!important}
+.page1 .info span{font-size:11.5px!important;line-height:1.15!important}
+.page1 .notice{border-radius:17px!important;padding:15px 18px!important;grid-template-columns:45px 1fr!important;box-shadow:0 10px 24px rgba(95,43,234,.18)!important}
+.page1 .notice-star{width:37px!important;height:37px!important;border-radius:50%!important;background:white!important;color:var(--purple)!important;display:grid!important;place-items:center!important;font-size:25px!important}
+.page1 .notice p{font-size:14px!important;line-height:1.35!important;font-weight:850!important}
 
-.page1 .logo-cover{
-  margin-bottom:6mm!important;
-}
-
-.page1 .title-block{
-  margin-bottom:5.6mm!important;
-}
-
-.page1 .kicker{
-  font-size:35px!important;
-  line-height:.92!important;
-  letter-spacing:-.06em!important;
-}
-
-.page1 h1{
-  font-size:51px!important;
-  line-height:.88!important;
-  letter-spacing:-.075em!important;
-  margin:1px 0 0!important;
-}
-.page1 h1 span{
-  font-size:25.5px!important;
-  line-height:1!important;
-  margin-top:6px!important;
-  letter-spacing:-.035em!important;
-}
-
-.page1 .cover-grid{
-  grid-template-columns:1.05fr .95fr!important;
-  gap:6mm!important;
-  margin-bottom:4.6mm!important;
-}
-
-.page1 .cover-left{
-  gap:3.8mm!important;
-}
-.page1 .cover-summary{
-  min-height:47mm!important;
-  border-radius:18px!important;
-  padding:15px 17px!important;
-}
-
-.page1 .cover-summary h3{
-  font-size:15.4px!important;
-  line-height:1!important;
-  margin-bottom:8px!important;
-}
-
-.page1 .cover-summary p{
-  font-size:12.2px!important;
-  line-height:1.34!important;
-  font-weight:820!important;
-}
-
-.page1 .score-card{
-  min-height:69mm!important;
-  border-radius:18px!important;
-  padding:14px!important;
-}
-
-.page1 .score-title{
-  font-size:11px!important;
-  margin-bottom:2.6mm!important;
-}
-.page1 .donut{
-  width:47mm!important;
-  height:47mm!important;
-}
-
-.page1 .donut-in{
-  width:34.5mm!important;
-  height:34.5mm!important;
-}
-
-.page1 .score-num{
-  font-size:33px!important;
-}
-
-.page1 .score-num small{
-  font-size:9.5px!important;
-}
-
-.page1 .score-label{
-  font-size:7.8px!important;
-}
-
-.page1 .stars{
-  font-size:20px!important;
-  margin-top:2.6mm!important;
-}
-.page1 .cover-kpis{
-  gap:3.6mm!important;
-  margin-bottom:0!important;
-}
-
-.page1 .cover-kpi{
-  border-radius:14px!important;
-  padding:9px 7px!important;
-  min-height:17.5mm!important;
-}
-
-.page1 .cover-kpi b{
-  font-size:18.5px!important;
-}
-
-.page1 .cover-kpi span{
-  font-size:9.1px!important;
-  line-height:1.18!important;
-  font-weight:850!important;
-}
-.page1 .address{
-  margin-bottom:3.8mm!important;
-  font-size:14.8px!important;
-  line-height:1.1!important;
-}
-
-.page1 .addr-pin{
-  width:32px!important;
-  height:32px!important;
-  font-size:18px!important;
-}
-
-.page1 .address small{
-  font-size:10.4px!important;
-  margin-top:2px!important;
-}
-
-.page1 .info-grid{
-  margin-bottom:4.2mm!important;
-  border-radius:16px!important;
-}
-
-.page1 .info{
-  min-height:26.5mm!important;
-  padding:7px!important;
-}
-
-.page1 .icon{
-  width:33px!important;
-  height:33px!important;
-  font-size:28px!important;
-  margin-bottom:4px!important;
-}
-
-.page1 .info b{
-  font-size:13.8px!important;
-  line-height:1!important;
-}
-
-.page1 .info span{
-  font-size:8.9px!important;
-  line-height:1.1!important;
-}
-
-.page1 .page1-insights{
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:3.5mm!important;
-  margin-bottom:4mm!important;
-}
-.page1 .page1-insights.compact > div{
-  border:1px solid #DDD6FE!important;
-  background:#FCFCFF!important;
-  border-radius:14px!important;
-  padding:9px 10px!important;
-  min-height:19mm!important;
-}
-
-.page1 .page1-insights.compact b{
-  display:block!important;
-  color:var(--blue)!important;
-  font-size:11.2px!important;
-  line-height:1.1!important;
-  margin-bottom:4px!important;
-  font-weight:900!important;
-}
-.page1 .page1-insights.compact span{
-  display:block!important;
-  color:#344054!important;
-  font-size:9.4px!important;
-  line-height:1.22!important;
-  font-weight:750!important;
-}
-  .page1 .page1-decision{
-  padding:9px 13px!important;
-}
-
-.page1 .page1-decision p{
-  font-size:10.4px!important;
-  line-height:1.25!important;
-}
-.page1 .insight-card{
-  grid-template-columns:30px 1fr!important;
-  gap:9px!important;
-  border-radius:15px!important;
-  padding:9px 10px!important;
-  min-height:25mm!important;
-}
-.page1 .insight-ico{
-  width:28px!important;
-  height:28px!important;
-  font-size:17px!important;
-}
-
-.page1 .insight-card b{
-  font-size:11.4px!important;
-  line-height:1.08!important;
-  margin-bottom:4px!important;
-}
-
-.page1 .insight-card p{
-  font-size:9.8px!important;
-  line-height:1.23!important;
-  font-weight:730!important;
-}
-
-.page1 .notice{
-  margin-bottom:4mm!important;
-  border-radius:15px!important;
-  padding:11px 14px!important;
-  grid-template-columns:32px 1fr!important;
-}
-
-.page1 .notice-star{
-  font-size:27px!important;
-}
-.page1 .notice p{
-  font-size:11.4px!important;
-  line-height:1.32!important;
-  font-weight:850!important;
-}
-
-.page1 .page1-decision{
-  grid-template-columns:34px 1fr!important;
-  gap:12px!important;
-  border-radius:16px!important;
-  padding:11px 14px!important;
-}
-
-.page1 .decision-mini{
-  width:30px!important;
-  height:30px!important;
-  font-size:16px!important;
-}
-
-.page1 .page1-decision b{
-  font-size:12.7px!important;
-  margin-bottom:5px!important;
-}
-
-.page1 .page1-decision p{
-  font-size:11.2px!important;
-  line-height:1.32!important;
-  font-weight:760!important;
-}
+/* =========================================================
+   PAGE 2 — premium compact / aucun débordement bas
+   ========================================================= */
+.page2{padding:10mm 11.5mm 8.8mm!important}
+.page2 .header{height:15mm!important;margin-bottom:5.4mm!important}
+.page2 h2:first-of-type{font-size:35px!important;line-height:.98!important;letter-spacing:-.07em!important;color:var(--blue)!important;margin-bottom:5.3mm!important}
+.page2 h2.section-title{font-size:23px!important;color:var(--purple)!important;letter-spacing:-.05em!important;line-height:1.02!important;margin:0 0 3.4mm!important}
+.page2 .metrics{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0 0 5.2mm!important;padding:0!important;border:1px solid #DDD6FE!important;border-radius:18px!important;background:#FCFCFF!important;overflow:hidden!important}
+.page2 .metric{border-right:1px dashed #D9D6E8!important;padding:9px 10px 10px!important;text-align:center!important;min-height:58mm!important;display:flex!important;flex-direction:column!important;align-items:center!important}
+.page2 .metric:last-child{border-right:0!important}
+.page2 .metric .bigico{font-size:25px!important;line-height:1!important;margin-bottom:5px!important}
+.page2 .metric b{color:var(--purple)!important;font-size:12.8px!important;line-height:1.08!important;margin-bottom:6px!important;font-weight:900!important}
+.page2 .circle{width:28mm!important;height:28mm!important;margin:0 auto 7px!important}
+.page2 .circle-in{width:20.5mm!important;height:20.5mm!important;font-size:12.8px!important}
+.page2 .metric p{margin:0!important;color:var(--blue)!important;font-size:9.8px!important;line-height:1.22!important;font-weight:730!important}
+.page2 .client-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3.5mm!important;margin-bottom:5mm!important}
+.page2 .client{min-height:42mm!important;padding:10px 8px!important;border:1px solid #D8CEFF!important;border-radius:16px!important;background:#FCFCFF!important}
+.page2 .client .ico{width:34px!important;height:34px!important;border-radius:50%!important;display:grid!important;place-items:center!important;margin:0 auto 6px!important;background:#F0E8FF!important;font-size:22px!important}
+.page2 .client h3{font-size:13.5px!important;line-height:1.08!important;margin-bottom:5px!important}
+.page2 .client p{font-size:10.5px!important;line-height:1.28!important;font-weight:720!important;color:var(--blue)!important}
+.page2 .access-table{margin-bottom:4mm!important;border-radius:16px!important}
+.page2 .access-table th{font-size:10.4px!important;padding:8.5px 12px!important}
+.page2 .access-table td{font-size:11.6px!important;padding:7.7px 12px!important;line-height:1.14!important;font-weight:880!important}
+.page2 .access-table td:first-child{text-align:left!important}
+.page2 .access-table td:last-child{text-align:right!important;white-space:nowrap!important}
+.page2 .access-ico{width:21px!important;height:21px!important;font-size:16px!important;margin-right:8px!important}
+.page2 .position{grid-template-columns:43px 1fr!important;gap:12px!important;align-items:center!important;border:1px solid #D8CEFF!important;border-radius:16px!important;background:#FBFAFF!important;padding:10px 13px!important;margin:0!important}
+.page2 .position .medal{width:36px!important;height:36px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:#F0E8FF!important;font-size:24px!important}
+.page2 .position b{color:var(--purple)!important;font-size:12.8px!important;line-height:1.08!important;margin-bottom:4px!important}
+.page2 .position p{color:var(--blue)!important;font-size:10.8px!important;line-height:1.25!important;font-weight:760!important}
 
 @page{size:A4;margin:0}
 @media print{
@@ -1133,81 +945,29 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 <main class="report">
 
 <section class="a4 page1">
-  <div class="logo logo-cover"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div>
-
-  <div class="title-block">
-    <div class="kicker">Diagnostic</div>
-    <h1>De rentabilité<span>Location courte durée</span></h1>
-  </div>
-
+  <div class="header page1-header"><div class="logo logo-cover"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Diagnostic complet</div></div>
+  <div class="title-block"><div class="kicker">Diagnostic</div><h1>De rentabilité<span>Location courte durée</span></h1></div>
   <div class="cover-grid">
     <div class="cover-left">
-      <div class="cover-summary">
-        <h3>Synthèse propriétaire</h3>
-        <p id="coverSynthese">Ce rapport présente une lecture claire du potentiel locatif, du positionnement tarifaire et des prévisions financières du logement. L’objectif est simple : décider rapidement si le bien mérite une exploitation en location courte durée.</p>
-      </div>
-      <div class="cover-kpis">
-        <div class="cover-kpi"><b id="kpiCA">27 594 €</b><span>CA annuel réaliste</span></div>
-        <div class="cover-kpi"><b id="kpiOccupation">60 %</b><span>Occupation cible</span></div>
-        <div class="cover-kpi"><b id="kpiPrix">126 €</b><span>Prix moyen</span></div>
-      </div>
+      <div class="cover-summary"><div class="summary-icon">▤</div><div><h3>Synthèse propriétaire</h3><p id="coverSynthese">Ce rapport présente une lecture claire du potentiel locatif, du positionnement tarifaire et des prévisions financières du logement.</p><p>L’objectif est simple : décider rapidement si le bien mérite une exploitation en location courte durée.</p></div></div>
+      <div class="cover-kpis"><div class="cover-kpi"><div class="kpi-ico">↗</div><b id="kpiCA">27 594 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><div class="kpi-ico">◕</div><b id="kpiOccupation">60 %</b><span>Occupation cible</span></div><div class="cover-kpi"><div class="kpi-ico">◇</div><b id="kpiPrix">126 €</b><span>Prix moyen par nuit</span></div></div>
     </div>
-
-    <aside class="score-card">
-      <div>
-        <div class="score-title">Score CleanUp</div>
-        <div class="donut" id="scoreDonut" style="--score:83">
-          <div class="donut-in">
-            <div>
-              <div class="score-num"><span id="scoreValue">83</span><small>/100</small></div>
-              <div class="score-label" id="scoreLabel">Bon potentiel</div>
-            </div>
-          </div>
-        </div>
-        <div class="stars">★★★★☆</div>
-      </div>
-    </aside>
+    <aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:83"><div class="donut-in"><div><div class="score-num"><span id="scoreValue">83</span><small>/100</small></div><div class="score-label" id="scoreLabel">Bon potentiel</div></div></div></div><div class="stars">★★★★☆</div></div></aside>
   </div>
-
-  <div class="address">
-    <div class="addr-pin">⌖</div>
-    <div><div id="adresseFull">6 Imp. Notre Dame du Chemin, 45000 Orléans</div><small id="adresseZone">Orléans, Centre-Val de Loire</small></div>
-  </div>
-
-  <div class="info-grid">
-    <div class="info"><div><div class="icon">⌂</div><b id="surfaceValue">54 m²</b><span>Surface</span></div></div>
-    <div class="info"><div><div class="icon">👥</div><b id="capacityValue">6</b><span>Voyageurs</span></div></div>
-    <div class="info"><div><div class="icon">🛏</div><b id="bedroomValue">3 chambres</b><span>Configuration</span></div></div>
-    <div class="info"><div><div class="icon">▣</div><b>LCD</b><span>Location courte durée</span></div></div>
-  </div>
-
- <div class="page1-insights compact">
-  <div><b>📍 Emplacement favorable</b><span>Centre-ville, Loire, gare et tram accessibles.</span></div>
-  <div><b>💶 Prix cible cohérent</b><span>125 € à 130 € la nuitée.</span></div>
-  <div><b>📈 Marge de progression</b><span>Hausse possible après premiers avis.</span></div>
-</div>
-
-  <div class="notice"><div class="notice-star">★</div><p id="coverNotice">Ce logement présente un bon potentiel locatif, sous réserve d’un positionnement tarifaire cohérent et d’une présentation soignée.</p></div>
-
-  <div class="page1-decision">
-    <div class="decision-mini">✓</div>
-    <div>
-      <b>Lecture rapide</b>
-      <p>Le bien mérite une étude approfondie. Les points à sécuriser sont les charges réelles, la qualité de présentation et la capacité à maintenir une tarification dynamique.</p>
-    </div>
-  </div>
-
+  <div class="address"><div class="addr-pin">⌖</div><div><div id="adresseFull">6 Imp. Notre Dame du Chemin, 45000 Orléans</div><small id="adresseZone">Orléans, Centre-Val de Loire</small></div></div>
+  <div class="info-grid"><div class="info"><div><div class="icon">⌂</div><b id="surfaceValue">54 m²</b><span>Surface</span></div></div><div class="info"><div><div class="icon">👥</div><b id="capacityValue">6</b><span>Voyageurs</span></div></div><div class="info"><div><div class="icon">🛏</div><b id="bedroomValue">3 chambres</b><span>Configuration</span></div></div><div class="info"><div><div class="icon">▣</div><b>LCD</b><span>Location courte durée</span></div></div></div>
+  <div class="notice"><div class="notice-star">★</div><p id="coverNotice">Ce logement présente un excellent potentiel locatif grâce à sa capacité d’accueil, sa surface et son positionnement local.</p></div>
   <div class="page-no">1</div>
 </section>
 
 <section class="a4 page2">
   <div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Potentiel locatif</div></div>
   <h2>Potentiel locatif</h2>
-  <div class="metrics"><div class="metric"><div class="bigico">📍</div><b>Emplacement</b><div class="circle"><div class="circle-in">8,8/10</div></div></div><div class="metric"><div class="bigico">🚆</div><b>Accessibilité</b><div class="circle c90"><div class="circle-in">9,0/10</div></div></div><div class="metric"><div class="bigico">📈</div><b>Potentiel locatif</b><div class="circle c87"><div class="circle-in">8,7/10</div></div></div><div class="metric"><div class="bigico">€</div><b>Rentabilité</b><div class="circle c89"><div class="circle-in">8,9/10</div></div></div></div>
+  <div class="metrics"><div class="metric"><div class="bigico">📍</div><b>Emplacement</b><div class="circle"><div class="circle-in">8,8/10</div></div><p>Quartier attractif, proche des points d’intérêt.</p></div><div class="metric"><div class="bigico">🚆</div><b>Accessibilité</b><div class="circle c90"><div class="circle-in">9,0/10</div></div><p>Gare, tramway et axes routiers accessibles.</p></div><div class="metric"><div class="bigico">📈</div><b>Potentiel locatif</b><div class="circle c87"><div class="circle-in">8,7/10</div></div><p>Demande régulière et événements locaux.</p></div><div class="metric"><div class="bigico">€</div><b>Rentabilité</b><div class="circle c89"><div class="circle-in">8,9/10</div></div><p>Bon équilibre prix, occupation et revenus.</p></div></div>
   <h2 class="section-title">Clientèle cible</h2>
   <div class="client-grid"><div class="client"><div><div class="ico">👨‍👩‍👧</div><h3>Familles</h3><p>Hébergement confortable à proximité du centre-ville.</p></div></div><div class="client"><div><div class="ico">👥</div><h3>Groupes d’amis</h3><p>Séjours pour découvrir Orléans et les bords de Loire.</p></div></div><div class="client"><div><div class="ico">💼</div><h3>Professionnels</h3><p>Missions de quelques jours dans la métropole.</p></div></div><div class="client"><div><div class="ico">🏰</div><h3>Touristes</h3><p>Châteaux de la Loire et événements locaux.</p></div></div></div>
   <h2 class="section-title">Accessibilité</h2>
-  <table class="table"><tr><th>Accès</th><th>Temps estimé</th></tr><tr><td><span class="access-ico">🏙️</span>Centre-ville</td><td>8 min à pied</td></tr><tr><td><span class="access-ico">⛪</span>Cathédrale Sainte-Croix</td><td>10 min à pied</td></tr><tr><td><span class="access-ico">🌊</span>Bords de Loire</td><td>5 min à pied</td></tr><tr><td><span class="access-ico">🚆</span>Gare SNCF Orléans</td><td>12 min à pied</td></tr><tr><td><span class="access-ico">🚋</span>Arrêt de tramway</td><td>3 min à pied</td></tr><tr><td><span class="access-ico">🚗</span>Autoroute A10</td><td>10 min en voiture</td></tr></table>
+  <table class="table access-table"><tr><th>Accès</th><th>Temps estimé</th></tr><tr><td><span class="access-ico">🏙️</span>Centre-ville</td><td>8 min à pied</td></tr><tr><td><span class="access-ico">⛪</span>Cathédrale Sainte-Croix</td><td>10 min à pied</td></tr><tr><td><span class="access-ico">🌊</span>Bords de Loire</td><td>5 min à pied</td></tr><tr><td><span class="access-ico">🚆</span>Gare SNCF Orléans</td><td>12 min à pied</td></tr><tr><td><span class="access-ico">🚋</span>Arrêt de tramway</td><td>3 min à pied</td></tr><tr><td><span class="access-ico">🚗</span>Autoroute A10</td><td>10 min en voiture</td></tr></table>
   <div class="position"><div class="medal">🏅</div><div><b>Positionnement conseillé — Familial haut de gamme</b><p>Le bien dispose d’une capacité rare pour le secteur et peut viser une clientèle familiale, touristique et professionnelle.</p></div></div>
   <div class="page-no">2</div>
 </section>
