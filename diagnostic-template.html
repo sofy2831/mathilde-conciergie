@@ -365,51 +365,80 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 .certif{margin-top:4mm;border:1px solid #DDD6FE;background:#FBFAFF;border-radius:16px;padding:10px 11px}.certif p{font-size:10.2px;line-height:1.28}.certif b{color:var(--purple)}
 
 
-/* PAGE 5 — rendu premium + correction CA bleu visible */
-.page5{padding:10mm 11.5mm 8.8mm!important}
-.page5 .header{height:15mm;margin-bottom:5.7mm!important}
+
+
+/* =========================================================
+   PAGE 5 — version optimisée lisible / premium / A4 sécurisé
+   ========================================================= */
+.page5{
+  padding:10mm 11.5mm 8.8mm!important;
+}
+.page5 .header{
+  height:15mm!important;
+  margin-bottom:5.2mm!important;
+}
 .page5 h2:first-of-type{
-  font-size:35px!important;
-  line-height:.98!important;
-  letter-spacing:-.065em!important;
+  font-size:36px!important;
+  line-height:.96!important;
+  letter-spacing:-.07em!important;
   color:var(--blue)!important;
-  margin-bottom:5.6mm!important;
+  margin-bottom:5.2mm!important;
 }
 .page5 h2:not(:first-of-type){
-  font-size:22px!important;
+  font-size:23px!important;
   color:var(--purple)!important;
   letter-spacing:-.045em!important;
-  line-height:1.05!important;
-  margin:0 0 3.5mm!important;
+  line-height:1.02!important;
+  margin:0 0 3.4mm!important;
 }
+
+/* Haut de page : graphique + KPI */
 .page5 .finance-grid{
   display:grid!important;
-  grid-template-columns:1.2fr .8fr!important;
+  grid-template-columns:1.22fr .78fr!important;
   gap:5mm!important;
-  margin-bottom:5.1mm!important;
+  margin-bottom:4.8mm!important;
 }
 .page5 .chart-card{
   border:1px solid #D9DDE8!important;
   border-radius:17px!important;
   background:#FCFCFF!important;
-  padding:11px 13px 10px!important;
-  min-height:70mm!important;
+  padding:12px 14px 10px!important;
+  min-height:71mm!important;
 }
 .page5 .chart-card h3{
-  font-size:14.2px!important;
+  font-size:15.2px!important;
   color:var(--blue)!important;
-  margin:0 0 6mm!important;
+  margin:0 0 3mm!important;
+  letter-spacing:-.02em!important;
 }
 .page5 .bars{
-  height:48mm!important;
+  height:55mm!important;
   border:0!important;
   border-radius:0!important;
-  padding:8mm 8mm 8mm!important;
+  padding:13mm 8mm 8mm 16mm!important;
   display:flex!important;
   align-items:end!important;
-  gap:9mm!important;
+  gap:10mm!important;
   overflow:visible!important;
-  background:linear-gradient(to top, #EEF0F6 1px, transparent 1px) 0 0/100% 12mm!important;
+  position:relative!important;
+  background:
+    linear-gradient(to top, rgba(7,26,73,.12) 1px, transparent 1px) 0 0/100% 11mm!important;
+}
+.page5 .bars::before{
+  content:"40 000 €\A30 000 €\A20 000 €\A10 000 €\A0 €";
+  white-space:pre!important;
+  position:absolute!important;
+  left:0!important;
+  top:7mm!important;
+  height:47mm!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  color:var(--blue)!important;
+  font-size:9.5px!important;
+  line-height:1!important;
+  font-weight:800!important;
 }
 .page5 .bar{
   flex:1!important;
@@ -421,12 +450,15 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
 .page5 .bar.orange{background:var(--orange)!important}
 .page5 .bar.green{background:var(--green)!important}
 .page5 .bar.purple{background:var(--purple)!important}
+.page5 .bar:nth-child(1){height:24mm!important}
+.page5 .bar:nth-child(2){height:34mm!important}
+.page5 .bar:nth-child(3){height:43mm!important}
 .page5 .bar b{
   position:absolute!important;
-  top:-24px!important;
+  top:-32px!important;
   left:50%!important;
   transform:translateX(-50%)!important;
-  font-size:10.2px!important;
+  font-size:11px!important;
   line-height:1!important;
   white-space:nowrap!important;
   color:var(--blue)!important;
@@ -434,131 +466,193 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
   background:white!important;
   border:1px solid #E4E7EC!important;
   border-radius:999px!important;
-  padding:4px 6px!important;
+  padding:5px 9px!important;
   z-index:5!important;
+  box-shadow:0 4px 10px rgba(16,24,40,.08)!important;
 }
 .page5 .bar span{
   position:absolute!important;
   bottom:-20px!important;
   left:50%!important;
   transform:translateX(-50%)!important;
-  font-size:9.3px!important;
+  font-size:9.8px!important;
   line-height:1!important;
   font-weight:900!important;
-  color:#344054!important;
+  color:#071A49!important;
   white-space:nowrap!important;
 }
-.page5 .bar:nth-child(1){height:24mm!important}
-.page5 .bar:nth-child(2){height:33mm!important}
-.page5 .bar:nth-child(3){height:39mm!important}
 .page5 .kpi-grid{
   display:grid!important;
-  gap:3.4mm!important;
+  gap:4mm!important;
 }
 .page5 .kpi{
   border:1px solid #DDD6FE!important;
-  border-radius:16px!important;
+  border-radius:17px!important;
   background:#FBFAFF!important;
-  padding:12px 13px!important;
-  min-height:20mm!important;
+  padding:13px 14px!important;
+  min-height:23mm!important;
+  display:grid!important;
+  align-content:center!important;
 }
 .page5 .kpi b{
   display:block!important;
   color:var(--purple)!important;
-  font-size:23px!important;
+  font-size:28px!important;
   line-height:1!important;
-  margin-bottom:4px!important;
+  margin-bottom:5px!important;
+  letter-spacing:-.035em!important;
 }
 .page5 .kpi span{
   display:block!important;
   color:var(--blue)!important;
-  font-size:10.9px!important;
+  font-size:12px!important;
   line-height:1.22!important;
-  font-weight:850!important;
+  font-weight:900!important;
 }
+
+/* Bandeau lecture */
 .page5 .owner-note{
   display:grid!important;
-  grid-template-columns:30px 1fr!important;
-  gap:12px!important;
+  grid-template-columns:34px 1fr!important;
+  gap:13px!important;
   align-items:center!important;
   margin:0 0 4.6mm!important;
-  padding:10px 13px!important;
+  padding:11px 14px!important;
   border-radius:15px!important;
   background:linear-gradient(135deg,#F4EFFF,#EEE8FF)!important;
 }
 .page5 .owner-note .i{
-  width:27px!important;
-  height:27px!important;
+  width:30px!important;
+  height:30px!important;
   border-radius:50%!important;
   display:grid!important;
   place-items:center!important;
   background:var(--purple)!important;
   color:white!important;
-  font-size:15px!important;
+  font-size:17px!important;
   font-weight:900!important;
 }
 .page5 .owner-note p{
   color:var(--blue)!important;
-  font-size:11.4px!important;
-  line-height:1.28!important;
+  font-size:12.2px!important;
+  line-height:1.35!important;
   font-weight:850!important;
 }
+
+/* Tableau */
 .page5 .table{
-  margin-bottom:4.3mm!important;
+  margin-bottom:4.2mm!important;
   border-radius:16px!important;
 }
 .page5 .table th{
-  font-size:9.4px!important;
-  padding:8px 8px!important;
+  font-size:10.5px!important;
+  padding:8.5px 10px!important;
 }
 .page5 .table td{
-  font-size:10.9px!important;
-  padding:7.2px 8px!important;
-  line-height:1.16!important;
+  font-size:11.8px!important;
+  padding:9px 10px!important;
+  line-height:1.18!important;
 }
 .page5 .table th:nth-child(1),.page5 .table td:nth-child(1){width:23%!important}
-.page5 .table th:nth-child(2),.page5 .table td:nth-child(2){width:18%!important}
-.page5 .table th:nth-child(3),.page5 .table td:nth-child(3){width:18%!important}
-.page5 .table th:nth-child(4),.page5 .table td:nth-child(4){width:20%!important}
-.page5 .table th:nth-child(5),.page5 .table td:nth-child(5){width:21%!important}
+.page5 .table th:nth-child(2),.page5 .table td:nth-child(2){width:18%!important;text-align:center!important}
+.page5 .table th:nth-child(3),.page5 .table td:nth-child(3){width:18%!important;text-align:center!important}
+.page5 .table th:nth-child(4),.page5 .table td:nth-child(4){width:20%!important;text-align:right!important}
+.page5 .table th:nth-child(5),.page5 .table td:nth-child(5){width:21%!important;text-align:right!important}
+
+/* Hypothèses : cartes avec icônes */
 .page5 .assumptions{
-  margin:0 0 4.3mm!important;
-  padding:10px 11px!important;
-  border-radius:16px!important;
+  margin:0 0 4.2mm!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
 }
 .page5 .assumption-head{
-  font-size:10.7px!important;
-  margin-bottom:7px!important;
+  font-size:14px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  color:var(--purple)!important;
+  margin:0 0 3.2mm!important;
+  letter-spacing:-.03em!important;
 }
 .page5 .assumption-grid{
+  display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:7px!important;
+  gap:3.2mm!important;
 }
 .page5 .assumption-grid div{
-  min-height:32px!important;
-  padding:6px 7px!important;
+  border:1px solid #DDD6FE!important;
+  background:#FCFCFF!important;
+  border-radius:15px!important;
+  padding:10px 10px 10px 45px!important;
+  min-height:22mm!important;
+  position:relative!important;
 }
-.page5 .assumption-grid b{font-size:7.5px!important}
-.page5 .assumption-grid span{font-size:9.1px!important;line-height:1.12!important}
+.page5 .assumption-grid div::before{
+  position:absolute!important;
+  left:10px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:27px!important;
+  height:27px!important;
+  border-radius:9px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#F0E8FF!important;
+  color:var(--purple)!important;
+  font-size:16px!important;
+  font-weight:900!important;
+}
+.page5 .assumption-grid div:nth-child(1)::before{content:"📍"}
+.page5 .assumption-grid div:nth-child(2)::before{content:"↗"}
+.page5 .assumption-grid div:nth-child(3)::before{content:"👥"}
+.page5 .assumption-grid div:nth-child(4)::before{content:"▣"}
+.page5 .assumption-grid div:nth-child(5)::before{content:"€"}
+.page5 .assumption-grid div:nth-child(6)::before{content:"◕"}
+.page5 .assumption-grid div:nth-child(7)::before{content:"▤"}
+.page5 .assumption-grid div:nth-child(8)::before{content:"▥"}
+.page5 .assumption-grid b{
+  display:block!important;
+  font-size:8.8px!important;
+  line-height:1!important;
+  text-transform:uppercase!important;
+  color:var(--purple)!important;
+  margin-bottom:5px!important;
+  font-weight:900!important;
+}
+.page5 .assumption-grid span{
+  display:block!important;
+  font-size:11.1px!important;
+  font-weight:850!important;
+  color:var(--blue)!important;
+  line-height:1.16!important;
+}
+
+/* Seuil rentabilité */
 .page5 .timeline-note{
   margin:0!important;
-  padding:12px 14px!important;
+  padding:12px 15px!important;
   border-radius:16px!important;
-  grid-template-columns:34px 1fr!important;
+  grid-template-columns:44px 1fr!important;
   background:#FCFCFF!important;
+  border:1px solid #CDBDFF!important;
+  align-items:center!important;
 }
 .page5 .timeline-note .ico{
-  font-size:25px!important;
+  font-size:34px!important;
   color:var(--purple)!important;
+  line-height:1!important;
 }
 .page5 .timeline-note h3{
-  font-size:14.4px!important;
+  font-size:17px!important;
   line-height:1.1!important;
-  margin:0 0 5px!important;
+  margin:0 0 6px!important;
+  color:var(--blue)!important;
+  font-weight:900!important;
 }
 .page5 .timeline-note p{
-  font-size:11.2px!important;
-  line-height:1.30!important;
+  font-size:12px!important;
+  line-height:1.4!important;
   color:var(--blue)!important;
   font-weight:760!important;
 }
@@ -681,18 +775,11 @@ h1 span{display:block;color:var(--purple);font-size:30px;line-height:1.12;letter
       <div class="kpi"><b>2 280 €</b><span>Revenu brut mensuel moyen</span></div>
     </div>
   </div>
-  <div class="owner-note"><div class="i">€</div><p>Le scénario réaliste sert de base de décision. Le scénario prudent sécurise le lancement ; l’optimiste suppose une annonce très bien présentée, des avis solides et une tarification dynamique suivie.</p></div>
+  <div class="owner-note"><div class="i">i</div><p>Le scénario réaliste sert de base de décision. Le scénario prudent sécurise le lancement ; l’optimiste suppose une annonce très bien présentée, des avis solides et une tarification dynamique suivie.</p></div><p>Le scénario réaliste sert de base de décision. Le scénario prudent sécurise le lancement ; l’optimiste suppose une annonce très bien présentée, des avis solides et une tarification dynamique suivie.</p></div>
   <h2 class="section-title">Scénarios d’exploitation</h2>
   <table class="table"><tr><th>Scénario</th><th>Occupation</th><th>Prix moyen</th><th>CA annuel</th><th>Net estimé</th></tr><tr><td>Prudent</td><td>45 %</td><td>115 €</td><td>18 860 €</td><td>13 960 €</td></tr><tr><td>Réaliste</td><td>60 %</td><td>125 €</td><td>27 375 €</td><td>20 475 €</td></tr><tr><td>Optimiste</td><td>75 %</td><td>135 €</td><td>36 990 €</td><td>27 690 €</td></tr></table>
   <div class="assumptions"><div class="assumption-head">Hypothèses retenues</div><div class="assumption-grid"><div><b>Adresse</b><span id="hypAdresse">6 Imp. Notre Dame du Chemin, 45000 Orléans</span></div><div><b>Surface</b><span id="hypSurface">54 m²</span></div><div><b>Capacité</b><span id="hypCapacite">6 voyageurs</span></div><div><b>Période</b><span>Estimation annuelle</span></div><div><b>Prix moyen</b><span id="hypPrix">125 € / nuit</span></div><div><b>Occupation</b><span id="hypOccupation">60 %</span></div><div><b>Charges</b><span id="hypCharges">Non intégrées</span></div><div><b>Base marché</b><span>Simulation provisoire</span></div></div></div>
-  <div class="timeline-note">
-  <div class="ico">🎯</div>
-  <div>
-    <h3>Seuil de rentabilité à valider</h3>
-    <p>Avant décision définitive, il faut intégrer les charges réelles, commissions plateformes, ménage, fiscalité et périodes creuses afin de confirmer le revenu net disponible.</p>
-  </div>
-</div>
- 
+  <div class="timeline-note"><div class="ico">🎯</div><div><h3>Seuil de rentabilité à valider</h3><p>Avant décision définitive, il faut intégrer les charges réelles, commissions plateformes, ménage, fiscalité et périodes creuses afin de confirmer le revenu net disponible.</p></div></div>
   <div class="page-no">5</div>
 </section>
 
