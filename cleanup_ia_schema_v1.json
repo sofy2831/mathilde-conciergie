@@ -1,0 +1,352 @@
+{
+  "version": "CleanUp_IA_V1",
+  "role": "Analyste senior en location courte durée pour CleanUp Manager",
+  "rules": {
+    "source": "Estimations issues du moteur CleanUp Manager",
+    "forbidden_claims": [
+      "Ne jamais présenter une donnée simulée comme une donnée réelle.",
+      "Ne jamais indiquer que les valeurs proviennent directement d'Airbnb, Booking, Abritel, Google Maps, AirDNA ou Mashvisor.",
+      "Ne jamais modifier le design HTML.",
+      "Ne jamais générer de HTML complet.",
+      "Ne jamais inventer une adresse ou une surface absente des données d'entrée."
+    ],
+    "tone": [
+      "professionnel",
+      "clair",
+      "factuel",
+      "orienté décision propriétaire",
+      "positif sans exagération"
+    ],
+    "disclaimer": "Les comparables, événements et temps d'accès sont des estimations destinées à cadrer le potentiel locatif. Ils ne constituent pas un relevé temps réel."
+  },
+  "input": {
+    "adresse": "",
+    "surface_m2": 0,
+    "capacite_voyageurs": 0,
+    "calculs_cleanup": {
+      "score_cleanup": 0,
+      "label_score": "",
+      "prix_moyen_nuit": 0,
+      "occupation_cible_pct": 0,
+      "ca_prudent": 0,
+      "ca_realiste": 0,
+      "ca_optimiste": 0,
+      "revenu_mensuel_brut_moyen": 0,
+      "tarifs_mensuels": {
+        "janvier": 0,
+        "fevrier": 0,
+        "mars": 0,
+        "avril": 0,
+        "mai": 0,
+        "juin": 0,
+        "juillet": 0,
+        "aout": 0,
+        "septembre": 0,
+        "octobre": 0,
+        "novembre": 0,
+        "decembre": 0
+      }
+    }
+  },
+  "output": {
+    "meta": {
+      "adresse_affichee": "",
+      "zone_affichee": "",
+      "type_logement_estime": "",
+      "configuration_estimee": "",
+      "mention_donnees": "Estimation CleanUp Manager — données non issues d'un relevé temps réel."
+    },
+    "page1_cover": {
+      "synthese_proprietaire": "",
+      "phrase_potentiel": "",
+      "badge_score": "",
+      "notice_cover": ""
+    },
+    "page2_potentiel": {
+      "scores": {
+        "emplacement": {
+          "note_sur_10": 0,
+          "commentaire": ""
+        },
+        "accessibilite": {
+          "note_sur_10": 0,
+          "commentaire": ""
+        },
+        "potentiel_locatif": {
+          "note_sur_10": 0,
+          "commentaire": ""
+        },
+        "rentabilite": {
+          "note_sur_10": 0,
+          "commentaire": ""
+        }
+      },
+      "clienteles": [
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        }
+      ],
+      "accessibilite": [
+        {
+          "point": "",
+          "temps_estime": "",
+          "icone": ""
+        },
+        {
+          "point": "",
+          "temps_estime": "",
+          "icone": ""
+        },
+        {
+          "point": "",
+          "temps_estime": "",
+          "icone": ""
+        },
+        {
+          "point": "",
+          "temps_estime": "",
+          "icone": ""
+        },
+        {
+          "point": "",
+          "temps_estime": "",
+          "icone": ""
+        },
+        {
+          "point": "",
+          "temps_estime": "",
+          "icone": ""
+        }
+      ],
+      "positionnement_conseille": {
+        "titre": "",
+        "commentaire": ""
+      }
+    },
+    "page3_marche": {
+      "titre_comparables": "Logements comparables simulés — prix à la nuitée",
+      "comparables": [
+        {
+          "categorie": "Standard",
+          "plateforme": "Airbnb",
+          "capacite": "",
+          "prix_nuit": 0,
+          "note_affichee": "",
+          "commentaire": ""
+        },
+        {
+          "categorie": "Familial",
+          "plateforme": "Booking",
+          "capacite": "",
+          "prix_nuit": 0,
+          "note_affichee": "",
+          "commentaire": ""
+        },
+        {
+          "categorie": "Confort",
+          "plateforme": "Abritel",
+          "capacite": "",
+          "prix_nuit": 0,
+          "note_affichee": "",
+          "commentaire": ""
+        },
+        {
+          "categorie": "Premium",
+          "plateforme": "Marché local",
+          "capacite": "",
+          "prix_nuit": 0,
+          "note_affichee": "",
+          "commentaire": ""
+        }
+      ],
+      "notice_marche": "",
+      "analyse_prix": {
+        "lancement": {
+          "prix": 0,
+          "objectif": ""
+        },
+        "tarif_courant": {
+          "prix": 0,
+          "objectif": ""
+        },
+        "weekend": {
+          "prix": 0,
+          "objectif": ""
+        },
+        "evenements": {
+          "prix": 0,
+          "objectif": ""
+        }
+      },
+      "revenus_estimes": {
+        "prudent": 0,
+        "realiste": 0,
+        "optimiste": 0
+      },
+      "occupation": {
+        "basse_saison_pct": 0,
+        "moyenne_saison_pct": 0,
+        "haute_saison_pct": 0,
+        "moyenne_annuelle_pct": 0
+      }
+    },
+    "page4_saisonnalite": {
+      "evenements": [
+        {
+          "periode": "",
+          "nom": "",
+          "impact_tarifaire": "",
+          "niveau_demande": ""
+        },
+        {
+          "periode": "",
+          "nom": "",
+          "impact_tarifaire": "",
+          "niveau_demande": ""
+        },
+        {
+          "periode": "",
+          "nom": "",
+          "impact_tarifaire": "",
+          "niveau_demande": ""
+        },
+        {
+          "periode": "",
+          "nom": "",
+          "impact_tarifaire": "",
+          "niveau_demande": ""
+        }
+      ],
+      "info_evenementielle": "",
+      "tarifs_mensuels_commentaire": "",
+      "lecture_cleanup": "",
+      "regles_tarifaires": "",
+      "tendance_saisonnalite": {
+        "haute_saison": {
+          "periode": "",
+          "impact": "",
+          "commentaire": ""
+        },
+        "mi_saison": {
+          "periode": "",
+          "impact": "",
+          "commentaire": ""
+        },
+        "basse_saison": {
+          "periode": "",
+          "impact": "",
+          "commentaire": ""
+        },
+        "potentiel_annuel": {
+          "niveau": "",
+          "commentaire": ""
+        }
+      }
+    },
+    "page5_finance": {
+      "note_financiere": "",
+      "scenarios": {
+        "prudent": {
+          "occupation_pct": 0,
+          "prix_moyen": 0,
+          "ca_annuel": 0,
+          "revenu_avant_frais": 0,
+          "lecture": ""
+        },
+        "realiste": {
+          "occupation_pct": 0,
+          "prix_moyen": 0,
+          "ca_annuel": 0,
+          "revenu_avant_frais": 0,
+          "lecture": ""
+        },
+        "optimiste": {
+          "occupation_pct": 0,
+          "prix_moyen": 0,
+          "ca_annuel": 0,
+          "revenu_avant_frais": 0,
+          "lecture": ""
+        }
+      },
+      "hypotheses": {
+        "adresse": "",
+        "surface": "",
+        "capacite": "",
+        "periode": "Estimation annuelle",
+        "prix_moyen": "",
+        "occupation": "",
+        "base_marche": "Simulation CleanUp IA",
+        "precision": "Hors charges, fiscalité, frais de plateforme et ménage."
+      },
+      "seuil_validation": ""
+    },
+    "page6_recommandations": {
+      "recommandations": [
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        },
+        {
+          "titre": "",
+          "icone": "",
+          "commentaire": ""
+        }
+      ],
+      "plan_action": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "decision_recommandee": {
+        "titre": "",
+        "commentaire": ""
+      },
+      "conclusion_operationnelle": {
+        "indice_cleanup": 0,
+        "titre": "",
+        "commentaire": ""
+      },
+      "certification": "Cette étude constitue une aide à la décision. Elle ne remplace pas une simulation comptable ou fiscale complète, mais permet de cadrer rapidement le potentiel locatif, les priorités de lancement et les points à sécuriser."
+    }
+  },
+  "prompt_template": "Tu es CleanUp IA, analyste senior spécialisé en location courte durée. À partir de l'adresse, de la surface, de la capacité et des calculs CleanUp fournis, génère uniquement un JSON valide respectant exactement le schéma output. Tu ne dois jamais écrire de HTML. Tu ne dois jamais prétendre que les comparables, événements ou temps d'accès sont issus d'un relevé réel. Les données doivent être crédibles, cohérentes, professionnelles et orientées décision propriétaire. Les phrases doivent être courtes, exploitables et adaptées à un rapport commercial premium."
+}
