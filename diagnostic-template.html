@@ -215,6 +215,37 @@
 .page4 .event .impact{min-height:31px!important;font-size:12.2px!important;line-height:1.06!important}
 .page4 .event-foot{font-size:8.7px!important;line-height:1.05!important}
 
+
+/* Carte graphique premium — style plans sobre */
+.geo-map{
+  background:
+    radial-gradient(circle at 20% 25%,rgba(130,214,170,.20),transparent 23%),
+    radial-gradient(circle at 78% 18%,rgba(255,211,117,.18),transparent 22%),
+    linear-gradient(135deg,#F7F8FC 0%,#EEF2F8 58%,#F8FAFC 100%)!important;
+}
+.geo-map::before,
+.geo-map::after{
+  content:"";position:absolute;border-radius:18px;background:#E5F3E8;opacity:.9;
+}
+.geo-map::before{width:62px;height:38px;left:12px;bottom:15px;transform:rotate(-8deg)}
+.geo-map::after{width:48px;height:30px;right:24px;top:18px;transform:rotate(11deg)}
+.geo-road{z-index:2}
+.geo-water{z-index:1}
+.geo-grid{z-index:0}
+.geo-pin{z-index:6}
+.geo-poi{
+  position:absolute;z-index:5;display:flex;align-items:center;gap:4px;
+  padding:4px 6px;border-radius:999px;background:rgba(255,255,255,.92);
+  border:1px solid #E4E7EC;box-shadow:0 5px 12px rgba(16,24,40,.10);
+  color:var(--blue);font-weight:850;
+}
+.geo-poi span{font-size:12px;line-height:1}
+.geo-poi small{font-size:7.5px;line-height:1;color:var(--blue);font-weight:850}
+.poi-station{left:9%;top:17%}
+.poi-center{right:8%;top:22%}
+.poi-nature{right:8%;bottom:13%}
+.poi-transit{left:11%;bottom:17%}
+
 </style>
 </head>
 <body>
@@ -229,6 +260,10 @@
     <div class="geo-road road-2"></div>
     <div class="geo-road road-3"></div>
     <div class="geo-water"></div>
+    <div class="geo-poi poi-station"><span>🚆</span><small>Gare</small></div>
+    <div class="geo-poi poi-center"><span>🏛</span><small>Centre</small></div>
+    <div class="geo-poi poi-nature"><span>🌊</span><small>Promenade</small></div>
+    <div class="geo-poi poi-transit"><span>🚋</span><small>Transport</small></div>
     <div class="geo-pin"><span>⌖</span></div>
   </div>
   <div class="geo-caption">
@@ -443,9 +478,6 @@ function injectEngine(engine) {
 
 function injectPage1(ai) {
   if ($('geoZone') && ai?.meta?.zone) $('geoZone').textContent = ai.meta.zone;
-  $('coverSynthese').textContent = cleanPublicText(ai.page1.synthese, 360);
-  const summaryParagraphs = qa('.cover-summary p');
-  if (summaryParagraphs[1]) summaryParagraphs[1].textContent = cleanPublicText(ai.page1.objectif, 210);
   $('coverNotice').textContent = cleanPublicText(ai.page1.notice, 190);
   $('scoreLabel').textContent = cleanPublicText(ai.page1.scoreLabel, 42);
   setValue('adresseZone', ai.meta.zone);
