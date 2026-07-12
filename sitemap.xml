@@ -1,44 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
     <loc>https://conciergerie45.cleanup-manager.fr/</loc>
+    <lastmod>2026-07-12</lastmod>
   </url>
 
   <url>
     <loc>https://conciergerie45.cleanup-manager.fr/conciergerie-airbnb-orleans.html</loc>
+    <lastmod>2026-07-12</lastmod>
   </url>
 
   <url>
     <loc>https://conciergerie45.cleanup-manager.fr/gestion-locative-orleans.html</loc>
+    <lastmod>2026-07-12</lastmod>
   </url>
 
   <url>
     <loc>https://conciergerie45.cleanup-manager.fr/location-courte-duree-orleans.html</loc>
+    <lastmod>2026-07-12</lastmod>
   </url>
 
   <url>
-  <loc>https://conciergerie45.cleanup-manager.fr/etude-rentabilite-location-courte-duree.html</loc>
-</url>
+    <loc>https://conciergerie45.cleanup-manager.fr/etude-rentabilite-location-courte-duree.html</loc>
+    <lastmod>2026-07-12</lastmod>
+  </url>
 
-<url>
-  <loc>https://conciergerie45.cleanup-manager.fr/diagnostic-rentabilite-airbnb-orleans.html</loc>
-</url>
+  <url>
+    <loc>https://conciergerie45.cleanup-manager.fr/diagnostic-rentabilite-airbnb-orleans.html</loc>
+    <lastmod>2026-07-12</lastmod>
+  </url>
 
-<url>
-  <loc>https://conciergerie45.cleanup-manager.fr/estimation-revenus-location-saisonniere-orleans.html</loc>
-</url>
+  <url>
+    <loc>https://conciergerie45.cleanup-manager.fr/estimation-revenus-location-saisonniere-orleans.html</loc>
+    <lastmod>2026-07-12</lastmod>
+  </url>
 
-<url>
-  <loc>https://conciergerie45.cleanup-manager.fr/etude-rentabilite-la-ferte-saint-aubin.html</loc>
-</url>
+  <url>
+    <loc>https://conciergerie45.cleanup-manager.fr/etude-rentabilite-la-ferte-saint-aubin.html</loc>
+    <lastmod>2026-07-12</lastmod>
+  </url>
 
-<url>
-  <loc>https://conciergerie45.cleanup-manager.fr/rentabilite-airbnb-lamotte-beuvron.html</loc>
-</url>
+  <url>
+    <loc>https://conciergerie45.cleanup-manager.fr/rentabilite-airbnb-lamotte-beuvron.html</loc>
+    <lastmod>2026-07-12</lastmod>
+  </url>
 
-<url>
-  <loc>https://conciergerie45.cleanup-manager.fr/diagnostic-location-courte-duree-sologne.html</loc>
-</url>
+  <url>
+    <loc>https://conciergerie45.cleanup-manager.fr/diagnostic-location-courte-duree-sologne.html</loc>
+    <lastmod>2026-07-12</lastmod>
+  </url>
 
 </urlset>
