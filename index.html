@@ -516,6 +516,152 @@
       padding:12px 0 36px;
     }
 
+
+    /* Bloc premium — étude de rentabilité */
+    .profitability-box{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(201,120,77,.28);
+      background:
+        radial-gradient(circle at top right, rgba(201,120,77,.16), transparent 36%),
+        rgba(255,255,255,.95);
+    }
+
+    .profitability-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);
+      gap:30px;
+      align-items:center;
+    }
+
+    .offer-label{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:13px;
+      padding:8px 13px;
+      border-radius:999px;
+      background:#f7e8df;
+      color:var(--accent-dark);
+      font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    .profitability-box h2{
+      max-width:720px;
+      font-family:"Playfair Display",serif;
+      font-size:clamp(34px,4vw,52px);
+      line-height:1.08;
+      margin-bottom:15px;
+    }
+
+    .profitability-intro{
+      max-width:720px;
+      color:var(--muted);
+      font-size:18px;
+    }
+
+    .diagnostic-features{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px 18px;
+      margin-top:24px;
+    }
+
+    .diagnostic-feature{
+      display:flex;
+      align-items:flex-start;
+      gap:9px;
+      color:#3d4146;
+      font-size:15px;
+      font-weight:650;
+    }
+
+    .diagnostic-feature span{
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:#e8f3dd;
+      color:var(--green-dark);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .diagnostic-offer{
+      padding:28px 24px;
+      border-radius:22px;
+      background:linear-gradient(180deg,var(--primary),var(--primary-dark));
+      color:#fff;
+      text-align:center;
+      box-shadow:0 18px 38px rgba(24,37,54,.20);
+    }
+
+    .launch-price{
+      display:block;
+      margin-bottom:6px;
+      font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:rgba(255,255,255,.78);
+    }
+
+    .diagnostic-offer strong{
+      display:block;
+      margin-bottom:12px;
+      font-family:"Playfair Display",serif;
+      font-size:56px;
+      line-height:1;
+    }
+
+    .diagnostic-offer p{
+      margin-bottom:18px;
+      font-size:15px;
+      line-height:1.5;
+      color:rgba(255,255,255,.9);
+    }
+
+    .refund-note{
+      margin:0 0 20px;
+      padding:12px 13px;
+      border-radius:14px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:14px;
+      line-height:1.45;
+      font-weight:750;
+      color:#fff;
+    }
+
+    .diagnostic-offer .diagnostic-button{
+      width:100%;
+      margin-bottom:14px;
+      background:linear-gradient(180deg,var(--accent),var(--accent-dark));
+      border-color:transparent;
+    }
+
+    .diagnostic-offer small{
+      display:block;
+      font-size:12px;
+      line-height:1.45;
+      color:rgba(255,255,255,.72);
+    }
+
+    @media (max-width:820px){
+      .profitability-grid{
+        grid-template-columns:1fr;
+      }
+
+      .diagnostic-features{
+        grid-template-columns:1fr;
+      }
+    }
+
     @media (max-width:980px){
       .stats{
         grid-template-columns:repeat(2, 1fr);
@@ -630,6 +776,7 @@
           Demander des informations
         </a>
         <a class="btn secondary" href="#services-details">Voir les services</a>
+        <a class="btn secondary" href="#etude-rentabilite">Étude de rentabilité — 49 €</a>
         <a class="btn secondary" href="#espace-proprietaires">Découvrir l’espace propriétaires</a>
         <a class="btn primary" href="https://wa.me/33620491445?text=Bonjour%20je%20souhaite%20des%20informations%20sur%20votre%20conciergerie%20à%20Orléans" target="_blank" rel="noopener">
           💬 Contacter sur WhatsApp
@@ -641,6 +788,57 @@
   </header>
 
   <main class="container">
+
+    <section class="section" id="etude-rentabilite">
+      <div class="section-box profitability-box">
+        <div class="profitability-grid">
+          <div>
+            <div class="offer-label">Nouveau service propriétaire</div>
+            <h2>Vous souhaitez savoir si votre logement est réellement rentable&nbsp;?</h2>
+            <p class="profitability-intro">
+              Recevez une étude de rentabilité personnalisée pour votre location courte durée,
+              construite à partir de l’adresse, de la surface et de la capacité d’accueil du logement.
+            </p>
+
+            <div class="diagnostic-features">
+              <div class="diagnostic-feature"><span>✓</span><div>Estimation du chiffre d’affaires annuel</div></div>
+              <div class="diagnostic-feature"><span>✓</span><div>Prix moyen conseillé par nuit</div></div>
+              <div class="diagnostic-feature"><span>✓</span><div>Taux d’occupation estimé</div></div>
+              <div class="diagnostic-feature"><span>✓</span><div>Analyse du marché et du positionnement local</div></div>
+              <div class="diagnostic-feature"><span>✓</span><div>Saisonnalité et événements influençant la demande</div></div>
+              <div class="diagnostic-feature"><span>✓</span><div>Recommandations personnalisées pour le lancement</div></div>
+            </div>
+          </div>
+
+          <aside class="diagnostic-offer">
+            <span class="launch-price">Tarif de lancement</span>
+            <strong>49 € TTC</strong>
+
+            <p>
+              Étude de rentabilité personnalisée d’un logement en location courte durée.
+            </p>
+
+            <div class="refund-note">
+              Les 49 € sont déduits de votre première facture si vous confiez ensuite
+              la gestion de ce logement aux Clés de Mathilde.
+            </div>
+
+            <a
+              class="btn primary diagnostic-button"
+              href="mailto:contact@axe-dossier.fr?subject=Commande%20-%20Étude%20de%20rentabilité%20personnalisée&body=Bonjour%2C%0A%0AJe%20souhaite%20commander%20une%20étude%20de%20rentabilité%20personnalisée.%0A%0ANom%20du%20propriétaire%20%3A%0AAdresse%20complète%20du%20logement%20%3A%0ASurface%20en%20m²%20%3A%0ACapacité%20d%27accueil%20%3A%0AAdresse%20email%20%3A%0ATéléphone%20%3A%0A%0AMerci."
+            >
+              Commander mon étude
+            </a>
+
+            <small>
+              Une facture avec les modalités de règlement vous sera adressée.
+              L’étude sera envoyée après réception du paiement.
+            </small>
+          </aside>
+        </div>
+      </div>
+    </section>
+
     <section class="stats">
       <div class="stat gold">
         <div class="stat-top">
