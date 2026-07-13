@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mon Annonce Pro — Mathilde Conciergerie</title>
+<title>Mon Annonce Pro — CleanUp Manager V5</title>
 <meta name="description" content="Créez une annonce professionnelle pour Airbnb, Booking et Abritel avec contrôle de cohérence, conseils et export.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -276,8 +276,8 @@ h1 span{color:var(--terracotta)}
 .generated-field textarea.long{min-height:210px}
 
 .preview-card{border:1px solid var(--line);border-radius:24px;background:white;overflow:hidden;box-shadow:var(--shadow-soft)}
-.preview-cover{height:270px;background:linear-gradient(135deg,var(--sand),var(--beige));display:grid;place-items:center;position:relative;overflow:hidden}
-.preview-cover img{width:100%;height:100%;object-fit:contain;background:var(--beige)}
+.preview-cover{height:320px;background:linear-gradient(135deg,var(--sand),var(--beige));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:10px}
+.preview-cover img{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;background:transparent!important}
 .preview-cover .empty{font-size:52px;color:var(--taupe-2)}
 .preview-content{padding:24px}
 .preview-content h3{font-family:"DM Serif Display",serif;font-size:31px;font-weight:400;margin:0 0 8px;color:var(--brown)}
@@ -332,7 +332,8 @@ h1 span{color:var(--terracotta)}
   #step6{display:block!important}
   #step6 .section-head,.export-grid{display:none!important}
   .preview-card{box-shadow:none;border:0}
-  .preview-cover{height:90mm}
+  .preview-cover{height:78mm!important;padding:4mm!important;background:var(--beige)!important}
+  .preview-cover img{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important}
   @page{size:A4;margin:12mm}
 }
 </style>
@@ -396,7 +397,7 @@ h1 span{color:var(--terracotta)}
       <div class="section active" id="step1">
         <div class="section-head">
           <div>
-            <h2>Parlez-nous de votre logement</h2>
+            <h2>Parlez-nous de votre</h2>
             <p>Ces informations serviront au contrôle de cohérence et à la rédaction de l’annonce.</p>
           </div>
           <div class="section-badge">Étape 1 sur 6</div>
