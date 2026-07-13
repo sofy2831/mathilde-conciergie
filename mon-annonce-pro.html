@@ -98,6 +98,7 @@ h1 span{color:var(--terracotta)}
   margin:0;max-width:720px;font-size:17px;line-height:1.7;color:var(--muted)
 }
 .hero-benefits{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.time-saver{margin-top:16px;padding:14px 16px;border-radius:17px;background:rgba(255,255,255,.72);border:1px solid var(--line);display:grid;gap:4px;max-width:700px}.time-saver strong{font-size:13px;color:var(--brown)}.time-saver span{font-size:11px;line-height:1.45;color:var(--muted)}
 .benefit{
   display:flex;align-items:center;gap:8px;
   padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);
@@ -364,6 +365,7 @@ h1 span{color:var(--terracotta)}
         <div class="benefit"><b>✓</b> Annonce prête à publier</div>
         <div class="benefit"><b>✓</b> PDF et Word</div>
       </div>
+      <div class="time-saver"><strong>2 à 3 heures de rédaction économisées</strong><span>Quelques informations, quelques secondes avec CleanUp, et une annonce structurée sans rien oublier.</span></div>
     </div>
     <aside class="hero-card">
       <div class="price">29 € <small>TTC</small></div>
@@ -394,7 +396,7 @@ h1 span{color:var(--terracotta)}
       <div class="section active" id="step1">
         <div class="section-head">
           <div>
-            <h2>Parlez-nous de votre logement</h2>
+            <h2>Parlez-nous du logement</h2>
             <p>Ces informations serviront au contrôle de cohérence et à la rédaction de l’annonce.</p>
           </div>
           <div class="section-badge">Étape 1 sur 6</div>
@@ -466,7 +468,7 @@ h1 span{color:var(--terracotta)}
         <div class="section-head">
           <div>
             <h2>Équipements et confort</h2>
-            <p>Le moteur vérifiera la cohérence entre la capacité annoncée et l’équipement réellement disponible.</p>
+            <p>Indiquez les équipements réellement présents dans votre logement. CleanUp vérifiera automatiquement leur cohérence avec la capacité d’accueil et les attentes des voyageurs.</p>
           </div>
           <div class="section-badge">Étape 2 sur 6</div>
         </div>
@@ -494,7 +496,7 @@ h1 span{color:var(--terracotta)}
             <label class="check-pill"><input type="checkbox" id="hob"> Plaque de cuisson</label><label class="check-pill"><input type="checkbox" id="oven"> Four</label><label class="check-pill"><input type="checkbox" id="microwave"> Micro-ondes</label><label class="check-pill"><input type="checkbox" id="dishwasher"> Lave-vaisselle</label><label class="check-pill"><input type="checkbox" id="coffee"> Machine à café</label><label class="check-pill"><input type="checkbox" id="coffeeSupplies"> Café ou capsules</label><label class="check-pill"><input type="checkbox" id="kettle"> Bouilloire</label><label class="check-pill"><input type="checkbox" id="fridge"> Réfrigérateur</label><label class="check-pill"><input type="checkbox" id="pots"> Casseroles et poêles</label><label class="check-pill"><input type="checkbox" id="servingDishes"> Plats de service</label><label class="check-pill"><input type="checkbox" id="jug"> Carafe</label><label class="check-pill"><input type="checkbox" id="kitchenUtensils"> Ustensiles complets</label><label class="check-pill"><input type="checkbox" id="cuttingBoard"> Planche à découper</label><label class="check-pill"><input type="checkbox" id="corkscrew"> Tire-bouchon / ouvre-bouteille</label><label class="check-pill"><input type="checkbox" id="colander"> Passoire</label><label class="check-pill"><input type="checkbox" id="teaTowels"> Torchons</label><label class="check-pill"><input type="checkbox" id="bin"> Poubelle</label><label class="check-pill"><input type="checkbox" id="diningTable"> Table et chaises</label>
           </div></div>
           <div class="eq-group"><div class="eq-head"><strong>Chambres et linge</strong><span>Confort réel des couchages</span></div><div class="eq-body">
-            <label class="check-pill"><input type="checkbox" id="bedLinen"> Draps fournis</label><label class="check-pill"><input type="checkbox" id="duvetProvided"> Couettes adaptées</label><label class="check-pill"><input type="checkbox" id="pillowsProvided"> Oreillers adaptés</label><label class="check-pill"><input type="checkbox" id="blackout"> Rideaux occultants</label><label class="check-pill"><input type="checkbox" id="shutters"> Volets</label><label class="check-pill"><input type="checkbox" id="bedsideTable"> Table de chevet</label><label class="check-pill"><input type="checkbox" id="bedsideLight"> Éclairage près du lit</label><label class="check-pill"><input type="checkbox" id="hangersProvided"> Cintres</label><label class="check-pill"><input type="checkbox" id="mirror"> Miroir</label><label class="check-pill"><input type="checkbox" id="iron"> Fer et table à repasser</label>
+            <label class="check-pill"><input type="checkbox" id="bedLinen"> Draps fournis</label><label class="check-pill"><input type="checkbox" id="duvetProvided"> Couettes adaptées</label><label class="check-pill"><input type="checkbox" id="pillowsProvided"> Oreillers adaptés</label><label class="check-pill"><input type="checkbox" id="blackout"> Rideaux occultants</label><label class="check-pill"><input type="checkbox" id="shutters"> Volets</label><label class="check-pill"><input type="checkbox" id="bedsideTable"> Table de chevet</label><label class="check-pill"><input type="checkbox" id="bedsideLight"> Éclairage près du lit</label><label class="check-pill"><input type="checkbox" id="mirror"> Miroir</label><label class="check-pill"><input type="checkbox" id="iron"> Fer à repasser</label><label class="check-pill"><input type="checkbox" id="ironingBoard"> Table à repasser</label>
           </div></div>
           <div class="eq-group"><div class="eq-head"><strong>Salle de bain</strong><span>Équipements indispensables</span></div><div class="eq-body">
             <label class="check-pill"><input type="checkbox" id="shower"> Douche</label><label class="check-pill"><input type="checkbox" id="bathtub"> Baignoire</label><label class="check-pill"><input type="checkbox" id="hairdryer"> Sèche-cheveux</label><label class="check-pill"><input type="checkbox" id="bathTowels"> Serviettes de bain</label><label class="check-pill"><input type="checkbox" id="bathMat"> Tapis de bain</label><label class="check-pill"><input type="checkbox" id="toiletPaper"> Papier toilette</label>
@@ -503,10 +505,10 @@ h1 span{color:var(--terracotta)}
             <label class="check-pill"><input type="checkbox" id="wifi"> Wi-Fi</label><label class="check-pill"><input type="checkbox" id="tv"> Télévision</label><label class="check-pill"><input type="checkbox" id="sofa"> Canapé</label><label class="check-pill"><input type="checkbox" id="sofaBed"> Canapé convertible</label><label class="check-pill"><input type="checkbox" id="coffeeTable"> Table basse / d’appoint</label><label class="check-pill"><input type="checkbox" id="ac"> Climatisation</label><label class="check-pill"><input type="checkbox" id="washer"> Lave-linge</label><label class="check-pill"><input type="checkbox" id="dryer"> Sèche-linge</label><label class="check-pill"><input type="checkbox" id="workspace"> Espace de travail</label><label class="check-pill"><input type="checkbox" id="lighting"> Éclairage dans chaque espace</label>
           </div></div>
           <div class="eq-group"><div class="eq-head"><strong>Accès et sécurité</strong><span>Avant publication</span></div><div class="eq-body">
-            <label class="check-pill"><input type="checkbox" id="parking"> Stationnement</label><label class="check-pill"><input type="checkbox" id="selfcheckin"> Arrivée autonome</label><label class="check-pill"><input type="checkbox" id="smoke"> Détecteur de fumée</label><label class="check-pill"><input type="checkbox" id="coDetector"> Détecteur de monoxyde</label><label class="check-pill"><input type="checkbox" id="firstaid"> Trousse de premiers secours</label><label class="check-pill"><input type="checkbox" id="extinguisher"> Extincteur</label><label class="check-pill"><input type="checkbox" id="outdoorLighting"> Éclairage extérieur</label><label class="check-pill"><input type="checkbox" id="baby"> Équipement bébé</label>
+            <label class="check-pill"><input type="checkbox" id="parking"> Stationnement</label><label class="check-pill"><input type="checkbox" id="selfcheckin"> Arrivée autonome</label><label class="check-pill"><input type="checkbox" id="smoke"> Détecteur de fumée</label><label class="check-pill"><input type="checkbox" id="coDetector"> Détecteur de monoxyde de carbone</label><label class="check-pill"><input type="checkbox" id="firstaid"> Trousse de premiers secours</label><label class="check-pill"><input type="checkbox" id="extinguisher"> Extincteur</label><label class="check-pill"><input type="checkbox" id="outdoorLighting"> Éclairage extérieur</label><label class="check-pill"><input type="checkbox" id="baby"> Équipement bébé</label>
           </div></div>
           <div class="eq-group"><div class="eq-head"><strong>Extérieurs et services</strong><span>Atouts du logement</span></div><div class="eq-body">
-            <label class="check-pill"><input type="checkbox" id="terrace"> Terrasse</label><label class="check-pill"><input type="checkbox" id="garden"> Jardin</label><label class="check-pill"><input type="checkbox" id="pool"> Piscine</label><label class="check-pill"><input type="checkbox" id="bbq"> Barbecue</label><label class="check-pill"><input type="checkbox" id="pets"> Animaux acceptés</label><label class="check-pill"><input type="checkbox" id="linen"> Linge fourni</label>
+            <label class="check-pill"><input type="checkbox" id="terrace"> Terrasse / balcon</label><label class="check-pill"><input type="checkbox" id="garden"> Jardin</label><label class="check-pill"><input type="checkbox" id="pool"> Piscine</label><label class="check-pill"><input type="checkbox" id="bbq"> Barbecue</label><label class="check-pill"><input type="checkbox" id="pets"> Animaux acceptés</label><label class="check-pill"><input type="checkbox" id="linen"> Linge fourni</label>
           </div></div>
         </div>
       </div>
@@ -651,7 +653,7 @@ h1 span{color:var(--terracotta)}
             <h3>Vous préférez déléguer ?</h3>
             <p>Mathilde Conciergerie peut prendre en charge la création de l’annonce, le suivi des voyageurs et la gestion opérationnelle du logement.</p>
           </div>
-          <a class="btn terracotta" href="mailto:mathildeconciergerie45@gmail.com">Confier mon logement</a>
+          <a class="btn terracotta" href="mailto:mathildeconciergerie45@gmail.com?subject=Je%20souhaite%20confier%20mon%20logement%20à%20Mathilde%20Conciergerie&body=Bonjour Mathilde,%0D%0A%0D%0AJe souhaite échanger avec vous concernant la gestion de mon logement.%0D%0A%0D%0AAdresse du logement : %0D%0ATéléphone : %0D%0AMes disponibilités : %0D%0A%0D%0ACordialement,">Confier mon logement</a>
         </div>
       </div>
 
@@ -667,13 +669,13 @@ h1 span{color:var(--terracotta)}
       <div class="assistant-head">
         <div class="assistant-title">
           <div class="ai-icon">✦</div>
-          <div><strong>Assistant Mathilde</strong><span>Conseils en temps réel</span></div>
+          <div><strong>Assistant CleanUp</strong><span>Conseils en temps réel</span></div>
         </div>
       </div>
       <div class="assistant-body">
         <div id="assistantMessages">
           <div class="ai-message"><strong>Commençons simplement.</strong>Renseignez la capacité, les couchages et les places à table. Ce sont les premières données de cohérence.</div>
-          <div class="ai-message good"><strong>Vos données restent locales.</strong>Aucun compte n’est nécessaire pour utiliser cette page.</div>
+          <div class="ai-message good"><strong>Aucun compte requis.</strong>Les informations servent uniquement à préparer votre annonce pendant cette utilisation.</div>
         </div>
         <div class="assistant-progress">
           <div class="row"><span>Progression</span><span id="progressLabel">16 %</span></div>
@@ -707,7 +709,7 @@ function showStep(step){
     btn.classList.toggle('done', n < currentStep);
   });
   $('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-  $('nextBtn').textContent = currentStep === 6 ? 'Terminer' : 'Continuer →';
+  $('nextBtn').textContent = currentStep === 6 ? 'Retour aux services' : 'Continuer →';
   const pct = Math.round(currentStep / 6 * 100);
   $('progressBar').style.width = pct + '%';
   $('progressLabel').textContent = pct + ' %';
@@ -716,7 +718,7 @@ function showStep(step){
 }
 qa('.step').forEach(btn => btn.addEventListener('click', ()=>showStep(Number(btn.dataset.step))));
 $('prevBtn').addEventListener('click',()=>showStep(currentStep-1));
-$('nextBtn').addEventListener('click',()=> currentStep < 6 ? showStep(currentStep+1) : null);
+$('nextBtn').addEventListener('click',()=>{ if(currentStep < 6){ showStep(currentStep+1); } else { window.location.href='index.html#services'; } });
 
 function updateAssistant(){
   const messages = [];
@@ -738,7 +740,7 @@ function updateAssistant(){
     messages.push({t:'Contrôle objectif',m:'Cette étape signale uniquement les incohérences et les informations manquantes.'});
     if(controlIssues.length) messages.push({t:'Résultat',m:`${controlIssues.length} point(s) nécessitent votre attention.`,c:'warn'});
   } else if(currentStep === 5){
-    messages.push({t:'Rédaction',m:'Le ton varie selon la plateforme : plus émotionnel sur Airbnb, plus factuel sur Booking, plus détaillé sur Abritel.'});
+    messages.push({t:'Votre annonce',m:'CleanUp adapte automatiquement votre annonce à Airbnb, Booking et Abritel, sans vous demander de réécrire trois versions.'});
   } else {
     messages.push({t:'Dernière vérification',m:'Relisez toujours les distances, règles et équipements avant de publier.'});
     messages.push({t:'Besoin de déléguer ?',m:'Mathilde peut ensuite prendre en charge le suivi des voyageurs et la gestion du logement.',c:'good'});
@@ -800,9 +802,10 @@ function runControl(){
   if(!checked('hairdryer')) issues.push(issue('warn','Sèche-cheveux absent','C’est un équipement attendu dans une location courte durée.'));
   if(!checked('shower') && !checked('bathtub')) issues.push(issue('error','Douche ou baignoire non renseignée','Le type d’équipement sanitaire doit être précisé.'));
   if(!checked('washer')) issues.push(issue('warn','Lave-linge absent','À signaler clairement pour les séjours de plusieurs nuits.'));
-  if(!checked('coDetector')) issues.push(issue('warn','Détecteur de monoxyde non confirmé','À vérifier notamment en présence de gaz, cheminée ou chaudière.'));
+  if(!checked('coDetector')) issues.push(issue('warn','Détecteur de monoxyde de carbone non confirmé','À prévoir si le logement comporte une chaudière, une cheminée, un poêle ou tout appareil à combustion.'));
   if((checked('terrace') || checked('garden')) && !checked('outdoorLighting')) issues.push(issue('warn','Éclairage extérieur absent','Un accès extérieur doit rester sûr le soir.'));
-  if(!checked('iron')) issues.push(issue('warn','Fer et table à repasser absents','Équipement apprécié pour les séjours professionnels ou longs.'));
+  if(!checked('iron')) issues.push(issue('warn','Fer à repasser absent','Équipement apprécié pour les séjours professionnels ou longs.'));
+  if(!checked('ironingBoard')) issues.push(issue('warn','Table à repasser absente','Le fer seul ne suffit pas toujours : vérifiez qu’une surface adaptée est disponible.'));
 
   if(cap && num('pillows') < cap) issues.push(issue('warn','Oreillers à vérifier',`${num('pillows')} oreillers pour ${cap} voyageurs.`));
   if(cap && num('towels') < cap) issues.push(issue('warn','Serviettes à compléter',`${num('towels')} serviettes pour ${cap} voyageurs.`));
@@ -810,7 +813,7 @@ function runControl(){
   if(checked('selfcheckin') && num('keys') < 1) issues.push(issue('warn','Arrivée autonome incomplète','L’arrivée autonome est cochée, mais aucun jeu de clés n’est renseigné.'));
   if(!checked('smoke')) issues.push(issue('error','Détecteur de fumée non confirmé','Vérifiez cet équipement avant publication.'));
   if(checked('pool') && photos.length === 0) issues.push(issue('warn','Piscine non illustrée','La piscine est cochée mais aucune photo n’a été ajoutée.'));
-  if(checked('terrace') && photos.length === 0) issues.push(issue('warn','Terrasse non illustrée','La terrasse est cochée mais aucune photo n’a été ajoutée.'));
+  if(checked('terrace') && photos.length === 0) issues.push(issue('warn','Terrasse / balcon non illustré','Une terrasse ou un balcon est indiqué, mais aucune photo n’a été ajoutée.'));
   if(num('photoCountPlanned') && num('photoCountPlanned') < 8) issues.push(issue('warn','Galerie courte','Moins de 8 photos sont prévues pour l’annonce.'));
   if(photos.length < 3) issues.push(issue('warn','Photos insuffisantes','Ajoutez au moins les pièces principales et l’entrée.'));
   if(cap >= 6 && num('bathrooms') < 1) issues.push(issue('error','Salle de bain manquante','La configuration du logement doit être précisée.'));
@@ -866,6 +869,7 @@ function generateListing(){
   const type=val('propertyType')||'Logement', city=(val('address').split(',').pop()||'').trim();
   const cap=num('capacity')||2, rooms=num('bedrooms')||1;
   const strength=val('strengths')||'un cadre confortable et soigné';
+  const locationText = city ? `Le logement bénéficie d’une implantation pratique dans le secteur de ${city}. Les commerces, restaurants et principaux points d’intérêt sont facilement accessibles selon l’emplacement du bien.` : `Le logement bénéficie d’un environnement pratique pour découvrir le secteur, accéder aux commerces et profiter des principaux points d’intérêt.`;
   const style=val('style').toLowerCase();
   const target=val('target').toLowerCase();
   const extras=[];
@@ -885,7 +889,7 @@ Le logement comprend ${rooms} chambre${rooms>1?'s':''}, ${num('bathrooms')||1} s
 
 Les voyageurs disposent notamment de ${extras.length?extras.join(', '):'tout le nécessaire pour un séjour confortable'}. La cuisine permet de préparer les repas sur place et l’espace de vie est adapté aux séjours en couple, en famille ou entre amis.
 
-Le logement se situe ${city?`dans le secteur de ${city}`:'dans un environnement pratique'}, avec un accès simple aux principaux points d’intérêt.`;
+${locationText}`;
   } else if(currentPlatform==='booking'){
     title=`${type} pour ${cap} personnes avec ${asset}`;
     intro=`Hébergement fonctionnel et confortable proposant ${rooms} chambre${rooms>1?'s':''}, ${num('beds')||cap} couchages et les équipements essentiels.`;
@@ -893,7 +897,9 @@ Le logement se situe ${city?`dans le secteur de ${city}`:'dans un environnement 
 
 Équipements disponibles : ${extras.length?extras.join(', '):'équipements de base'}, cuisine équipée${checked('coffee')?`, machine à café ${val('coffeeBrand')||''}`:''}${checked('dishwasher')?', lave-vaisselle':''}${checked('washer')?', lave-linge':''}${checked('dryer')?', sèche-linge':''}.
 
-Points forts : ${strength}. L’hébergement convient particulièrement aux ${target}.`;
+Points forts : ${strength}. L’hébergement convient particulièrement aux ${target}.
+
+${locationText}`;
   } else {
     title=`Séjour ${target} dans un ${type.toLowerCase()} ${style}`;
     intro=`Une adresse pensée pour se retrouver, se reposer et profiter pleinement du séjour jusqu’à ${cap} voyageurs.`;
@@ -901,7 +907,9 @@ Points forts : ${strength}. L’hébergement convient particulièrement aux ${ta
 
 Vous apprécierez particulièrement ${strength}. ${extras.length?`Le logement dispose également de ${extras.join(', ')}.`:''}
 
-Les espaces ont été pensés pour faciliter les repas, les temps de repos et la vie en groupe. La cuisine est équipée pour les séjours autonomes et les informations pratiques seront communiquées avant l’arrivée.`;
+Les espaces ont été pensés pour faciliter les repas, les temps de repos et la vie en groupe. La cuisine est équipée pour les séjours autonomes et les informations pratiques seront communiquées avant l’arrivée.
+
+${locationText}`;
   }
   rules=`Arrivée selon les horaires convenus. Respect du voisinage et des équipements. Logement non-fumeur${checked('pets')?' ; animaux acceptés selon conditions':' ; animaux non admis sauf accord préalable'}. Les fêtes et événements ne sont pas autorisés sans accord écrit.`;
   $('generatedTitle').value=title;
@@ -918,7 +926,7 @@ function refreshPreview(){
   $('previewMeta').innerHTML=`<span>${val('propertyType')||'Logement'}</span><span>•</span><span>${num('capacity')||0} voyageurs</span><span>•</span><span>${num('bedrooms')||0} chambre${num('bedrooms')>1?'s':''}</span>`;
   $('previewText').textContent=[val('generatedIntro'),val('generatedDescription'),val('generatedRules')].filter(Boolean).join('\n\n')||'Générez votre annonce à l’étape précédente pour afficher la prévisualisation complète.';
   const tags=[];
-  ['wifi','parking','terrace','garden','pool','selfcheckin','coffee','washer'].forEach(id=>{if(checked(id))tags.push({wifi:'Wi-Fi',parking:'Parking',terrace:'Terrasse',garden:'Jardin',pool:'Piscine',selfcheckin:'Arrivée autonome',coffee:'Cafetière',washer:'Lave-linge'}[id])});
+  ['wifi','parking','terrace','garden','pool','selfcheckin','coffee','washer'].forEach(id=>{if(checked(id))tags.push({wifi:'Wi-Fi',parking:'Parking',terrace:'Terrasse / balcon',garden:'Jardin',pool:'Piscine',selfcheckin:'Arrivée autonome',coffee:'Cafetière',washer:'Lave-linge'}[id])});
   $('previewTags').innerHTML=tags.map(x=>`<span>${x}</span>`).join('');
   const coverIndex=Number($('coverChoice').value||0);
   $('previewCover').innerHTML=photos[coverIndex]?`<img src="${photos[coverIndex].url}" alt="">`:'<div class="empty">⌂</div>';
@@ -944,7 +952,7 @@ function downloadWord(){
 }
 $('downloadWord').addEventListener('click',downloadWord);
 
-$('resetAll').addEventListener('click',()=>{if(confirm('Réinitialiser toutes les informations ?'))location.reload()});
+$('resetAll').addEventListener('click',()=>{ if(confirm('Créer une nouvelle annonce nécessite un nouveau paiement. Continuer ?')){ const target = (typeof STRIPE_PAYMENT_LINK !== 'undefined' && STRIPE_PAYMENT_LINK) ? STRIPE_PAYMENT_LINK : 'index.html#services'; window.location.href = target; } });
 const STRIPE_PAYMENT_LINK = ''; // À remplacer par le lien Stripe du produit Mon Annonce Pro à 29 €.
 $('stripeCheckoutBtn').addEventListener('click',()=>{
   if(!STRIPE_PAYMENT_LINK){
