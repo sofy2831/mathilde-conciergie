@@ -277,7 +277,7 @@ h1 span{color:var(--terracotta)}
 
 .preview-card{border:1px solid var(--line);border-radius:24px;background:white;overflow:hidden;box-shadow:var(--shadow-soft)}
 .preview-cover{height:270px;background:linear-gradient(135deg,var(--sand),var(--beige));display:grid;place-items:center;position:relative;overflow:hidden}
-.preview-cover img{width:100%;height:100%;object-fit:cover}
+.preview-cover img{width:100%;height:100%;object-fit:contain;background:var(--beige)}
 .preview-cover .empty{font-size:52px;color:var(--taupe-2)}
 .preview-content{padding:24px}
 .preview-content h3{font-family:"DM Serif Display",serif;font-size:31px;font-weight:400;margin:0 0 8px;color:var(--brown)}
@@ -396,7 +396,7 @@ h1 span{color:var(--terracotta)}
       <div class="section active" id="step1">
         <div class="section-head">
           <div>
-            <h2>Parlez-nous de votre logement</h2>
+            <h2>Parlez-nous du logement</h2>
             <p>Ces informations serviront au contrôle de cohérence et à la rédaction de l’annonce.</p>
           </div>
           <div class="section-badge">Étape 1 sur 6</div>
@@ -438,11 +438,11 @@ h1 span{color:var(--terracotta)}
             <input class="input" id="toilets" type="number" min="1" max="10" placeholder="1">
           </div>
           <div class="field">
-            <label>Places à table</label>
+            <label>Nombre de places utilisables à table</label>
             <input class="input" id="tableSeats" type="number" min="0" max="30" placeholder="6">
           </div>
           <div class="field">
-            <label>Nombre de chaises</label>
+            <label>Nombre total de chaises disponibles</label>
             <input class="input" id="chairs" type="number" min="0" max="30" placeholder="6">
           </div>
           <div class="field">
@@ -493,7 +493,7 @@ h1 span{color:var(--terracotta)}
 
         <div class="equipment-groups">
           <div class="eq-group"><div class="eq-head"><strong>Cuisine et repas</strong><span>Vaisselle, cuisson et entretien</span></div><div class="eq-body">
-            <label class="check-pill"><input type="checkbox" id="hob"> Plaque de cuisson</label><label class="check-pill"><input type="checkbox" id="oven"> Four</label><label class="check-pill"><input type="checkbox" id="microwave"> Micro-ondes</label><label class="check-pill"><input type="checkbox" id="dishwasher"> Lave-vaisselle</label><label class="check-pill"><input type="checkbox" id="coffee"> Machine à café</label><label class="check-pill"><input type="checkbox" id="coffeeSupplies"> Café ou capsules</label><label class="check-pill"><input type="checkbox" id="kettle"> Bouilloire</label><label class="check-pill"><input type="checkbox" id="fridge"> Réfrigérateur</label><label class="check-pill"><input type="checkbox" id="pots"> Casseroles et poêles</label><label class="check-pill"><input type="checkbox" id="servingDishes"> Plats de service</label><label class="check-pill"><input type="checkbox" id="jug"> Carafe</label><label class="check-pill"><input type="checkbox" id="kitchenUtensils"> Ustensiles complets</label><label class="check-pill"><input type="checkbox" id="cuttingBoard"> Planche à découper</label><label class="check-pill"><input type="checkbox" id="corkscrew"> Tire-bouchon / ouvre-bouteille</label><label class="check-pill"><input type="checkbox" id="colander"> Passoire</label><label class="check-pill"><input type="checkbox" id="teaTowels"> Torchons</label><label class="check-pill"><input type="checkbox" id="bin"> Poubelle</label><label class="check-pill"><input type="checkbox" id="diningTable"> Table et chaises</label>
+            <label class="check-pill"><input type="checkbox" id="hob"> Plaque de cuisson</label><label class="check-pill"><input type="checkbox" id="oven"> Four</label><label class="check-pill"><input type="checkbox" id="microwave"> Micro-ondes</label><label class="check-pill"><input type="checkbox" id="dishwasher"> Lave-vaisselle</label><label class="check-pill"><input type="checkbox" id="coffee"> Machine à café</label><label class="check-pill"><input type="checkbox" id="coffeeSupplies"> Café ou capsules</label><label class="check-pill"><input type="checkbox" id="kettle"> Bouilloire</label><label class="check-pill"><input type="checkbox" id="fridge"> Réfrigérateur</label><label class="check-pill"><input type="checkbox" id="pots"> Casseroles et poêles</label><label class="check-pill"><input type="checkbox" id="servingDishes"> Plats de service</label><label class="check-pill"><input type="checkbox" id="jug"> Carafe</label><label class="check-pill"><input type="checkbox" id="kitchenUtensils"> Ustensiles complets</label><label class="check-pill"><input type="checkbox" id="cuttingBoard"> Planche à découper</label><label class="check-pill"><input type="checkbox" id="corkscrew"> Tire-bouchon / ouvre-bouteille</label><label class="check-pill"><input type="checkbox" id="colander"> Passoire</label><label class="check-pill"><input type="checkbox" id="teaTowels"> Torchons</label><label class="check-pill"><input type="checkbox" id="bin"> Poubelle</label>
           </div></div>
           <div class="eq-group"><div class="eq-head"><strong>Chambres et linge</strong><span>Confort réel des couchages</span></div><div class="eq-body">
             <label class="check-pill"><input type="checkbox" id="bedLinen"> Draps fournis</label><label class="check-pill"><input type="checkbox" id="duvetProvided"> Couettes adaptées</label><label class="check-pill"><input type="checkbox" id="pillowsProvided"> Oreillers adaptés</label><label class="check-pill"><input type="checkbox" id="blackout"> Rideaux occultants</label><label class="check-pill"><input type="checkbox" id="shutters"> Volets</label><label class="check-pill"><input type="checkbox" id="bedsideTable"> Table de chevet</label><label class="check-pill"><input type="checkbox" id="bedsideLight"> Éclairage près du lit</label><label class="check-pill"><input type="checkbox" id="mirror"> Miroir</label><label class="check-pill"><input type="checkbox" id="iron"> Fer à repasser</label><label class="check-pill"><input type="checkbox" id="ironingBoard"> Table à repasser</label>
@@ -709,7 +709,7 @@ function showStep(step){
     btn.classList.toggle('done', n < currentStep);
   });
   $('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-  $('nextBtn').textContent = currentStep === 6 ? 'Retour aux services' : 'Continuer →';
+  $('nextBtn').textContent = currentStep === 6 ? 'Terminer' : 'Continuer →';
   const pct = Math.round(currentStep / 6 * 100);
   $('progressBar').style.width = pct + '%';
   $('progressLabel').textContent = pct + ' %';
@@ -718,7 +718,26 @@ function showStep(step){
 }
 qa('.step').forEach(btn => btn.addEventListener('click', ()=>showStep(Number(btn.dataset.step))));
 $('prevBtn').addEventListener('click',()=>showStep(currentStep-1));
-$('nextBtn').addEventListener('click',()=>{ if(currentStep < 6){ showStep(currentStep+1); } else { window.location.href='index.html#services'; } });
+function finishAndReset(){
+  qa('input:not([type=file]), select, textarea').forEach(el=>{
+    if(el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+    else el.value = '';
+  });
+  photos = [];
+  controlIssues = [];
+  adviceItems = [];
+  renderPhotos();
+  $('controlResults').innerHTML = '<div class="result-card ok"><div class="icon">✓</div><div><h4>En attente du contrôle</h4><p>Complétez les informations puis lancez l’analyse.</p></div></div>';
+  $('advicePanel').style.display = 'none';
+  $('generatedTitle').value = '';
+  $('generatedIntro').value = '';
+  $('generatedDescription').value = '';
+  $('generatedRules').value = '';
+  refreshPreview();
+  showStep(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('nextBtn').addEventListener('click',()=> currentStep < 6 ? showStep(currentStep+1) : finishAndReset());
 
 function updateAssistant(){
   const messages = [];
@@ -869,7 +888,10 @@ function generateListing(){
   const type=val('propertyType')||'Logement', city=(val('address').split(',').pop()||'').trim();
   const cap=num('capacity')||2, rooms=num('bedrooms')||1;
   const strength=val('strengths')||'un cadre confortable et soigné';
-  const locationText = city ? `Le logement bénéficie d’une implantation pratique dans le secteur de ${city}. Les commerces, restaurants et principaux points d’intérêt sont facilement accessibles.` : `Le logement bénéficie d’un environnement pratique pour découvrir le secteur, accéder aux commerces et profiter des principaux points d’intérêt.`;
+  const cityName = city.replace(/^\d{5}\s*/, '').trim();
+  const locationText = cityName
+    ? `Le logement bénéficie d’un emplacement pratique à ${cityName}, à proximité des commerces, restaurants et principaux points d’intérêt.`
+    : `Le logement bénéficie d’un emplacement pratique, à proximité des commerces, restaurants et principaux points d’intérêt.`;
   const style=val('style').toLowerCase();
   const target=val('target').toLowerCase();
   const extras=[];
@@ -952,7 +974,14 @@ function downloadWord(){
 }
 $('downloadWord').addEventListener('click',downloadWord);
 
-$('resetAll').addEventListener('click',()=>{ if(confirm('Créer une nouvelle annonce nécessite un nouveau paiement. Continuer ?')){ const target = (typeof STRIPE_PAYMENT_LINK !== 'undefined' && STRIPE_PAYMENT_LINK) ? STRIPE_PAYMENT_LINK : 'index.html#services'; window.location.href = target; } });
+$('resetAll').addEventListener('click',()=>{
+  if(!confirm('Créer une nouvelle annonce nécessite un nouveau paiement. Continuer ?')) return;
+  if(typeof STRIPE_PAYMENT_LINK !== 'undefined' && STRIPE_PAYMENT_LINK){
+    window.location.href = STRIPE_PAYMENT_LINK;
+  }else{
+    alert('Le paiement Stripe sera connecté à cette action avant la mise en ligne.');
+  }
+});
 const STRIPE_PAYMENT_LINK = ''; // À remplacer par le lien Stripe du produit Mon Annonce Pro à 29 €.
 $('stripeCheckoutBtn').addEventListener('click',()=>{
   if(!STRIPE_PAYMENT_LINK){
