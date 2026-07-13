@@ -66,8 +66,8 @@ a{text-decoration:none;color:inherit}
   color:white;display:grid;place-items:center;font-size:22px;
   box-shadow:0 10px 20px rgba(62,45,37,.18)
 }
-.brand-text strong{display:block;font-family:"DM Serif Display",serif;font-size:22px;line-height:1;color:var(--brown)}
-.brand-text span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);margin-top:4px;font-weight:700}
+.brand-text strong{display:block;font-family:Inter,sans-serif;font-size:23px;line-height:.9;color:var(--brown);font-weight:900;letter-spacing:-.05em}
+.brand-text span{display:block;font-size:7.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--terracotta);margin-top:5px;font-weight:900}
 .header-note{font-size:12px;color:var(--taupe);font-weight:600}
 .header-pill{
   display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;
@@ -343,8 +343,8 @@ h1 span{color:var(--terracotta)}
     <a class="brand" href="#">
       <div class="brand-mark">⌂</div>
       <div class="brand-text">
-        <strong>Mathilde Conciergerie</strong>
-        <span>Services propriétaires</span>
+        <strong>CleanUp</strong>
+        <span>MANAGER</span>
       </div>
     </a>
     <div class="header-note">Assistant de création d’annonce</div>
@@ -374,6 +374,8 @@ h1 span{color:var(--terracotta)}
         <span><i>✓</i> Analyse des incohérences</span>
         <span><i>✓</i> Prévisualisation avant export</span>
       </div>
+      <button class="btn terracotta" id="stripeCheckoutBtn" type="button" style="margin-top:20px;width:100%">Payer 29 € et commencer</button>
+      <p id="stripeStatus" style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.65)">Paiement sécurisé par Stripe</p>
     </aside>
   </section>
 
@@ -470,59 +472,42 @@ h1 span{color:var(--terracotta)}
         </div>
 
         <div class="form-grid three" style="margin-bottom:18px">
-          <div class="field"><label>Grandes assiettes</label><input class="input" id="plates" type="number" min="0" max="50" placeholder="6"></div>
-          <div class="field"><label>Verres</label><input class="input" id="glasses" type="number" min="0" max="50" placeholder="6"></div>
-          <div class="field"><label>Fourchettes</label><input class="input" id="forks" type="number" min="0" max="50" placeholder="6"></div>
-          <div class="field"><label>Oreillers</label><input class="input" id="pillows" type="number" min="0" max="50" placeholder="6"></div>
-          <div class="field"><label>Serviettes disponibles</label><input class="input" id="towels" type="number" min="0" max="50" placeholder="6"></div>
+          <div class="field"><label>Grandes assiettes</label><input class="input" id="plates" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Bols</label><input class="input" id="bowls" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Verres</label><input class="input" id="glasses" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Verres à vin</label><input class="input" id="wineGlasses" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Fourchettes</label><input class="input" id="forks" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Couteaux</label><input class="input" id="knives" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Cuillères</label><input class="input" id="spoons" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Cuillères à café</label><input class="input" id="teaspoons" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Oreillers</label><input class="input" id="pillows" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Couettes</label><input class="input" id="duvets" type="number" min="0" max="50" placeholder="4"></div>
+          <div class="field"><label>Jeux de draps</label><input class="input" id="sheets" type="number" min="0" max="50" placeholder="4"></div>
+          <div class="field"><label>Serviettes de bain</label><input class="input" id="towels" type="number" min="0" max="100" placeholder="8"></div>
+          <div class="field"><label>Cintres</label><input class="input" id="hangers" type="number" min="0" max="100" placeholder="12"></div>
           <div class="field"><label>Jeux de clés</label><input class="input" id="keys" type="number" min="0" max="10" placeholder="2"></div>
+          <div class="field"><label>Marque de la machine à café</label><input class="input" id="coffeeBrand" placeholder="Ex. Nespresso, Senseo, filtre..."></div>
         </div>
 
         <div class="equipment-groups">
-          <div class="eq-group">
-            <div class="eq-head"><strong>Cuisine</strong><span>Équipements essentiels</span></div>
-            <div class="eq-body">
-              <label class="check-pill"><input type="checkbox" id="oven"> Four</label>
-              <label class="check-pill"><input type="checkbox" id="microwave"> Micro-ondes</label>
-              <label class="check-pill"><input type="checkbox" id="dishwasher"> Lave-vaisselle</label>
-              <label class="check-pill"><input type="checkbox" id="coffee"> Cafetière</label>
-              <label class="check-pill"><input type="checkbox" id="kettle"> Bouilloire</label>
-              <label class="check-pill"><input type="checkbox" id="fridge"> Réfrigérateur</label>
-            </div>
-          </div>
-          <div class="eq-group">
-            <div class="eq-head"><strong>Confort</strong><span>Séjour et nuit</span></div>
-            <div class="eq-body">
-              <label class="check-pill"><input type="checkbox" id="wifi"> Wi-Fi</label>
-              <label class="check-pill"><input type="checkbox" id="tv"> Télévision</label>
-              <label class="check-pill"><input type="checkbox" id="ac"> Climatisation</label>
-              <label class="check-pill"><input type="checkbox" id="washer"> Lave-linge</label>
-              <label class="check-pill"><input type="checkbox" id="workspace"> Espace de travail</label>
-              <label class="check-pill"><input type="checkbox" id="blackout"> Rideaux occultants</label>
-            </div>
-          </div>
-          <div class="eq-group">
-            <div class="eq-head"><strong>Accès et sécurité</strong><span>Avant publication</span></div>
-            <div class="eq-body">
-              <label class="check-pill"><input type="checkbox" id="parking"> Stationnement</label>
-              <label class="check-pill"><input type="checkbox" id="selfcheckin"> Arrivée autonome</label>
-              <label class="check-pill"><input type="checkbox" id="smoke"> Détecteur de fumée</label>
-              <label class="check-pill"><input type="checkbox" id="firstaid"> Trousse de secours</label>
-              <label class="check-pill"><input type="checkbox" id="extinguisher"> Extincteur</label>
-              <label class="check-pill"><input type="checkbox" id="baby"> Équipement bébé</label>
-            </div>
-          </div>
-          <div class="eq-group">
-            <div class="eq-head"><strong>Extérieurs et services</strong><span>Atouts du logement</span></div>
-            <div class="eq-body">
-              <label class="check-pill"><input type="checkbox" id="terrace"> Terrasse</label>
-              <label class="check-pill"><input type="checkbox" id="garden"> Jardin</label>
-              <label class="check-pill"><input type="checkbox" id="pool"> Piscine</label>
-              <label class="check-pill"><input type="checkbox" id="bbq"> Barbecue</label>
-              <label class="check-pill"><input type="checkbox" id="pets"> Animaux acceptés</label>
-              <label class="check-pill"><input type="checkbox" id="linen"> Linge fourni</label>
-            </div>
-          </div>
+          <div class="eq-group"><div class="eq-head"><strong>Cuisine et repas</strong><span>Vaisselle, cuisson et entretien</span></div><div class="eq-body">
+            <label class="check-pill"><input type="checkbox" id="hob"> Plaque de cuisson</label><label class="check-pill"><input type="checkbox" id="oven"> Four</label><label class="check-pill"><input type="checkbox" id="microwave"> Micro-ondes</label><label class="check-pill"><input type="checkbox" id="dishwasher"> Lave-vaisselle</label><label class="check-pill"><input type="checkbox" id="coffee"> Machine à café</label><label class="check-pill"><input type="checkbox" id="coffeeSupplies"> Café ou capsules</label><label class="check-pill"><input type="checkbox" id="kettle"> Bouilloire</label><label class="check-pill"><input type="checkbox" id="fridge"> Réfrigérateur</label><label class="check-pill"><input type="checkbox" id="pots"> Casseroles et poêles</label><label class="check-pill"><input type="checkbox" id="servingDishes"> Plats de service</label><label class="check-pill"><input type="checkbox" id="jug"> Carafe</label><label class="check-pill"><input type="checkbox" id="kitchenUtensils"> Ustensiles complets</label><label class="check-pill"><input type="checkbox" id="cuttingBoard"> Planche à découper</label><label class="check-pill"><input type="checkbox" id="corkscrew"> Tire-bouchon / ouvre-bouteille</label><label class="check-pill"><input type="checkbox" id="colander"> Passoire</label><label class="check-pill"><input type="checkbox" id="teaTowels"> Torchons</label><label class="check-pill"><input type="checkbox" id="bin"> Poubelle</label><label class="check-pill"><input type="checkbox" id="diningTable"> Table et chaises</label>
+          </div></div>
+          <div class="eq-group"><div class="eq-head"><strong>Chambres et linge</strong><span>Confort réel des couchages</span></div><div class="eq-body">
+            <label class="check-pill"><input type="checkbox" id="bedLinen"> Draps fournis</label><label class="check-pill"><input type="checkbox" id="duvetProvided"> Couettes adaptées</label><label class="check-pill"><input type="checkbox" id="pillowsProvided"> Oreillers adaptés</label><label class="check-pill"><input type="checkbox" id="blackout"> Rideaux occultants</label><label class="check-pill"><input type="checkbox" id="shutters"> Volets</label><label class="check-pill"><input type="checkbox" id="bedsideTable"> Table de chevet</label><label class="check-pill"><input type="checkbox" id="bedsideLight"> Éclairage près du lit</label><label class="check-pill"><input type="checkbox" id="hangersProvided"> Cintres</label><label class="check-pill"><input type="checkbox" id="mirror"> Miroir</label><label class="check-pill"><input type="checkbox" id="iron"> Fer et table à repasser</label>
+          </div></div>
+          <div class="eq-group"><div class="eq-head"><strong>Salle de bain</strong><span>Équipements indispensables</span></div><div class="eq-body">
+            <label class="check-pill"><input type="checkbox" id="shower"> Douche</label><label class="check-pill"><input type="checkbox" id="bathtub"> Baignoire</label><label class="check-pill"><input type="checkbox" id="hairdryer"> Sèche-cheveux</label><label class="check-pill"><input type="checkbox" id="bathTowels"> Serviettes de bain</label><label class="check-pill"><input type="checkbox" id="bathMat"> Tapis de bain</label><label class="check-pill"><input type="checkbox" id="toiletPaper"> Papier toilette</label>
+          </div></div>
+          <div class="eq-group"><div class="eq-head"><strong>Salon et confort</strong><span>Vie quotidienne et détente</span></div><div class="eq-body">
+            <label class="check-pill"><input type="checkbox" id="wifi"> Wi-Fi</label><label class="check-pill"><input type="checkbox" id="tv"> Télévision</label><label class="check-pill"><input type="checkbox" id="sofa"> Canapé</label><label class="check-pill"><input type="checkbox" id="sofaBed"> Canapé convertible</label><label class="check-pill"><input type="checkbox" id="coffeeTable"> Table basse / d’appoint</label><label class="check-pill"><input type="checkbox" id="ac"> Climatisation</label><label class="check-pill"><input type="checkbox" id="washer"> Lave-linge</label><label class="check-pill"><input type="checkbox" id="dryer"> Sèche-linge</label><label class="check-pill"><input type="checkbox" id="workspace"> Espace de travail</label><label class="check-pill"><input type="checkbox" id="lighting"> Éclairage dans chaque espace</label>
+          </div></div>
+          <div class="eq-group"><div class="eq-head"><strong>Accès et sécurité</strong><span>Avant publication</span></div><div class="eq-body">
+            <label class="check-pill"><input type="checkbox" id="parking"> Stationnement</label><label class="check-pill"><input type="checkbox" id="selfcheckin"> Arrivée autonome</label><label class="check-pill"><input type="checkbox" id="smoke"> Détecteur de fumée</label><label class="check-pill"><input type="checkbox" id="coDetector"> Détecteur de monoxyde</label><label class="check-pill"><input type="checkbox" id="firstaid"> Trousse de premiers secours</label><label class="check-pill"><input type="checkbox" id="extinguisher"> Extincteur</label><label class="check-pill"><input type="checkbox" id="outdoorLighting"> Éclairage extérieur</label><label class="check-pill"><input type="checkbox" id="baby"> Équipement bébé</label>
+          </div></div>
+          <div class="eq-group"><div class="eq-head"><strong>Extérieurs et services</strong><span>Atouts du logement</span></div><div class="eq-body">
+            <label class="check-pill"><input type="checkbox" id="terrace"> Terrasse</label><label class="check-pill"><input type="checkbox" id="garden"> Jardin</label><label class="check-pill"><input type="checkbox" id="pool"> Piscine</label><label class="check-pill"><input type="checkbox" id="bbq"> Barbecue</label><label class="check-pill"><input type="checkbox" id="pets"> Animaux acceptés</label><label class="check-pill"><input type="checkbox" id="linen"> Linge fourni</label>
+          </div></div>
         </div>
       </div>
 
@@ -666,14 +651,13 @@ h1 span{color:var(--terracotta)}
             <h3>Vous préférez déléguer ?</h3>
             <p>Mathilde Conciergerie peut prendre en charge la création de l’annonce, le suivi des voyageurs et la gestion opérationnelle du logement.</p>
           </div>
-          <a class="btn terracotta" href="mailto:contact@mathilde-conciergerie.fr">Confier mon logement</a>
+          <a class="btn terracotta" href="mailto:mathildeconciergerie45@gmail.com">Confier mon logement</a>
         </div>
       </div>
 
       <div class="nav-actions">
         <button class="btn ghost" type="button" id="prevBtn">← Précédent</button>
         <div class="right">
-          <button class="btn soft" type="button" id="saveDraft">Conserver cette session</button>
           <button class="btn primary" type="button" id="nextBtn">Continuer →</button>
         </div>
       </div>
@@ -799,6 +783,27 @@ function runControl(){
   if(cap && num('plates') < cap) issues.push(issue('error','Assiettes insuffisantes',`${num('plates')} grandes assiettes pour ${cap} voyageurs.`));
   if(cap && num('glasses') < cap) issues.push(issue('error','Verres insuffisants',`${num('glasses')} verres pour ${cap} voyageurs.`));
   if(cap && num('forks') < cap) issues.push(issue('error','Couverts insuffisants',`${num('forks')} fourchettes pour ${cap} voyageurs.`));
+  if(cap && num('knives') < cap) issues.push(issue('error','Couteaux insuffisants',`${num('knives')} couteaux pour ${cap} voyageurs.`));
+  if(cap && num('spoons') < cap) issues.push(issue('warn','Cuillères insuffisantes',`${num('spoons')} cuillères pour ${cap} voyageurs.`));
+  if(cap && num('teaspoons') < cap) issues.push(issue('warn','Cuillères à café insuffisantes',`${num('teaspoons')} cuillères à café pour ${cap} voyageurs.`));
+  if(cap && num('bowls') < cap) issues.push(issue('warn','Bols insuffisants',`${num('bowls')} bols pour ${cap} voyageurs.`));
+  if(cap && num('wineGlasses') < Math.min(cap,4)) issues.push(issue('warn','Verres à vin à compléter','Le nombre de verres à vin paraît faible pour la capacité annoncée.'));
+  if(!checked('pots')) issues.push(issue('warn','Casseroles et poêles non confirmées','Une cuisine annoncée équipée doit permettre de cuisiner réellement.'));
+  if(!checked('kitchenUtensils')) issues.push(issue('warn','Ustensiles incomplets','Planche, passoire, ouvre-bouteille et accessoires doivent être vérifiés.'));
+  if(!checked('bin')) issues.push(issue('warn','Poubelle non renseignée','Précisez la présence et l’emplacement des poubelles.'));
+  if(checked('coffee') && !val('coffeeBrand')) issues.push(issue('warn','Machine à café non précisée','Indiquez la marque ou le type de machine.'));
+  if(checked('coffee') && !checked('coffeeSupplies')) issues.push(issue('warn','Café ou capsules absents','Prévoyez au minimum un petit stock d’accueil.'));
+  if(!checked('lighting')) issues.push(issue('warn','Éclairage à vérifier','Chaque espace doit disposer d’un éclairage fonctionnel.'));
+  if(!checked('bedsideTable')) issues.push(issue('warn','Tables de chevet non confirmées','Chaque couchage principal devrait disposer d’un support de proximité.'));
+  if(!checked('bedsideLight')) issues.push(issue('warn','Éclairage de chevet absent','Ajoutez une lampe ou un éclairage accessible depuis le lit.'));
+  if(!checked('shutters') && !checked('blackout')) issues.push(issue('warn','Occultation insuffisante','Prévoyez des volets ou des rideaux occultants dans les chambres.'));
+  if(!checked('hairdryer')) issues.push(issue('warn','Sèche-cheveux absent','C’est un équipement attendu dans une location courte durée.'));
+  if(!checked('shower') && !checked('bathtub')) issues.push(issue('error','Douche ou baignoire non renseignée','Le type d’équipement sanitaire doit être précisé.'));
+  if(!checked('washer')) issues.push(issue('warn','Lave-linge absent','À signaler clairement pour les séjours de plusieurs nuits.'));
+  if(!checked('coDetector')) issues.push(issue('warn','Détecteur de monoxyde non confirmé','À vérifier notamment en présence de gaz, cheminée ou chaudière.'));
+  if((checked('terrace') || checked('garden')) && !checked('outdoorLighting')) issues.push(issue('warn','Éclairage extérieur absent','Un accès extérieur doit rester sûr le soir.'));
+  if(!checked('iron')) issues.push(issue('warn','Fer et table à repasser absents','Équipement apprécié pour les séjours professionnels ou longs.'));
+
   if(cap && num('pillows') < cap) issues.push(issue('warn','Oreillers à vérifier',`${num('pillows')} oreillers pour ${cap} voyageurs.`));
   if(cap && num('towels') < cap) issues.push(issue('warn','Serviettes à compléter',`${num('towels')} serviettes pour ${cap} voyageurs.`));
   if(num('keys') < 1) issues.push(issue('error','Aucun jeu de clés','Précisez le système d’accès au logement.'));
@@ -886,7 +891,7 @@ Le logement se situe ${city?`dans le secteur de ${city}`:'dans un environnement 
     intro=`Hébergement fonctionnel et confortable proposant ${rooms} chambre${rooms>1?'s':''}, ${num('beds')||cap} couchages et les équipements essentiels.`;
     desc=`Cet hébergement accueille jusqu’à ${cap} personnes. Il comprend ${rooms} chambre${rooms>1?'s':''}, ${num('bathrooms')||1} salle${num('bathrooms')>1?'s':''} de bain et ${num('toilets')||1} WC.
 
-Équipements disponibles : ${extras.length?extras.join(', '):'équipements de base'}, cuisine équipée${checked('coffee')?', cafetière':''}${checked('dishwasher')?', lave-vaisselle':''}${checked('washer')?', lave-linge':''}.
+Équipements disponibles : ${extras.length?extras.join(', '):'équipements de base'}, cuisine équipée${checked('coffee')?`, machine à café ${val('coffeeBrand')||''}`:''}${checked('dishwasher')?', lave-vaisselle':''}${checked('washer')?', lave-linge':''}${checked('dryer')?', sèche-linge':''}.
 
 Points forts : ${strength}. L’hébergement convient particulièrement aux ${target}.`;
   } else {
@@ -940,17 +945,15 @@ function downloadWord(){
 $('downloadWord').addEventListener('click',downloadWord);
 
 $('resetAll').addEventListener('click',()=>{if(confirm('Réinitialiser toutes les informations ?'))location.reload()});
-$('saveDraft').addEventListener('click',()=>{
-  const data={};qa('input:not([type=file]),select,textarea').forEach(el=>{data[el.id]=el.type==='checkbox'?el.checked:el.value});
-  localStorage.setItem('monAnnonceProDraft',JSON.stringify(data));
-  const b=$('saveDraft');b.textContent='Session conservée ✓';setTimeout(()=>b.textContent='Conserver cette session',1800);
+const STRIPE_PAYMENT_LINK = ''; // À remplacer par le lien Stripe du produit Mon Annonce Pro à 29 €.
+$('stripeCheckoutBtn').addEventListener('click',()=>{
+  if(!STRIPE_PAYMENT_LINK){
+    $('stripeStatus').textContent='Lien Stripe à connecter avant la mise en ligne.';
+    $('stripeStatus').style.color='#FFD8C7';
+    return;
+  }
+  window.location.href=STRIPE_PAYMENT_LINK;
 });
-(function restore(){
-  try{
-    const data=JSON.parse(localStorage.getItem('monAnnonceProDraft')||'null');if(!data)return;
-    Object.entries(data).forEach(([id,v])=>{const el=$(id);if(!el)return;if(el.type==='checkbox')el.checked=v;else el.value=v});
-  }catch(e){}
-})();
 showStep(1);
 </script>
 </body>
