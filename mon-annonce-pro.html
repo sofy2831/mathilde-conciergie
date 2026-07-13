@@ -276,8 +276,29 @@ h1 span{color:var(--terracotta)}
 .generated-field textarea.long{min-height:210px}
 
 .preview-card{border:1px solid var(--line);border-radius:24px;background:white;overflow:hidden;box-shadow:var(--shadow-soft)}
-.preview-cover{height:320px;background:linear-gradient(135deg,var(--sand),var(--beige));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:10px}
-.preview-cover img{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;background:transparent!important}
+.preview-cover{
+  min-height:260px;
+  max-height:360px;
+  background:linear-gradient(135deg,var(--sand),var(--beige));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  padding:12px;
+}
+.preview-cover img{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:336px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:transparent!important;
+  image-rendering:auto;
+  image-rendering:-webkit-optimize-contrast;
+}
 .preview-cover .empty{font-size:52px;color:var(--taupe-2)}
 .preview-content{padding:24px}
 .preview-content h3{font-family:"DM Serif Display",serif;font-size:31px;font-weight:400;margin:0 0 8px;color:var(--brown)}
@@ -332,8 +353,25 @@ h1 span{color:var(--terracotta)}
   #step6{display:block!important}
   #step6 .section-head,.export-grid{display:none!important}
   .preview-card{box-shadow:none;border:0}
-  .preview-cover{height:78mm!important;padding:4mm!important;background:var(--beige)!important}
-  .preview-cover img{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important}
+  .preview-cover{
+    height:auto!important;
+    min-height:55mm!important;
+    max-height:78mm!important;
+    padding:3mm!important;
+    background:var(--beige)!important;
+    overflow:hidden!important;
+  }
+  .preview-cover img{
+    display:block!important;
+    width:auto!important;
+    height:auto!important;
+    max-width:100%!important;
+    max-height:72mm!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+    image-rendering:auto!important;
+    image-rendering:-webkit-optimize-contrast!important;
+  }
   @page{size:A4;margin:12mm}
 }
 </style>
@@ -397,7 +435,7 @@ h1 span{color:var(--terracotta)}
       <div class="section active" id="step1">
         <div class="section-head">
           <div>
-            <h2>Parlez-nous de votre</h2>
+            <h2>Parlez-nous du logement</h2>
             <p>Ces informations serviront au contrôle de cohérence et à la rédaction de l’annonce.</p>
           </div>
           <div class="section-badge">Étape 1 sur 6</div>
@@ -780,15 +818,35 @@ drop.addEventListener('drop',e=>addPhotos([...e.dataTransfer.files].filter(f=>f.
 
 function addPhotos(files){
   files.forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e => {photos.push({name:file.name,url:e.target.result});renderPhotos();updateAssistant()};
-    reader.readAsDataURL(file);
+    if(!file || !file.type.startsWith('image/')) return;
+    const objectUrl = URL.createObjectURL(file);
+    const probe = new Image();
+    probe.onload = () => {
+      photos.push({
+        name:file.name,
+        url:objectUrl,
+        width:probe.naturalWidth,
+        height:probe.naturalHeight,
+        size:file.size
+      });
+      renderPhotos();
+      updateAssistant();
+    };
+    probe.onerror = () => URL.revokeObjectURL(objectUrl);
+    probe.src = objectUrl;
   });
 }
 function renderPhotos(){
   $('photoGrid').innerHTML = photos.map((p,i)=>`<div class="photo-card"><img src="${p.url}" alt=""><button type="button" data-rm="${i}">×</button><span>Photo ${i+1}</span></div>`).join('');
   $('coverChoice').innerHTML = '<option value="">Première photo ajoutée</option>'+photos.map((p,i)=>`<option value="${i}">Photo ${i+1}</option>`).join('');
-  qa('[data-rm]').forEach(b=>b.addEventListener('click',()=>{photos.splice(Number(b.dataset.rm),1);renderPhotos()}));
+  qa('[data-rm]').forEach(b=>b.addEventListener('click',()=>{
+    const index = Number(b.dataset.rm);
+    const removed = photos[index];
+    if(removed?.url?.startsWith('blob:')) URL.revokeObjectURL(removed.url);
+    photos.splice(index,1);
+    renderPhotos();
+    refreshPreview();
+  }));
 }
 
 function issue(type,title,text){
@@ -952,7 +1010,28 @@ function refreshPreview(){
   ['wifi','parking','terrace','garden','pool','selfcheckin','coffee','washer'].forEach(id=>{if(checked(id))tags.push({wifi:'Wi-Fi',parking:'Parking',terrace:'Terrasse / balcon',garden:'Jardin',pool:'Piscine',selfcheckin:'Arrivée autonome',coffee:'Cafetière',washer:'Lave-linge'}[id])});
   $('previewTags').innerHTML=tags.map(x=>`<span>${x}</span>`).join('');
   const coverIndex=Number($('coverChoice').value||0);
-  $('previewCover').innerHTML=photos[coverIndex]?`<img src="${photos[coverIndex].url}" alt="">`:'<div class="empty">⌂</div>';
+  const cover = $('previewCover');
+  cover.innerHTML = '';
+  const photo = photos[coverIndex];
+  if(photo){
+    const img = document.createElement('img');
+    img.src = photo.url;
+    img.alt = 'Photo principale du logement';
+    img.decoding = 'sync';
+    img.loading = 'eager';
+    img.fetchPriority = 'high';
+    img.width = photo.width || 1600;
+    img.height = photo.height || 1000;
+    img.addEventListener('load',()=>{
+      const maxDisplayWidth = cover.clientWidth - 24;
+      const naturalWidth = img.naturalWidth || photo.width || maxDisplayWidth;
+      img.style.width = Math.min(naturalWidth, maxDisplayWidth) + 'px';
+      img.style.height = 'auto';
+    },{once:true});
+    cover.appendChild(img);
+  }else{
+    cover.innerHTML = '<div class="empty">⌂</div>';
+  }
 }
 $('coverChoice').addEventListener('change',refreshPreview);
 
