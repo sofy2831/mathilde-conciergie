@@ -869,7 +869,7 @@ function generateListing(){
   const type=val('propertyType')||'Logement', city=(val('address').split(',').pop()||'').trim();
   const cap=num('capacity')||2, rooms=num('bedrooms')||1;
   const strength=val('strengths')||'un cadre confortable et soigné';
-  const locationText = city ? `Le logement bénéficie d’une implantation pratique dans le secteur de ${city}. Les commerces, restaurants et principaux points d’intérêt sont facilement accessibles selon l’emplacement du bien.` : `Le logement bénéficie d’un environnement pratique pour découvrir le secteur, accéder aux commerces et profiter des principaux points d’intérêt.`;
+  const locationText = city ? `Le logement bénéficie d’une implantation pratique dans le secteur de ${city}. Les commerces, restaurants et principaux points d’intérêt sont facilement accessibles.` : `Le logement bénéficie d’un environnement pratique pour découvrir le secteur, accéder aux commerces et profiter des principaux points d’intérêt.`;
   const style=val('style').toLowerCase();
   const target=val('target').toLowerCase();
   const extras=[];
