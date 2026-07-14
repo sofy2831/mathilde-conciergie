@@ -312,12 +312,12 @@ h1 span{color:var(--terracotta)}
 .export-card .icon{font-size:30px}
 .export-card h3{margin:10px 0 6px;font-size:15px;color:var(--brown)}
 .export-card p{margin:0 0 14px;font-size:11px;line-height:1.5;color:var(--muted)}
-.cta-mathilde{
+.cta-services{
   margin-top:18px;padding:22px;border-radius:22px;background:linear-gradient(145deg,var(--brown),#6A4A3A);color:white;
   display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center
 }
-.cta-mathilde h3{margin:0 0 6px;font-family:"DM Serif Display",serif;font-size:26px;font-weight:400}
-.cta-mathilde p{margin:0;color:rgba(255,255,255,.75);font-size:11px;line-height:1.5}
+.cta-services h3{margin:0 0 6px;font-family:"DM Serif Display",serif;font-size:26px;font-weight:400}
+.cta-services p{margin:0;color:rgba(255,255,255,.75);font-size:11px;line-height:1.5}
 
 .nav-actions{
   display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)
@@ -341,12 +341,12 @@ h1 span{color:var(--terracotta)}
   .section-head{display:block}.section-badge{display:inline-block;margin-top:12px}
   .form-grid,.form-grid.three,.choice-grid,.eq-body,.export-grid{grid-template-columns:1fr}
   .photo-grid{grid-template-columns:repeat(2,1fr)}
-  .control-hero,.cta-mathilde{grid-template-columns:1fr}
+  .control-hero,.cta-services{grid-template-columns:1fr}
   .nav-actions{flex-direction:column}.nav-actions .right{width:100%}.nav-actions .btn{flex:1}
 }
 @media print{
   body{background:white}
-  .site-header,.hero,.stepper,.assistant-card,.nav-actions,.section:not(#step6),.cta-mathilde{display:none!important}
+  .site-header,.hero,.stepper,.assistant-card,.nav-actions,.section:not(#step6),.cta-services{display:none!important}
   .page{max-width:none;padding:0}
   .workspace{display:block}
   .main-card{border:0;box-shadow:none;padding:0}
@@ -687,12 +687,12 @@ h1 span{color:var(--terracotta)}
           </div>
         </div>
 
-        <div class="cta-mathilde">
+        <div class="cta-services">
           <div>
-            <h3>Vous préférez déléguer ?</h3>
-            <p>Mathilde Conciergerie peut prendre en charge la création de l’annonce, le suivi des voyageurs et la gestion opérationnelle du logement.</p>
+            <h3>Découvrez les autres indispensables</h3>
+            <p>Guide d’accueil, livret voyageur, optimisation d’annonce, diagnostic de rentabilité et étude d’investissement : choisissez uniquement le service dont vous avez besoin.</p>
           </div>
-          <a class="btn terracotta" href="mailto:mathildeconciergerie45@gmail.com?subject=Je%20souhaite%20confier%20mon%20logement%20à%20Mathilde%20Conciergerie&body=Bonjour Mathilde,%0D%0A%0D%0AJe souhaite échanger avec vous concernant la gestion de mon logement.%0D%0A%0D%0AAdresse du logement : %0D%0ATéléphone : %0D%0AMes disponibilités : %0D%0A%0D%0ACordialement,">Confier mon logement</a>
+          <a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a>
         </div>
       </div>
 
@@ -801,7 +801,7 @@ function updateAssistant(){
     messages.push({t:'Votre annonce',m:'CleanUp adapte automatiquement votre annonce à Airbnb, Booking et Abritel, sans vous demander de réécrire trois versions.'});
   } else {
     messages.push({t:'Dernière vérification',m:'Relisez toujours les distances, règles et équipements avant de publier.'});
-    messages.push({t:'Besoin de déléguer ?',m:'Mathilde peut ensuite prendre en charge le suivi des voyageurs et la gestion du logement.',c:'good'});
+    messages.push({t:'Document terminé',m:'Téléchargez votre annonce avant de quitter la page : aucune donnée ni aucun document ne sont conservés.',c:'good'});
   }
   $('assistantMessages').innerHTML = messages.map(x=>`<div class="ai-message ${x.c||''}"><strong>${x.t}</strong>${x.m}</div>`).join('');
 }
