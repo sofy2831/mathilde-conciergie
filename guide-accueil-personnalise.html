@@ -110,7 +110,7 @@ function lockAfterExport(){
 function bindPhotos(){const input=$('photoInput'),choose=$('choosePhotos');if(!input||!choose)return;choose.onclick=()=>input.click();input.onchange=e=>addPhotos([...e.target.files]);}
 function addPhotos(files){files.filter(f=>f.type.startsWith('image/')).forEach(f=>photos.push({name:f.name,url:URL.createObjectURL(f)}));renderPhotos();}
 function renderPhotos(){const grid=$('photoGrid');if(!grid)return;grid.innerHTML=photos.map((p,i)=>`<div class="photo-card"><img src="${p.url}"><button type="button" data-rm="${i}">×</button></div>`).join('');qa('[data-rm]').forEach(b=>b.onclick=()=>{URL.revokeObjectURL(photos[Number(b.dataset.rm)].url);photos.splice(Number(b.dataset.rm),1);renderPhotos()});}
-function downloadDoc(filename,title,html){const content=`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body>${html}</body></html>`;const blob=new Blob(['\ufeff',content],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href)}
+function downloadDoc(filename,title,html){const content=`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title></head><body>${html}</body></html>`;const blob=new Blob(['\ufeff',content],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href)}
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const old=btn.textContent;btn.textContent='Copié ✓';setTimeout(()=>btn.textContent=old,1400)})}
 bindPhotos();showStep(1);
 
