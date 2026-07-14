@@ -7,18 +7,22 @@
 
 .print-sheet{display:none}
 @media print{
-  html,body{width:210mm;height:297mm;margin:0!important;padding:0!important;background:#fff!important}
+  html,body{width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;margin:0!important;padding:0!important;background:#fff!important;overflow:hidden!important}
   body *{visibility:hidden!important}
   .print-sheet,.print-sheet *{visibility:visible!important}
   .print-sheet{
     display:flex!important;
-    position:absolute!important;
+    position:fixed!important;
     inset:0!important;
     width:210mm!important;
     height:297mm!important;
     padding:16mm 17mm 14mm!important;
     flex-direction:column!important;
     overflow:hidden!important;
+    page-break-before:avoid!important;
+    page-break-after:avoid!important;
+    break-before:avoid-page!important;
+    break-after:avoid-page!important;
     background:#F3EFE3!important;
     color:#1F1B18!important;
     font-family:Inter,Arial,sans-serif!important;
@@ -102,6 +106,7 @@
     color:#62574F!important;
   }
   @page{size:A4 portrait;margin:0}
+  .print-sheet{page-break-inside:avoid!important;break-inside:avoid-page!important}
 }
 
 .char-counter{
@@ -119,9 +124,19 @@
   color:var(--muted);
 }
 </style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide local personnalisé</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Livret Voyageur <span>Premium</span></h1><p>Créez un livret de destination avec bonnes adresses, conseils et événements locaux actualisables.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Guide local personnalisé</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un livret voyageur</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Destination</button><button class="step " data-step="2"><span class="num">2</span>Préférences</button><button class="step " data-step="3"><span class="num">3</span>Adresses</button><button class="step " data-step="4"><span class="num">4</span>Événements</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
-<div class="section active" id="step1"><div class="section-head"><div><h2>Votre destination</h2><p>L’adresse sert à contextualiser les recommandations. Aucune API cartographique payante n’est utilisée.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName"></div><div class="field full"><label>Adresse complète</label><input class="input" id="address"></div><div class="field"><label>Ville</label><input class="input" id="city"></div><div class="field"><label>Durée moyenne du séjour</label><select class="select" id="stay"><option>1 à 2 nuits</option><option>3 à 4 nuits</option><option>Une semaine</option><option>Plus d’une semaine</option></select></div><div class="field full"><label>Message d’introduction</label><textarea class="textarea" id="intro" maxlength="280">Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.</textarea><div class="char-counter" id="introCounter">0 / 280</div></div></div></div>
+<div class="section active" id="step1"><div class="section-head"><div><h2>Votre destination</h2><p>L’adresse sert à contextualiser les recommandations. Aucune API cartographique payante n’est utilisée.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName"></div><div class="field full"><label>Adresse complète</label><input class="input" id="address"></div><div class="field"><label>Ville</label><input class="input" id="city"></div>
+<div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="conciergeName" placeholder="Ex. Conciergerie Horizon"></div>
+<div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="conciergePhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div>
+<div class="field"><label>Durée moyenne du séjour</label><select class="select" id="stay"><option>1 à 2 nuits</option><option>3 à 4 nuits</option><option>Une semaine</option><option>Plus d’une semaine</option></select></div><div class="field full"><label>Message d’introduction</label><textarea class="textarea" id="intro" maxlength="280">Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.</textarea><div class="char-counter" id="introCounter">0 / 280</div></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Profil des voyageurs</h2><p>Ces préférences permettent d’adapter le livret.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="check-grid"><label class="check-pill"><input id="families" type="checkbox"> Familles</label><label class="check-pill"><input id="couples" type="checkbox" checked> Couples</label><label class="check-pill"><input id="business" type="checkbox"> Professionnels</label><label class="check-pill"><input id="food" type="checkbox" checked> Gastronomie</label><label class="check-pill"><input id="culture" type="checkbox" checked> Culture</label><label class="check-pill"><input id="nature" type="checkbox"> Nature</label><label class="check-pill"><input id="shopping" type="checkbox"> Shopping</label><label class="check-pill"><input id="nightlife" type="checkbox"> Sorties</label><label class="check-pill"><input id="accessible" type="checkbox"> Accessibilité</label></div><div class="form-grid" style="margin-top:18px"><div class="field full"><label>Ton souhaité</label><select class="select" id="tone"><option>Chaleureux et local</option><option>Élégant et premium</option><option>Familial et pratique</option><option>Simple et direct</option></select></div></div></div>
-<div class="section" id="step3"><div class="section-head"><div><h2>Vos bonnes adresses</h2><p>Ajoutez uniquement les recommandations essentielles. Chaque rubrique est limitée pour garantir un livret A4 propre et lisible.</p></div><div class="section-badge">Étape 3 sur 5</div></div><div class="form-grid"><div class="field full"><label>Restaurants</label><textarea class="textarea" id="restaurants" placeholder="Nom — spécialité — quartier" maxlength="420"></textarea><div class="char-counter" id="restaurantsCounter">0 / 420</div></div><div class="field full"><label>Boulangeries et commerces</label><textarea class="textarea" id="shops" maxlength="320"></textarea><div class="char-counter" id="shopsCounter">0 / 320</div></div><div class="field full"><label>Activités et lieux à visiter</label><textarea class="textarea" id="activities" maxlength="420"></textarea><div class="char-counter" id="activitiesCounter">0 / 420</div></div><div class="field full"><label>Transports et stationnement</label><textarea class="textarea" id="transport" maxlength="280"></textarea><div class="char-counter" id="transportCounter">0 / 280</div></div><div class="field full"><label>Conseils personnels</label><textarea class="textarea" id="tips" maxlength="280"></textarea><div class="char-counter" id="tipsCounter">0 / 280</div></div></div></div>
+<div class="section" id="step3"><div class="section-head"><div><h2>Vos bonnes adresses</h2><p>Ajoutez uniquement les recommandations essentielles. Chaque rubrique est limitée pour garantir un livret A4 propre et lisible.</p></div><div class="section-badge">Étape 3 sur 5</div></div>
+<div class="panel" style="margin-top:0;margin-bottom:18px">
+  <h3>Laisser CleanUp compléter les recommandations</h3>
+  <p>CleanUp pourra proposer des restaurants, commerces, activités et informations pratiques adaptés à la destination. Vous pourrez ensuite tout modifier ou ajouter vos propres adresses.</p>
+  <button class="btn terracotta" id="useCleanupRecommendations" type="button">✦ Laisser CleanUp ajouter les recommandations</button>
+  <p id="cleanupRecommendationStatus" style="margin:10px 0 0;font-size:10px;color:var(--muted)">Option non activée.</p>
+</div>
+<div class="form-grid"><div class="field full"><label>Restaurants</label><textarea class="textarea" id="restaurants" placeholder="Nom — spécialité — quartier" maxlength="420"></textarea><div class="char-counter" id="restaurantsCounter">0 / 420</div></div><div class="field full"><label>Boulangeries et commerces</label><textarea class="textarea" id="shops" maxlength="320"></textarea><div class="char-counter" id="shopsCounter">0 / 320</div></div><div class="field full"><label>Activités et lieux à visiter</label><textarea class="textarea" id="activities" maxlength="420"></textarea><div class="char-counter" id="activitiesCounter">0 / 420</div></div><div class="field full"><label>Transports et stationnement</label><textarea class="textarea" id="transport" maxlength="280"></textarea><div class="char-counter" id="transportCounter">0 / 280</div></div><div class="field full"><label>Conseils personnels</label><textarea class="textarea" id="tips" maxlength="280"></textarea><div class="char-counter" id="tipsCounter">0 / 280</div></div></div></div>
 <div class="section" id="step4"><div class="section-head"><div><h2>Événements locaux</h2><p>L’IA pourra actualiser cette partie au moment de la génération. Seuls les événements les plus utiles seront retenus afin de conserver un rendu A4 lisible.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div class="form-grid"><div class="field"><label>Période de validité du livret</label><input class="input" id="period" placeholder="Ex. été 2026"></div><div class="field"><label>Nombre d’événements souhaité</label><select class="select" id="eventCount"><option>3</option><option>5</option><option>8</option></select></div><div class="field full"><label>Événements déjà connus</label><textarea class="textarea" id="knownEvents" maxlength="360"></textarea><div class="char-counter" id="knownEventsCounter">0 / 360</div></div></div><div class="panel"><h3>Génération assistée</h3><p>Le bouton ci-dessous appellera plus tard le moteur IA commun avec une consigne stricte : dates vérifiées, lieux réels, aucune invention.</p><button class="btn terracotta" id="generateBooklet">✦ Générer le livret</button></div></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Votre Livret Voyageur Premium</h2><p>Le contenu reste modifiable avant export.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-cover">✦</div><div class="preview-content"><h3 id="previewTitle">Livret Voyageur</h3><p id="previewText">Complétez les informations puis générez le livret.</p><div class="preview-tags" id="previewTags"></div></div></article><div class="panel"><h3>Modifier le contenu</h3><textarea class="textarea" id="bookletText" style="min-height:360px"></textarea></div><div class="export-grid"><div class="export-card"><h3>Copier le livret</h3><p>Copiez tout le texte.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Impression propre depuis le navigateur.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau livret</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newBooklet">Créer un nouveau livret (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre livret voyageur a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div></div>
 <div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Les recommandations locales devront être vérifiées lors de la génération. Aucun abonnement à une API externe.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div>
@@ -133,7 +148,7 @@
   <div class="print-grid">
     <div class="print-col">
       <section class="print-section">
-        <h2>Bienvenue</h2>
+        <h2>Bienvenue / Welcome</h2>
         <p class="print-body" id="printWelcome"></p>
       </section>
       <section class="print-section">
@@ -141,22 +156,22 @@
         <p class="print-body" id="printRestaurants"></p>
       </section>
       <section class="print-section">
-        <h2>Commerces utiles</h2>
+        <h2>Commerces utiles / Useful shops</h2>
         <p class="print-body" id="printShops"></p>
       </section>
     </div>
 
     <div class="print-col">
       <section class="print-section">
-        <h2>À voir et à faire</h2>
+        <h2>À voir et à faire / Things to do</h2>
         <p class="print-body" id="printActivities"></p>
       </section>
       <section class="print-section">
-        <h2>Se déplacer</h2>
+        <h2>Se déplacer / Getting around</h2>
         <p class="print-body" id="printTransport"></p>
       </section>
       <section class="print-section">
-        <h2>Nos conseils</h2>
+        <h2>Nos conseils / Local tips</h2>
         <p class="print-body" id="printTips"></p>
       </section>
     </div>
@@ -168,12 +183,13 @@
   </section>
 
   <div class="print-footer">
-    Nous vous souhaitons un excellent séjour
+    Nous vous souhaitons un excellent séjour<br>We wish you a wonderful stay
+    <small id="printContact"></small>
     <small id="printAddress"></small>
   </div>
 </section>
 </main><script>const STRIPE_PAYMENT_LINK='';document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>{const s=b.parentElement.querySelector('.stripeStatus');if(!STRIPE_PAYMENT_LINK){s.textContent='Lien Stripe à connecter avant la mise en ligne.';s.style.color='#FFD8C7';return}location.href=STRIPE_PAYMENT_LINK});
-const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];let currentStep=1,photos=[],exportLocked=false;const STEPS=Number(document.body.dataset.steps||5);const val=id=>($(id)?.value||'').trim(),num=id=>Number($(id)?.value||0),checked=id=>!!$(id)?.checked;
+const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];let currentStep=1,photos=[],exportLocked=false,useCleanupAI=false;const STEPS=Number(document.body.dataset.steps||5);const val=id=>($(id)?.value||'').trim(),num=id=>Number($(id)?.value||0),checked=id=>!!$(id)?.checked;
 function showStep(n){
   if(exportLocked && n<STEPS) return;
   currentStep=Math.max(1,Math.min(STEPS,n));
@@ -216,8 +232,24 @@ function downloadDoc(filename,title,html){const content=`<!doctype html><html><h
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const old=btn.textContent;btn.textContent='Copié ✓';setTimeout(()=>btn.textContent=old,1400)})}
 bindPhotos();showStep(1);
 
+const cleanupRecommendationsBtn=$('useCleanupRecommendations');
+if(cleanupRecommendationsBtn){
+  cleanupRecommendationsBtn.onclick=()=>{
+    useCleanupAI=!useCleanupAI;
+    cleanupRecommendationsBtn.textContent=useCleanupAI
+      ? '✓ CleanUp complétera les recommandations'
+      : '✦ Laisser CleanUp ajouter les recommandations';
+    cleanupRecommendationsBtn.classList.toggle('primary',useCleanupAI);
+    cleanupRecommendationsBtn.classList.toggle('terracotta',!useCleanupAI);
+    $('cleanupRecommendationStatus').textContent=useCleanupAI
+      ? 'Option activée : CleanUp complétera les rubriques manquantes. Vous pourrez modifier le résultat avant export.'
+      : 'Option non activée.';
+  };
+}
+
+
 function updateAssistant(){const msgs=[];if(currentStep===1)msgs.push('<div class="ai-message"><strong>Sans API cartographique</strong>L’adresse sert uniquement de contexte au moteur IA.</div>');if(currentStep===2)msgs.push('<div class="ai-message"><strong>Personnalisation</strong>Un livret familial n’a pas les mêmes recommandations qu’un séjour professionnel.</div>');if(currentStep===3)msgs.push('<div class="ai-message"><strong>Vos vraies adresses</strong>Les recommandations personnelles donnent plus de valeur que les listes génériques.</div>');if(currentStep===4)msgs.push('<div class="ai-message good"><strong>Actualisation IA</strong>Les événements devront être vérifiés au moment de la génération.</div>');if(currentStep===5)msgs.push('<div class="ai-message good"><strong>Avant de quitter</strong>Téléchargez votre livret. Rien n’est conservé après cette utilisation.</div>');$('assistantMessages').innerHTML=msgs.join('')}
-$('generateBooklet').onclick=()=>{const city=val('city')||'la destination',profiles=[checked('families')?'familles':'',checked('couples')?'couples':'',checked('business')?'professionnels':''].filter(Boolean).join(', ')||'voyageurs';const sections=[`BIENVENUE À ${city.toUpperCase()}\n${truncateClean(val('intro'),FIELD_LIMITS.intro,'Bienvenue !')}`,`POUR QUI ?\nCe livret est pensé pour les ${profiles}, pour un séjour de ${val('stay')}.`,`RESTAURANTS\n${truncateClean(val('restaurants'),FIELD_LIMITS.restaurants,'Les recommandations locales seront complétées par l’assistant IA.')}`,`COMMERCES UTILES\n${truncateClean(val('shops'),FIELD_LIMITS.shops,'Boulangeries, supermarchés et services de proximité à compléter.')}`,`À VOIR ET À FAIRE\n${truncateClean(val('activities'),FIELD_LIMITS.activities,'Les activités seront adaptées à la saison et au profil des voyageurs.')}`,`SE DÉPLACER\n${truncateClean(val('transport'),FIELD_LIMITS.transport,'Informations de transport et de stationnement à compléter.')}`,`ÉVÉNEMENTS — ${val('period')||'période à préciser'}\n${truncateClean(val('knownEvents'),FIELD_LIMITS.knownEvents,'Cette section sera actualisée par l’IA avec des événements vérifiés.')}`,`LES CONSEILS DE LA MAISON\n${truncateClean(val('tips'),FIELD_LIMITS.tips,'Ajoutez ici vos conseils personnels et habitudes locales.')}`];$('bookletText').value=sections.join('\n\n');$('previewTitle').textContent=(val('homeName')||'Livret Voyageur')+' — '+city;$('previewText').textContent=$('bookletText').value;$('previewTags').innerHTML=[checked('food')?'Gastronomie':'',checked('culture')?'Culture':'',checked('nature')?'Nature':'',checked('shopping')?'Shopping':''].filter(Boolean).map(x=>'<span>'+x+'</span>').join('');preparePrintSheet();showStep(5)};
+$('generateBooklet').onclick=()=>{const city=val('city')||'la destination',profiles=[checked('families')?'familles':'',checked('couples')?'couples':'',checked('business')?'professionnels':''].filter(Boolean).join(', ')||'voyageurs';const aiNote=useCleanupAI?'CleanUp complétera cette rubrique avec des recommandations vérifiées adaptées à la destination.':'Ajoutez vos recommandations ou activez l’aide CleanUp.';const sections=[`BIENVENUE À ${city.toUpperCase()} / WELCOME TO ${city.toUpperCase()}\n${truncateClean(val('intro'),FIELD_LIMITS.intro,'Bienvenue ! / Welcome!')}`,`POUR QUI ? / WHO IS THIS FOR?\nCe livret est pensé pour les ${profiles}, pour un séjour de ${val('stay')}.\nThis booklet is designed for ${profiles}, for a stay of ${val('stay')}.`,`RESTAURANTS\n${truncateClean(val('restaurants'),FIELD_LIMITS.restaurants,aiNote)}`,`COMMERCES UTILES\n${truncateClean(val('shops'),FIELD_LIMITS.shops,aiNote)}`,`À VOIR ET À FAIRE\n${truncateClean(val('activities'),FIELD_LIMITS.activities,aiNote)}`,`SE DÉPLACER\n${truncateClean(val('transport'),FIELD_LIMITS.transport,aiNote)}`,`ÉVÉNEMENTS — ${val('period')||'période à préciser'}\n${truncateClean(val('knownEvents'),FIELD_LIMITS.knownEvents,aiNote)}`,`LES CONSEILS DE LA MAISON\n${truncateClean(val('tips'),FIELD_LIMITS.tips,'Ajoutez ici vos conseils personnels et habitudes locales.')}`];$('bookletText').value=sections.join('\n\n');$('previewTitle').textContent=(val('homeName')||'Livret Voyageur')+' — '+city;$('previewText').textContent=$('bookletText').value;$('previewTags').innerHTML=[checked('food')?'Gastronomie':'',checked('culture')?'Culture':'',checked('nature')?'Nature':'',checked('shopping')?'Shopping':''].filter(Boolean).map(x=>'<span>'+x+'</span>').join('');preparePrintSheet();showStep(5)};
 
 const FIELD_LIMITS = {
   intro:280,
@@ -279,43 +311,44 @@ function preparePrintSheet(){
   const city=val('city')||'votre destination';
   const home=val('homeName')||'Livret Voyageur';
   $('printTitle').textContent=(home+' - '+city).toUpperCase();
-  $('printSubtitle').textContent='Nos bonnes adresses et conseils pour profiter pleinement de votre séjour';
+  $('printSubtitle').textContent='Nos bonnes adresses et conseils / Our local recommendations and tips';
   $('printWelcome').textContent=truncateClean(
     val('intro'),
     FIELD_LIMITS.intro,
-    'Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.'
+    'Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.\nWelcome! We have selected a few useful local addresses and ideas to help you enjoy your stay.'
   );
   $('printRestaurants').textContent=truncateClean(
     val('restaurants'),
     FIELD_LIMITS.restaurants,
-    'Les recommandations locales seront complétées lors de la génération.'
+    'Les recommandations locales seront complétées lors de la génération.\nLocal recommendations will be added during generation.'
   );
   $('printShops').textContent=truncateClean(
     val('shops'),
     FIELD_LIMITS.shops,
-    'Boulangeries, commerces et services de proximité.'
+    'Boulangeries, commerces et services de proximité.\nBakeries, shops and nearby services.'
   );
   $('printActivities').textContent=truncateClean(
     val('activities'),
     FIELD_LIMITS.activities,
-    'Les activités seront adaptées à la saison et au profil des voyageurs.'
+    aiNote
   );
   $('printTransport').textContent=truncateClean(
     val('transport'),
     FIELD_LIMITS.transport,
-    'Informations de transport et de stationnement.'
+    'Informations de transport et de stationnement.\nTransport and parking information.'
   );
   $('printTips').textContent=truncateClean(
     val('tips'),
     FIELD_LIMITS.tips,
-    'Quelques conseils personnels pour découvrir la destination comme un habitant.'
+    'Quelques conseils personnels pour découvrir la destination comme un habitant.\nLocal tips to discover the destination like a resident.'
   );
-  $('printEventsTitle').textContent='Événements - '+(val('period')||'à découvrir');
+  $('printEventsTitle').textContent='Événements / Events - '+(val('period')||'à découvrir');
   $('printEvents').textContent=truncateClean(
     val('knownEvents'),
     FIELD_LIMITS.knownEvents,
-    'Les événements locaux vérifiés apparaîtront ici lors de la génération.'
+    'Les événements locaux vérifiés apparaîtront ici lors de la génération.\nVerified local events will appear here.'
   );
+  $('printContact').textContent=[val('conciergeName'),val('conciergePhone')].filter(Boolean).join(' - ');
   $('printAddress').textContent=[val('address'),city].filter(Boolean).join(' - ');
   requestAnimationFrame(fitPrintSheet);
 }
