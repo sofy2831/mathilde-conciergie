@@ -327,10 +327,13 @@ function preparePrintSheet(){
     FIELD_LIMITS.shops,
     'Boulangeries, commerces et services de proximité.\nBakeries, shops and nearby services.'
   );
+  const printAiNote=useCleanupAI
+    ? 'CleanUp complétera cette rubrique avec des recommandations vérifiées adaptées à la destination.\nCleanUp will complete this section with verified recommendations suited to the destination.'
+    : 'Ajoutez vos recommandations ou activez l’aide CleanUp.\nAdd your recommendations or enable CleanUp assistance.';
   $('printActivities').textContent=truncateClean(
     val('activities'),
     FIELD_LIMITS.activities,
-    aiNote
+    printAiNote
   );
   $('printTransport').textContent=truncateClean(
     val('transport'),
