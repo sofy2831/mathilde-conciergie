@@ -103,11 +103,26 @@
   }
   @page{size:A4 portrait;margin:0}
 }
+
+.char-counter{
+  margin-top:5px;
+  font-size:10px;
+  color:var(--taupe);
+  text-align:right;
+  font-weight:700;
+}
+.char-counter.limit{color:#A94E42}
+.field-help{
+  margin-top:4px;
+  font-size:10px;
+  line-height:1.4;
+  color:var(--muted);
+}
 </style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide local personnalisé</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Livret Voyageur <span>Premium</span></h1><p>Créez un livret de destination avec bonnes adresses, conseils et événements locaux actualisables.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Guide local personnalisé</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un livret voyageur</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Destination</button><button class="step " data-step="2"><span class="num">2</span>Préférences</button><button class="step " data-step="3"><span class="num">3</span>Adresses</button><button class="step " data-step="4"><span class="num">4</span>Événements</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
-<div class="section active" id="step1"><div class="section-head"><div><h2>Votre destination</h2><p>L’adresse sert à contextualiser les recommandations. Aucune API cartographique payante n’est utilisée.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName"></div><div class="field full"><label>Adresse complète</label><input class="input" id="address"></div><div class="field"><label>Ville</label><input class="input" id="city"></div><div class="field"><label>Durée moyenne du séjour</label><select class="select" id="stay"><option>1 à 2 nuits</option><option>3 à 4 nuits</option><option>Une semaine</option><option>Plus d’une semaine</option></select></div><div class="field full"><label>Message d’introduction</label><textarea class="textarea" id="intro">Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.</textarea></div></div></div>
+<div class="section active" id="step1"><div class="section-head"><div><h2>Votre destination</h2><p>L’adresse sert à contextualiser les recommandations. Aucune API cartographique payante n’est utilisée.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName"></div><div class="field full"><label>Adresse complète</label><input class="input" id="address"></div><div class="field"><label>Ville</label><input class="input" id="city"></div><div class="field"><label>Durée moyenne du séjour</label><select class="select" id="stay"><option>1 à 2 nuits</option><option>3 à 4 nuits</option><option>Une semaine</option><option>Plus d’une semaine</option></select></div><div class="field full"><label>Message d’introduction</label><textarea class="textarea" id="intro" maxlength="280">Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.</textarea><div class="char-counter" id="introCounter">0 / 280</div></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Profil des voyageurs</h2><p>Ces préférences permettent d’adapter le livret.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="check-grid"><label class="check-pill"><input id="families" type="checkbox"> Familles</label><label class="check-pill"><input id="couples" type="checkbox" checked> Couples</label><label class="check-pill"><input id="business" type="checkbox"> Professionnels</label><label class="check-pill"><input id="food" type="checkbox" checked> Gastronomie</label><label class="check-pill"><input id="culture" type="checkbox" checked> Culture</label><label class="check-pill"><input id="nature" type="checkbox"> Nature</label><label class="check-pill"><input id="shopping" type="checkbox"> Shopping</label><label class="check-pill"><input id="nightlife" type="checkbox"> Sorties</label><label class="check-pill"><input id="accessible" type="checkbox"> Accessibilité</label></div><div class="form-grid" style="margin-top:18px"><div class="field full"><label>Ton souhaité</label><select class="select" id="tone"><option>Chaleureux et local</option><option>Élégant et premium</option><option>Familial et pratique</option><option>Simple et direct</option></select></div></div></div>
-<div class="section" id="step3"><div class="section-head"><div><h2>Vos bonnes adresses</h2><p>Ajoutez les recommandations que vous connaissez. L’IA pourra compléter, mais elle ne doit pas inventer.</p></div><div class="section-badge">Étape 3 sur 5</div></div><div class="form-grid"><div class="field full"><label>Restaurants</label><textarea class="textarea" id="restaurants" placeholder="Nom — spécialité — quartier"></textarea></div><div class="field full"><label>Boulangeries et commerces</label><textarea class="textarea" id="shops"></textarea></div><div class="field full"><label>Activités et lieux à visiter</label><textarea class="textarea" id="activities"></textarea></div><div class="field full"><label>Transports et stationnement</label><textarea class="textarea" id="transport"></textarea></div><div class="field full"><label>Conseils personnels</label><textarea class="textarea" id="tips"></textarea></div></div></div>
-<div class="section" id="step4"><div class="section-head"><div><h2>Événements locaux</h2><p>L’IA pourra rechercher et actualiser cette partie au moment de la génération, sans API dédiée.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div class="form-grid"><div class="field"><label>Période de validité du livret</label><input class="input" id="period" placeholder="Ex. été 2026"></div><div class="field"><label>Nombre d’événements souhaité</label><select class="select" id="eventCount"><option>3</option><option>5</option><option>8</option></select></div><div class="field full"><label>Événements déjà connus</label><textarea class="textarea" id="knownEvents"></textarea></div></div><div class="panel"><h3>Génération assistée</h3><p>Le bouton ci-dessous appellera plus tard le moteur IA commun avec une consigne stricte : dates vérifiées, lieux réels, aucune invention.</p><button class="btn terracotta" id="generateBooklet">✦ Générer le livret</button></div></div>
+<div class="section" id="step3"><div class="section-head"><div><h2>Vos bonnes adresses</h2><p>Ajoutez uniquement les recommandations essentielles. Chaque rubrique est limitée pour garantir un livret A4 propre et lisible.</p></div><div class="section-badge">Étape 3 sur 5</div></div><div class="form-grid"><div class="field full"><label>Restaurants</label><textarea class="textarea" id="restaurants" placeholder="Nom — spécialité — quartier" maxlength="420"></textarea><div class="char-counter" id="restaurantsCounter">0 / 420</div></div><div class="field full"><label>Boulangeries et commerces</label><textarea class="textarea" id="shops" maxlength="320"></textarea><div class="char-counter" id="shopsCounter">0 / 320</div></div><div class="field full"><label>Activités et lieux à visiter</label><textarea class="textarea" id="activities" maxlength="420"></textarea><div class="char-counter" id="activitiesCounter">0 / 420</div></div><div class="field full"><label>Transports et stationnement</label><textarea class="textarea" id="transport" maxlength="280"></textarea><div class="char-counter" id="transportCounter">0 / 280</div></div><div class="field full"><label>Conseils personnels</label><textarea class="textarea" id="tips" maxlength="280"></textarea><div class="char-counter" id="tipsCounter">0 / 280</div></div></div></div>
+<div class="section" id="step4"><div class="section-head"><div><h2>Événements locaux</h2><p>L’IA pourra actualiser cette partie au moment de la génération. Seuls les événements les plus utiles seront retenus afin de conserver un rendu A4 lisible.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div class="form-grid"><div class="field"><label>Période de validité du livret</label><input class="input" id="period" placeholder="Ex. été 2026"></div><div class="field"><label>Nombre d’événements souhaité</label><select class="select" id="eventCount"><option>3</option><option>5</option><option>8</option></select></div><div class="field full"><label>Événements déjà connus</label><textarea class="textarea" id="knownEvents" maxlength="360"></textarea><div class="char-counter" id="knownEventsCounter">0 / 360</div></div></div><div class="panel"><h3>Génération assistée</h3><p>Le bouton ci-dessous appellera plus tard le moteur IA commun avec une consigne stricte : dates vérifiées, lieux réels, aucune invention.</p><button class="btn terracotta" id="generateBooklet">✦ Générer le livret</button></div></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Votre Livret Voyageur Premium</h2><p>Le contenu reste modifiable avant export.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-cover">✦</div><div class="preview-content"><h3 id="previewTitle">Livret Voyageur</h3><p id="previewText">Complétez les informations puis générez le livret.</p><div class="preview-tags" id="previewTags"></div></div></article><div class="panel"><h3>Modifier le contenu</h3><textarea class="textarea" id="bookletText" style="min-height:360px"></textarea></div><div class="export-grid"><div class="export-card"><h3>Copier le livret</h3><p>Copiez tout le texte.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Impression propre depuis le navigateur.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau livret</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newBooklet">Créer un nouveau livret (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre livret voyageur a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div></div>
 <div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Les recommandations locales devront être vérifiées lors de la génération. Aucun abonnement à une API externe.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div>
 <section class="print-sheet" id="printSheet" aria-hidden="true">
@@ -202,46 +217,107 @@ function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const 
 bindPhotos();showStep(1);
 
 function updateAssistant(){const msgs=[];if(currentStep===1)msgs.push('<div class="ai-message"><strong>Sans API cartographique</strong>L’adresse sert uniquement de contexte au moteur IA.</div>');if(currentStep===2)msgs.push('<div class="ai-message"><strong>Personnalisation</strong>Un livret familial n’a pas les mêmes recommandations qu’un séjour professionnel.</div>');if(currentStep===3)msgs.push('<div class="ai-message"><strong>Vos vraies adresses</strong>Les recommandations personnelles donnent plus de valeur que les listes génériques.</div>');if(currentStep===4)msgs.push('<div class="ai-message good"><strong>Actualisation IA</strong>Les événements devront être vérifiés au moment de la génération.</div>');if(currentStep===5)msgs.push('<div class="ai-message good"><strong>Avant de quitter</strong>Téléchargez votre livret. Rien n’est conservé après cette utilisation.</div>');$('assistantMessages').innerHTML=msgs.join('')}
-$('generateBooklet').onclick=()=>{const city=val('city')||'la destination',profiles=[checked('families')?'familles':'',checked('couples')?'couples':'',checked('business')?'professionnels':''].filter(Boolean).join(', ')||'voyageurs';const sections=[`BIENVENUE À ${city.toUpperCase()}\n${val('intro')}`,`POUR QUI ?\nCe livret est pensé pour les ${profiles}, pour un séjour de ${val('stay')}.`,`RESTAURANTS\n${val('restaurants')||'Les recommandations locales seront complétées par l’assistant IA.'}`,`COMMERCES UTILES\n${val('shops')||'Boulangeries, supermarchés et services de proximité à compléter.'}`,`À VOIR ET À FAIRE\n${val('activities')||'Les activités seront adaptées à la saison et au profil des voyageurs.'}`,`SE DÉPLACER\n${val('transport')||'Informations de transport et de stationnement à compléter.'}`,`ÉVÉNEMENTS — ${val('period')||'période à préciser'}\n${val('knownEvents')||'Cette section sera actualisée par l’IA avec des événements vérifiés.'}`,`LES CONSEILS DE LA MAISON\n${val('tips')||'Ajoutez ici vos conseils personnels et habitudes locales.'}`];$('bookletText').value=sections.join('\n\n');$('previewTitle').textContent=(val('homeName')||'Livret Voyageur')+' — '+city;$('previewText').textContent=$('bookletText').value;$('previewTags').innerHTML=[checked('food')?'Gastronomie':'',checked('culture')?'Culture':'',checked('nature')?'Nature':'',checked('shopping')?'Shopping':''].filter(Boolean).map(x=>'<span>'+x+'</span>').join('');preparePrintSheet();showStep(5)};
+$('generateBooklet').onclick=()=>{const city=val('city')||'la destination',profiles=[checked('families')?'familles':'',checked('couples')?'couples':'',checked('business')?'professionnels':''].filter(Boolean).join(', ')||'voyageurs';const sections=[`BIENVENUE À ${city.toUpperCase()}\n${truncateClean(val('intro'),FIELD_LIMITS.intro,'Bienvenue !')}`,`POUR QUI ?\nCe livret est pensé pour les ${profiles}, pour un séjour de ${val('stay')}.`,`RESTAURANTS\n${truncateClean(val('restaurants'),FIELD_LIMITS.restaurants,'Les recommandations locales seront complétées par l’assistant IA.')}`,`COMMERCES UTILES\n${truncateClean(val('shops'),FIELD_LIMITS.shops,'Boulangeries, supermarchés et services de proximité à compléter.')}`,`À VOIR ET À FAIRE\n${truncateClean(val('activities'),FIELD_LIMITS.activities,'Les activités seront adaptées à la saison et au profil des voyageurs.')}`,`SE DÉPLACER\n${truncateClean(val('transport'),FIELD_LIMITS.transport,'Informations de transport et de stationnement à compléter.')}`,`ÉVÉNEMENTS — ${val('period')||'période à préciser'}\n${truncateClean(val('knownEvents'),FIELD_LIMITS.knownEvents,'Cette section sera actualisée par l’IA avec des événements vérifiés.')}`,`LES CONSEILS DE LA MAISON\n${truncateClean(val('tips'),FIELD_LIMITS.tips,'Ajoutez ici vos conseils personnels et habitudes locales.')}`];$('bookletText').value=sections.join('\n\n');$('previewTitle').textContent=(val('homeName')||'Livret Voyageur')+' — '+city;$('previewText').textContent=$('bookletText').value;$('previewTags').innerHTML=[checked('food')?'Gastronomie':'',checked('culture')?'Culture':'',checked('nature')?'Nature':'',checked('shopping')?'Shopping':''].filter(Boolean).map(x=>'<span>'+x+'</span>').join('');preparePrintSheet();showStep(5)};
+
+const FIELD_LIMITS = {
+  intro:280,
+  restaurants:420,
+  shops:320,
+  activities:420,
+  transport:280,
+  tips:280,
+  knownEvents:360
+};
+
+function truncateClean(value,max,fallback){
+  let t=(value||'').trim();
+  if(!t) t=fallback;
+  if(t.length<=max) return t;
+  const cut=t.slice(0,max-1);
+  const safe=cut.replace(/\s+\S*$/,'').trim();
+  return (safe || cut.trim())+'…';
+}
+
+function updateCounter(id){
+  const el=$(id), counter=$(id+'Counter');
+  if(!el || !counter) return;
+  const max=FIELD_LIMITS[id] || Number(el.maxLength) || 0;
+  const used=el.value.length;
+  counter.textContent=used+' / '+max;
+  counter.classList.toggle('limit', used>=max);
+}
+
+Object.keys(FIELD_LIMITS).forEach(id=>{
+  const el=$(id);
+  if(!el) return;
+  updateCounter(id);
+  el.addEventListener('input',()=>{
+    updateCounter(id);
+    if(currentStep===5) preparePrintSheet();
+  });
+});
+
 function cleanPrintText(value,fallback){
   const t=(value||'').trim();
   return t || fallback;
 }
+
+function fitPrintSheet(){
+  const sheet=$('printSheet');
+  if(!sheet) return;
+  sheet.style.setProperty('--print-scale','1');
+  const maxHeight=sheet.clientHeight;
+  let size=8.6;
+  const bodies=[...sheet.querySelectorAll('.print-body')];
+  while(sheet.scrollHeight>maxHeight && size>7.2){
+    size-=0.2;
+    bodies.forEach(el=>el.style.fontSize=size+'pt');
+  }
+}
+
 function preparePrintSheet(){
   const city=val('city')||'votre destination';
   const home=val('homeName')||'Livret Voyageur';
   $('printTitle').textContent=(home+' - '+city).toUpperCase();
   $('printSubtitle').textContent='Nos bonnes adresses et conseils pour profiter pleinement de votre séjour';
-  $('printWelcome').textContent=cleanPrintText(
+  $('printWelcome').textContent=truncateClean(
     val('intro'),
+    FIELD_LIMITS.intro,
     'Bienvenue ! Nous avons sélectionné quelques bonnes adresses et idées pour profiter pleinement de votre séjour.'
   );
-  $('printRestaurants').textContent=cleanPrintText(
+  $('printRestaurants').textContent=truncateClean(
     val('restaurants'),
+    FIELD_LIMITS.restaurants,
     'Les recommandations locales seront complétées lors de la génération.'
   );
-  $('printShops').textContent=cleanPrintText(
+  $('printShops').textContent=truncateClean(
     val('shops'),
+    FIELD_LIMITS.shops,
     'Boulangeries, commerces et services de proximité.'
   );
-  $('printActivities').textContent=cleanPrintText(
+  $('printActivities').textContent=truncateClean(
     val('activities'),
+    FIELD_LIMITS.activities,
     'Les activités seront adaptées à la saison et au profil des voyageurs.'
   );
-  $('printTransport').textContent=cleanPrintText(
+  $('printTransport').textContent=truncateClean(
     val('transport'),
+    FIELD_LIMITS.transport,
     'Informations de transport et de stationnement.'
   );
-  $('printTips').textContent=cleanPrintText(
+  $('printTips').textContent=truncateClean(
     val('tips'),
+    FIELD_LIMITS.tips,
     'Quelques conseils personnels pour découvrir la destination comme un habitant.'
   );
   $('printEventsTitle').textContent='Événements - '+(val('period')||'à découvrir');
-  $('printEvents').textContent=cleanPrintText(
+  $('printEvents').textContent=truncateClean(
     val('knownEvents'),
+    FIELD_LIMITS.knownEvents,
     'Les événements locaux vérifiés apparaîtront ici lors de la génération.'
   );
   $('printAddress').textContent=[val('address'),city].filter(Boolean).join(' - ');
+  requestAnimationFrame(fitPrintSheet);
 }
 $('bookletText').oninput=()=>{$('previewText').textContent=val('bookletText')};
 $('copyAll').onclick=e=>{
