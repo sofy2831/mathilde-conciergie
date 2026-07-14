@@ -9,14 +9,14 @@
 <div class="field full"><label>Ménage avant le départ</label><textarea class="textarea" id="cleaningDeparture" maxlength="180" placeholder="Ex. laisser le logement rangé, lancer le lave-vaisselle, ne pas refaire les lits..."></textarea><div class="char-counter" id="cleaningDepartureCounter">0 / 180</div></div>
 <div class="field full"><label>Autres informations utiles</label><textarea class="textarea" id="other" maxlength="180"></textarea><div class="char-counter" id="otherCounter">0 / 180</div></div></div></div>
 <div class="section" id="step4"><div class="section-head"><div><h2>Règles et départ</h2><p>Des consignes claires, sans transformer le guide en règlement militaire.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div class="check-grid"><label class="check-pill"><input id="noSmoking" type="checkbox" checked> Logement non-fumeur</label><label class="check-pill"><input id="noParty" type="checkbox" checked> Fêtes interdites</label><label class="check-pill"><input id="quiet" type="checkbox" checked> Respect du voisinage</label><label class="check-pill"><input id="pets" type="checkbox"> Animaux acceptés</label><label class="check-pill"><input id="dishes" type="checkbox" checked> Vaisselle rangée</label><label class="check-pill"><input id="trash" type="checkbox" checked> Poubelles sorties</label></div><div class="form-grid" style="margin-top:18px"><div class="field full"><label>Consignes de départ</label><textarea class="textarea" id="departure" maxlength="220"></textarea><div class="char-counter" id="departureCounter">0 / 220</div></div><div class="field full"><label>Urgences et numéros utiles</label><textarea class="textarea" id="emergency" placeholder="Conciergerie, propriétaire, dépannage..." maxlength="180"></textarea><div class="char-counter" id="emergencyCounter">0 / 180</div></div></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px">Créer le guide</button></div>
-<div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-cover" id="previewCover">⌂</div><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div></div>
-
+<div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-cover" id="previewCover">⌂</div><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
 <div class="cta services-cta">
   <div>
     <h3>Découvrez les autres indispensables</h3>
     <p>Guide d’accueil bilingue, optimisation d’annonce, diagnostic de rentabilité et autres outils sont disponibles séparément, sans abonnement.</p>
   </div>
   <a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a>
+</div>
 </div>
 
 <div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Aucun compte et aucune sauvegarde permanente. Les codes sensibles restent dans votre navigateur.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div>
@@ -114,7 +114,7 @@ function downloadDoc(filename,title,html){const content=`<!doctype html><html><h
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const old=btn.textContent;btn.textContent='Copié ✓';setTimeout(()=>btn.textContent=old,1400)})}
 bindPhotos();showStep(1);
 
-const FIELD_LIMITS={'welcome': 250, 'access': 260, 'parking': 120, 'heating': 180, 'tv': 180, 'kitchen': 220, 'waste': 180, 'other': 180, 'departure': 220, 'emergency': 180};
+const FIELD_LIMITS={'welcome':250,'access':260,'parking':120,'heating':180,'tv':180,'kitchen':220,'waste':180,'cleaningStay':180,'cleaningDeparture':180,'other':180,'departure':220,'emergency':180};
 function updateCounter(id){
   const el=$(id),counter=$(id+'Counter');
   if(!el||!counter)return;
@@ -186,8 +186,13 @@ function preparePrintSheet(){
   const qrCanvas=$('wifiQr');
   const payload=wifiPayload();
   if(payload && window.QRious){
-    new QRious({element:qrCanvas,value:payload,size:240,level:'H',background:'white',foreground:'#211B17'});
-    qrCanvas.style.display='block';
+    try{
+      new QRious({element:qrCanvas,value:payload,size:240,level:'H',background:'white',foreground:'#211B17'});
+      qrCanvas.style.display='block';
+    }catch(error){
+      console.warn('QR code non généré :',error);
+      qrCanvas.style.display='none';
+    }
   }else{
     qrCanvas.style.display='none';
   }
