@@ -664,6 +664,11 @@ h1 span{color:var(--terracotta)}
           </div>
         </article>
 
+        <div class="ai-message warn" style="margin-top:18px;margin-bottom:0">
+          <strong>À télécharger avant de quitter la page</strong>
+          CleanUp ne conserve pas votre annonce. Vous pouvez revenir aux étapes précédentes pour corriger ce document avant l’export. La création d’une autre annonce correspondra à un nouvel achat.
+        </div>
+
         <div class="export-grid" style="margin-top:18px">
           <div class="export-card">
             <div class="icon">📋</div><h3>Copier l’annonce</h3>
@@ -682,7 +687,7 @@ h1 span{color:var(--terracotta)}
           </div>
           <div class="export-card">
             <div class="icon">↻</div><h3>Créer une autre annonce</h3>
-            <p>Réinitialisez la page et recommencez pour un autre logement.</p>
+            <p>Cette commande concerne une seule annonce. Un nouveau paiement sera demandé pour un autre logement.</p>
             <button class="btn soft" type="button" id="resetAll">Nouvelle annonce</button>
           </div>
         </div>
@@ -717,7 +722,7 @@ h1 span{color:var(--terracotta)}
           <div class="ai-message good"><strong>Aucun compte requis.</strong>Les informations servent uniquement à préparer votre annonce pendant cette utilisation.</div>
         </div>
         <div class="assistant-progress">
-          <div class="row"><span>Progression</span><span id="progressLabel">16 %</span></div>
+          <div class="row"><span>Progression</span><span id="progressLabel">0 %</span></div>
           <div class="progress"><span id="progressBar"></span></div>
         </div>
       </div>
@@ -748,8 +753,10 @@ function showStep(step){
     btn.classList.toggle('done', n < currentStep);
   });
   $('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-  $('nextBtn').textContent = currentStep === 6 ? 'Terminer' : 'Continuer →';
-  const pct = Math.round(currentStep / 6 * 100);
+  $('prevBtn').textContent = currentStep === 6 ? '← Modifier mon annonce' : '← Précédent';
+  $('nextBtn').style.display = currentStep === 6 ? 'none' : 'inline-flex';
+  $('nextBtn').textContent = 'Continuer →';
+  const pct = Math.round((currentStep - 1) / 5 * 100);
   $('progressBar').style.width = pct + '%';
   $('progressLabel').textContent = pct + ' %';
   updateAssistant();
@@ -757,26 +764,9 @@ function showStep(step){
 }
 qa('.step').forEach(btn => btn.addEventListener('click', ()=>showStep(Number(btn.dataset.step))));
 $('prevBtn').addEventListener('click',()=>showStep(currentStep-1));
-function finishAndReset(){
-  qa('input:not([type=file]), select, textarea').forEach(el=>{
-    if(el.type === 'checkbox' || el.type === 'radio') el.checked = false;
-    else el.value = '';
-  });
-  photos = [];
-  controlIssues = [];
-  adviceItems = [];
-  renderPhotos();
-  $('controlResults').innerHTML = '<div class="result-card ok"><div class="icon">✓</div><div><h4>En attente du contrôle</h4><p>Complétez les informations puis lancez l’analyse.</p></div></div>';
-  $('advicePanel').style.display = 'none';
-  $('generatedTitle').value = '';
-  $('generatedIntro').value = '';
-  $('generatedDescription').value = '';
-  $('generatedRules').value = '';
-  refreshPreview();
-  showStep(1);
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-$('nextBtn').addEventListener('click',()=> currentStep < 6 ? showStep(currentStep+1) : finishAndReset());
+$('nextBtn').addEventListener('click',()=>{
+  if(currentStep < 6) showStep(currentStep+1);
+});
 
 function updateAssistant(){
   const messages = [];
