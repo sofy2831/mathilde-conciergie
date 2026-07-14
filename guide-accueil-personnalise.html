@@ -351,23 +351,16 @@ async function buildWordHtml(){
     <table style="width:100%;border-collapse:collapse;table-layout:fixed">
       <tr>
         <td style="width:50%;vertical-align:top;padding:7px 10px 5px 6px;border-right:1px solid #B7A79C">
-          ${section('Arrivée / Check-in',$('printArrival').textContent.replace(/
-/g,'<br>'))}
-          ${section('Wi-Fi',$('printWifi').textContent.replace(/
-/g,'<br>'))}
+          ${section('Arrivée / Check-in',$('printArrival').textContent.replace(/\n/g,'<br>'))}
+          ${section('Wi-Fi',$('printWifi').textContent.replace(/\n/g,'<br>'))}
           ${qrHtml}
-          ${section('Utilisation / How to use',$('printUse').textContent.replace(/
-/g,'<br>'))}
+          ${section('Utilisation / How to use',$('printUse').textContent.replace(/\n/g,'<br>'))}
         </td>
         <td style="width:50%;vertical-align:top;padding:7px 6px 5px 10px">
-          ${section('Règles / House rules',$('printRules').textContent.replace(/
-/g,'<br>'))}
-          ${section('Ménage / Housekeeping',$('printCleaning').textContent.replace(/
-/g,'<br>'))}
-          ${section('Départ / Check-out',$('printDeparture').textContent.replace(/
-/g,'<br>'))}
-          ${section('Urgences / Emergency',$('printEmergency').textContent.replace(/
-/g,'<br>'))}
+          ${section('Règles / House rules',$('printRules').textContent.replace(/\n/g,'<br>'))}
+          ${section('Ménage / Housekeeping',$('printCleaning').textContent.replace(/\n/g,'<br>'))}
+          ${section('Départ / Check-out',$('printDeparture').textContent.replace(/\n/g,'<br>'))}
+          ${section('Urgences / Emergency',$('printEmergency').textContent.replace(/\n/g,'<br>'))}
         </td>
       </tr>
     </table>
