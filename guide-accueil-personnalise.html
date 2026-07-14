@@ -76,6 +76,38 @@
     margin-top:2.2mm!important;font-family:Inter,Arial,sans-serif!important;
     font-size:6.2pt!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#9A8D83!important
   }
+
+  .print-sheet .print-cover{
+    width:100%!important;
+    height:38mm!important;
+    margin:0 0 6mm!important;
+    overflow:hidden!important;
+    border-radius:3mm!important;
+    border:1px solid rgba(62,45,37,.16)!important;
+    background:#EFE8DD!important;
+  }
+  .print-sheet .print-cover img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center!important;
+  }
+  .wifi-print{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:3mm!important;
+  }
+  .wifi-print > div{
+    width:100%!important;
+  }
+  #wifiQr{
+    display:block!important;
+    margin:0 auto!important;
+  }
+
   @page{size:A4 portrait;margin:0}
 }
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
@@ -112,6 +144,10 @@
 <section class="print-sheet" id="printSheet" aria-hidden="true">
   <h1 id="printTitle">BIENVENUE / WELCOME</h1>
   <div class="print-subtitle" id="printSubtitle"></div>
+
+  <div class="print-cover" id="printCover" style="display:none">
+    <img id="printCoverImg" alt="Photo du logement">
+  </div>
 
   <div class="print-grid">
     <div class="print-col">
@@ -238,6 +274,78 @@ Object.keys(FIELD_LIMITS).forEach(id=>{
 
 let guideText='';
 
+function fileToDataUrl(url){
+  return fetch(url)
+    .then(r=>r.blob())
+    .then(blob=>new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(reader.result);
+      reader.onerror=reject;
+      reader.readAsDataURL(blob);
+    }));
+}
+
+async function buildWordHtml(){
+  preparePrintSheet();
+
+  let coverHtml='';
+  if(photos[0] && photos[0].url){
+    try{
+      const data=await fileToDataUrl(photos[0].url);
+      coverHtml=`<div style="margin:0 0 18px;text-align:center"><img src="${data}" style="max-width:100%;height:220px;object-fit:cover;border-radius:8px"></div>`;
+    }catch(error){
+      console.warn('Photo non intégrée au Word :',error);
+    }
+  }
+
+  let qrHtml='';
+  const qr=$('wifiQr');
+  try{
+    if(qr && qr.style.display!=='none'){
+      const qrData=qr.toDataURL('image/png');
+      qrHtml=`<div style="text-align:center;margin:12px 0"><img src="${qrData}" width="130" height="130"></div>`;
+    }
+  }catch(error){
+    console.warn('QR non intégré au Word :',error);
+  }
+
+  const contact=[val('contactName'),val('contactPhone'),val('contactEmail')].filter(Boolean).join(' - ');
+
+  return `
+  <div style="font-family:Arial,sans-serif;color:#2F2926">
+    <h1 style="text-align:center;font-family:Georgia,serif">${val('homeName')||'Guide d’accueil'}</h1>
+    <p style="text-align:center;color:#766C66">${tr(val('welcome'),FIELD_LIMITS.welcome)}</p>
+    ${coverHtml}
+    <table style="width:100%;border-collapse:collapse">
+      <tr>
+        <td style="width:50%;vertical-align:top;padding:12px;border-right:1px solid #B7A79C">
+          <h2>Arrivée / Check-in</h2>
+          <p>${$('printArrival').textContent.replace(/\n/g,'<br>')}</p>
+          <h2>Wi-Fi</h2>
+          <p>${$('printWifi').textContent.replace(/\n/g,'<br>')}</p>
+          ${qrHtml}
+          <h2>Utilisation / How to use</h2>
+          <p>${$('printUse').textContent.replace(/\n/g,'<br>')}</p>
+        </td>
+        <td style="width:50%;vertical-align:top;padding:12px">
+          <h2>Règles / House rules</h2>
+          <p>${$('printRules').textContent.replace(/\n/g,'<br>')}</p>
+          <h2>Ménage / Housekeeping</h2>
+          <p>${$('printCleaning').textContent.replace(/\n/g,'<br>')}</p>
+          <h2>Départ / Check-out</h2>
+          <p>${$('printDeparture').textContent.replace(/\n/g,'<br>')}</p>
+          <h2>Urgences / Emergency</h2>
+          <p>${$('printEmergency').textContent.replace(/\n/g,'<br>')}</p>
+        </td>
+      </tr>
+    </table>
+    <p style="text-align:center;margin-top:24px"><strong>Nous vous souhaitons un excellent séjour<br>We wish you a wonderful stay</strong></p>
+    <p style="text-align:center;font-size:11px">${contact}</p>
+    <p style="text-align:center;font-size:10px;color:#9A8D83">Powered by CleanUp</p>
+  </div>`;
+}
+
+
 function updateAssistant(){
   const msgs=[];
   if(currentStep===1)msgs.push('<div class="ai-message"><strong>Informations exactes</strong>Le guide reprend uniquement les informations que vous saisissez.</div>');
@@ -275,6 +383,15 @@ function wifiPayload(){
 }
 
 function preparePrintSheet(){
+  const printCover=$('printCover');
+  const printCoverImg=$('printCoverImg');
+  if(photos[0] && photos[0].url){
+    printCoverImg.src=photos[0].url;
+    printCover.style.display='block';
+  }else{
+    printCover.style.display='none';
+    printCoverImg.removeAttribute('src');
+  }
   $('printTitle').textContent=(val('homeName')||'Bienvenue / Welcome').toUpperCase();
   $('printSubtitle').textContent=tr(val('welcome'),FIELD_LIMITS.welcome,'Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour. / Welcome to your accommodation. We wish you a wonderful stay.');
 
@@ -403,12 +520,13 @@ $('copyAll').onclick=e=>{
   copyText(guideText,e.currentTarget);
 };
 
-$('downloadWord').onclick=()=>{
+$('downloadWord').onclick=async()=>{
   lockAfterExport();
+  const wordHtml=await buildWordHtml();
   downloadDoc(
     'guide-accueil-personnalise.doc',
     'Guide d’accueil',
-    `<h1>${val('homeName')||'Guide d’accueil'}</h1><p>${guideText.replace(/\n/g,'<br>')}</p>`
+    wordHtml
   );
 };
 
