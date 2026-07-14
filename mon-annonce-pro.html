@@ -683,12 +683,12 @@ h1 span{color:var(--terracotta)}
           <div class="export-card">
             <div class="icon">🖨️</div><h3>Enregistrer en PDF</h3>
             <p>Utilisez l’impression du navigateur pour enregistrer une version PDF propre.</p>
-            <button class="btn primary" type="button" onclick="window.print()">Imprimer / PDF</button>
+            <button class="btn primary" type="button" id="printPdf">Imprimer / PDF</button>
           </div>
           <div class="export-card">
-            <div class="icon">↻</div><h3>Créer une autre annonce</h3>
+            <div class="icon">↻</div><h3>Créer une nouvelle annonce</h3>
             <p>Cette commande concerne une seule annonce. Un nouveau paiement sera demandé pour un autre logement.</p>
-            <button class="btn soft" type="button" id="resetAll">Nouvelle annonce</button>
+            <button class="btn soft" type="button" id="resetAll">Créer une nouvelle annonce (29 €)</button>
           </div>
         </div>
 
@@ -738,12 +738,14 @@ let currentPlatform = 'airbnb';
 let photos = [];
 let controlIssues = [];
 let adviceItems = [];
+let generationLocked = false;
 
 const num = id => Number($(id)?.value || 0);
 const val = id => ($(id)?.value || '').trim();
 const checked = id => !!$(id)?.checked;
 
 function showStep(step){
+  if(generationLocked && step < 6) return;
   currentStep = Math.max(1, Math.min(6, step));
   qa('.section').forEach(s => s.classList.remove('active'));
   $('step'+currentStep).classList.add('active');
@@ -762,8 +764,21 @@ function showStep(step){
   updateAssistant();
   window.scrollTo({top:document.querySelector('.stepper').offsetTop - 90,behavior:'smooth'});
 }
-qa('.step').forEach(btn => btn.addEventListener('click', ()=>showStep(Number(btn.dataset.step))));
-$('prevBtn').addEventListener('click',()=>showStep(currentStep-1));
+qa('.step').forEach(btn => btn.addEventListener('click', ()=>{
+  const targetStep = Number(btn.dataset.step);
+  if(generationLocked && targetStep < 6){
+    alert('Votre annonce a été générée. Les étapes précédentes sont désormais verrouillées. Vous pouvez encore copier ou télécharger vos fichiers.');
+    return;
+  }
+  showStep(targetStep);
+}));
+$('prevBtn').addEventListener('click',()=>{
+  if(generationLocked){
+    alert('Votre annonce a été générée. Les étapes précédentes sont désormais verrouillées.');
+    return;
+  }
+  showStep(currentStep-1);
+});
 $('nextBtn').addEventListener('click',()=>{
   if(currentStep < 6) showStep(currentStep+1);
 });
@@ -1025,13 +1040,30 @@ function refreshPreview(){
 }
 $('coverChoice').addEventListener('change',refreshPreview);
 
+function lockGeneratedAnnouncement(){
+  if(generationLocked) return;
+  generationLocked = true;
+  $('prevBtn').style.display = 'none';
+  qa('.step').forEach(btn=>{
+    const n = Number(btn.dataset.step);
+    if(n < 6){
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled','true');
+      btn.title = 'Annonce générée — étape verrouillée';
+    }
+  });
+  alert('Votre annonce a été générée. Vous pouvez encore la copier, la télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.');
+}
+
 function copyAll(){
+  lockGeneratedAnnouncement();
   const text=`${val('generatedTitle')}\n\n${val('generatedIntro')}\n\n${val('generatedDescription')}\n\nINFORMATIONS PRATIQUES\n${val('generatedRules')}`;
   navigator.clipboard.writeText(text).then(()=>{const b=$('copyAll');b.textContent='Copié ✓';setTimeout(()=>b.textContent='Copier tout',1600)});
 }
 $('copyAll').addEventListener('click',copyAll);
 
 function downloadWord(){
+  lockGeneratedAnnouncement();
   const content=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Mon Annonce Pro</title></head><body>
   <h1>${val('generatedTitle')}</h1><p><strong>${val('generatedIntro')}</strong></p>
   <h2>Description</h2><p>${val('generatedDescription').replace(/\n/g,'<br>')}</p>
@@ -1043,6 +1075,10 @@ function downloadWord(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mon-annonce-pro.doc';a.click();URL.revokeObjectURL(a.href);
 }
 $('downloadWord').addEventListener('click',downloadWord);
+$('printPdf').addEventListener('click',()=>{
+  lockGeneratedAnnouncement();
+  setTimeout(()=>window.print(),50);
+});
 
 $('resetAll').addEventListener('click',()=>{
   if(!confirm('Créer une nouvelle annonce nécessite un nouveau paiement. Continuer ?')) return;
