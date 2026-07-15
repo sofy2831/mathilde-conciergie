@@ -350,6 +350,74 @@
   .service-shell,.export-lock-note{display:none!important}
 }
 
+
+/* V8 — couverture vert / orange / rouge */
+.coverage-box{
+  transition:.2s ease;
+}
+.coverage-box.coverage-premium{
+  background:#F0FDF4!important;
+  border-color:#86EFAC!important;
+}
+.coverage-box.coverage-standard{
+  background:#FFF7ED!important;
+  border-color:#FDBA74!important;
+}
+.coverage-box.coverage-unavailable{
+  background:#FEF2F2!important;
+  border-color:#FCA5A5!important;
+}
+.coverage-status{
+  padding:10px 11px;
+  border-radius:11px;
+  background:rgba(255,255,255,.72);
+}
+.coverage-status.good{color:#047857!important}
+.coverage-status.regional{color:#B45309!important}
+.coverage-status.bad{color:#B42318!important}
+.coverage-status .coverage-title{
+  display:block;
+  margin-bottom:4px;
+  font-size:12px;
+  font-weight:900;
+}
+.coverage-request{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:white;
+  border:1px solid #FECACA;
+}
+.coverage-request.show{display:block}
+.coverage-request p{
+  margin:0 0 10px;
+  color:#7F1D1D;
+  font-size:10.8px;
+  line-height:1.4;
+}
+.coverage-request-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+.coverage-request input{
+  width:100%;
+  border:1px solid #FCA5A5;
+  border-radius:11px;
+  padding:10px 11px;
+  font:inherit;
+}
+.coverage-request button{
+  background:linear-gradient(135deg,#B42318,#EF4444);
+  box-shadow:0 10px 20px rgba(180,35,24,.18);
+}
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
 </style>
 </head>
 <body>
@@ -365,13 +433,23 @@
       <span class="service-pill">Scénarios financiers</span>
       <span class="service-pill">Sans abonnement</span>
     </div>
-    <div class="coverage-box">
+    <div class="coverage-box" id="coverageBox">
       <strong style="font-size:12px;color:var(--blue)">Vérifiez la couverture de votre commune avant paiement</strong>
       <div class="coverage-row" style="margin-top:8px">
-        <input id="coverageAddress" placeholder="Ville, code postal ou adresse">
+        <input id="coverageAddress" placeholder="Ex. 24 hameau de Danis, 09700 Saverdun">
         <button id="checkCoverageBtn" type="button">Vérifier</button>
       </div>
-      <div id="coverageStatus" class="coverage-status">Orléans, sa métropole, La Ferté-Saint-Aubin, Lamotte-Beuvron et la Sologne disposent du niveau de détail le plus élevé. Le reste de la France, la Corse et l’outre-mer bénéficient d’une analyse territoriale.</div>
+      <div id="coverageStatus" class="coverage-status">
+        Saisissez une adresse complète avec le code postal, puis cliquez sur « Vérifier ».
+      </div>
+      <div class="coverage-request" id="coverageRequest">
+        <p><strong>Votre commune n’est pas encore disponible.</strong><br>
+        Indiquez votre email : votre messagerie s’ouvrira avec une demande déjà préparée. Aucun renseignement n’est enregistré sur cette page.</p>
+        <div class="coverage-request-grid">
+          <input id="coverageEmail" type="email" placeholder="Votre adresse email">
+          <button id="requestCoverageBtn" type="button">Demander l’ajout de ma commune</button>
+        </div>
+      </div>
     </div>
     <a class="service-back" href="les-indispensables-du-proprietaire.html">← Retour aux indispensables du propriétaire</a>
   </div>
@@ -379,8 +457,8 @@
     <div class="amount">49 € <small>TTC</small></div>
     <h3>Un diagnostic complet, sans abonnement</h3>
     <p>Une commande correspond à un logement et à une génération de diagnostic. Les exports restent disponibles après génération.</p>
-    <button class="buy-btn" id="stripeCheckoutBtn" type="button">Acheter le diagnostic — 49 €</button>
-    <div class="stripe-note" id="stripeStatus">Paiement sécurisé Stripe — branchement à finaliser</div>
+    <button class="buy-btn" id="stripeCheckoutBtn" type="button" disabled>Acheter le diagnostic — 49 €</button>
+    <div class="stripe-note" id="stripeStatus">Vérifiez d’abord la couverture de votre adresse.</div>
   </aside>
 </section>
 
@@ -451,27 +529,94 @@ function normalizeCoverageText(value){
 }
 function detectCoverage(value){
   const normalized=normalizeCoverageText(value);
-  if(!normalized) return {level:"unknown",label:"Saisissez une commune ou une adresse."};
+  const postalMatch=String(value||"").match(/\b(\d{5})\b/);
+  const postalCode=postalMatch ? postalMatch[1] : "";
+
+  if(!normalized){
+    return {
+      level:"unknown",
+      title:"Adresse à renseigner",
+      label:"Saisissez une adresse complète avec le code postal."
+    };
+  }
+
   if(PREMIUM_ALIASES.some(alias=>normalized.includes(normalizeCoverageText(alias)))){
-    return {level:"premium",label:"Analyse locale premium disponible : profil de marché et événements détaillés."};
+    return {
+      level:"premium",
+      title:"✓ Couverture Premium disponible",
+      label:"Cette commune bénéficie d’une analyse locale enrichie : événements, saisonnalité, clientèle et recommandations spécifiques."
+    };
   }
+
   if(ENRICHED_ALIASES.some(alias=>normalized.includes(normalizeCoverageText(alias)))){
-    return {level:"enriched",label:"Analyse locale enrichie disponible pour cette destination."};
+    return {
+      level:"premium",
+      title:"✓ Analyse locale enrichie disponible",
+      label:"Cette destination dispose d’un profil local et de périodes de demande adaptées."
+    };
   }
-  if(/\b(97[1-8]|98[6-8]|20\d{3})\b/.test(normalized)){
-    return {level:"regional",label:"Analyse territoriale disponible avec saisonnalité adaptée à la Corse ou à l’outre-mer."};
+
+  // Une adresse française complète avec code postal bénéficie de la couverture territoriale.
+  if(/^\d{5}$/.test(postalCode)){
+    const overseas=/^(97[1-8]|98[6-8])/.test(postalCode);
+    const corsica=/^20/.test(postalCode);
+
+    return {
+      level:"standard",
+      title:"✓ Diagnostic disponible",
+      label: overseas
+        ? "Analyse territoriale disponible avec une saisonnalité adaptée à l’outre-mer."
+        : corsica
+          ? "Analyse territoriale disponible avec une saisonnalité adaptée à la Corse."
+          : "Votre commune est couverte par l’analyse territoriale CleanUp. Les événements très locaux peuvent être remplacés par des périodes saisonnières adaptées au secteur."
+    };
   }
-  if(/\b\d{5}\b/.test(normalized) || /[a-z]{3,}/.test(normalized)){
-    return {level:"regional",label:"Analyse territoriale France disponible. Les événements nommés peuvent être remplacés par des périodes saisonnières locales."};
-  }
-  return {level:"unknown",label:"Adresse à compléter pour vérifier la couverture."};
+
+  return {
+    level:"unavailable",
+    title:"Commune non encore disponible",
+    label:"Nous ne pouvons pas rattacher cette adresse de manière fiable sans commune et code postal français complets. Vous pouvez demander gratuitement son ajout."
+  };
 }
+
+function renderCoverageResult(result){
+  const status=document.getElementById("coverageStatus");
+  const box=document.getElementById("coverageBox");
+  const request=document.getElementById("coverageRequest");
+  const stripeBtn=document.getElementById("stripeCheckoutBtn");
+  const stripeStatus=document.getElementById("stripeStatus");
+
+  if(status){
+    status.innerHTML=`<span class="coverage-title">${result.title}</span>${result.label}`;
+    status.className="coverage-status "+
+      (result.level==="premium" ? "good" :
+       result.level==="standard" ? "regional" :
+       result.level==="unavailable" ? "bad" : "");
+  }
+
+  if(box){
+    box.classList.remove("coverage-premium","coverage-standard","coverage-unavailable");
+    if(result.level==="premium") box.classList.add("coverage-premium");
+    if(result.level==="standard") box.classList.add("coverage-standard");
+    if(result.level==="unavailable") box.classList.add("coverage-unavailable");
+  }
+
+  request?.classList.toggle("show",result.level==="unavailable");
+
+  const canBuy=result.level==="premium" || result.level==="standard";
+  if(stripeBtn) stripeBtn.disabled=!canBuy;
+  if(stripeStatus){
+    stripeStatus.textContent=canBuy
+      ? "Adresse couverte — paiement sécurisé Stripe."
+      : result.level==="unavailable"
+        ? "Le paiement est désactivé tant que la commune n’est pas rattachée."
+        : "Vérifiez d’abord la couverture de votre adresse.";
+  }
+}
+
 function updateCoverage(value){
   const result=detectCoverage(value);
-  const el=document.getElementById("coverageStatus");
-  if(!el) return result;
-  el.textContent=result.label;
-  el.className="coverage-status "+(result.level==="premium"||result.level==="enriched"?"good":result.level==="regional"?"regional":"");
+  renderCoverageResult(result);
   return result;
 }
 
@@ -905,41 +1050,75 @@ if(coverageAddressEl && inputAddressEl){
 }
 
 checkCoverageBtn?.addEventListener("click",()=>{
-  const address = (coverageAddressEl?.value || "").trim();
-  const status = document.getElementById("coverageStatus");
+  const address=(coverageAddressEl?.value || "").trim();
 
   if(!address){
-    if(status){
-      status.textContent = "Saisissez d’abord une ville, un code postal ou une adresse complète.";
-      status.className = "coverage-status regional";
-    }
+    renderCoverageResult({level:"unknown",title:"Adresse à renseigner",label:"Saisissez une adresse complète avec le code postal, puis cliquez sur « Vérifier »."});
     coverageAddressEl?.focus();
     return;
   }
 
-  const result = updateCoverage(address);
-
-  // L’adresse vérifiée est reprise dans les données utilisées par le diagnostic.
-  if(inputAddressEl){
-    inputAddressEl.value = address;
-    inputAddressEl.dispatchEvent(new Event("input",{bubbles:true}));
-  }
-
-  const originalText = checkCoverageBtn.textContent;
-  checkCoverageBtn.textContent = "Vérifié ✓";
-  checkCoverageBtn.disabled = true;
-
-  if(status){
-    status.textContent = "Adresse vérifiée — " + result.label;
-  }
+  checkCoverageBtn.textContent="Vérification…";
+  checkCoverageBtn.disabled=true;
 
   setTimeout(()=>{
-    checkCoverageBtn.textContent = originalText;
-    checkCoverageBtn.disabled = false;
-  },1800);
+    const result=updateCoverage(address);
+
+    // Reprise automatique dans les données du diagnostic uniquement si le diagnostic est disponible.
+    if((result.level==="premium" || result.level==="standard") && inputAddressEl){
+      inputAddressEl.value=address;
+      inputAddressEl.dispatchEvent(new Event("input",{bubbles:true}));
+    }
+
+    checkCoverageBtn.textContent=
+      result.level==="unavailable" ? "Non disponible" : "Adresse vérifiée ✓";
+
+    setTimeout(()=>{
+      checkCoverageBtn.textContent="Vérifier";
+      checkCoverageBtn.disabled=false;
+    },1700);
+  },350);
 });
+
+document.getElementById("requestCoverageBtn")?.addEventListener("click",()=>{
+  const address=(coverageAddressEl?.value || "").trim();
+  const email=(document.getElementById("coverageEmail")?.value || "").trim();
+
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert("Indiquez une adresse email valide.");
+    document.getElementById("coverageEmail")?.focus();
+    return;
+  }
+
+  const postal=(address.match(/\b\d{5}\b/) || [""])[0];
+  const subject="Demande d’ajout d’une commune — Diagnostic CleanUp";
+  const body=[
+    "Bonjour,",
+    "",
+    "Je souhaite être informé lorsque le Diagnostic CleanUp sera disponible pour cette commune.",
+    "",
+    `Adresse saisie : ${address}`,
+    `Code postal : ${postal || "à préciser"}`,
+    `Mon email : ${email}`,
+    "",
+    "Merci de me prévenir lorsque cette commune sera rattachée.",
+    "",
+    "Cordialement,"
+  ].join("\n");
+
+  window.location.href=
+    `mailto:contact@cleanup-manager.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+
 document.getElementById("stripeCheckoutBtn")?.addEventListener("click",()=>{
   const status=document.getElementById("stripeStatus");
+  const result=detectCoverage(coverageAddressEl?.value || "");
+
+  if(result.level!=="premium" && result.level!=="standard"){
+    status.textContent="Vérifiez une adresse couverte avant de poursuivre.";
+    return;
+  }
+
   if(!STRIPE_PAYMENT_LINK){
     status.textContent="Lien Stripe à connecter avant la mise en ligne.";
     return;
