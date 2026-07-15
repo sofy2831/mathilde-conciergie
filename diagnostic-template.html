@@ -278,11 +278,114 @@
   .osm-map-frame{display:block!important}
 }
 
+
+/* V7 — couche commerciale et contrôle de couverture */
+.service-shell{
+  width:210mm;margin:0 auto 18px;
+  display:grid;grid-template-columns:1.25fr .75fr;gap:16px;
+}
+.service-intro,.service-price{
+  background:white;border:1px solid var(--line);border-radius:20px;
+  box-shadow:var(--shadow);padding:18px;
+}
+.service-intro h1{
+  margin:0 0 8px;color:var(--blue);font-size:27px;line-height:1;
+  letter-spacing:-.045em;text-transform:none;
+}
+.service-intro p{font-size:12px;line-height:1.45;color:#475467}
+.service-pills{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.service-pill{
+  padding:7px 10px;border-radius:999px;background:#F5F2FF;
+  color:var(--purple);font-size:10px;font-weight:900;
+}
+.coverage-box{
+  margin-top:12px;padding:12px;border-radius:14px;
+  background:#F8F7FF;border:1px solid #DDD6FE;
+}
+.coverage-row{display:flex;gap:8px;align-items:center}
+.coverage-row input{
+  flex:1;border:1px solid #D0D5DD;border-radius:12px;padding:10px 12px;font:inherit
+}
+.coverage-status{
+  margin-top:9px;font-size:11px;line-height:1.35;font-weight:800;color:#667085
+}
+.coverage-status.good{color:#027A48}
+.coverage-status.regional{color:#B54708}
+.service-price{
+  color:white;background:linear-gradient(145deg,#2E1065,var(--purple2));
+  display:flex;flex-direction:column;justify-content:center;
+}
+.service-price .amount{font-size:48px;font-weight:900;line-height:1}
+.service-price .amount small{font-size:13px}
+.service-price h3{color:white;font-size:17px;margin:8px 0}
+.service-price p{color:rgba(255,255,255,.78);font-size:11px}
+.service-price .buy-btn{
+  width:100%;margin-top:14px;background:white;color:var(--purple);
+  box-shadow:none
+}
+.service-price .stripe-note{
+  margin-top:8px;color:rgba(255,255,255,.68);font-size:9.5px;text-align:center
+}
+.service-back{
+  display:inline-flex;margin-top:12px;color:var(--purple);font-size:10.5px;font-weight:900
+}
+.coverage-level{
+  display:inline-flex;align-items:center;gap:6px;margin-top:7px;
+  padding:6px 9px;border-radius:999px;background:#EEF4FF;color:#344054;
+  font-size:9.5px;font-weight:900
+}
+.export-lock-note{
+  width:210mm;margin:12px auto 18px;padding:10px 12px;border-radius:12px;
+  background:#F4F2EF;border:1px solid #E2DDD8;color:#7A716B;
+  font-size:10px;line-height:1.4;display:none
+}
+.export-lock-note.show{display:block}
+@media(max-width:850px){
+  body{padding:10px}
+  .toolbar,.panel,.report,.service-shell,.export-lock-note{width:100%}
+  .service-shell{grid-template-columns:1fr}
+  .a4{transform-origin:top left}
+}
+@media print{
+  .service-shell,.export-lock-note{display:none!important}
+}
+
 </style>
 </head>
 <body>
-<div class="toolbar"><strong>CleanUp Manager - diagnostic IA</strong><div style="display:flex;gap:10px;align-items:center"><button id="generateBtn" type="button">Générer le diagnostic</button><button type="button" onclick="window.print()">Imprimer / PDF</button></div></div>
+<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="generateBtn" type="button">Générer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
+
+<section class="service-shell">
+  <div class="service-intro">
+    <h1>Diagnostic de rentabilité</h1>
+    <p>Obtenez une estimation structurée du potentiel locatif, des prix, de la saisonnalité et des revenus possibles de votre logement en location courte durée.</p>
+    <div class="service-pills">
+      <span class="service-pill">6 pages A4</span>
+      <span class="service-pill">Analyse locale</span>
+      <span class="service-pill">Scénarios financiers</span>
+      <span class="service-pill">Sans abonnement</span>
+    </div>
+    <div class="coverage-box">
+      <strong style="font-size:12px;color:var(--blue)">Vérifiez la couverture de votre commune avant paiement</strong>
+      <div class="coverage-row" style="margin-top:8px">
+        <input id="coverageAddress" placeholder="Ville, code postal ou adresse">
+        <button id="checkCoverageBtn" type="button">Vérifier</button>
+      </div>
+      <div id="coverageStatus" class="coverage-status">Orléans, sa métropole, La Ferté-Saint-Aubin, Lamotte-Beuvron et la Sologne disposent du niveau de détail le plus élevé. Le reste de la France, la Corse et l’outre-mer bénéficient d’une analyse territoriale.</div>
+    </div>
+    <a class="service-back" href="les-indispensables-du-proprietaire.html">← Retour aux indispensables du propriétaire</a>
+  </div>
+  <aside class="service-price">
+    <div class="amount">49 € <small>TTC</small></div>
+    <h3>Un diagnostic complet, sans abonnement</h3>
+    <p>Une commande correspond à un logement et à une génération de diagnostic. Les exports restent disponibles après génération.</p>
+    <button class="buy-btn" id="stripeCheckoutBtn" type="button">Acheter le diagnostic — 49 €</button>
+    <div class="stripe-note" id="stripeStatus">Paiement sécurisé Stripe — branchement à finaliser</div>
+  </aside>
+</section>
+
 <section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div id="generationStatus" style="min-height:18px;margin-top:10px;font-size:12px;font-weight:700;color:#667085"></div></section>
+<div class="export-lock-note" id="exportLockNote"><strong>Votre diagnostic a été généré.</strong> Vous pouvez toujours l’imprimer ou l’enregistrer en PDF. Les données du logement sont désormais verrouillées pour cette commande.</div>
 <main class="report">
 <section class="a4 page1"><div class="header page1-header"><div class="logo logo-cover"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Diagnostic complet</div></div><div class="title-block"><div class="kicker">Diagnostic</div><h1>De rentabilité<span>Location courte durée</span></h1><div class="client-meta-top"><span id="clientMetaTop">Diagnostic propriétaire</span><span id="dateMetaTop">Diagnostic non généré</span></div></div><div class="cover-grid"><div class="cover-left">
 <div class="cover-summary geo-card">
@@ -324,6 +427,54 @@
 <section class="a4 page6"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Recommandations</div></div><h2>Recommandations CleanUp</h2><div class="reco-grid"><div class="reco"><div><div class="ico">📷</div><h3>Photos professionnelles</h3><p>Priorité absolue avant publication. Les photos conditionnent le taux de clic et le prix perçu.</p></div></div><div class="reco"><div><div class="ico">🛋️</div><h3>Présentation soignée</h3><p id="recoPresentation">Ambiance claire, homogène et rassurante pour renforcer la valeur du logement.</p></div></div><div class="reco"><div><div class="ico">🔐</div><h3>Serrure connectée</h3><p>Arrivées autonomes, réduction des contraintes et meilleure gestion des horaires.</p></div></div><div class="reco"><div><div class="ico">📲</div><h3>Check-in autonome</h3><p>Guide d’arrivée, codes, accès, stationnement et consignes centralisées.</p></div></div><div class="reco"><div><div class="ico">⚙️</div><h3>Automatisation</h3><p>Messages voyageurs, calendrier, ménage et suivi des interventions sans friction.</p></div></div><div class="reco"><div><div class="ico">⭐</div><h3>Avis voyageurs</h3><p>Objectif : obtenir rapidement des avis solides pour remonter les tarifs.</p></div></div></div><h2 class="section-title">Plan d’action prioritaire</h2><div class="check-list"><div class="check"><span>1</span>Préparer le logement et corriger les points visibles avant shooting.</div><div class="check"><span>2</span>Lancer avec un tarif attractif calculé pour obtenir les premiers avis.</div><div class="check"><span>3</span>Paramétrer week-ends, vacances et événements avec majoration automatique.</div><div class="check"><span>4</span>Suivre le remplissage chaque semaine et ajuster les prix progressivement.</div></div><div class="decision-box"><div class="decision-ico">🚀</div><div><h3>Décision recommandée</h3><p id="decisionText">Décision générée automatiquement selon le score CleanUp.</p></div></div><div class="final"><div><div class="final-label">INDICE CLEANUP</div><div class="big"><span data-value="score">0</span>/100</div></div><div><h3>Conclusion opérationnelle</h3><p id="finalConclusion">Conclusion calculée automatiquement.</p></div></div><div class="certif"><p><b>Certification CleanUp Manager</b><br>Cette étude constitue une aide à la décision. Elle permet de cadrer le potentiel locatif, les priorités de lancement et les points à sécuriser avant la mise en exploitation.</p></div><div class="page-no">6</div></section>
 </main>
 <script>
+
+const STRIPE_PAYMENT_LINK = "";
+let diagnosticExportLocked = false;
+
+const PREMIUM_ALIASES = [
+  "orleans","orléans","olivet","saran","fleury les aubrais","saint jean de braye",
+  "saint jean de la ruelle","ingre","chécy","checy","la ferte saint aubin",
+  "la ferté saint aubin","lamotte beuvron","romorantin lanthenay","salbris",
+  "nouan le fuzelier","chaumont sur tharonne","beaugency","meung sur loire",
+  "sully sur loire","jargeau","chateauneuf sur loire"
+];
+const ENRICHED_ALIASES = [
+  "paris","lyon","bordeaux","marseille","nice","nantes","tours","toulouse",
+  "montpellier","lille","strasbourg","la rochelle","biarritz","honfleur",
+  "deauville","rennes","caen","dijon","annecy","chamonix","saint quay portrieux"
+];
+
+function normalizeCoverageText(value){
+  return String(value||"").toLowerCase().normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"").replace(/[’']/g," ")
+    .replace(/[-_/]/g," ").replace(/\s+/g," ").trim();
+}
+function detectCoverage(value){
+  const normalized=normalizeCoverageText(value);
+  if(!normalized) return {level:"unknown",label:"Saisissez une commune ou une adresse."};
+  if(PREMIUM_ALIASES.some(alias=>normalized.includes(normalizeCoverageText(alias)))){
+    return {level:"premium",label:"Analyse locale premium disponible : profil de marché et événements détaillés."};
+  }
+  if(ENRICHED_ALIASES.some(alias=>normalized.includes(normalizeCoverageText(alias)))){
+    return {level:"enriched",label:"Analyse locale enrichie disponible pour cette destination."};
+  }
+  if(/\b(97[1-8]|98[6-8]|20\d{3})\b/.test(normalized)){
+    return {level:"regional",label:"Analyse territoriale disponible avec saisonnalité adaptée à la Corse ou à l’outre-mer."};
+  }
+  if(/\b\d{5}\b/.test(normalized) || /[a-z]{3,}/.test(normalized)){
+    return {level:"regional",label:"Analyse territoriale France disponible. Les événements nommés peuvent être remplacés par des périodes saisonnières locales."};
+  }
+  return {level:"unknown",label:"Adresse à compléter pour vérifier la couverture."};
+}
+function updateCoverage(value){
+  const result=detectCoverage(value);
+  const el=document.getElementById("coverageStatus");
+  if(!el) return result;
+  el.textContent=result.label;
+  el.className="coverage-status "+(result.level==="premium"||result.level==="enriched"?"good":result.level==="regional"?"regional":"");
+  return result;
+}
+
 const API_URL = 'https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateDiagnostic';
 const $ = (id) => document.getElementById(id);
 const q = (selector) => document.querySelector(selector);
@@ -728,6 +879,40 @@ async function generateDiagnostic() {
     setLoading(false, `Erreur : ${error.message}`);
   }
 }
+
+
+const coverageAddressEl = document.getElementById("coverageAddress");
+const inputAddressEl = document.getElementById("inputAdresse");
+if(coverageAddressEl && inputAddressEl){
+  coverageAddressEl.value=inputAddressEl.value;
+  coverageAddressEl.addEventListener("input",()=>updateCoverage(coverageAddressEl.value));
+  inputAddressEl.addEventListener("input",()=>{
+    coverageAddressEl.value=inputAddressEl.value;
+    updateCoverage(inputAddressEl.value);
+  });
+}
+document.getElementById("checkCoverageBtn")?.addEventListener("click",()=>{
+  updateCoverage(coverageAddressEl?.value || inputAddressEl?.value || "");
+});
+document.getElementById("stripeCheckoutBtn")?.addEventListener("click",()=>{
+  const status=document.getElementById("stripeStatus");
+  if(!STRIPE_PAYMENT_LINK){
+    status.textContent="Lien Stripe à connecter avant la mise en ligne.";
+    return;
+  }
+  window.location.href=STRIPE_PAYMENT_LINK;
+});
+document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
+  diagnosticExportLocked=true;
+  ["inputNom","inputAdresse","inputSurface","inputCapacite"].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.disabled=true;
+  });
+  const generate=document.getElementById("generateBtn");
+  if(generate) generate.disabled=true;
+  document.getElementById("exportLockNote")?.classList.add("show");
+  window.print();
+});
+updateCoverage(document.getElementById("inputAdresse")?.value || "");
 
 $('generateBtn').addEventListener('click', generateDiagnostic);
 $('inputNom')?.addEventListener('input', () => setReportIdentity());
