@@ -418,10 +418,29 @@ button:disabled{
   box-shadow:none;
 }
 
+
+.generate-action{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+.generate-action button{
+  min-width:230px;
+}
+@media(max-width:850px){
+  .generate-action{justify-content:stretch}
+  .generate-action button{width:100%}
+}
+@media print{
+  .generate-action{display:none!important}
+}
+
 </style>
 </head>
 <body>
-<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="generateBtn" type="button">Générer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
+<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
 
 <section class="service-shell">
   <div class="service-intro">
@@ -462,7 +481,7 @@ button:disabled{
   </aside>
 </section>
 
-<section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div id="generationStatus" style="min-height:18px;margin-top:10px;font-size:12px;font-weight:700;color:#667085"></div></section>
+<section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div><div id="generationStatus" style="min-height:18px;margin-top:10px;font-size:12px;font-weight:700;color:#667085"></div></section>
 <div class="export-lock-note" id="exportLockNote"><strong>Votre diagnostic a été généré.</strong> Vous pouvez toujours l’imprimer ou l’enregistrer en PDF. Les données du logement sont désormais verrouillées pour cette commande.</div>
 <main class="report">
 <section class="a4 page1"><div class="header page1-header"><div class="logo logo-cover"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Diagnostic complet</div></div><div class="title-block"><div class="kicker">Diagnostic</div><h1>De rentabilité<span>Location courte durée</span></h1><div class="client-meta-top"><span id="clientMetaTop">Diagnostic propriétaire</span><span id="dateMetaTop">Diagnostic non généré</span></div></div><div class="cover-grid"><div class="cover-left">
