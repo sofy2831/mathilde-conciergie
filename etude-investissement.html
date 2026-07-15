@@ -368,6 +368,63 @@ html,body{margin:0!important;padding:0!important;background:white!important;widt
 .r-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #D9E0E8;border-radius:14px;overflow:hidden}.r-table th{background:var(--navy);color:white;padding:8px 9px;text-align:left;font-size:7.6pt;text-transform:uppercase}.r-table td{padding:8px 9px;border-top:1px solid #D9E0E8;font-size:8pt;font-weight:750;color:var(--navy)}.r-table td:not(:first-child),.r-table th:not(:first-child){text-align:right}.r-final-price{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin:5mm 0}.r-price-card{border:1px solid #D9E0E8;border-radius:15px;padding:13px;text-align:center;background:#FBFCFD}.r-price-card b{display:block;font-size:20pt;color:var(--navy)}.r-price-card span{font-size:7.4pt;font-weight:900;color:var(--muted)}.r-price-card.highlight{background:linear-gradient(145deg,var(--navy),var(--navy2))}.r-price-card.highlight b{color:var(--gold2)}.r-price-card.highlight span{color:rgba(255,255,255,.70)}.r-recommendation{margin-top:5mm;padding:16px;border-radius:17px;background:#F7F0DF;border:1px solid #E3D4AB}.r-recommendation h3{margin:0 0 6px;color:var(--navy);font-size:14pt}.r-recommendation p{margin:0;color:#344054;font-size:8.5pt}.r-footer{position:absolute;left:11.5mm;right:11.5mm;bottom:5mm;display:flex;justify-content:space-between;font-size:6.8pt;color:#7A8796;font-weight:800}
 }
 
+
+/* V4 — niveau visuel Diagnostic de rentabilité */
+.study-generation-progress{
+  display:none;margin-top:13px;padding:13px 14px;border-radius:14px;
+  background:#F8F6EF;border:1px solid #E3D4AB
+}
+.study-generation-progress.show{display:block}
+.study-progress-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:10.5px;font-weight:850;color:var(--navy)}
+.study-progress-track{height:9px;border-radius:999px;background:#E7E0D0;overflow:hidden}
+.study-progress-track span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--gold),var(--navy));transition:width .55s ease;position:relative}
+.study-progress-track span:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:investShine 1.3s linear infinite}
+.study-generation-progress small{display:block;margin-top:7px;color:var(--muted);font-size:9.5px;font-weight:700}
+@keyframes investShine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.analysis-output{
+  margin-top:12px;padding:12px;border-left:4px solid var(--gold);
+  border-radius:11px;background:#FBFCFD;color:var(--navy);font-size:10.5px;line-height:1.5
+}
+@media print{
+  .invest-page{
+    background:
+      radial-gradient(circle at 100% 0%,rgba(200,164,90,.08),transparent 33%),
+      linear-gradient(180deg,#FFFFFF,#FBFCFD)!important
+  }
+  .r-head{
+    border-bottom:2px solid var(--navy)!important
+  }
+  .r-badge{
+    background:var(--navy)!important;color:var(--gold2)!important
+  }
+  .r-title{
+    position:relative!important;padding-bottom:3mm!important
+  }
+  .r-title:after{
+    content:"";display:block;width:18mm;height:1.4mm;border-radius:999px;
+    background:var(--gold);margin-top:3mm
+  }
+  .r-kpi{
+    box-shadow:0 2mm 5mm rgba(7,26,51,.06)!important;
+    border-top:1.2mm solid var(--gold)!important
+  }
+  .r-card{
+    box-shadow:0 1.5mm 4mm rgba(7,26,51,.045)!important
+  }
+  .r-ai-reading{margin-top:4mm!important;border-left:1.3mm solid var(--gold)!important}
+  .r-score-breakdown{
+    margin:4mm 0;padding:4mm;border-radius:4mm;background:#F7F9FB;border:1px solid #D9E0E8
+  }
+  .r-score-breakdown h3{margin:0 0 3mm;color:var(--navy);font-size:11pt}
+  .r-score-line{
+    display:grid;grid-template-columns:31mm 1fr 10mm;gap:3mm;align-items:center;margin:2.1mm 0;
+    font-size:7.5pt;font-weight:850;color:var(--navy)
+  }
+  .r-score-line i{height:3mm;border-radius:999px;background:#E6EBF0;overflow:hidden}
+  .r-score-line i b{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--gold),var(--navy))}
+  .r-score-line strong{text-align:right}
+}
+
 </style>
 </head>
 <body>
@@ -488,6 +545,12 @@ html,body{margin:0!important;padding:0!important;background:white!important;widt
 
       <div class="section" id="step4">
         <div class="section-head"><div><h2>Analyse financière</h2><p>Structure du financement et coût réel de l’acquisition.</p></div><div class="section-badge">4 / 10</div></div>
+        <div class="ai-generator">
+          <h3>Demander à CleanUp d’analyser le financement</h3>
+          <p>CleanUp commentera la cohérence de l’apport, de la dette, de la mensualité, des charges et du cash-flow. Les calculs resteront exclusivement ceux du moteur financier.</p>
+          <button class="btn gold" id="generateFinanceAI" type="button">✦ Inclure l’analyse du financement</button>
+          <div class="ai-status" id="financeAIStatus">Cette analyse sera rédigée lors de la génération finale.</div>
+        </div>
         <div class="form-grid three">
           <div class="field"><label>Durée du prêt (années)</label><input class="input" id="loanYears" type="number" min="1" placeholder="20"></div>
           <div class="field"><label>Taux du prêt (%)</label><input class="input" id="loanRate" type="number" step="0.01" min="0" placeholder="3.8"></div>
@@ -521,6 +584,12 @@ html,body{margin:0!important;padding:0!important;background:white!important;widt
 
       <div class="section" id="step6">
         <div class="section-head"><div><h2>Comparaison des options</h2><p>Comparez la location courte durée à d’autres stratégies d’exploitation.</p></div><div class="section-badge">6 / 10</div></div>
+        <div class="ai-generator">
+          <h3>Demander à CleanUp d’interpréter la comparaison</h3>
+          <p>CleanUp expliquera les écarts entre courte durée, location meublée, moyenne durée et location vide, puis identifiera la stratégie la plus cohérente.</p>
+          <button class="btn gold" id="generateComparisonAI" type="button">✦ Inclure l’analyse comparative</button>
+          <div class="ai-status" id="comparisonAIStatus">Cette analyse sera rédigée lors de la génération finale.</div>
+        </div>
         <div class="form-grid">
           <div class="field"><label>Loyer location vide / mois</label><input class="input" id="emptyRent" type="number" min="0" placeholder="760"></div>
           <div class="field"><label>Loyer location meublée / mois</label><input class="input" id="furnishedRent" type="number" min="0" placeholder="920"></div>
@@ -596,6 +665,11 @@ html,body{margin:0!important;padding:0!important;background:white!important;widt
           <div class="field"><label>Prix optimiste / nuit</label><input class="input" id="rateHigh" type="number" min="0" placeholder="130"></div>
         </div>
         <button class="btn gold" id="generateStudy" type="button" style="margin-top:18px">✦ Générer l’étude d’investissement</button>
+        <div class="study-generation-progress" id="studyGenerationProgress">
+          <div class="study-progress-head"><span id="studyProgressText">Préparation de l’étude…</span><strong id="studyProgressPercent">0 %</strong></div>
+          <div class="study-progress-track"><span id="studyProgressBar"></span></div>
+          <small>L’analyse complète et la rédaction des six pages peuvent prendre entre 30 secondes et 1 minute 30.</small>
+        </div>
       </div>
 
       <div class="section" id="step10">
@@ -688,11 +762,20 @@ html,body{margin:0!important;padding:0!important;background:white!important;widt
 
 <section class="invest-report" id="investReport">
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Synthèse</div></div><h1 class="r-title">Synthèse de l’investissement</h1><p class="r-subtitle" id="rAddress">Adresse</p><div class="r-verdict"><div><span class="r-status orange" id="rVerdictBadge">À négocier</span><h2 id="rVerdictTitle">Projet à analyser</h2><p id="rVerdictIntro">L’étude doit être générée.</p></div><div class="r-score" id="rScoreDonut" style="--score:0"><div class="r-score-in"><div><b id="rScore">0</b><span>/100</span></div></div></div></div><div class="r-grid-3"><div class="r-kpi"><b id="rPriceShown">0 €</b><span>Prix affiché</span></div><div class="r-kpi"><b id="rMaxPrice1">0 €</b><span>Prix maximum conseillé</span></div><div class="r-kpi"><b id="rDiscount1">0 €</b><span>Décote recommandée</span></div><div class="r-kpi"><b id="rGrossYield">0 %</b><span>Rentabilité brute</span></div><div class="r-kpi"><b id="rCashflow">0 €</b><span>Cash-flow annuel</span></div><div class="r-kpi"><b id="rRiskLevel">Moyen</b><span>Niveau de risque</span></div></div><div class="r-card" style="margin-top:5mm"><h3>Avis CleanUp</h3><p id="rPage1Advice">Avis à générer.</p></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 1 / 6</span></div></article>
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Secteur</div></div><h1 class="r-title">Analyse du secteur</h1><div class="r-grid-2"><div class="r-map"><iframe id="rMapFrame"></iframe></div><div class="r-card"><h3>Indicateurs du quartier</h3><div class="r-list"><div><span>Quartier</span><b id="rAreaType">—</b></div><div><span>Accessibilité</span><b id="rAccess">—</b></div><div><span>Commerces</span><b id="rShops">—</b></div><div><span>Gare / transports</span><b id="rTransit">—</b></div><div><span>Tourisme</span><b id="rTourism">—</b></div><div><span>Activité économique</span><b id="rEconomy">—</b></div><div><span>Demande locative</span><b id="rDemand">—</b></div></div></div></div><h2 style="margin-top:5mm;font-size:15pt;color:var(--navy)">Forces et faiblesses</h2><div class="r-grid-2"><div><h3 style="color:var(--green)">Forces</h3><div class="r-strengths" id="rStrengths"></div></div><div><h3 style="color:var(--red)">Faiblesses</h3><div class="r-weaknesses" id="rWeaknesses"></div></div></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 2 / 6</span></div></article>
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Courte durée</div></div><h1 class="r-title">Potentiel location courte durée</h1><div class="r-grid-3"><div class="r-kpi"><b id="rNightRate">0 €</b><span>Prix moyen / nuit</span></div><div class="r-kpi"><b id="rOccupancy">0 %</b><span>Taux d’occupation</span></div><div class="r-kpi"><b id="rRevenue">0 €</b><span>CA annuel réaliste</span></div></div><div class="r-chart-card" style="margin-top:5mm"><h3>Scénarios de chiffre d’affaires</h3><p>Prudent, réaliste et optimiste.</p><div class="r-bars"><div class="r-bar orange" id="rBarLow"><b id="rBarLowV">0 €</b><span>Prudent</span></div><div class="r-bar green" id="rBarMid"><b id="rBarMidV">0 €</b><span>Réaliste</span></div><div class="r-bar" id="rBarHigh"><b id="rBarHighV">0 €</b><span>Optimiste</span></div></div></div><div class="r-grid-2"><div class="r-card"><h3>Plateformes</h3><p id="rPlatforms">Airbnb, Booking, Abritel</p></div><div class="r-card"><h3>Positionnement</h3><p id="rPositioning">Confort</p></div></div><div class="r-card" style="margin-top:4mm"><h3>Saisonnalité</h3><p id="rSeasonality">À générer.</p></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 3 / 6</span></div></article>
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Finance</div></div><h1 class="r-title">Analyse financière</h1><div class="r-grid-3"><div class="r-kpi"><b id="rTotalProject">0 €</b><span>Coût total projet</span></div><div class="r-kpi"><b id="rAnnualCharges">0 €</b><span>Charges annuelles</span></div><div class="r-kpi"><b id="rBreakEven">0 %</b><span>Seuil de rentabilité</span></div></div><div class="r-chart-card" style="margin-top:5mm"><h3>Comparatif des modes d’exploitation</h3><p>Revenu net annuel avant fiscalité.</p><div class="r-bars"><div class="r-bar" id="rBarShort"><b id="rBarShortV">0 €</b><span>Airbnb</span></div><div class="r-bar green" id="rBarFurnished"><b id="rBarFurnishedV">0 €</b><span>Meublé</span></div><div class="r-bar orange" id="rBarEmpty"><b id="rBarEmptyV">0 €</b><span>Location vide</span></div></div></div><table class="r-table"><thead><tr><th>Exploitation</th><th>Revenu brut</th><th>Revenu net</th></tr></thead><tbody><tr><td>Courte durée</td><td id="rShortGross">0 €</td><td id="rShortNet">0 €</td></tr><tr><td>Meublée</td><td id="rFurnishedGross">0 €</td><td id="rFurnishedNet">0 €</td></tr><tr><td>Vide</td><td id="rEmptyGross">0 €</td><td id="rEmptyNet">0 €</td></tr></tbody></table><div class="r-card" style="margin-top:5mm"><h3>Stratégie la plus rentable</h3><p id="rBestStrategy">À déterminer.</p></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 4 / 6</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Secteur</div></div><h1 class="r-title">Analyse du secteur</h1><div class="r-grid-2"><div class="r-map"><iframe id="rMapFrame"></iframe></div><div class="r-card"><h3>Indicateurs du quartier</h3><div class="r-list"><div><span>Quartier</span><b id="rAreaType">—</b></div><div><span>Accessibilité</span><b id="rAccess">—</b></div><div><span>Commerces</span><b id="rShops">—</b></div><div><span>Gare / transports</span><b id="rTransit">—</b></div><div><span>Tourisme</span><b id="rTourism">—</b></div><div><span>Activité économique</span><b id="rEconomy">—</b></div><div><span>Demande locative</span><b id="rDemand">—</b></div></div></div></div><h2 style="margin-top:5mm;font-size:15pt;color:var(--navy)">Forces et faiblesses</h2><div class="r-grid-2"><div><h3 style="color:var(--green)">Forces</h3><div class="r-strengths" id="rStrengths"></div></div><div><h3 style="color:var(--red)">Faiblesses</h3><div class="r-weaknesses" id="rWeaknesses"></div></div></div><div class="r-card r-ai-reading"><h3>Lecture CleanUp</h3><p id="rSectorAnalysis">Analyse du secteur à générer.</p></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 2 / 6</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Courte durée</div></div><h1 class="r-title">Potentiel location courte durée</h1><div class="r-grid-3"><div class="r-kpi"><b id="rNightRate">0 €</b><span>Prix moyen / nuit</span></div><div class="r-kpi"><b id="rOccupancy">0 %</b><span>Taux d’occupation</span></div><div class="r-kpi"><b id="rRevenue">0 €</b><span>CA annuel réaliste</span></div></div><div class="r-chart-card" style="margin-top:5mm"><h3>Scénarios de chiffre d’affaires</h3><p>Prudent, réaliste et optimiste.</p><div class="r-bars"><div class="r-bar orange" id="rBarLow"><b id="rBarLowV">0 €</b><span>Prudent</span></div><div class="r-bar green" id="rBarMid"><b id="rBarMidV">0 €</b><span>Réaliste</span></div><div class="r-bar" id="rBarHigh"><b id="rBarHighV">0 €</b><span>Optimiste</span></div></div></div><div class="r-grid-2"><div class="r-card"><h3>Plateformes</h3><p id="rPlatforms">Airbnb, Booking, Abritel</p></div><div class="r-card"><h3>Positionnement</h3><p id="rPositioning">Confort</p></div></div><div class="r-grid-2" style="margin-top:4mm"><div class="r-card"><h3>Saisonnalité</h3><p id="rSeasonality">À générer.</p></div><div class="r-card"><h3>Lecture du marché</h3><p id="rMarketAnalysis">Analyse à générer.</p></div></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 3 / 6</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Finance</div></div><h1 class="r-title">Analyse financière</h1><div class="r-grid-3"><div class="r-kpi"><b id="rTotalProject">0 €</b><span>Coût total projet</span></div><div class="r-kpi"><b id="rAnnualCharges">0 €</b><span>Charges annuelles</span></div><div class="r-kpi"><b id="rBreakEven">0 %</b><span>Seuil de rentabilité</span></div></div><div class="r-chart-card" style="margin-top:5mm"><h3>Comparatif des modes d’exploitation</h3><p>Revenu net annuel avant fiscalité.</p><div class="r-bars"><div class="r-bar" id="rBarShort"><b id="rBarShortV">0 €</b><span>Airbnb</span></div><div class="r-bar green" id="rBarFurnished"><b id="rBarFurnishedV">0 €</b><span>Meublé</span></div><div class="r-bar orange" id="rBarEmpty"><b id="rBarEmptyV">0 €</b><span>Location vide</span></div></div></div><table class="r-table"><thead><tr><th>Exploitation</th><th>Revenu brut</th><th>Revenu net</th></tr></thead><tbody><tr><td>Courte durée</td><td id="rShortGross">0 €</td><td id="rShortNet">0 €</td></tr><tr><td>Meublée</td><td id="rFurnishedGross">0 €</td><td id="rFurnishedNet">0 €</td></tr><tr><td>Vide</td><td id="rEmptyGross">0 €</td><td id="rEmptyNet">0 €</td></tr></tbody></table><div class="r-grid-2" style="margin-top:5mm"><div class="r-card"><h3>Analyse du financement</h3><p id="rFinancingAdvice">Analyse à générer.</p></div><div class="r-card"><h3>Stratégie la plus cohérente</h3><p id="rBestStrategy">À déterminer.</p></div></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 4 / 6</span></div></article>
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Risques & leviers</div></div><h1 class="r-title">Les risques et les leviers</h1><div class="r-grid-2"><div><h2 style="font-size:16pt;color:var(--red)">Risques</h2><div class="r-risks" id="rRisks"></div></div><div><h2 style="font-size:16pt;color:var(--green)">Leviers</h2><div class="r-levers" id="rLevers"></div></div></div><div class="r-grid-3" style="margin-top:6mm"><div class="r-kpi"><b id="rRiskIndex">0 / 10</b><span>Indice de risque</span></div><div class="r-kpi"><b id="rProfitTime">—</b><span>Temps avant rentabilité</span></div><div class="r-kpi"><b id="rValuePotential">Moyen</b><span>Potentiel de valorisation</span></div></div><div class="r-card" style="margin-top:5mm"><h3>Lecture CleanUp</h3><p id="rRiskAdvice">À générer.</p></div><div class="r-footer"><span>Étude CleanUp</span><span>Page 5 / 6</span></div></article>
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Conclusion</div></div><h1 class="r-title">Conclusion</h1><div style="display:grid;place-items:center;margin-bottom:5mm"><div class="r-score" id="rFinalDonut" style="--score:0;width:55mm;height:55mm"><div class="r-score-in" style="width:41mm;height:41mm"><div><b id="rFinalScore" style="font-size:30pt">0</b><span>/100</span></div></div></div></div><div class="r-final-price"><div class="r-price-card"><b id="rPriceShown2">0 €</b><span>Prix affiché</span></div><div class="r-price-card highlight"><b id="rMaxPrice2">0 €</b><span>Prix conseillé</span></div><div class="r-price-card"><b id="rDiscount2">0 €</b><span>Décote conseillée</span></div></div><div class="r-card"><h3>Avis final</h3><p id="rFinalAdvice">À générer.</p></div><div class="r-recommendation"><h3 id="rRecommendation">Acheter après négociation</h3><p id="rRecommendationText">Recommandation à générer.</p></div><div class="r-footer"><span>Powered by CleanUp</span><span>Page 6 / 6</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Conclusion</div></div><h1 class="r-title">Conclusion</h1><div style="display:grid;place-items:center;margin-bottom:5mm"><div class="r-score" id="rFinalDonut" style="--score:0;width:55mm;height:55mm"><div class="r-score-in" style="width:41mm;height:41mm"><div><b id="rFinalScore" style="font-size:30pt">0</b><span>/100</span></div></div></div></div><div class="r-final-price"><div class="r-price-card"><b id="rPriceShown2">0 €</b><span>Prix affiché</span></div><div class="r-price-card highlight"><b id="rMaxPrice2">0 €</b><span>Prix conseillé</span></div><div class="r-price-card"><b id="rDiscount2">0 €</b><span>Décote conseillée</span></div></div><div class="r-score-breakdown">
+  <h3>Composition du score</h3>
+  <div class="r-score-line"><span>Emplacement</span><i><b id="rScoreLocationBar"></b></i><strong id="rScoreLocation">0</strong></div>
+  <div class="r-score-line"><span>Marché</span><i><b id="rScoreMarketBar"></b></i><strong id="rScoreMarket">0</strong></div>
+  <div class="r-score-line"><span>Rentabilité</span><i><b id="rScoreProfitBar"></b></i><strong id="rScoreProfit">0</strong></div>
+  <div class="r-score-line"><span>Financement</span><i><b id="rScoreFinanceBar"></b></i><strong id="rScoreFinance">0</strong></div>
+  <div class="r-score-line"><span>Maîtrise du risque</span><i><b id="rScoreRiskBar"></b></i><strong id="rScoreRisk">0</strong></div>
+  <div class="r-score-line"><span>Valorisation</span><i><b id="rScoreValueBar"></b></i><strong id="rScoreValue">0</strong></div>
+</div>
+<div class="r-card"><h3>Avis final</h3><p id="rFinalAdvice">À générer.</p></div><div class="r-recommendation"><h3 id="rRecommendation">Acheter après négociation</h3><p id="rRecommendationText">Recommandation à générer.</p></div><div class="r-footer"><span>Powered by CleanUp</span><span>Page 6 / 6</span></div></article>
 </section>
 
 </main>
@@ -707,7 +790,7 @@ const checked=id=>!!$(id)?.checked;
 let currentStep=1;
 let generated=false;
 const STRIPE_PAYMENT_LINK='';
-const CLEANUP_AI_ENDPOINT='';
+const CLEANUP_AI_ENDPOINT='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateInvestmentStudy';
 
 function showStep(step){
   currentStep=Math.max(1,Math.min(10,step));
@@ -766,78 +849,28 @@ function monthlyLoanPayment(principal,annualRate,years){
 }
 
 
-async function askCleanup(section){
-  const configs={
-    area:{
-      button:'generateAreaAI',status:'areaAIStatus',
-      local:()=>{
-        if(!val('areaStrengths')) $('areaStrengths').value='Secteur à analyser selon l’accessibilité, les commerces, les pôles d’activité et les motifs de séjour.';
-        if(!val('areaWeaknesses')) $('areaWeaknesses').value='Vérifier le stationnement, les nuisances, la saisonnalité et la distance réelle aux principaux points d’intérêt.';
-      }
-    },
-    market:{
-      button:'generateMarketAI',status:'marketAIStatus',
-      local:()=>{
-        if(!num('nightRate')) $('nightRate').value=105;
-        if(!num('occupancy')) $('occupancy').value=56;
-        if(!val('amenities')) $('amenities').value='Arrivée autonome, Wi-Fi fiable, stationnement clairement expliqué et décoration cohérente avec la clientèle cible.';
-      }
-    },
-    risks:{
-      button:'generateRisksAI',status:'risksAIStatus',
-      local:()=>{
-        ['riskSeason','riskRegulation','riskWorks','riskCompetition'].forEach(id=>{if($(id))$(id).checked=true});
-        if(!val('otherRisks')) $('otherRisks').value='Vérifier la réglementation locale, le règlement de copropriété, la demande hors saison et la marge de sécurité sur les travaux.';
-      }
-    },
-    levers:{
-      button:'generateLeversAI',status:'leversAIStatus',
-      local:()=>{
-        ['leverPrice','leverWorks','leverDynamic','leverAutomation','leverMixed'].forEach(id=>{if($(id))$(id).checked=true});
-      }
-    }
+function askCleanup(section){
+  const map={
+    area:['generateAreaAI','areaAIStatus','✓ Analyse du quartier incluse'],
+    market:['generateMarketAI','marketAIStatus','✓ Analyse du marché incluse'],
+    finance:['generateFinanceAI','financeAIStatus','✓ Analyse du financement incluse'],
+    comparison:['generateComparisonAI','comparisonAIStatus','✓ Analyse comparative incluse'],
+    risks:['generateRisksAI','risksAIStatus','✓ Analyse des risques incluse'],
+    levers:['generateLeversAI','leversAIStatus','✓ Analyse des leviers incluse']
   };
-  const cfg=configs[section];
-  const btn=$(cfg.button),status=$(cfg.status);
-  btn.disabled=true;
-  btn.textContent='Analyse en cours…';
-  status.textContent='CleanUp prépare cette partie.';
-  try{
-    if(CLEANUP_AI_ENDPOINT){
-      const response=await fetch(CLEANUP_AI_ENDPOINT,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          section,
-          address:val('address'),
-          surface:num('surface'),
-          capacity:num('capacity'),
-          purchasePrice:num('purchasePrice')
-        })
-      });
-      if(!response.ok)throw new Error('Réponse CleanUp indisponible');
-      const data=await response.json();
-      // Les champs de réponse seront branchés ici avec la Function finale.
-      console.log('Réponse CleanUp',data);
-    }else{
-      cfg.local();
-    }
-    status.textContent='Contenu préparé par CleanUp. Vous pouvez le modifier.';
-    status.classList.add('done');
-    calculateFinance();
-  }catch(error){
-    status.textContent='La génération n’a pas abouti. Vous pouvez compléter cette partie manuellement.';
-    console.error(error);
-  }finally{
-    btn.disabled=false;
-    btn.textContent='✓ Contenu préparé';
-  }
+  const config=map[section];
+  if(!config)return;
+  const button=$(config[0]),status=$(config[1]);
+  button.textContent=config[2];
+  status.textContent='Cette partie sera rédigée par CleanUp lors de la génération finale.';
+  status.classList.add('done');
 }
 $('generateAreaAI').onclick=()=>askCleanup('area');
 $('generateMarketAI').onclick=()=>askCleanup('market');
+$('generateFinanceAI').onclick=()=>askCleanup('finance');
+$('generateComparisonAI').onclick=()=>askCleanup('comparison');
 $('generateRisksAI').onclick=()=>askCleanup('risks');
 $('generateLeversAI').onclick=()=>askCleanup('levers');
-
 
 function calculateFinance(){
   const total=num('purchasePrice')+num('notary')+num('works')+num('furniture');
@@ -930,6 +963,232 @@ $('rNightRate').textContent=money(num('rateMid')||num('nightRate'));$('rOccupanc
 const annualCharges=s.fixed+annualVariableCosts(s.revMid),be=s.revMid?Math.min(100,(annualCharges+s.debt)/s.revMid*100):0;$('rTotalProject').textContent=money(s.total);$('rAnnualCharges').textContent=money(annualCharges);$('rBreakEven').textContent=be.toFixed(0)+' %';const mt=Math.max(s.netOperating,s.furnishedNet,s.emptyNet,1);reportBar('rBarShort',Math.max(0,s.netOperating),mt);reportBar('rBarFurnished',Math.max(0,s.furnishedNet),mt);reportBar('rBarEmpty',Math.max(0,s.emptyNet),mt);$('rBarShortV').textContent=money(s.netOperating);$('rBarFurnishedV').textContent=money(s.furnishedNet);$('rBarEmptyV').textContent=money(s.emptyNet);$('rShortGross').textContent=money(s.revMid);$('rShortNet').textContent=money(s.netOperating);$('rFurnishedGross').textContent=money(s.furnishedGross);$('rFurnishedNet').textContent=money(s.furnishedNet);$('rEmptyGross').textContent=money(s.emptyGross);$('rEmptyNet').textContent=money(s.emptyNet);const best=[['location courte durée',s.netOperating],['location meublée',s.furnishedNet],['location vide',s.emptyNet]].sort((a,b)=>b[1]-a[1])[0];$('rBestStrategy').textContent=`La ${best[0]} ressort comme la plus rentable avec environ ${money(best[1])} nets par an avant fiscalité.`;
 makeItems('rRisks',risks,'bad');makeItems('rLevers',levers,'gold');$('rRiskIndex').textContent=riskIndex+' / 10';$('rProfitTime').textContent=typeof profitYears==='number'?profitYears+' an'+(profitYears>1?'s':''):profitYears;$('rValuePotential').textContent=valuePotential;$('rRiskAdvice').textContent=riskIndex>=7?'Marge de sécurité insuffisante : renforcer la négociation et vérifier les hypothèses.':riskIndex>=4?'Projet exploitable mais plusieurs risques doivent être validés avant engagement.':'Risque contenu sous réserve des vérifications usuelles.';
 $('rFinalScore').textContent=s.score;$('rFinalDonut').style.setProperty('--score',s.score);$('rPriceShown2').textContent=money(price);$('rMaxPrice2').textContent=money(s.maxPurchase);$('rDiscount2').textContent=money(discount);$('rFinalAdvice').textContent=s.text;$('rRecommendation').textContent=rec;$('rRecommendationText').textContent=rec==='Acheter'?'Poursuivre les vérifications et négocier les conditions d’acquisition.':rec==='Acheter après négociation'?`Poursuivre uniquement si le prix se rapproche de ${money(s.maxPurchase)}.`:rec==='Attendre'?'Attendre une baisse de prix ou de meilleures hypothèses.':'Rapport risque/rendement défavorable dans les conditions actuelles.';
+}
+
+
+let studyProgressTimer=null;
+let studyProgressValue=0;
+
+function updateStudyProgress(value,label){
+  studyProgressValue=Math.max(0,Math.min(100,Math.round(value)));
+  $('studyGenerationProgress')?.classList.add('show');
+  $('studyProgressBar').style.width=studyProgressValue+'%';
+  $('studyProgressPercent').textContent=studyProgressValue+' %';
+  if(label)$('studyProgressText').textContent=label;
+}
+function startStudyProgress(){
+  clearInterval(studyProgressTimer);
+  studyProgressValue=3;
+  updateStudyProgress(3,'Contrôle des données du projet…');
+  studyProgressTimer=setInterval(()=>{
+    let inc=.4,label='Rédaction du rapport financier…';
+    if(studyProgressValue<24){inc=3+Math.random()*3;label='Analyse du secteur et du marché…'}
+    else if(studyProgressValue<50){inc=1.7+Math.random()*2.3;label='Calcul du financement et des charges…'}
+    else if(studyProgressValue<72){inc=1+Math.random()*1.6;label='Comparaison des stratégies locatives…'}
+    else if(studyProgressValue<90){inc=.35+Math.random()*.75;label='Rédaction et mise en forme des six pages…'}
+    if(studyProgressValue<90)updateStudyProgress(Math.min(90,studyProgressValue+inc),label);
+  },950);
+}
+function finishStudyProgress(success){
+  clearInterval(studyProgressTimer);
+  studyProgressTimer=null;
+  if(success){
+    updateStudyProgress(100,'Étude d’investissement terminée.');
+    setTimeout(()=>$('studyGenerationProgress')?.classList.remove('show'),1800);
+  }else{
+    updateStudyProgress(studyProgressValue,'La génération a été interrompue.');
+  }
+}
+function valueOrPlaceholder(id){
+  const el=$(id);
+  if(!el)return 0;
+  return Number(el.value || el.placeholder || 0);
+}
+function investmentPayload(){
+  return {
+    adresse:val('address'),
+    surface:valueOrPlaceholder('surface'),
+    capacite:valueOrPlaceholder('capacity'),
+    propertyType:val('propertyType'),
+    condition:val('condition'),
+    acquisition:{
+      purchasePrice:valueOrPlaceholder('purchasePrice'),
+      notary:valueOrPlaceholder('notary'),
+      works:valueOrPlaceholder('works'),
+      furniture:valueOrPlaceholder('furniture')
+    },
+    financing:{
+      deposit:valueOrPlaceholder('deposit'),
+      loanYears:valueOrPlaceholder('loanYears'),
+      loanRate:valueOrPlaceholder('loanRate'),
+      insuranceRate:valueOrPlaceholder('insuranceRate')
+    },
+    area:{
+      type:val('areaType'),
+      parking:val('parking'),
+      strengths:val('areaStrengths'),
+      weaknesses:val('areaWeaknesses')
+    },
+    charges:{
+      propertyTax:valueOrPlaceholder('propertyTax'),
+      condoFees:valueOrPlaceholder('condoFees'),
+      insurance:valueOrPlaceholder('insurance'),
+      utilities:valueOrPlaceholder('utilities'),
+      maintenance:valueOrPlaceholder('maintenance'),
+      managementRate:valueOrPlaceholder('managementRate'),
+      platformRate:valueOrPlaceholder('platformRate'),
+      cleaningCost:valueOrPlaceholder('cleaningCost'),
+      otherCosts:valueOrPlaceholder('otherCosts')
+    },
+    comparison:{
+      emptyRent:valueOrPlaceholder('emptyRent'),
+      furnishedRent:valueOrPlaceholder('furnishedRent'),
+      midTermRent:valueOrPlaceholder('midTermRent'),
+      emptyVacancy:valueOrPlaceholder('emptyVacancy'),
+      furnishedVacancy:valueOrPlaceholder('furnishedVacancy'),
+      midTermVacancy:8,
+      longTermCosts:valueOrPlaceholder('longTermCosts'),
+      resaleValue:valueOrPlaceholder('resaleValue'),
+      appreciation:valueOrPlaceholder('appreciation')
+    },
+    scenarios:{
+      occLow:valueOrPlaceholder('occLow'),
+      occMid:valueOrPlaceholder('occMid'),
+      occHigh:valueOrPlaceholder('occHigh'),
+      rateLow:valueOrPlaceholder('rateLow'),
+      rateMid:valueOrPlaceholder('rateMid'),
+      rateHigh:valueOrPlaceholder('rateHigh')
+    },
+    flags:{
+      airbnb:checked('airbnb'),booking:checked('booking'),abritel:checked('abritel'),
+      business:checked('business'),family:checked('family'),premium:checked('premium'),
+      riskSeason:checked('riskSeason'),riskRegulation:checked('riskRegulation'),
+      riskCondo:checked('riskCondo'),riskWorks:checked('riskWorks'),
+      riskVacancy:checked('riskVacancy'),riskRate:checked('riskRate'),
+      riskCompetition:checked('riskCompetition'),riskManagement:checked('riskManagement'),
+      riskResale:checked('riskResale'),leverPrice:checked('leverPrice'),
+      leverWorks:checked('leverWorks'),leverPremium:checked('leverPremium'),
+      leverDynamic:checked('leverDynamic'),leverAutomation:checked('leverAutomation'),
+      leverDirect:checked('leverDirect'),leverMixed:checked('leverMixed'),
+      leverTax:checked('leverTax'),leverResale:checked('leverResale')
+    },
+    otherRisks:val('otherRisks')
+  };
+}
+function strategy(engine,key){
+  return engine.comparison.strategies.find(item=>item.key===key)||{gross:0,net:0};
+}
+function setScoreBreakdown(engine){
+  const pairs=[
+    ['Location',engine.scores.location],['Market',engine.scores.market],
+    ['Profit',engine.scores.profitability],['Finance',engine.scores.financing],
+    ['Risk',engine.scores.risk],['Value',engine.scores.value]
+  ];
+  pairs.forEach(([name,value])=>{
+    const score=Math.round(Number(value||0));
+    $(`rScore${name}`).textContent=score;
+    $(`rScore${name}Bar`).style.width=score+'%';
+  });
+}
+function applyAIToReport(ai,engine){
+  if(!ai)return;
+  $('rPage1Advice').textContent=[ai.page1.summary,ai.page1.decisionReason].filter(Boolean).join(' ');
+  $('rSectorAnalysis').textContent=ai.page2.analysis;
+  makeItems('rStrengths',ai.page2.strengths||[],'good');
+  makeItems('rWeaknesses',ai.page2.weaknesses||[],'bad');
+  $('rAreaType').textContent=ai.page2.district;
+  $('rAccess').textContent=ai.page2.accessibility;
+  $('rShops').textContent=ai.page2.shops;
+  $('rTransit').textContent=ai.page2.transport;
+  $('rTourism').textContent=ai.page2.tourism;
+  $('rEconomy').textContent=ai.page2.economy;
+  $('rDemand').textContent=ai.page2.rentalDemand;
+  $('rPlatforms').textContent=(ai.page3.platforms||[]).join(', ');
+  $('rPositioning').textContent=ai.page3.positioning;
+  $('rSeasonality').textContent=ai.page3.seasonality;
+  $('rMarketAnalysis').textContent=[ai.page3.marketSummary,ai.page3.pricingComment].filter(Boolean).join(' ');
+  $('rFinancingAdvice').textContent=[ai.page4.financingAnalysis,...(ai.page4.warnings||[])].join(' ');
+  $('rBestStrategy').textContent=[ai.page4.comparisonAnalysis,ai.page4.bestStrategyReason].join(' ');
+  makeItems('rRisks',ai.page5.risks||[],'bad');
+  makeItems('rLevers',ai.page5.levers||[],'gold');
+  $('rRiskAdvice').textContent=[ai.page5.riskReading,ai.page5.valueReading].join(' ');
+  $('rFinalAdvice').textContent=[ai.page6.finalOpinion,ai.page6.priceExplanation].join(' ');
+  $('rRecommendation').textContent=ai.page6.recommendationTitle;
+  $('rRecommendationText').textContent=[ai.page6.recommendationText,'Vérifications suivantes : '+(ai.page6.nextChecks||[]).join(' • ')].join(' ');
+  $('verdictTitle').textContent=ai.page1.headline;
+  $('verdictText').textContent=[ai.page1.summary,ai.page1.decisionReason].join(' ');
+}
+function applyBackendStudy(engine,ai){
+  const short=strategy(engine,'short_term');
+  const furnished=strategy(engine,'furnished');
+  const empty=strategy(engine,'empty');
+  const s={
+    total:engine.acquisition.totalProject,
+    loan:engine.financing.financedAmount,
+    debt:engine.financing.annualDebt,
+    revLow:engine.shortTerm.revenue.prudent,
+    revMid:engine.shortTerm.revenue.realistic,
+    revHigh:engine.shortTerm.revenue.optimistic,
+    fixed:engine.charges.fixed,
+    netOperating:engine.profitability.netOperatingShort,
+    cashflow:engine.profitability.cashflowAnnual,
+    grossYield:engine.profitability.grossYield,
+    netYield:engine.profitability.netYield,
+    score:engine.scores.final,
+    maxPurchase:engine.decision.maxPurchasePrice,
+    title:ai?.page1?.headline||engine.decision.verdictLabel,
+    text:ai?.page1?.summary||engine.decision.recommendationLabel,
+    emptyGross:empty.gross,emptyNet:empty.net,
+    furnishedGross:furnished.gross,furnishedNet:furnished.net
+  };
+  window.studyEngine=engine;
+  window.studyAI=ai;
+  window.studySummary=s;
+  generated=true;
+
+  $('previewTitle').textContent=`${engine.inputs.propertyType} — ${engine.inputs.adresse}`;
+  $('prevTotal').textContent=money(s.total);
+  $('prevRevenue').textContent=money(s.revMid);
+  $('prevNet').textContent=money(s.cashflow);
+  $('prevYield').textContent=Number(s.grossYield).toFixed(1).replace('.',',')+' %';
+  $('prevNetYield').textContent=Number(s.netYield).toFixed(1).replace('.',',')+' %';
+  $('prevScore').textContent=s.score+' / 100';
+  $('maxPrice').textContent=money(s.maxPurchase);
+
+  longTermComparison(s.revMid,s.netOperating);
+  updateCharts(s);
+  populateInvestReport(s);
+  setScoreBreakdown(engine);
+  applyAIToReport(ai,engine);
+  showStep(10);
+}
+async function generateInvestmentStudy(){
+  const button=$('generateStudy');
+  if(!val('address') || valueOrPlaceholder('surface')<10 || valueOrPlaceholder('capacity')<1 || valueOrPlaceholder('purchasePrice')<=0){
+    alert('Complétez au minimum l’adresse, la surface, la capacité et le prix affiché.');
+    return;
+  }
+  button.disabled=true;
+  button.textContent='Analyse en cours…';
+  startStudyProgress();
+  try{
+    const response=await fetch(CLEANUP_AI_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(investmentPayload())
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok || !data.ok)throw new Error(data.error||`Erreur HTTP ${response.status}`);
+    applyBackendStudy(data.engine,data.ai);
+    finishStudyProgress(true);
+  }catch(error){
+    console.error(error);
+    finishStudyProgress(false);
+    alert('La génération n’a pas abouti : '+error.message);
+  }finally{
+    button.disabled=false;
+    button.textContent='✦ Générer l’étude d’investissement';
+  }
 }
 
 function computeStudy(){
@@ -1030,7 +1289,7 @@ Location meublée nette : ${money(s.furnishedNet)}
 Location vide nette : ${money(s.emptyNet)}
 
 Avis : ${s.title}
-${s.text}`;
+${s.text}\n\n${window.studyAI?.page6?.finalOpinion||''}\n${window.studyAI?.page6?.priceExplanation||''}`;
   navigator.clipboard.writeText(text).then(()=>{
     $('copyStudy').textContent='Copié ✓';
     setTimeout(()=>$('copyStudy').textContent='Copier',1400);
@@ -1039,26 +1298,48 @@ ${s.text}`;
 
 $('downloadWord').onclick=()=>{
   if(!generated)return alert('Générez d’abord l’étude.');
-  const s=window.studySummary;
-  const content=`<!doctype html><html><head><meta charset="utf-8"><title>Étude d’investissement</title></head><body style="font-family:Arial;color:#071A33">
-  <h1>Étude d’investissement CleanUp</h1>
-  <h2>${val('address')}</h2>
-  <table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse;width:100%">
-  <tr><td>Coût total</td><td>${money(s.total)}</td></tr>
-  <tr><td>CA réaliste</td><td>${money(s.revMid)}</td></tr>
-  <tr><td>Cash-flow annuel</td><td>${money(s.cashflow)}</td></tr>
-  <tr><td>Rentabilité brute</td><td>${s.grossYield.toFixed(1)} %</td></tr>
-  <tr><td>Rentabilité nette</td><td>${s.netYield.toFixed(1)} %</td></tr>
-  <tr><td>Score</td><td>${s.score}/100</td></tr>
-  <tr><td>Prix maximum conseillé</td><td>${money(s.maxPurchase)}</td></tr>
-  <tr><td>Courte durée nette</td><td>${money(s.netOperating)}</td></tr>
-  <tr><td>Location meublée nette</td><td>${money(s.furnishedNet)}</td></tr>
-  <tr><td>Location vide nette</td><td>${money(s.emptyNet)}</td></tr>
-  </table>
-  <h2>${s.title}</h2><p>${s.text}</p>
-  <p style="text-align:center;color:#999">Powered by CleanUp</p></body></html>`;
-  const blob=new Blob(['\ufeff',content],{type:'application/msword'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='etude-investissement-cleanup.doc';a.click();URL.revokeObjectURL(a.href);
+  const e=window.studyEngine,a=window.studyAI,s=window.studySummary;
+  const section=(title,body)=>`<div style="page-break-inside:avoid;margin:0 0 14px;padding:14px;border:1px solid #D9E0E8;border-radius:10px"><h2 style="margin:0 0 8px;color:#071A33">${title}</h2><div style="font-size:10pt;line-height:1.45">${body}</div></div>`;
+  const listHtml=items=>`<ul>${(items||[]).map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  const page=(title,content,breakAfter=true)=>`<div style="${breakAfter?'page-break-after:always;':''}font-family:Arial;color:#101828"><h1 style="color:#071A33;border-bottom:4px solid #C8A45A;padding-bottom:8px">${title}</h1>${content}<p style="text-align:right;color:#98A2B3;font-size:8pt">Powered by CleanUp</p></div>`;
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>Étude d’investissement</title></head><body>
+  ${page('1 — Synthèse de l’investissement',
+    section('Décision',`<strong>${e.decision.verdictLabel} — ${e.decision.recommendationLabel}</strong><p>${a.page1.summary}</p><p>${a.page1.decisionReason}</p>`) +
+    section('Indicateurs',`Prix affiché : <strong>${money(e.acquisition.purchasePrice)}</strong><br>Prix maximum conseillé : <strong>${money(e.decision.maxPurchasePrice)}</strong><br>Décote recommandée : <strong>${money(e.decision.recommendedDiscount)}</strong><br>Score : <strong>${e.scores.final}/100</strong><br>Cash-flow annuel : <strong>${money(e.profitability.cashflowAnnual)}</strong>`)
+  )}
+  ${page('2 — Analyse du secteur',
+    section('Lecture du secteur',a.page2.analysis)+
+    section('Forces',listHtml(a.page2.strengths))+
+    section('Faiblesses',listHtml(a.page2.weaknesses))
+  )}
+  ${page('3 — Potentiel location courte durée',
+    section('Marché',a.page3.marketSummary)+
+    section('Scénarios',`Prudent : ${money(e.shortTerm.revenue.prudent)}<br>Réaliste : ${money(e.shortTerm.revenue.realistic)}<br>Optimiste : ${money(e.shortTerm.revenue.optimistic)}`)+
+    section('Positionnement',`${a.page3.positioning}<p>${a.page3.seasonality}</p><p>${a.page3.pricingComment}</p>`)
+  )}
+  ${page('4 — Analyse financière et comparaison',
+    section('Financement',a.page4.financingAnalysis)+
+    section('Comparaison',a.page4.comparisonAnalysis)+
+    section('Stratégie recommandée',a.page4.bestStrategyReason)
+  )}
+  ${page('5 — Risques et leviers',
+    section('Risques',listHtml(a.page5.risks))+
+    section('Leviers',listHtml(a.page5.levers))+
+    section('Lecture CleanUp',a.page5.riskReading+' '+a.page5.valueReading)
+  )}
+  ${page('6 — Conclusion',
+    section('Avis final',a.page6.finalOpinion)+
+    section('Prix maximum conseillé',a.page6.priceExplanation)+
+    section(a.page6.recommendationTitle,a.page6.recommendationText)+
+    section('Vérifications suivantes',listHtml(a.page6.nextChecks)),false
+  )}
+  </body></html>`;
+  const blob=new Blob(['\ufeff',html],{type:'application/msword'});
+  const link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download='etude-investissement-cleanup.doc';
+  link.click();
+  URL.revokeObjectURL(link.href);
 };
 
 $('printPdf').onclick=()=>{if(!generated)return alert('Générez d’abord l’étude.');populateInvestReport(window.studySummary);requestAnimationFrame(()=>window.print())};
