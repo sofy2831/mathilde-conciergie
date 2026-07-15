@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Étude d’investissement — CleanUp Manager</title>
+<meta name="description" content="Étude d’investissement locatif courte durée avec analyse financière, risques, scénarios et prix maximum conseillé.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#071A33;
+  --navy2:#0D2A4D;
+  --gold:#C8A45A;
+  --gold2:#E0C98A;
+  --ink:#101828;
+  --muted:#667085;
+  --line:#D9E0E8;
+  --paper:#F5F7FA;
+  --white:#fff;
+  --green:#0F8A5F;
+  --greenSoft:#E8F7F1;
+  --orange:#C97A1B;
+  --orangeSoft:#FFF3E2;
+  --red:#B42318;
+  --redSoft:#FEF0EE;
+  --blue:#2B5FAB;
+  --blueSoft:#EEF4FF;
+  --shadow:0 20px 55px rgba(7,26,51,.12);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  background:
+    linear-gradient(180deg,rgba(200,164,90,.06),transparent 260px),
+    #EEF2F6;
+  color:var(--ink);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.site-header{
+  position:sticky;top:0;z-index:30;
+  background:rgba(7,26,51,.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.header-inner{
+  max-width:1260px;margin:auto;padding:15px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;color:white;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{
+  width:42px;height:42px;border-radius:13px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--gold),#A77C2E);
+  color:var(--navy);font-size:21px;font-weight:900;
+}
+.brand strong{display:block;font-size:21px;letter-spacing:-.04em}
+.brand span{display:block;font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold2);margin-top:4px}
+.header-note{font-size:11px;color:rgba(255,255,255,.70);font-weight:700}
+.header-pill{
+  padding:8px 12px;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  font-size:11px;font-weight:800;color:#F8E7B5;
+}
+.page{max-width:1260px;margin:auto;padding:32px 24px 80px}
+.hero{
+  display:grid;grid-template-columns:1.18fr .82fr;gap:28px;align-items:stretch;
+  margin-bottom:24px;
+}
+.hero-main,.hero-price{
+  border-radius:28px;box-shadow:var(--shadow);overflow:hidden;
+}
+.hero-main{
+  padding:34px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(200,164,90,.20),transparent 36%),
+    linear-gradient(145deg,var(--navy),var(--navy2));
+  color:white;
+}
+.eyebrow{
+  display:inline-flex;gap:9px;align-items:center;
+  text-transform:uppercase;letter-spacing:.13em;
+  color:var(--gold2);font-size:11px;font-weight:900;
+}
+.eyebrow:before{content:"";width:28px;height:2px;background:var(--gold)}
+h1{
+  margin:12px 0 14px;
+  font-family:"DM Serif Display",Georgia,serif;
+  font-size:56px;line-height:.98;font-weight:400;letter-spacing:-.03em;
+}
+h1 span{color:var(--gold2)}
+.hero-main>p{max-width:760px;color:rgba(255,255,255,.78);font-size:15px;line-height:1.65}
+.hero-benefits{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.hero-benefits span{
+  padding:9px 11px;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  font-size:10.5px;font-weight:800;
+}
+.hero-price{
+  background:white;padding:28px;border:1px solid var(--line);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.amount{font-size:52px;font-weight:900;color:var(--navy);letter-spacing:-.05em}
+.amount small{font-size:13px}
+.hero-price h3{margin:8px 0;color:var(--navy);font-size:18px}
+.hero-price p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.price-list{display:grid;gap:8px;margin:16px 0}
+.price-list span{font-size:11px;font-weight:800;color:var(--navy)}
+.price-list b{color:var(--green)}
+.btn{
+  border:0;border-radius:999px;padding:12px 17px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-size:11.5px;font-weight:900;
+}
+.btn.primary{background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;box-shadow:0 12px 24px rgba(7,26,51,.18)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),#B78C3C);color:var(--navy);box-shadow:0 12px 24px rgba(200,164,90,.24)}
+.btn.soft{background:#F4F6F8;color:var(--navy);border:1px solid var(--line)}
+.btn.ghost{background:white;color:var(--navy);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.stripe-status{margin-top:9px;font-size:9.5px;color:var(--muted);text-align:center}
+.coverage{
+  background:white;border:1px solid var(--line);border-radius:18px;
+  padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(7,26,51,.06);
+}
+.coverage h3{margin:0 0 8px;color:var(--navy);font-size:14px}
+.coverage-row{display:flex;gap:9px}
+.coverage-row input{flex:1}
+.coverage-result{margin-top:9px;font-size:10.5px;line-height:1.4;color:var(--muted);font-weight:750}
+.coverage-result.good{color:var(--green)}
+.coverage-result.warn{color:var(--orange)}
+.stepper{
+  background:white;border:1px solid var(--line);border-radius:18px;padding:10px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:7px;
+  margin-bottom:18px;box-shadow:0 8px 24px rgba(7,26,51,.06);
+}
+.step{
+  border:0;background:transparent;border-radius:13px;padding:10px 7px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  color:#7A8796;font-size:10px;font-weight:900;
+}
+.step .num{
+  width:25px;height:25px;border-radius:50%;display:grid;place-items:center;
+  background:#EDF1F5;color:var(--navy);
+}
+.step.active{background:var(--navy);color:white}
+.step.active .num{background:var(--gold);color:var(--navy)}
+.step.done{color:var(--green)}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.main-card,.side-card{
+  background:white;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)
+}
+.main-card{padding:28px;min-height:720px}
+.side-card{position:sticky;top:92px;overflow:hidden}
+.side-head{padding:20px;background:linear-gradient(145deg,var(--navy),var(--navy2));color:white}
+.side-head strong{display:block;font-size:15px}
+.side-head span{display:block;font-size:10px;color:rgba(255,255,255,.66);margin-top:4px}
+.side-body{padding:17px}
+.ai-note{
+  padding:12px;border-radius:14px;background:#F4F6F8;border:1px solid var(--line);
+  font-size:10.5px;line-height:1.5;color:var(--navy);margin-bottom:9px
+}
+.ai-note.good{background:var(--greenSoft);border-color:#C7E8DA}
+.ai-note.warn{background:var(--orangeSoft);border-color:#F1D7B5}
+.progress-wrap{padding-top:14px;border-top:1px solid var(--line)}
+.progress-row{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:var(--muted);margin-bottom:7px}
+.progress{height:7px;border-radius:999px;background:#EEF2F5;overflow:hidden}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));width:0;transition:.3s}
+.section{display:none}
+.section.active{display:block}
+.section-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
+.section-head h2{
+  margin:0;font-family:"DM Serif Display",Georgia,serif;
+  color:var(--navy);font-size:34px;font-weight:400;letter-spacing:-.02em
+}
+.section-head p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.5;max-width:690px}
+.section-badge{padding:8px 11px;border-radius:999px;background:#F7F0DF;color:#8A641C;font-size:10px;font-weight:900;white-space:nowrap}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.field{display:grid;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10.5px;font-weight:900;color:var(--navy)}
+.field label small{color:var(--muted);font-weight:600}
+.input,.select,.textarea{
+  width:100%;border:1px solid var(--line);border-radius:12px;background:#FBFCFD;
+  padding:11px 12px;color:var(--ink);outline:none;
+}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(200,164,90,.10);background:white}
+.textarea{min-height:100px;resize:vertical}
+.panel{
+  margin-top:16px;padding:17px;border-radius:16px;background:#F7F9FB;border:1px solid var(--line)
+}
+.panel h3{margin:0 0 7px;color:var(--navy);font-size:14px}
+.panel p{margin:0;color:var(--muted);font-size:10.5px;line-height:1.45}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.check-pill{
+  padding:10px;border-radius:11px;background:#FBFCFD;border:1px solid var(--line);
+  display:flex;gap:8px;align-items:center;color:var(--navy);font-size:10.5px;font-weight:800
+}
+.check-pill input{accent-color:var(--gold)}
+.calc-box{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px
+}
+.calc{
+  border:1px solid var(--line);border-radius:14px;background:#FBFCFD;padding:13px;text-align:center
+}
+.calc b{display:block;color:var(--navy);font-size:20px;letter-spacing:-.03em}
+.calc span{font-size:9.5px;color:var(--muted);font-weight:800}
+.preview{
+  background:#F7F9FB;border:1px solid var(--line);border-radius:18px;padding:18px
+}
+.preview h3{margin:0 0 12px;color:var(--navy);font-size:20px}
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.preview-card{background:white;border:1px solid var(--line);border-radius:14px;padding:13px}
+.preview-card b{display:block;font-size:18px;color:var(--navy);margin-bottom:4px}
+.preview-card span{font-size:9.5px;color:var(--muted);font-weight:800}
+.verdict{
+  margin-top:16px;border-radius:18px;padding:20px;
+  background:linear-gradient(145deg,var(--navy),var(--navy2));color:white;
+}
+.verdict h3{margin:0 0 8px;color:var(--gold2);font-size:22px}
+.verdict p{margin:0;color:rgba(255,255,255,.78);font-size:11px;line-height:1.55}
+.max-price{
+  margin-top:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.08);
+  display:flex;justify-content:space-between;align-items:center;gap:10px
+}
+.max-price span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);font-weight:900}
+.max-price b{font-size:28px;color:#F7E8B5}
+.export-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.export-card{border:1px solid var(--line);border-radius:15px;background:#FBFCFD;padding:15px}
+.export-card h3{margin:0 0 6px;color:var(--navy);font-size:14px}
+.export-card p{margin:0 0 11px;color:var(--muted);font-size:10px;line-height:1.4}
+.nav-actions{
+  display:flex;justify-content:space-between;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)
+}
+.report-print{display:none}
+@media(max-width:980px){
+  .hero,.workspace{grid-template-columns:1fr}
+  .side-card{position:static}
+  .stepper{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:680px){
+  .page{padding:20px 13px 60px}
+  h1{font-size:40px}
+  .form-grid,.form-grid.three,.check-grid,.calc-box,.preview-grid,.export-grid{grid-template-columns:1fr}
+  .coverage-row{flex-direction:column}
+  .main-card{padding:20px;min-height:auto}
+  .section-head{display:block}
+  .section-badge{display:inline-block;margin-top:10px}
+}
+@media print{
+  body{background:white}
+  .site-header,.hero,.coverage,.stepper,.side-card,.nav-actions,.section:not(#step10),.export-grid{display:none!important}
+  .page{max-width:none;padding:0}
+  .workspace{display:block}
+  .main-card{border:0;box-shadow:none;padding:0}
+  #step10{display:block!important}
+  #step10 .section-head{display:none!important}
+  .preview,.verdict{box-shadow:none}
+  @page{size:A4;margin:12mm}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="les-indispensables-du-proprietaire.html">
+      <div class="brand-mark">€</div>
+      <div><strong>CleanUp</strong><span>INVESTMENT STUDY</span></div>
+    </a>
+    <div class="header-note">Étude financière location courte durée</div>
+    <div class="header-pill">Aucune inscription</div>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <div class="hero-main">
+      <div class="eyebrow">Les indispensables du propriétaire</div>
+      <h1>Étude d’<span>investissement</span></h1>
+      <p>Analysez la viabilité d’un projet locatif avant d’acheter : quartier, marché courte durée, charges, financement, risques, scénarios et prix maximum conseillé.</p>
+      <div class="hero-benefits">
+        <span>✓ Synthèse décisionnelle</span>
+        <span>✓ Potentiel Airbnb / Booking / Abritel</span>
+        <span>✓ Analyse financière</span>
+        <span>✓ Prix maximum conseillé</span>
+      </div>
+    </div>
+    <aside class="hero-price">
+      <div class="amount">129 € <small>TTC</small></div>
+      <h3>Une étude complète avant d’acheter</h3>
+      <p>Une commande correspond à un projet immobilier et à une étude. Les calculs et recommandations sont générés à partir des données fournies.</p>
+      <div class="price-list">
+        <span><b>✓</b> 10 analyses structurées</span>
+        <span><b>✓</b> Scénarios prudent, réaliste et optimiste</span>
+        <span><b>✓</b> Avis final et prix plafond</span>
+      </div>
+      <button class="btn gold" id="stripeCheckoutBtn" type="button">Acheter l’étude — 129 €</button>
+      <div class="stripe-status" id="stripeStatus">Paiement sécurisé Stripe — branchement à finaliser</div>
+    </aside>
+  </section>
+
+  <section class="coverage">
+    <h3>Vérifiez la couverture de votre projet</h3>
+    <div class="coverage-row">
+      <input class="input" id="coverageAddress" placeholder="Adresse, ville ou code postal">
+      <button class="btn primary" id="checkCoverageBtn" type="button">Vérifier</button>
+    </div>
+    <div class="coverage-result" id="coverageResult">La France métropolitaine, la Corse et l’outre-mer sont couverts au niveau territorial. Orléans, la Sologne et le Val de Loire disposent d’un niveau local enrichi.</div>
+  </section>
+
+  <nav class="stepper" aria-label="Étapes">
+    <button class="step active" data-step="1"><span class="num">1</span>Synthèse</button>
+    <button class="step" data-step="2"><span class="num">2</span>Quartier</button>
+    <button class="step" data-step="3"><span class="num">3</span>Marché LCD</button>
+    <button class="step" data-step="4"><span class="num">4</span>Financement</button>
+    <button class="step" data-step="5"><span class="num">5</span>Charges</button>
+    <button class="step" data-step="6"><span class="num">6</span>Comparaison</button>
+    <button class="step" data-step="7"><span class="num">7</span>Risques</button>
+    <button class="step" data-step="8"><span class="num">8</span>Leviers</button>
+    <button class="step" data-step="9"><span class="num">9</span>Scénarios</button>
+    <button class="step" data-step="10"><span class="num">10</span>Avis final</button>
+  </nav>
+
+  <div class="workspace">
+    <section class="main-card">
+      <div class="section active" id="step1">
+        <div class="section-head"><div><h2>Synthèse du projet</h2><p>Renseignez les caractéristiques principales du bien et du projet d’acquisition.</p></div><div class="section-badge">1 / 10</div></div>
+        <div class="form-grid">
+          <div class="field full"><label>Adresse du bien</label><input class="input" id="address" placeholder="Adresse complète"></div>
+          <div class="field"><label>Type de bien</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Immeuble</option><option>Villa</option><option>Chalet</option></select></div>
+          <div class="field"><label>État du bien</label><select class="select" id="condition"><option>Bon état</option><option>À rafraîchir</option><option>Travaux importants</option><option>Neuf</option></select></div>
+          <div class="field"><label>Surface</label><input class="input" id="surface" type="number" min="10" placeholder="55"></div>
+          <div class="field"><label>Capacité envisagée</label><input class="input" id="capacity" type="number" min="1" placeholder="4"></div>
+          <div class="field"><label>Prix affiché</label><input class="input" id="purchasePrice" type="number" min="0" placeholder="180000"></div>
+          <div class="field"><label>Apport personnel</label><input class="input" id="deposit" type="number" min="0" placeholder="30000"></div>
+        </div>
+      </div>
+
+      <div class="section" id="step2">
+        <div class="section-head"><div><h2>Analyse du quartier</h2><p>Décrivez l’environnement immédiat et les facteurs qui influencent la demande locative.</p></div><div class="section-badge">2 / 10</div></div>
+        <div class="form-grid">
+          <div class="field"><label>Type de secteur</label><select class="select" id="areaType"><option>Centre-ville</option><option>Quartier résidentiel</option><option>Zone touristique</option><option>Zone rurale</option><option>Littoral</option><option>Montagne</option><option>Zone professionnelle</option></select></div>
+          <div class="field"><label>Stationnement</label><select class="select" id="parking"><option>Privé</option><option>Public gratuit</option><option>Public payant</option><option>Pas de stationnement</option></select></div>
+          <div class="field full"><label>Points forts du quartier</label><textarea class="textarea" id="areaStrengths" placeholder="Commerces, gare, centre historique, plage, entreprises, université..."></textarea></div>
+          <div class="field full"><label>Contraintes du quartier</label><textarea class="textarea" id="areaWeaknesses" placeholder="Bruit, accès difficile, absence de parking, saisonnalité, éloignement..."></textarea></div>
+        </div>
+        <div class="panel"><h3>Analyse CleanUp</h3><p>Le moteur évaluera l’attractivité, l’accessibilité, la demande touristique, professionnelle et événementielle.</p></div>
+      </div>
+
+      <div class="section" id="step3">
+        <div class="section-head"><div><h2>Potentiel Airbnb / Booking / Abritel</h2><p>Positionnement envisagé, niveau de service et stratégie de diffusion.</p></div><div class="section-badge">3 / 10</div></div>
+        <div class="check-grid">
+          <label class="check-pill"><input type="checkbox" id="airbnb" checked> Airbnb</label>
+          <label class="check-pill"><input type="checkbox" id="booking" checked> Booking</label>
+          <label class="check-pill"><input type="checkbox" id="abritel" checked> Abritel</label>
+          <label class="check-pill"><input type="checkbox" id="business"> Clientèle professionnelle</label>
+          <label class="check-pill"><input type="checkbox" id="family"> Clientèle familiale</label>
+          <label class="check-pill"><input type="checkbox" id="premium"> Positionnement premium</label>
+        </div>
+        <div class="form-grid" style="margin-top:16px">
+          <div class="field"><label>Prix moyen envisagé / nuit</label><input class="input" id="nightRate" type="number" min="0" placeholder="110"></div>
+          <div class="field"><label>Taux d’occupation envisagé</label><input class="input" id="occupancy" type="number" min="0" max="100" placeholder="58"></div>
+          <div class="field full"><label>Équipements différenciants</label><textarea class="textarea" id="amenities" placeholder="Terrasse, parking, climatisation, vue, piscine, spa, bureau..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="section" id="step4">
+        <div class="section-head"><div><h2>Analyse financière</h2><p>Structure du financement et coût réel de l’acquisition.</p></div><div class="section-badge">4 / 10</div></div>
+        <div class="form-grid three">
+          <div class="field"><label>Durée du prêt (années)</label><input class="input" id="loanYears" type="number" min="1" placeholder="20"></div>
+          <div class="field"><label>Taux du prêt (%)</label><input class="input" id="loanRate" type="number" step="0.01" min="0" placeholder="3.8"></div>
+          <div class="field"><label>Assurance emprunteur (%)</label><input class="input" id="insuranceRate" type="number" step="0.01" min="0" placeholder="0.35"></div>
+          <div class="field"><label>Frais de notaire</label><input class="input" id="notary" type="number" min="0" placeholder="14500"></div>
+          <div class="field"><label>Travaux</label><input class="input" id="works" type="number" min="0" placeholder="18000"></div>
+          <div class="field"><label>Mobilier / décoration</label><input class="input" id="furniture" type="number" min="0" placeholder="9000"></div>
+        </div>
+        <div class="calc-box">
+          <div class="calc"><b id="totalProject">0 €</b><span>Coût total du projet</span></div>
+          <div class="calc"><b id="loanAmount">0 €</b><span>Montant financé</span></div>
+          <div class="calc"><b id="monthlyPayment">0 €</b><span>Mensualité estimée</span></div>
+          <div class="calc"><b id="annualDebt">0 €</b><span>Annuité bancaire</span></div>
+        </div>
+      </div>
+
+      <div class="section" id="step5">
+        <div class="section-head"><div><h2>Charges d’exploitation</h2><p>Renseignez les charges fixes et variables qui pèseront réellement sur la rentabilité.</p></div><div class="section-badge">5 / 10</div></div>
+        <div class="form-grid three">
+          <div class="field"><label>Taxe foncière / an</label><input class="input" id="propertyTax" type="number" min="0" placeholder="1200"></div>
+          <div class="field"><label>Charges copropriété / an</label><input class="input" id="condoFees" type="number" min="0" placeholder="1500"></div>
+          <div class="field"><label>Assurance / an</label><input class="input" id="insurance" type="number" min="0" placeholder="450"></div>
+          <div class="field"><label>Énergie + internet / an</label><input class="input" id="utilities" type="number" min="0" placeholder="2400"></div>
+          <div class="field"><label>Entretien / maintenance / an</label><input class="input" id="maintenance" type="number" min="0" placeholder="1200"></div>
+          <div class="field"><label>Conciergerie (%)</label><input class="input" id="managementRate" type="number" min="0" max="100" placeholder="20"></div>
+          <div class="field"><label>Commissions plateformes (%)</label><input class="input" id="platformRate" type="number" min="0" max="100" placeholder="15"></div>
+          <div class="field"><label>Ménage restant à charge / an</label><input class="input" id="cleaningCost" type="number" min="0" placeholder="0"></div>
+          <div class="field"><label>Autres charges / an</label><input class="input" id="otherCosts" type="number" min="0" placeholder="600"></div>
+        </div>
+      </div>
+
+      <div class="section" id="step6">
+        <div class="section-head"><div><h2>Comparaison des options</h2><p>Comparez la location courte durée à d’autres stratégies d’exploitation.</p></div><div class="section-badge">6 / 10</div></div>
+        <div class="form-grid">
+          <div class="field"><label>Loyer longue durée estimé / mois</label><input class="input" id="longTermRent" type="number" min="0" placeholder="850"></div>
+          <div class="field"><label>Loyer meublé moyenne durée / mois</label><input class="input" id="midTermRent" type="number" min="0" placeholder="1100"></div>
+          <div class="field"><label>Valeur de revente estimée à 5 ans</label><input class="input" id="resaleValue" type="number" min="0" placeholder="205000"></div>
+          <div class="field"><label>Valorisation annuelle estimée (%)</label><input class="input" id="appreciation" type="number" step="0.1" min="-10" max="20" placeholder="2"></div>
+        </div>
+        <div class="panel"><h3>Comparaison CleanUp</h3><p>L’étude mettra en regard le revenu net de la courte durée, de la longue durée, de la moyenne durée et la création de valeur patrimoniale.</p></div>
+      </div>
+
+      <div class="section" id="step7">
+        <div class="section-head"><div><h2>Les risques</h2><p>Identifiez les risques opérationnels, réglementaires, financiers et commerciaux.</p></div><div class="section-badge">7 / 10</div></div>
+        <div class="check-grid">
+          <label class="check-pill"><input type="checkbox" id="riskSeason"> Forte saisonnalité</label>
+          <label class="check-pill"><input type="checkbox" id="riskRegulation"> Réglementation locale</label>
+          <label class="check-pill"><input type="checkbox" id="riskCondo"> Règlement de copropriété</label>
+          <label class="check-pill"><input type="checkbox" id="riskWorks"> Travaux sous-estimés</label>
+          <label class="check-pill"><input type="checkbox" id="riskVacancy"> Vacance locative</label>
+          <label class="check-pill"><input type="checkbox" id="riskRate"> Taux d’intérêt</label>
+          <label class="check-pill"><input type="checkbox" id="riskCompetition"> Concurrence élevée</label>
+          <label class="check-pill"><input type="checkbox" id="riskManagement"> Gestion complexe</label>
+          <label class="check-pill"><input type="checkbox" id="riskResale"> Revente difficile</label>
+        </div>
+        <div class="field full" style="margin-top:16px"><label>Autres risques identifiés</label><textarea class="textarea" id="otherRisks"></textarea></div>
+      </div>
+
+      <div class="section" id="step8">
+        <div class="section-head"><div><h2>Les leviers</h2><p>Déterminez comment améliorer la rentabilité et réduire le risque du projet.</p></div><div class="section-badge">8 / 10</div></div>
+        <div class="check-grid">
+          <label class="check-pill"><input type="checkbox" id="leverPrice"> Négociation du prix</label>
+          <label class="check-pill"><input type="checkbox" id="leverWorks"> Travaux ciblés</label>
+          <label class="check-pill"><input type="checkbox" id="leverPremium"> Montée en gamme</label>
+          <label class="check-pill"><input type="checkbox" id="leverDynamic"> Tarification dynamique</label>
+          <label class="check-pill"><input type="checkbox" id="leverAutomation"> Automatisation</label>
+          <label class="check-pill"><input type="checkbox" id="leverDirect"> Réservation directe</label>
+          <label class="check-pill"><input type="checkbox" id="leverMixed"> Stratégie mixte</label>
+          <label class="check-pill"><input type="checkbox" id="leverTax"> Optimisation des charges</label>
+          <label class="check-pill"><input type="checkbox" id="leverResale"> Création de valeur</label>
+        </div>
+      </div>
+
+      <div class="section" id="step9">
+        <div class="section-head"><div><h2>Scénarios</h2><p>CleanUp calculera trois hypothèses de performance.</p></div><div class="section-badge">9 / 10</div></div>
+        <div class="form-grid three">
+          <div class="field"><label>Occupation prudente (%)</label><input class="input" id="occLow" type="number" min="0" max="100" placeholder="42"></div>
+          <div class="field"><label>Occupation réaliste (%)</label><input class="input" id="occMid" type="number" min="0" max="100" placeholder="58"></div>
+          <div class="field"><label>Occupation optimiste (%)</label><input class="input" id="occHigh" type="number" min="0" max="100" placeholder="70"></div>
+          <div class="field"><label>Prix prudent / nuit</label><input class="input" id="rateLow" type="number" min="0" placeholder="90"></div>
+          <div class="field"><label>Prix réaliste / nuit</label><input class="input" id="rateMid" type="number" min="0" placeholder="110"></div>
+          <div class="field"><label>Prix optimiste / nuit</label><input class="input" id="rateHigh" type="number" min="0" placeholder="130"></div>
+        </div>
+        <button class="btn gold" id="generateStudy" type="button" style="margin-top:18px">✦ Générer l’étude d’investissement</button>
+      </div>
+
+      <div class="section" id="step10">
+        <div class="section-head"><div><h2>Avis final</h2><p>Relisez la synthèse avant export.</p></div><div class="section-badge">10 / 10</div></div>
+        <div class="preview">
+          <h3 id="previewTitle">Étude non générée</h3>
+          <div class="preview-grid">
+            <div class="preview-card"><b id="prevTotal">0 €</b><span>Coût total projet</span></div>
+            <div class="preview-card"><b id="prevRevenue">0 €</b><span>CA annuel réaliste</span></div>
+            <div class="preview-card"><b id="prevNet">0 €</b><span>Cash-flow annuel estimé</span></div>
+            <div class="preview-card"><b id="prevYield">0 %</b><span>Rentabilité brute</span></div>
+            <div class="preview-card"><b id="prevNetYield">0 %</b><span>Rentabilité nette</span></div>
+            <div class="preview-card"><b id="prevScore">0 / 100</b><span>Score investissement</span></div>
+          </div>
+        </div>
+        <div class="verdict">
+          <h3 id="verdictTitle">Avis CleanUp</h3>
+          <p id="verdictText">Complétez les neuf étapes précédentes pour obtenir un avis structuré.</p>
+          <div class="max-price">
+            <span>Prix maximum conseillé</span>
+            <b id="maxPrice">0 €</b>
+          </div>
+        </div>
+        <div class="export-grid">
+          <div class="export-card"><h3>Copier la synthèse</h3><p>Copiez les principaux résultats.</p><button class="btn primary" id="copyStudy">Copier</button></div>
+          <div class="export-card"><h3>Télécharger Word</h3><p>Export modifiable de la synthèse.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div>
+          <div class="export-card"><h3>Enregistrer en PDF</h3><p>Impression A4 propre.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div>
+          <div class="export-card"><h3>Nouvelle étude</h3><p>Une nouvelle étude nécessite un nouveau paiement.</p><button class="btn soft" id="newStudy">Créer une nouvelle étude (129 €)</button></div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn ghost" id="prevBtn" type="button">← Précédent</button>
+        <button class="btn primary" id="nextBtn" type="button">Continuer →</button>
+      </div>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-head"><strong>Assistant CleanUp</strong><span>Contrôle financier du projet</span></div>
+      <div class="side-body">
+        <div id="assistantMessages"></div>
+        <div class="progress-wrap">
+          <div class="progress-row"><span>Progression</span><span id="progressLabel">0 %</span></div>
+          <div class="progress"><span id="progressBar"></span></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const qa=sel=>[...document.querySelectorAll(sel)];
+const money=n=>Math.round(Number(n||0)).toLocaleString('fr-FR')+' €';
+const num=id=>Number($(id)?.value||0);
+const val=id=>($(id)?.value||'').trim();
+const checked=id=>!!$(id)?.checked;
+let currentStep=1;
+let generated=false;
+const STRIPE_PAYMENT_LINK='';
+
+function showStep(step){
+  currentStep=Math.max(1,Math.min(10,step));
+  qa('.section').forEach(s=>s.classList.remove('active'));
+  $('step'+currentStep).classList.add('active');
+  qa('.step').forEach(btn=>{
+    const n=Number(btn.dataset.step);
+    btn.classList.toggle('active',n===currentStep);
+    btn.classList.toggle('done',n<currentStep);
+  });
+  $('prevBtn').style.visibility=currentStep===1?'hidden':'visible';
+  $('nextBtn').style.display=currentStep===10?'none':'inline-flex';
+  const pct=Math.round((currentStep-1)/9*100);
+  $('progressBar').style.width=pct+'%';
+  $('progressLabel').textContent=pct+' %';
+  updateAssistant();
+  window.scrollTo({top:document.querySelector('.stepper').offsetTop-82,behavior:'smooth'});
+}
+qa('.step').forEach(btn=>btn.onclick=()=>showStep(Number(btn.dataset.step)));
+$('prevBtn').onclick=()=>showStep(currentStep-1);
+$('nextBtn').onclick=()=>showStep(currentStep+1);
+
+function updateAssistant(){
+  const messages=[];
+  if(currentStep===1){
+    messages.push({t:'Point de départ',m:'Le prix affiché n’est pas le coût total. Les frais, travaux et mobilier doivent être intégrés.'});
+  }else if(currentStep===2){
+    messages.push({t:'Quartier',m:'Un bon bien dans un mauvais micro-secteur reste un mauvais investissement.'});
+  }else if(currentStep===3){
+    messages.push({t:'Marché courte durée',m:'Le prix moyen et l’occupation doivent rester cohérents avec le niveau de service.'});
+  }else if(currentStep===4){
+    messages.push({t:'Financement',m:'La mensualité estimée est recalculée automatiquement.'});
+  }else if(currentStep===5){
+    messages.push({t:'Charges',m:'Sous-estimer l’énergie, la maintenance ou la gestion fausse rapidement la rentabilité.',c:'warn'});
+  }else if(currentStep===6){
+    messages.push({t:'Comparer',m:'La courte durée n’est pas toujours la meilleure stratégie. Le moteur compare plusieurs options.'});
+  }else if(currentStep===7){
+    messages.push({t:'Risques',m:'Un projet rentable sur Excel peut rester fragile en exploitation réelle.',c:'warn'});
+  }else if(currentStep===8){
+    messages.push({t:'Leviers',m:'Le prix d’achat et le positionnement sont souvent les deux leviers les plus puissants.',c:'good'});
+  }else if(currentStep===9){
+    messages.push({t:'Scénarios',m:'Le scénario réaliste doit être atteignable sans hypothèse héroïque.'});
+  }else{
+    messages.push({t:'Décision',m:'Le prix maximum conseillé est calculé à partir du rendement cible et du cash-flow.',c:'good'});
+  }
+  $('assistantMessages').innerHTML=messages.map(x=>`<div class="ai-note ${x.c||''}"><strong>${x.t}</strong><br>${x.m}</div>`).join('');
+}
+qa('input,select,textarea').forEach(el=>el.addEventListener('input',calculateFinance));
+
+function monthlyLoanPayment(principal,annualRate,years){
+  if(!principal||!years)return 0;
+  const r=annualRate/100/12;
+  const n=years*12;
+  if(!r)return principal/n;
+  return principal*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+}
+
+function calculateFinance(){
+  const total=num('purchasePrice')+num('notary')+num('works')+num('furniture');
+  const loan=Math.max(0,total-num('deposit'));
+  const monthly=monthlyLoanPayment(loan,num('loanRate')+num('insuranceRate'),num('loanYears'));
+  $('totalProject').textContent=money(total);
+  $('loanAmount').textContent=money(loan);
+  $('monthlyPayment').textContent=money(monthly);
+  $('annualDebt').textContent=money(monthly*12);
+}
+function scenario(rate,occ){
+  return rate*365*(occ/100);
+}
+function annualFixedCosts(){
+  return num('propertyTax')+num('condoFees')+num('insurance')+num('utilities')+num('maintenance')+num('cleaningCost')+num('otherCosts');
+}
+function annualVariableCosts(revenue){
+  return revenue*((num('managementRate')+num('platformRate'))/100);
+}
+function computeStudy(){
+  calculateFinance();
+  const total=num('purchasePrice')+num('notary')+num('works')+num('furniture');
+  const loan=Math.max(0,total-num('deposit'));
+  const monthly=monthlyLoanPayment(loan,num('loanRate')+num('insuranceRate'),num('loanYears'));
+  const debt=monthly*12;
+  const revLow=scenario(num('rateLow')||num('nightRate')*.82,num('occLow')||42);
+  const revMid=scenario(num('rateMid')||num('nightRate')||100,num('occMid')||num('occupancy')||58);
+  const revHigh=scenario(num('rateHigh')||num('nightRate')*1.18,num('occHigh')||70);
+  const fixed=annualFixedCosts();
+  const netOperating=revMid-fixed-annualVariableCosts(revMid);
+  const cashflow=netOperating-debt;
+  const grossYield=total?revMid/total*100:0;
+  const netYield=total?netOperating/total*100:0;
+  const riskCount=['riskSeason','riskRegulation','riskCondo','riskWorks','riskVacancy','riskRate','riskCompetition','riskManagement','riskResale'].filter(checked).length;
+  const leverCount=['leverPrice','leverWorks','leverPremium','leverDynamic','leverAutomation','leverDirect','leverMixed','leverTax','leverResale'].filter(checked).length;
+  let score=Math.round(55 + Math.min(20,netYield*2.5) + Math.min(12,leverCount*1.4) - riskCount*3 + (cashflow>0?8:-8));
+  score=Math.max(0,Math.min(100,score));
+  const targetNetYield=0.06;
+  const maxTotal=targetNetYield?Math.max(0,netOperating/targetNetYield):0;
+  const maxPurchase=Math.max(0,maxTotal-num('notary')-num('works')-num('furniture'));
+  let title='Projet à revoir';
+  let text='Le projet présente un équilibre insuffisant entre coût d’acquisition, charges et revenu locatif.';
+  if(score>=75 && cashflow>=0){
+    title='Projet favorable sous conditions';
+    text='Le projet présente une structure financière cohérente. La décision reste conditionnée à la validation du quartier, de la réglementation locale, des travaux et du niveau réel de demande.';
+  }else if(score>=60){
+    title='Projet intéressant mais sensible au prix';
+    text='Le projet peut fonctionner, mais sa rentabilité dépend fortement du prix d’achat, du niveau de charges et de la performance commerciale réelle.';
+  }
+  $('previewTitle').textContent=`${val('propertyType')||'Bien'} — ${val('address')||'Adresse à préciser'}`;
+  $('prevTotal').textContent=money(total);
+  $('prevRevenue').textContent=money(revMid);
+  $('prevNet').textContent=money(cashflow);
+  $('prevYield').textContent=grossYield.toFixed(1).replace('.',',')+' %';
+  $('prevNetYield').textContent=netYield.toFixed(1).replace('.',',')+' %';
+  $('prevScore').textContent=score+' / 100';
+  $('verdictTitle').textContent=title;
+  $('verdictText').textContent=text;
+  $('maxPrice').textContent=money(maxPurchase);
+  generated=true;
+  window.studySummary={
+    total,loan,debt,revLow,revMid,revHigh,fixed,netOperating,cashflow,grossYield,netYield,score,maxPurchase,title,text
+  };
+  showStep(10);
+}
+$('generateStudy').onclick=computeStudy;
+
+$('checkCoverageBtn').onclick=()=>{
+  const address=val('coverageAddress');
+  if(!address){
+    $('coverageResult').textContent='Saisissez une adresse ou un code postal.';
+    $('coverageResult').className='coverage-result warn';
+    return;
+  }
+  $('address').value=address;
+  const premium=/orleans|orléans|olivet|saran|lamotte|ferté|ferte|sologne|beaugency|meung/i.test(address);
+  $('coverageResult').textContent=premium
+    ? '✓ Analyse locale enrichie disponible pour cette zone.'
+    : '✓ Analyse territoriale disponible. Les données très locales seront traitées avec prudence.';
+  $('coverageResult').className='coverage-result '+(premium?'good':'warn');
+  $('checkCoverageBtn').textContent='Vérifié ✓';
+  setTimeout(()=>$('checkCoverageBtn').textContent='Vérifier',1500);
+};
+
+$('stripeCheckoutBtn').onclick=()=>{
+  if(!STRIPE_PAYMENT_LINK){
+    $('stripeStatus').textContent='Lien Stripe à connecter avant la mise en ligne.';
+    return;
+  }
+  location.href=STRIPE_PAYMENT_LINK;
+};
+
+$('copyStudy').onclick=()=>{
+  if(!generated)return alert('Générez d’abord l’étude.');
+  const s=window.studySummary;
+  const text=`ÉTUDE D’INVESTISSEMENT CLEANUP
+
+Adresse : ${val('address')}
+Coût total : ${money(s.total)}
+CA réaliste : ${money(s.revMid)}
+Cash-flow annuel : ${money(s.cashflow)}
+Rentabilité brute : ${s.grossYield.toFixed(1)} %
+Rentabilité nette : ${s.netYield.toFixed(1)} %
+Score : ${s.score}/100
+Prix maximum conseillé : ${money(s.maxPurchase)}
+
+Avis : ${s.title}
+${s.text}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    $('copyStudy').textContent='Copié ✓';
+    setTimeout(()=>$('copyStudy').textContent='Copier',1400);
+  });
+};
+
+$('downloadWord').onclick=()=>{
+  if(!generated)return alert('Générez d’abord l’étude.');
+  const s=window.studySummary;
+  const content=`<!doctype html><html><head><meta charset="utf-8"><title>Étude d’investissement</title></head><body style="font-family:Arial;color:#071A33">
+  <h1>Étude d’investissement CleanUp</h1>
+  <h2>${val('address')}</h2>
+  <table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse;width:100%">
+  <tr><td>Coût total</td><td>${money(s.total)}</td></tr>
+  <tr><td>CA réaliste</td><td>${money(s.revMid)}</td></tr>
+  <tr><td>Cash-flow annuel</td><td>${money(s.cashflow)}</td></tr>
+  <tr><td>Rentabilité brute</td><td>${s.grossYield.toFixed(1)} %</td></tr>
+  <tr><td>Rentabilité nette</td><td>${s.netYield.toFixed(1)} %</td></tr>
+  <tr><td>Score</td><td>${s.score}/100</td></tr>
+  <tr><td>Prix maximum conseillé</td><td>${money(s.maxPurchase)}</td></tr>
+  </table>
+  <h2>${s.title}</h2><p>${s.text}</p>
+  <p style="text-align:center;color:#999">Powered by CleanUp</p></body></html>`;
+  const blob=new Blob(['\ufeff',content],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='etude-investissement-cleanup.doc';a.click();URL.revokeObjectURL(a.href);
+};
+
+$('printPdf').onclick=()=>window.print();
+$('newStudy').onclick=()=>{
+  if(STRIPE_PAYMENT_LINK)location.href=STRIPE_PAYMENT_LINK;
+  else alert('Le paiement Stripe sera connecté avant la mise en ligne.');
+};
+
+calculateFinance();
+showStep(1);
+</script>
+</body>
+</html>
