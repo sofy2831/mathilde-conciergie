@@ -437,6 +437,68 @@ button:disabled{
   .generate-action{display:none!important}
 }
 
+
+.generation-progress{
+  display:none;
+  margin-top:12px;
+  padding:12px 14px;
+  border:1px solid #DDD6FE;
+  border-radius:14px;
+  background:#FAF9FF;
+}
+.generation-progress.show{display:block}
+.generation-progress-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+  color:var(--blue);
+  font-size:11px;
+  font-weight:850;
+}
+.generation-progress-head strong{
+  color:var(--purple);
+  white-space:nowrap;
+}
+.generation-progress-track{
+  height:9px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#E9E5F5;
+}
+.generation-progress-track span{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--purple),#A78BFA);
+  transition:width .55s ease;
+  position:relative;
+}
+.generation-progress-track span::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:translateX(-100%);
+  animation:progressShine 1.35s linear infinite;
+}
+.generation-progress small{
+  display:block;
+  margin-top:7px;
+  color:#667085;
+  font-size:9.5px;
+  line-height:1.35;
+  font-weight:700;
+}
+@keyframes progressShine{
+  to{transform:translateX(100%)}
+}
+@media print{
+  .generation-progress{display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -481,7 +543,18 @@ button:disabled{
   </aside>
 </section>
 
-<section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div><div id="generationStatus" style="min-height:18px;margin-top:10px;font-size:12px;font-weight:700;color:#667085"></div></section>
+<section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div>
+<div class="generation-progress" id="generationProgress" aria-hidden="true">
+  <div class="generation-progress-head">
+    <span id="generationProgressText">Préparation de l’analyse…</span>
+    <strong id="generationProgressPercent">0 %</strong>
+  </div>
+  <div class="generation-progress-track">
+    <span id="generationProgressBar"></span>
+  </div>
+  <small>La génération complète peut prendre entre 30 secondes et 1 minute 30.</small>
+</div>
+<div id="generationStatus" style="min-height:18px;margin-top:10px;font-size:12px;font-weight:700;color:#667085"></div></section>
 <div class="export-lock-note" id="exportLockNote"><strong>Votre diagnostic a été généré.</strong> Vous pouvez toujours l’imprimer ou l’enregistrer en PDF. Les données du logement sont désormais verrouillées pour cette commande.</div>
 <main class="report">
 <section class="a4 page1"><div class="header page1-header"><div class="logo logo-cover"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Diagnostic complet</div></div><div class="title-block"><div class="kicker">Diagnostic</div><h1>De rentabilité<span>Location courte durée</span></h1><div class="client-meta-top"><span id="clientMetaTop">Diagnostic propriétaire</span><span id="dateMetaTop">Diagnostic non généré</span></div></div><div class="cover-grid"><div class="cover-left">
@@ -753,15 +826,85 @@ const setReportIdentity = (generatedAt = null) => {
   }
 };
 
+
+let generationProgressTimer = null;
+let generationProgressValue = 0;
+
+function updateGenerationProgress(value, text = '') {
+  generationProgressValue = Math.max(0, Math.min(100, Math.round(value)));
+  const wrapper = $('generationProgress');
+  const bar = $('generationProgressBar');
+  const percent = $('generationProgressPercent');
+  const label = $('generationProgressText');
+
+  if (wrapper) wrapper.classList.add('show');
+  if (bar) bar.style.width = generationProgressValue + '%';
+  if (percent) percent.textContent = generationProgressValue + ' %';
+  if (label && text) label.textContent = text;
+}
+
+function startGenerationProgress() {
+  clearInterval(generationProgressTimer);
+  generationProgressValue = 4;
+  updateGenerationProgress(4, 'Préparation des données du logement…');
+
+  generationProgressTimer = setInterval(() => {
+    let increment = 0;
+    let label = 'Analyse du potentiel locatif…';
+
+    if (generationProgressValue < 25) {
+      increment = 3 + Math.random() * 3;
+      label = 'Analyse du logement et du secteur…';
+    } else if (generationProgressValue < 52) {
+      increment = 1.8 + Math.random() * 2.4;
+      label = 'Calcul des prix et des scénarios financiers…';
+    } else if (generationProgressValue < 75) {
+      increment = 1 + Math.random() * 1.8;
+      label = 'Analyse de la saisonnalité et des événements…';
+    } else if (generationProgressValue < 90) {
+      increment = .35 + Math.random() * .8;
+      label = 'Rédaction et mise en forme des 6 pages…';
+    }
+
+    if (generationProgressValue < 90) {
+      updateGenerationProgress(Math.min(90, generationProgressValue + increment), label);
+    }
+  }, 950);
+}
+
+function finishGenerationProgress(success = true) {
+  clearInterval(generationProgressTimer);
+  generationProgressTimer = null;
+
+  if (success) {
+    updateGenerationProgress(100, 'Diagnostic terminé.');
+    setTimeout(() => {
+      $('generationProgress')?.classList.remove('show');
+    }, 1800);
+  } else {
+    updateGenerationProgress(generationProgressValue, 'La génération a été interrompue.');
+  }
+}
+
 function setLoading(isLoading, message = '') {
   const button = $('generateBtn');
   const status = $('generationStatus');
+
   if (button) {
     button.disabled = isLoading;
-    button.textContent = isLoading ? 'Analyse en cours…' : 'Générer le diagnostic';
-    button.style.opacity = isLoading ? '.65' : '1';
+    button.textContent = isLoading ? 'Analyse en cours…' : 'Générer mon diagnostic';
+    button.style.opacity = isLoading ? '.72' : '1';
     button.style.cursor = isLoading ? 'wait' : 'pointer';
   }
+
+  if (isLoading) {
+    startGenerationProgress();
+  } else if (message.startsWith('Erreur')) {
+    finishGenerationProgress(false);
+  } else if (message) {
+    finishGenerationProgress(true);
+  }
+
   if (status) {
     status.textContent = message;
     status.style.color = message.startsWith('Erreur') ? '#B42318' : '#667085';
