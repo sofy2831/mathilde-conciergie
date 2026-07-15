@@ -525,6 +525,11 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
   .sector-scorecard,.strategy-metrics,.finance-mini-grid,.risk-quadrant{break-inside:avoid}
 }
 
+
+.decision-support{border-left:4px solid var(--purple);background:linear-gradient(135deg,#FBFAFF,#F5F1FF)}
+.decision-support h3{color:var(--purple)}
+.decision-support strong{color:var(--blue)}
+
 </style>
 </head>
 <body>
@@ -732,6 +737,10 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
           <label class="check-pill"><input type="checkbox" id="riskResale"> Revente difficile</label>
         </div>
         <div class="field full" style="margin-top:16px"><label>Autres risques identifiés</label><textarea class="textarea" id="otherRisks"></textarea></div>
+        <div class="panel decision-support" id="riskDecisionSupport" style="margin-top:16px">
+          <h3>Lecture d’aide à la décision</h3>
+          <p id="riskDecisionText">La lecture personnalisée apparaîtra après analyse des chiffres. Elle distinguera les risques bloquants, négociables et simplement à vérifier.</p>
+        </div>
       </div>
 
       <div class="section" id="step8">
@@ -752,6 +761,10 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
           <label class="check-pill"><input type="checkbox" id="leverMixed"> Stratégie mixte</label>
           <label class="check-pill"><input type="checkbox" id="leverTax"> Optimisation des charges</label>
           <label class="check-pill"><input type="checkbox" id="leverResale"> Création de valeur</label>
+        </div>
+        <div class="panel decision-support" id="leverDecisionSupport" style="margin-top:16px">
+          <h3>Arbitrage CleanUp en cas d’indécision</h3>
+          <p id="leverDecisionText">Après calcul, CleanUp classera les leviers par impact : indispensable, utile ou secondaire, avec l’effet attendu sur le prix, le cash-flow et le risque.</p>
         </div>
       </div>
 
@@ -967,7 +980,21 @@ function askCleanup(section){
   if(!config)return;
   const button=$(config[0]),status=$(config[1]);
   button.textContent=config[2];
-  status.textContent='Cette partie sera rédigée par CleanUp lors de la génération finale.';
+  if(section==='risks'||section==='levers'){
+    calculateFinance();
+    const total=valueOrPlaceholder('purchasePrice')+valueOrPlaceholder('notary')+valueOrPlaceholder('works')+valueOrPlaceholder('furniture');
+    const loan=Math.max(0,total-valueOrPlaceholder('deposit'));
+    const debt=monthlyLoanPayment(loan,valueOrPlaceholder('loanRate')+valueOrPlaceholder('insuranceRate'),valueOrPlaceholder('loanYears'))*12;
+    const rev=scenario(valueOrPlaceholder('rateMid')||valueOrPlaceholder('nightRate')||110,valueOrPlaceholder('occMid')||valueOrPlaceholder('occupancy')||58);
+    const fixed=annualFixedCosts();
+    const net=rev-fixed-annualVariableCosts(rev);
+    const cmp=longTermComparison(rev,net);
+    const temp={total,loan,debt,revMid:rev,fixed,netOperating:net,cashflow:net-debt,netYield:total?net/total*100:0,maxPurchase:Math.max(0,net/.06-valueOrPlaceholder('notary')-valueOrPlaceholder('works')-valueOrPlaceholder('furniture')),furnishedNet:cmp.furnishedNet,emptyNet:cmp.emptyNet,score:55};
+    autoSelectLevers(temp);updateDecisionSupport(temp);
+    status.textContent='✓ Lecture d’aide à la décision générée à partir des chiffres saisis.';
+  }else{
+    status.textContent='Cette partie sera rédigée par CleanUp lors de la génération finale.';
+  }
   status.classList.add('done');
 }
 $('generateAreaAI').onclick=()=>askCleanup('area');
@@ -1080,6 +1107,36 @@ function autoSelectLevers(s){
   Object.entries(rules).forEach(([id,on])=>{const el=$(id);if(el)el.checked=!!on});
   const status=$('leversAIStatus');if(status){status.textContent='✓ Leviers présélectionnés selon les résultats de l’étude';status.className='ai-status done'}
 }
+function updateDecisionSupport(s){
+  if(!s)return;
+  const priceGap=Math.max(0,num('purchasePrice')-(s.maxPurchase||0));
+  const riskIds=['riskSeason','riskRegulation','riskCondo','riskWorks','riskVacancy','riskRate','riskCompetition','riskManagement','riskResale'];
+  const activeRisks=riskIds.filter(checked);
+  const closeDecision=(s.score>=48&&s.score<=68)||Math.abs(s.cashflow||0)<=3600;
+  const blockers=[];
+  if((s.cashflow||0)<0)blockers.push(`cash-flow déficitaire de ${money(Math.abs(s.cashflow))} par an`);
+  if(priceGap>5000)blockers.push(`prix affiché supérieur d’environ ${money(priceGap)} au plafond conseillé`);
+  if(checked('riskRegulation')||checked('riskCondo'))blockers.push('validation réglementaire ou copropriété indispensable');
+  if((s.netYield||0)<5)blockers.push('rendement net inférieur à 5 %');
+  const riskText=blockers.length
+    ? `<strong>${closeDecision?'Décision serrée :':'Point de blocage :'}</strong> ${blockers.join(' ; ')}. `+
+      `Les risques actifs sont au nombre de ${activeRisks.length}. La décision ne doit pas reposer sur le scénario optimiste.`
+    : `<strong>Risque contenu :</strong> le scénario central reste cohérent. Les vérifications juridiques, bancaires et locales demeurent nécessaires avant engagement.`;
+  const rt=$('riskDecisionText');if(rt)rt.innerHTML=riskText;
+
+  const ranked=[];
+  if(priceGap>0)ranked.push(['Négociation du prix','indispensable',`viser au maximum ${money(s.maxPurchase)}`]);
+  if((s.cashflow||0)<0)ranked.push(['Financement / apport','indispensable',`réduire l’effort d’épargne de ${money(Math.abs(s.cashflow)/12)} par mois`]);
+  if(checked('leverMixed'))ranked.push(['Stratégie mixte','utile','sécuriser les périodes creuses avec de la moyenne durée']);
+  if(checked('leverDynamic'))ranked.push(['Tarification dynamique','utile','protéger le revenu sans surévaluer le scénario central']);
+  if(checked('leverTax'))ranked.push(['Réduction des charges','utile','améliorer directement le rendement net']);
+  if(checked('leverPremium'))ranked.push(['Montée en gamme','secondaire','à retenir seulement si le marché accepte un prix supérieur']);
+  const leverText=ranked.length
+    ? ranked.slice(0,4).map((r,i)=>`${i+1}. <strong>${r[0]}</strong> — ${r[1]} : ${r[2]}.`).join('<br>')
+    : '<strong>Aucun levier critique détecté.</strong> Conserver une marge de sécurité et confirmer les hypothèses locales.';
+  const lt=$('leverDecisionText');if(lt)lt.innerHTML=leverText;
+}
+
 function setScoreGauge(id,value){const el=$(id);if(el)el.style.width=Math.max(0,Math.min(100,value))+'%'}
 function markChecklist(id,state){const el=$(id);if(!el)return;el.classList.remove('checked','attention');el.classList.add(state?'checked':'attention')}
 function reportBar(id,value,max){const el=$(id);if(el)el.style.height=(max>0?Math.max(8,Math.min(100,value/max*100)):8)+'%'}
@@ -1309,6 +1366,7 @@ function applyBackendStudy(engine,ai){
   window.studyAI=ai;
   window.studySummary=s;
   autoSelectLevers(s);
+  updateDecisionSupport(s);
   generated=true;
 
   $('previewTitle').textContent=`${engine.inputs.propertyType} — ${engine.inputs.adresse}`;
@@ -1380,6 +1438,7 @@ function computeStudy(){
   const maxPurchase=Math.max(0,maxTotal-num('notary')-num('works')-num('furniture'));
   const preSummary={total,loan,debt,revLow,revMid,revHigh,fixed,netOperating,cashflow,grossYield,netYield,maxPurchase,emptyNet:comparison.emptyNet,furnishedNet:comparison.furnishedNet};
   autoSelectLevers(preSummary);
+  updateDecisionSupport({...preSummary,score});
   const autoLeverCount=['leverPrice','leverWorks','leverPremium','leverDynamic','leverAutomation','leverDirect','leverMixed','leverTax','leverResale'].filter(checked).length;
   score=Math.max(0,Math.min(100,score + Math.max(0,autoLeverCount-leverCount)));
   let title='Projet à revoir';
@@ -1407,11 +1466,24 @@ function computeStudy(){
     emptyGross:comparison.emptyGross,furnishedGross:comparison.furnishedGross,
     emptyNet:comparison.emptyNet,furnishedNet:comparison.furnishedNet
   };
+  updateDecisionSupport(window.studySummary);
   updateCharts(window.studySummary);
   populateInvestReport(window.studySummary);
   showStep(10);
 }
-$('generateStudy').onclick=computeStudy;
+function safeGenerateStudy(){
+  const button=$('generateStudy');
+  try{
+    if(button){button.disabled=true;button.textContent='Calcul de l’étude…';}
+    computeStudy();
+  }catch(error){
+    console.error('Génération étude',error);
+    alert('La génération a rencontré une erreur : '+(error.message||error));
+  }finally{
+    if(button){button.disabled=false;button.textContent='✦ Générer l’étude d’investissement';}
+  }
+}
+$('generateStudy').addEventListener('click',safeGenerateStudy);
 
 $('checkCoverageBtn').onclick=()=>{
   const address=val('coverageAddress');
@@ -1465,8 +1537,9 @@ ${s.text}\n\n${window.studyAI?.page6?.finalOpinion||''}\n${window.studyAI?.page6
   });
 };
 
-$('downloadWord').onclick=()=>{
-  if(!generated)return alert('Générez d’abord l’étude.');
+function downloadWordReport(){
+  try{
+  if(!generated||!window.studySummary)return alert('Générez d’abord l’étude.');
   const x=window.studySummary;populateInvestReport(x);
   const photo=window.propertyPhotoData?`<img src="${window.propertyPhotoData}" style="width:100%;height:250px;object-fit:cover;border-radius:16px;display:block">`:'';
   const purple='#5F2BEA',blue='#071A49',green='#049B4F',light='#F7F5FF',line='#DDD6FE';
@@ -1491,11 +1564,20 @@ $('downloadWord').onclick=()=>{
   pages.push(page('Risques','MATRICE DES RISQUES',`<table class="kpis"><tr>${cell($('rRiskIndex').textContent,'Indice de risque')}${cell($('rValuePotential').textContent,'Valorisation')}${cell($('rVacancyRiskPremium').textContent,'Vacance locative')}${cell($('rRegulatoryRiskPremium').textContent,'Réglementation')}</tr></table><table class="two"><tr><td>${card('Risques critiques',$('rRiskCritical').textContent)}</td><td>${card('Risques à surveiller',$('rRiskWatch').textContent)}</td></tr><tr><td>${card('Risques maîtrisables',$('rRiskControlled').textContent)}</td><td>${card('Réponse recommandée',$('rRiskResponse').textContent)}</td></tr></table><h2 class="sub">Leviers présélectionnés par l’analyse</h2><div class="checkgrid">${selectedLevers.map(v=>`<div>✓ ${v}</div>`).join('')}</div><div class="band"><h3>Lecture CleanUp</h3><p>${$('rRiskAdvice').textContent}</p></div>`));
   pages.push(page('Plan d’action','PLAN D’ACTION AVANT ACQUISITION',`<table class="five"><tr>${['Négociation','Vérifications','Financement','Travaux','Lancement'].map((v,i)=>`<td><b>${i+1}</b><h3>${v}</h3><p>${['Fixer une offre plafond.','Contrôler urbanisme et règlement.','Obtenir une offre bancaire ferme.','Valider devis et délais.','Préparer exploitation et tarification.'][i]}</p></td>`).join('')}</tr></table><table class="two"><tr><td>${card('Prix d’offre recommandé',`<strong class="huge">${m(x.maxPurchase)}</strong><br>Plafond à ajuster après vérifications.`)}</td><td>${card('Réserve de sécurité',`<strong class="huge">${m(Math.max(3000,num('works')*.1+num('furniture')*.05))}</strong><br>Imprévus et démarrage.`)}</td></tr></table><h2 class="sub">Checklist avant compromis</h2><div class="checkgrid">${['Règlement de copropriété','Urbanisme et changement d’usage','Devis travaux','Validation du marché','Accord bancaire','Régime fiscal','Organisation de l’exploitation','Liquidité à la revente'].map(v=>`<div>□ ${v}</div>`).join('')}</div>`));
   pages.push(page('Conclusion','DÉCISION FINALE',`<div class="final"><div class="score">${x.score}<small>/100</small></div><div><h2>${x.title}</h2><p>${x.text}</p></div></div><table class="kpis"><tr>${cell(m(num('purchasePrice')),'Prix affiché')}${cell(m(x.maxPurchase),'Prix maximum conseillé',green)}${cell(m(Math.max(0,num('purchasePrice')-x.maxPurchase)),'Négociation cible')}</tr></table><div class="band"><h3>${$('rRecommendationText').textContent}</h3><p>Cette étude constitue une aide à la décision. Les données locales, juridiques, fiscales et bancaires doivent être confirmées avant engagement.</p></div><table class="two"><tr><td>${card('Décision recommandée',$('rDecisionPremium').textContent)}</td><td>${card('Prochaine étape',$('rNextStepPremium').textContent)}</td></tr></table>`));
-  const css=`@page{size:21cm 29.7cm;margin:1.1cm}body{font-family:Arial,sans-serif;color:${blue};margin:0}.word-page{page-break-after:always;min-height:25.5cm;position:relative;padding-bottom:30px}.word-page:last-child{page-break-after:auto}h1{font-size:29px;margin:0 0 18px;color:${blue};letter-spacing:-1px}h2.sub{font-size:18px;color:${purple};margin:18px 0 10px}h3{margin:0 0 7px}p{font-size:11px;line-height:1.45;margin:0}.kpis,.two,.three,.five,.data{width:100%;border-collapse:collapse;margin:14px 0}.two td{width:50%;vertical-align:top;padding:6px}.three td{width:33%;vertical-align:top;padding:10px}.five td{width:20%;vertical-align:top;padding:10px;border:1px solid ${line};background:#FCFCFF}.five b{display:inline-block;background:${purple};color:#fff;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center}.card{border:1px solid ${line};border-radius:14px;padding:14px;background:#FCFCFF;min-height:75px}.band{background:linear-gradient(135deg,#2E1065,${purple});color:white;border-radius:16px;padding:18px;margin:16px 0}.band h3,.band p{color:white}.decision{background:${light};border:1px solid ${line};border-radius:16px;padding:20px;text-align:center;vertical-align:middle}.score{font-size:42px;font-weight:900;color:${blue}.score small{font-size:12px}.photo-title{background:${blue};color:white;padding:12px;font-size:16px;font-weight:900}.data th{background:${purple};color:white;padding:9px;font-size:9px}.data td{padding:9px;border:1px solid #E4E7EC;text-align:center;font-size:10px}.barbox{border:1px solid ${line};border-radius:14px;padding:15px;margin:15px 0}.wbar{display:grid;grid-template-columns:110px 1fr 80px;gap:10px;align-items:center;margin:10px 0;font-size:10px;font-weight:800}.wbar i{height:14px;background:#ECEAF5;border-radius:10px;overflow:hidden}.wbar i b{display:block;height:100%;border-radius:10px}.scenario{text-align:center;border:1px solid ${line};border-radius:14px}.scenario.active{background:${purple};color:white}.scenario div{font-size:24px;font-weight:900}.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.checkgrid div{border:1px solid ${line};background:#FCFCFF;padding:11px;border-radius:10px;font-size:10px;font-weight:800}.final{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:center;background:linear-gradient(135deg,#2E1065,${purple});color:white;padding:22px;border-radius:18px}.final .score,.final h2,.final p{color:white}.huge{font-size:26px;color:${purple}.word-footer{position:absolute;bottom:0;font-size:8px;color:#667085}`;
+  const css=`@page{size:21cm 29.7cm;margin:1.1cm}body{font-family:Arial,sans-serif;color:${blue};margin:0}.word-page{page-break-after:always;min-height:25.5cm;position:relative;padding-bottom:30px}.word-page:last-child{page-break-after:auto}h1{font-size:29px;margin:0 0 18px;color:${blue};letter-spacing:-1px}h2.sub{font-size:18px;color:${purple};margin:18px 0 10px}h3{margin:0 0 7px}p{font-size:11px;line-height:1.45;margin:0}.kpis,.two,.three,.five,.data{width:100%;border-collapse:collapse;margin:14px 0}.two td{width:50%;vertical-align:top;padding:6px}.three td{width:33%;vertical-align:top;padding:10px}.five td{width:20%;vertical-align:top;padding:10px;border:1px solid ${line};background:#FCFCFF}.five b{display:inline-block;background:${purple};color:#fff;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center}.card{border:1px solid ${line};border-radius:14px;padding:14px;background:#FCFCFF;min-height:75px}.band{background:linear-gradient(135deg,#2E1065,${purple});color:white;border-radius:16px;padding:18px;margin:16px 0}.band h3,.band p{color:white}.decision{background:${light};border:1px solid ${line};border-radius:16px;padding:20px;text-align:center;vertical-align:middle}.score{font-size:42px;font-weight:900;color:${blue}}.score small{font-size:12px}.photo-title{background:${blue};color:white;padding:12px;font-size:16px;font-weight:900}.data th{background:${purple};color:white;padding:9px;font-size:9px}.data td{padding:9px;border:1px solid #E4E7EC;text-align:center;font-size:10px}.barbox{border:1px solid ${line};border-radius:14px;padding:15px;margin:15px 0}.wbar{display:grid;grid-template-columns:110px 1fr 80px;gap:10px;align-items:center;margin:10px 0;font-size:10px;font-weight:800}.wbar i{height:14px;background:#ECEAF5;border-radius:10px;overflow:hidden}.wbar i b{display:block;height:100%;border-radius:10px}.scenario{text-align:center;border:1px solid ${line};border-radius:14px}.scenario.active{background:${purple};color:white}.scenario div{font-size:24px;font-weight:900}.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.checkgrid div{border:1px solid ${line};background:#FCFCFF;padding:11px;border-radius:10px;font-size:10px;font-weight:800}.final{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:center;background:linear-gradient(135deg,#2E1065,${purple});color:white;padding:22px;border-radius:18px}.final .score,.final h2,.final p{color:white}.huge{font-size:26px;color:${purple}}.word-footer{position:absolute;bottom:0;font-size:8px;color:#667085}`;
   const html=`<!doctype html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Étude d’investissement CleanUp</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>90</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>${css}</style></head><body>${pages.join('')}</body></html>`;
   const blob=new Blob(['\ufeff',html],{type:'application/msword'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='etude-investissement-premium-cleanup.doc';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1500);
-};
-$('printPdf').onclick=()=>{if(!generated)return alert('Générez d’abord l’étude.');populateInvestReport(window.studySummary);requestAnimationFrame(()=>window.print())};
+  }catch(error){console.error('Export Word',error);alert('L’export Word a rencontré une erreur : '+(error.message||error));}
+}
+$('downloadWord').addEventListener('click',downloadWordReport);
+function printInvestmentPdf(){
+  try{
+    if(!generated||!window.studySummary)return alert('Générez d’abord l’étude.');
+    populateInvestReport(window.studySummary);
+    setTimeout(()=>window.print(),80);
+  }catch(error){console.error('Export PDF',error);alert('L’impression PDF a rencontré une erreur : '+(error.message||error));}
+}
+$('printPdf').addEventListener('click',printInvestmentPdf);
 $('newStudy').onclick=()=>{
   if(STRIPE_PAYMENT_LINK)location.href=STRIPE_PAYMENT_LINK;
   else alert('Le paiement Stripe sera connecté avant la mise en ligne.');
