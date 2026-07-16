@@ -579,6 +579,118 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
   }
 }
 
+
+/* V10 — contrôle avant génération, légendes et verrouillage */
+.choice span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:9.5px;
+  line-height:1.35;
+  font-weight:600;
+}
+.preflight-panel{
+  margin:18px 0;
+  padding:16px;
+  border:1px solid #D9E0E8;
+  border-radius:17px;
+  background:linear-gradient(135deg,#F8FAFC,#FFFDF7);
+}
+.preflight-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+}
+.preflight-head h3{
+  margin:0 0 5px;
+  color:var(--navy);
+  font-size:15px;
+}
+.preflight-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:10.5px;
+  line-height:1.45;
+}
+.preflight-results{
+  display:grid;
+  gap:8px;
+  margin-top:12px;
+}
+.preflight-item{
+  padding:10px 12px;
+  border-radius:11px;
+  font-size:10.5px;
+  line-height:1.4;
+  font-weight:750;
+}
+.preflight-item.neutral{background:#F2F4F7;color:#667085}
+.preflight-item.error{background:#FEF0EE;color:#B42318;border-left:4px solid #B42318}
+.preflight-item.warn{background:#FFF3E2;color:#9A5B13;border-left:4px solid #C97A1B}
+.preflight-item.ok{background:#E8F7F1;color:#0F7A55;border-left:4px solid #0F8A5F}
+.preflight-actions{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:11px;
+  background:#FFF7ED;
+  color:#9A5B13;
+  font-size:10.5px;
+}
+.finance-legend{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px 12px;
+  margin-top:10px;
+  font-size:9.5px;
+  color:var(--navy);
+  font-weight:800;
+}
+.finance-legend span{display:flex;align-items:center;gap:7px}
+.finance-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.legend-acquisition{background:#6D28D9}
+.legend-notary{background:#C8A45A}
+.legend-works{background:#0F8A5F}
+.legend-furniture{background:#C97A1B}
+body.study-final-locked .stepper,
+body.study-final-locked .nav-actions,
+body.study-final-locked #prevBtn,
+body.study-final-locked [data-step]{
+  pointer-events:none!important;
+}
+body.study-final-locked .step:not(.active){
+  opacity:.45;
+}
+@media print{
+  .r-footer{
+    z-index:20!important;
+    color:#344054!important;
+    font-size:7.2pt!important;
+    font-weight:900!important;
+  }
+  .r-footer span:last-child{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-width:20mm!important;
+    height:7mm!important;
+    padding:0 2.5mm!important;
+    border-radius:999px!important;
+    background:#6D28D9!important;
+    color:white!important;
+    font-size:7pt!important;
+    position:relative!important;
+    z-index:30!important;
+  }
+  .finance-legend{
+    font-size:7pt!important;
+  }
+}
+@media(max-width:680px){
+  .preflight-head{flex-direction:column}
+  .preflight-head .btn{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -676,12 +788,12 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
       <div class="ai-pane" id="aiPane3">
         <div class="ai-pane-title"><div><h3>Votre objectif d’investisseur</h3><p>CleanUp comparera la courte durée, le meublé et la location vide selon vos priorités.</p></div><div class="section-badge">3 / 4</div></div>
         <div class="simple-choice-grid">
-          <label class="simple-choice"><input type="radio" name="uxGoal" value="yield" checked>Maximiser la rentabilité</label>
-          <label class="simple-choice"><input type="radio" name="uxGoal" value="cashflow">Obtenir du cash-flow</label>
-          <label class="simple-choice"><input type="radio" name="uxGoal" value="stability">Privilégier la stabilité</label>
-          <label class="simple-choice"><input type="radio" name="uxGoal" value="patrimonial">Construire du patrimoine</label>
-          <label class="simple-choice"><input type="radio" name="uxManagement" value="low" checked>Peu de gestion souhaitée</label>
-          <label class="simple-choice"><input type="radio" name="uxManagement" value="active">Gestion active acceptée</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="yield" checked>Obtenir le meilleur rendement locatif</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="cashflow">Dégager un revenu mensuel positif</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="stability">Choisir des loyers réguliers et prévisibles</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="patrimonial">Constituer un patrimoine à long terme</label>
+          <label class="simple-choice"><input type="radio" name="uxManagement" value="low" checked>Limiter le temps consacré à la gestion</label>
+          <label class="simple-choice"><input type="radio" name="uxManagement" value="active">Accepter une gestion régulière pour gagner davantage</label>
         </div>
         <div class="field full" style="margin-top:16px"><label>Éléments particuliers <small>(facultatif)</small></label><textarea class="textarea" id="uxComments" placeholder="Ex. proximité gare, vue, parking, règlement de copropriété connu, projet de résidence secondaire..."></textarea></div>
         <div class="ai-wizard-actions"><button class="btn ghost" type="button" data-ai-prev="2">← Précédent</button><button class="btn primary" type="button" data-ai-next="4">Préparer l’analyse →</button></div>
@@ -913,7 +1025,23 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
           <div class="field"><label>Prix prudent / nuit</label><input class="input" id="rateLow" type="number" min="0" placeholder="90"></div>
           <div class="field"><label>Prix réaliste / nuit</label><input class="input" id="rateMid" type="number" min="0" placeholder="110"></div>
           <div class="field"><label>Prix optimiste / nuit</label><input class="input" id="rateHigh" type="number" min="0" placeholder="130"></div>
-        </div>
+        
+<div class="preflight-panel" id="preflightPanel">
+  <div class="preflight-head">
+    <div>
+      <h3>Contrôle avant génération</h3>
+      <p>CleanUp vérifie les informations manquantes, incohérentes ou trop imprécises avant de produire le rapport final.</p>
+    </div>
+    <button class="btn soft" id="runPreflight" type="button">Vérifier mon projet</button>
+  </div>
+  <div class="preflight-results" id="preflightResults">
+    <div class="preflight-item neutral">Aucun contrôle réalisé pour le moment.</div>
+  </div>
+  <div class="preflight-actions" id="preflightActions" style="display:none">
+    <strong>Corrigez les points signalés, puis relancez le contrôle.</strong>
+  </div>
+</div>
+</div>
         <button class="btn gold" id="generateStudy" type="button" style="margin-top:18px">✦ Générer l’étude d’investissement</button>
         <div class="study-generation-progress" id="studyGenerationProgress">
           <div class="study-progress-head"><span id="studyProgressText">Préparation de l’étude…</span><strong id="studyProgressPercent">0 %</strong></div>
@@ -1019,7 +1147,14 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
 <!-- 4 — comparaison locative -->
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Comparaison locative</div></div><h1 class="r-title">Quelle stratégie locative choisir ?</h1><div class="comparison-hero"><div class="strategy-card best"><h3>Courte durée</h3><b id="rShortNet">0 €</b><p>Net annuel estimé avant fiscalité</p></div><div class="strategy-card"><h3>Meublée</h3><b id="rFurnishedNet">0 €</b><p>Net annuel estimé avant fiscalité</p></div><div class="strategy-card"><h3>Location vide</h3><b id="rEmptyNet">0 €</b><p>Net annuel estimé avant fiscalité</p></div><div class="strategy-card"><h3>Moyenne durée</h3><b id="rMidTermNetPremium">0 €</b><p>Net annuel estimé avant fiscalité</p></div></div><table class="premium-table"><thead><tr><th>Mode d’exploitation</th><th>Revenu brut</th><th>Revenu net</th><th>Cash-flow</th><th>Rendement net</th></tr></thead><tbody><tr><td>Location courte durée</td><td id="rShortGross">0 €</td><td id="rShortNetTable">0 €</td><td id="rShortCashTable">0 €</td><td id="rShortYieldTable">0 %</td></tr><tr><td>Location meublée</td><td id="rFurnishedGross">0 €</td><td id="rFurnishedNetTable">0 €</td><td id="rFurnishedCashTable">0 €</td><td id="rFurnishedYieldTable">0 %</td></tr><tr><td>Location vide</td><td id="rEmptyGross">0 €</td><td id="rEmptyNetTable">0 €</td><td id="rEmptyCashTable">0 €</td><td id="rEmptyYieldTable">0 %</td></tr><tr><td>Moyenne durée</td><td id="rMidTermGrossPremium">0 €</td><td id="rMidTermNetTable">0 €</td><td id="rMidTermCashTable">0 €</td><td id="rMidTermYieldTable">0 %</td></tr></tbody></table><div class="r-chart-card" style="margin-top:5mm"><h3>Comparaison des revenus nets annuels</h3><div class="r-bars"><div class="r-bar" id="rBarShort"><b id="rBarShortV">0 €</b><span>Courte durée</span></div><div class="r-bar green" id="rBarFurnished"><b id="rBarFurnishedV">0 €</b><span>Meublée</span></div><div class="r-bar orange" id="rBarEmpty"><b id="rBarEmptyV">0 €</b><span>Vide</span></div></div></div><div class="strategy-metrics"><div class="strategy-metric"><b id="rBestNetGap">0 €</b><span>Écart annuel avec la 2e stratégie</span></div><div class="strategy-metric"><b id="rBestMonthlyEffort">0 €</b><span>Effort mensuel stratégie retenue</span></div><div class="strategy-metric"><b id="rBestStability">—</b><span>Stabilité des revenus</span></div><div class="strategy-metric"><b id="rBestWorkload">—</b><span>Niveau de gestion</span></div></div><div class="premium-band"><div class="ico">↗</div><div><h3>Stratégie recommandée</h3><p id="rBestStrategy">À déterminer.</p></div></div><div class="r-footer"><span>Comparaison locative complète</span><span>4</span></div></article>
 <!-- 5 — coût projet financement -->
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Financement</div></div><h1 class="r-title">Coût du projet et financement</h1><div class="premium-kpis"><div class="premium-kpi"><b id="rTotalProject">0 €</b><span>Coût total</span></div><div class="premium-kpi"><b id="rLoanPremium">0 €</b><span>Montant financé</span></div><div class="premium-kpi"><b id="rMonthlyPremium">0 €</b><span>Mensualité estimée</span></div><div class="premium-kpi"><b id="rAnnualCharges">0 €</b><span>Charges annuelles</span></div></div><div class="finance-layout"><div class="donut-box"><div class="premium-donut" id="rCostDonut" style="--p1:70%;--p2:80%;--p3:90%"></div><div class="legend-list"><div><span>Acquisition</span><b id="rCostPurchase">0 €</b></div><div><span>Frais de notaire</span><b id="rCostNotary">0 €</b></div><div><span>Travaux</span><b id="rCostWorks">0 €</b></div><div><span>Mobilier</span><b id="rCostFurniture">0 €</b></div></div></div><div class="r-card"><h3>Structure du financement</h3><div class="r-list"><div><span>Apport</span><b id="rDepositPremium">0 €</b></div><div><span>Durée</span><b id="rLoanYearsPremium">0 ans</b></div><div><span>Taux nominal</span><b id="rLoanRatePremium">0 %</b></div><div><span>Assurance emprunteur</span><b id="rInsuranceRatePremium">0 %</b></div><div><span>Taux global de calcul</span><b id="rGlobalRatePremium">0 %</b></div><div><span>Annuité</span><b id="rDebtPremium">0 €</b></div><div><span>Seuil de rentabilité</span><b id="rBreakEven">0 %</b></div></div></div></div><div class="r-card r-ai-reading" style="margin-top:5mm"><h3>Analyse du financement</h3><p id="rFinancingAdvice">Analyse à générer.</p></div><div class="r-grid-2"><div class="r-card"><h3>Effort d’épargne</h3><p id="rSavingsEffortPremium">À calculer.</p></div><div class="r-card"><h3>Couverture de la dette</h3><p id="rDebtCoveragePremium">À calculer.</p></div></div><div class="finance-mini-grid"><div class="finance-mini"><b id="rLoanToCost">0 %</b><span>Part financée</span></div><div class="finance-mini"><b id="rDebtCoverageRatio">0 %</b><span>Couverture dette</span></div><div class="finance-mini"><b id="rNotaryWeight">0 %</b><span>Poids frais de notaire</span></div><div class="finance-mini"><b id="rWorksWeight">0 %</b><span>Poids travaux + mobilier</span></div></div><div class="r-footer"><span>Financement et coût réel</span><span>5</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Financement</div></div><h1 class="r-title">Coût du projet et financement</h1><div class="premium-kpis"><div class="premium-kpi"><b id="rTotalProject">0 €</b><span>Coût total</span></div><div class="premium-kpi"><b id="rLoanPremium">0 €</b><span>Montant financé</span></div><div class="premium-kpi"><b id="rMonthlyPremium">0 €</b><span>Mensualité estimée</span></div><div class="premium-kpi"><b id="rAnnualCharges">0 €</b><span>Charges annuelles</span></div></div><div class="finance-layout"><div class="donut-box"><div class="premium-donut" id="rCostDonut" style="--p1:70%;--p2:80%;--p3:90%"></div>
+<div class="finance-legend">
+  <span><i class="legend-acquisition"></i>Acquisition</span>
+  <span><i class="legend-notary"></i>Frais de notaire</span>
+  <span><i class="legend-works"></i>Travaux</span>
+  <span><i class="legend-furniture"></i>Mobilier</span>
+</div>
+<div class="legend-list"><div><span>Acquisition</span><b id="rCostPurchase">0 €</b></div><div><span>Frais de notaire</span><b id="rCostNotary">0 €</b></div><div><span>Travaux</span><b id="rCostWorks">0 €</b></div><div><span>Mobilier</span><b id="rCostFurniture">0 €</b></div></div></div><div class="r-card"><h3>Structure du financement</h3><div class="r-list"><div><span>Apport</span><b id="rDepositPremium">0 €</b></div><div><span>Durée</span><b id="rLoanYearsPremium">0 ans</b></div><div><span>Taux du prêt</span><b id="rLoanRatePremium">0 %</b></div><div><span>Assurance emprunteur</span><b id="rInsuranceRatePremium">0 %</b></div><div><span>Taux du prêt + assurance</span><b id="rGlobalRatePremium">0 %</b></div><div><span>Annuité</span><b id="rDebtPremium">0 €</b></div><div><span>Seuil de rentabilité</span><b id="rBreakEven">0 %</b></div></div></div></div><div class="r-card r-ai-reading" style="margin-top:5mm"><h3>Analyse du financement</h3><p id="rFinancingAdvice">Analyse à générer.</p></div><div class="r-grid-2"><div class="r-card"><h3>Effort d’épargne</h3><p id="rSavingsEffortPremium">À calculer.</p></div><div class="r-card"><h3>Couverture de la dette</h3><p id="rDebtCoveragePremium">À calculer.</p></div></div><div class="finance-mini-grid"><div class="finance-mini"><b id="rLoanToCost">0 %</b><span>Part financée</span></div><div class="finance-mini"><b id="rDebtCoverageRatio">0 %</b><span>Couverture dette</span></div><div class="finance-mini"><b id="rNotaryWeight">0 %</b><span>Poids frais de notaire</span></div><div class="finance-mini"><b id="rWorksWeight">0 %</b><span>Poids travaux + mobilier</span></div></div><div class="r-footer"><span>Financement et coût réel</span><span>5</span></div></article>
 <!-- 6 — rentabilité -->
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Rentabilité</div></div><h1 class="r-title">Rentabilité et trésorerie</h1><div class="premium-kpis"><div class="premium-kpi"><b id="rGrossYieldPremium">0 %</b><span>Rendement brut</span></div><div class="premium-kpi"><b id="rNetYieldPremium">0 %</b><span>Rendement net</span></div><div class="premium-kpi"><b id="rCashflowPremium">0 €</b><span>Cash-flow annuel</span></div><div class="premium-kpi"><b id="rProfitTime">—</b><span>Retour estimatif</span></div></div><div class="r-chart-card"><h3>Du chiffre d’affaires au cash-flow</h3><p>Lecture progressive des principales sorties annuelles.</p><div class="r-bars"><div class="r-bar" id="rProfitBarRevenue"><b id="rProfitRevenue">0 €</b><span>CA</span></div><div class="r-bar green" id="rProfitBarOperating"><b id="rProfitOperating">0 €</b><span>Net exploitation</span></div><div class="r-bar orange" id="rProfitBarDebt"><b id="rProfitDebt">0 €</b><span>Dette</span></div><div class="r-bar" id="rProfitBarCash"><b id="rProfitCash">0 €</b><span>Cash-flow</span></div></div></div><div class="sensitivity"><div class="sens"><b id="rSensMinus10">0 €</b><span>CA -10 %</span></div><div class="sens"><b id="rSensMinus5">0 €</b><span>CA -5 %</span></div><div class="sens"><b id="rSensBase">0 €</b><span>Hypothèse centrale</span></div><div class="sens"><b id="rSensPlus5">0 €</b><span>CA +5 %</span></div><div class="sens"><b id="rSensPlus10">0 €</b><span>CA +10 %</span></div></div><div class="r-grid-2" style="margin-top:5mm"><div class="r-card"><h3>Lecture de la rentabilité</h3><p id="rProfitReadingPremium">À générer.</p></div><div class="r-card"><h3>Marge de sécurité</h3><p id="rSafetyMargin">À calculer.</p></div></div><div class="r-footer"><span>Rentabilité et sensibilité</span><span>6</span></div></article>
 <!-- 7 — scénarios -->
@@ -1041,6 +1176,72 @@ const num=id=>Number($(id)?.value||0);
 const val=id=>($(id)?.value||'').trim();
 const checked=id=>!!$(id)?.checked;
 let currentStep=1;
+
+let preflightValidated=false;
+
+function inputNumber(id){
+  const el=document.getElementById(id);
+  if(!el)return 0;
+  return Number(el.value || el.placeholder || 0);
+}
+function inputText(id){
+  return (document.getElementById(id)?.value || '').trim();
+}
+function preflightCheck(){
+  const issues=[];
+  const add=(type,title,text,step)=>issues.push({type,title,text,step});
+
+  if(!inputText('address')) add('error','Adresse manquante','Renseignez l’adresse complète du bien.',1);
+  if(inputNumber('surface')<10) add('error','Surface manquante','Indiquez la surface habitable du bien.',1);
+  if(inputNumber('capacity')<1) add('warn','Capacité non définie','Indiquez la capacité envisagée en location courte durée.',1);
+  if(inputNumber('purchasePrice')<=0) add('error','Prix d’achat manquant','Renseignez le prix affiché du bien.',1);
+
+  if(!inputText('areaStrengths')) add('warn','Forces du secteur non renseignées','Ajoutez les commerces, transports, pôles d’activité, tourisme ou autres atouts connus.',2);
+  if(!inputText('areaWeaknesses')) add('warn','Points de vigilance non renseignés','Précisez les nuisances, difficultés de stationnement, éloignement, concurrence ou saisonnalité connus.',2);
+
+  if(inputNumber('nightRate')<=0 && inputNumber('rateMid')<=0) add('warn','Prix par nuit à confirmer','Renseignez votre hypothèse ou laissez CleanUp proposer une estimation.',3);
+  if(inputNumber('occupancy')<=0 && inputNumber('occMid')<=0) add('warn','Occupation à confirmer','Renseignez votre hypothèse ou laissez CleanUp proposer une estimation.',3);
+
+  if(inputNumber('loanYears')<=0) add('error','Durée du prêt manquante','Indiquez la durée prévue du financement.',4);
+  if(inputNumber('loanRate')<=0) add('warn','Taux du prêt non renseigné','Indiquez le taux proposé par la banque ou une hypothèse prudente.',4);
+
+  const charges=['propertyTax','condoFees','insurance','utilities','maintenance'];
+  const knownCharges=charges.filter(id=>inputNumber(id)>0).length;
+  if(knownCharges<3) add('warn','Charges incomplètes','Renseignez au minimum la taxe foncière, l’assurance et les dépenses d’énergie. Ajoutez la copropriété lorsqu’elle existe.',5);
+
+  if(inputNumber('emptyRent')<=0) add('warn','Location vide non chiffrée','Renseignez un loyer mensuel estimé pour permettre la comparaison.',6);
+  if(inputNumber('furnishedRent')<=0) add('warn','Location meublée non chiffrée','Renseignez un loyer mensuel estimé pour permettre la comparaison.',6);
+
+  const container=document.getElementById('preflightResults');
+  const actions=document.getElementById('preflightActions');
+
+  if(!issues.length){
+    preflightValidated=true;
+    container.innerHTML='<div class="preflight-item ok"><strong>Projet suffisamment renseigné.</strong><br>CleanUp peut maintenant produire l’étude complète. Les estimations locales resteront clairement identifiées comme telles.</div>';
+    actions.style.display='none';
+    return true;
+  }
+
+  preflightValidated=!issues.some(x=>x.type==='error');
+  container.innerHTML=issues.map(issue=>`
+    <div class="preflight-item ${issue.type}" data-preflight-step="${issue.step}">
+      <strong>${issue.title}</strong><br>${issue.text}
+    </div>`).join('');
+  actions.style.display='block';
+
+  document.querySelectorAll('[data-preflight-step]').forEach(item=>{
+    item.addEventListener('click',()=>{
+      const step=Number(item.dataset.preflightStep);
+      if(typeof showStep==='function')showStep(step);
+    });
+  });
+  return preflightValidated;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('runPreflight')?.addEventListener('click',preflightCheck);
+});
+
 let generated=false;
 const STRIPE_PAYMENT_LINK='';
 const CLEANUP_AI_ENDPOINT='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateInvestmentStudy';
@@ -1583,6 +1784,15 @@ function applyBackendStudy(engine,ai){
   showStep(10);
 }
 async function generateInvestmentStudy(){
+  if(!preflightValidated){
+    const canContinue=preflightCheck();
+    if(!canContinue){
+      alert('Corrigez les informations indispensables signalées avant de générer le rapport.');
+      document.getElementById('preflightPanel')?.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+  }
+
   const button=$('generateStudy');
   if(!val('address') || valueOrPlaceholder('surface')<10 || valueOrPlaceholder('capacity')<1 || valueOrPlaceholder('purchasePrice')<=0){
     alert('Complétez au minimum l’adresse, la surface, la capacité et le prix affiché.');
@@ -1850,7 +2060,7 @@ $('uxPrintPdf')?.addEventListener('click',printInvestmentPdf);
 window.addEventListener('afterprint',()=>{
   const ready=$('uxStudyReady');
   if(ready)ready.style.display='block';
-  document.body.classList.add('study-final-locked');
+  document.body.classList.add('study-final-locked'); document.querySelectorAll('.step,[data-step],#prevBtn,.nav-actions button').forEach(el=>{if(el.id!=='uxPrintPdf'&&el.id!=='uxNewStudy')el.disabled=true;});
 });
 function startNewStudy(){
   const confirmed=confirm('Une nouvelle étude correspond à un nouveau bien et nécessite un nouveau paiement de 129 €. Continuer ?');
@@ -1938,7 +2148,7 @@ $('uxGenerateStudy')?.addEventListener('click',async()=>{
   if(!validateAIUxStep(1))return;
   syncUxToEngine();
   const btn=$('uxGenerateStudy');btn.disabled=true;btn.textContent='Analyse en cours…';mirrorProgress();
-  try{await generateInvestmentStudy();if(generated){const ready=$('uxStudyReady');if(ready)ready.style.display='block';btn.style.display='none';document.body.classList.add('study-final-locked')}}finally{btn.disabled=false;btn.textContent='✦ Lancer l’analyse Premium IA'}
+  try{await generateInvestmentStudy();if(generated){const ready=$('uxStudyReady');if(ready)ready.style.display='block';btn.style.display='none';document.body.classList.add('study-final-locked'); document.querySelectorAll('.step,[data-step],#prevBtn,.nav-actions button').forEach(el=>{if(el.id!=='uxPrintPdf'&&el.id!=='uxNewStudy')el.disabled=true;})}}finally{btn.disabled=false;btn.textContent='✦ Lancer l’analyse Premium IA'}
 });
 setAIUxStep(1);
 
