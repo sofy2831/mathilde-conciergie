@@ -842,10 +842,8 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
           </div>
         </div>
         <div class="export-grid">
-          <div class="export-card"><h3>Copier la synthèse</h3><p>Copiez les principaux résultats.</p><button class="btn primary" id="copyStudy">Copier</button></div>
-          <div class="export-card"><h3>Télécharger Word</h3><p>Export modifiable de la synthèse.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div>
-          <div class="export-card"><h3>Enregistrer en PDF</h3><p>Impression A4 propre.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div>
-          <div class="export-card"><h3>Nouvelle étude</h3><p>Une nouvelle étude nécessite un nouveau paiement.</p><button class="btn soft" id="newStudy">Créer une nouvelle étude (129 €)</button></div>
+          <div class="export-card"><h3>Télécharger le rapport Premium</h3><p>Rapport complet de 10 pages au format A4, prêt à enregistrer ou à transmettre.</p><button class="btn primary" id="printPdf">Imprimer / Enregistrer en PDF</button></div>
+          <div class="export-card"><h3>Nouvelle étude</h3><p>Créez une nouvelle analyse pour un autre projet immobilier.</p><button class="btn soft" id="newStudy">Créer une nouvelle étude (129 €)</button></div>
         </div>
         <div class="services-cta">
           <div>
@@ -1417,6 +1415,18 @@ async function generateInvestmentStudy(){
   }
 }
 
+function buildLocalScoreBreakdown(summary,riskCount){
+  const occupancy=Math.max(0,Math.min(100,num('occMid')||num('occupancy')||58));
+  const location=Math.max(0,Math.min(100,55
+    +(val('areaType')==='Centre-ville'?10:0)
+    +(val('accessibility')==='Bonne'?8:val('accessibility')==='Correcte'?5:0)
+    +(val('parking')&&val('parking')!=='Aucun'?5:0)));
+  const market=Math.max(0,Math.min(100,Math.round(42+occupancy*.55)));
+  const profitability=Math.max(0,Math.min(100,Math.round(35+Math.max(0,summary.netYield)*5+(summary.cashflow>=0?20:0))));
+  const financing=Math.max(0,Math.min(100,Math.round(summary.cashflow>=0?72+Math.min(18,summary.cashflow/1200):48+Math.max(-25,summary.cashflow/900))));
+  const risk=Math.max(0,Math.min(100,Math.round(92-riskCount*8)));
+  return {location,market,profitability,financing,risk,value:Math.round((location+market+profitability+financing+risk)/5)};
+}
 function computeStudy(){
   calculateFinance();
   const total=num('purchasePrice')+num('notary')+num('works')+num('furniture');
@@ -1472,6 +1482,7 @@ function computeStudy(){
   updateDecisionSupport(window.studySummary);
   updateCharts(window.studySummary);
   populateInvestReport(window.studySummary);
+  setScoreBreakdown({scores:buildLocalScoreBreakdown(window.studySummary,riskCount)});
   showStep(10);
 }
 function safeGenerateStudy(){
@@ -1511,33 +1522,6 @@ $('stripeCheckoutBtn').onclick=()=>{
     return;
   }
   location.href=STRIPE_PAYMENT_LINK;
-};
-
-$('copyStudy').onclick=()=>{
-  if(!generated)return alert('Générez d’abord l’étude.');
-  const s=window.studySummary;
-  const text=`ÉTUDE D’INVESTISSEMENT CLEANUP
-
-Adresse : ${val('address')}
-Coût total : ${money(s.total)}
-CA réaliste : ${money(s.revMid)}
-Cash-flow annuel : ${money(s.cashflow)}
-Rentabilité brute : ${s.grossYield.toFixed(1)} %
-Rentabilité nette : ${s.netYield.toFixed(1)} %
-Score : ${s.score}/100
-Prix maximum conseillé : ${money(s.maxPurchase)}
-
-COMPARAISON DES MODES DE LOCATION
-Courte durée nette : ${money(s.netOperating)}
-Location meublée nette : ${money(s.furnishedNet)}
-Location vide nette : ${money(s.emptyNet)}
-
-Avis : ${s.title}
-${s.text}\n\n${window.studyAI?.page6?.finalOpinion||''}\n${window.studyAI?.page6?.priceExplanation||''}`;
-  navigator.clipboard.writeText(text).then(()=>{
-    $('copyStudy').textContent='Copié ✓';
-    setTimeout(()=>$('copyStudy').textContent='Copier',1400);
-  });
 };
 
 async function loadExternalScript(src,globalName){
@@ -1649,7 +1633,6 @@ async function downloadWordReport(){
     if(button){button.disabled=false;button.textContent='Télécharger Word (.docx)';}
   }
 }
-$('downloadWord').addEventListener('click',downloadWordReport);
 function printInvestmentPdf(){
   try{
     if(!generated||!window.studySummary)return alert('Générez d’abord l’étude.');
