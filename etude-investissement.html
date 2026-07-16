@@ -813,6 +813,49 @@ body.study-final-locked .step:not(.active){
   .r-ai-reading p,.expert-reading{overflow:visible!important;max-height:none!important}
   .expert-reading .expert-block{break-inside:avoid;page-break-inside:avoid;margin-top:1.6mm!important}
 }
+
+/* V12 — corrections typographiques finales pages 3, 7 et 8 */
+@media print{
+  /* Page 3 : même confort de lecture que la page 2 */
+  .market-page .r-ai-reading p{
+    font-size:8.4pt!important;
+    line-height:1.40!important;
+    font-weight:680!important;
+  }
+  .market-page .r-ai-reading .expert-block{
+    display:block!important;
+    margin-top:1.6mm!important;
+  }
+  .market-page .r-ai-reading .expert-block:first-child{
+    margin-top:0!important;
+  }
+
+  /* Page 7 : texte lisible sur le bandeau violet */
+  #rScenarioDecision,
+  #rScenarioDecision *,
+  .premium-band #rScenarioDecision,
+  .premium-band #rScenarioDecision *{
+    color:#FFFFFF!important;
+  }
+
+  /* Page 8 : textes des quatre cartes légèrement agrandis */
+  .risk-quadrant .risk-cell h3{
+    font-size:9.5pt!important;
+    line-height:1.22!important;
+    font-weight:800!important;
+  }
+  .risk-quadrant .risk-cell p{
+    font-size:7.8pt!important;
+    line-height:1.36!important;
+    font-weight:650!important;
+  }
+
+  /* Sécurité A4 : aucune modification des dimensions des pages */
+  .invest-page{
+    overflow:hidden!important;
+  }
+}
+
 </style>
 </head>
 <body>
