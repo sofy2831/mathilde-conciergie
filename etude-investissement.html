@@ -766,6 +766,11 @@ body.study-final-locked .step:not(.active){
 @media(max-width:760px){.preflight-optional-grid{grid-template-columns:1fr}.generation-steps{grid-template-columns:1fr}}
 @media print{.preflight-panel,.generation-steps{display:none!important}}
 
+
+@media print{
+  .expert-reading strong{color:var(--diag-blue);font-weight:900}
+  .expert-reading .expert-block{display:block;margin-top:2.2mm}
+}
 </style>
 </head>
 <body>
@@ -1256,11 +1261,11 @@ body.study-final-locked .step:not(.active){
 <!-- 6 — rentabilité -->
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Rentabilité</div></div><h1 class="r-title">Rentabilité et trésorerie</h1><div class="premium-kpis"><div class="premium-kpi"><b id="rGrossYieldPremium">0 %</b><span>Rendement brut</span></div><div class="premium-kpi"><b id="rNetYieldPremium">0 %</b><span>Rendement net</span></div><div class="premium-kpi"><b id="rCashflowPremium">0 €</b><span>Cash-flow annuel</span></div><div class="premium-kpi"><b id="rProfitTime">—</b><span>Retour estimatif</span></div></div><div class="r-chart-card"><h3>Du chiffre d’affaires au cash-flow</h3><p>Lecture progressive des principales sorties annuelles.</p><div class="r-bars"><div class="r-bar" id="rProfitBarRevenue"><b id="rProfitRevenue">0 €</b><span>CA</span></div><div class="r-bar green" id="rProfitBarOperating"><b id="rProfitOperating">0 €</b><span>Net exploitation</span></div><div class="r-bar orange" id="rProfitBarDebt"><b id="rProfitDebt">0 €</b><span>Dette</span></div><div class="r-bar" id="rProfitBarCash"><b id="rProfitCash">0 €</b><span>Cash-flow</span></div></div></div><div class="sensitivity"><div class="sens"><b id="rSensMinus10">0 €</b><span>CA -10 %</span></div><div class="sens"><b id="rSensMinus5">0 €</b><span>CA -5 %</span></div><div class="sens"><b id="rSensBase">0 €</b><span>Hypothèse centrale</span></div><div class="sens"><b id="rSensPlus5">0 €</b><span>CA +5 %</span></div><div class="sens"><b id="rSensPlus10">0 €</b><span>CA +10 %</span></div></div><div class="r-grid-2" style="margin-top:5mm"><div class="r-card"><h3>Lecture de la rentabilité</h3><p id="rProfitReadingPremium">À générer.</p></div><div class="r-card"><h3>Marge de sécurité</h3><p id="rSafetyMargin">À calculer.</p></div></div><div class="r-footer"><span>Rentabilité et sensibilité</span><span>6</span></div></article>
 <!-- 7 — scénarios -->
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Scénarios</div></div><h1 class="r-title">Trois scénarios d’exploitation</h1><div class="scenario-strip"><div class="scenario-card"><h3>Prudent</h3><b id="rScenarioLowRevenue">0 €</b><p id="rScenarioLowText">Démarrage progressif et pression sur les prix.</p></div><div class="scenario-card mid"><h3>Réaliste</h3><b id="rScenarioMidRevenue">0 €</b><p id="rScenarioMidText">Hypothèse centrale de décision.</p></div><div class="scenario-card"><h3>Optimiste</h3><b id="rScenarioHighRevenue">0 €</b><p id="rScenarioHighText">Exploitation optimisée et avis installés.</p></div></div><table class="premium-table"><thead><tr><th>Hypothèse</th><th>Prix/nuit</th><th>Occupation</th><th>CA annuel</th><th>Cash-flow estimé</th></tr></thead><tbody><tr><td>Prudent</td><td id="rScenarioLowRate">0 €</td><td id="rScenarioLowOcc">0 %</td><td id="rScenarioLowCA">0 €</td><td id="rScenarioLowCash">0 €</td></tr><tr><td>Réaliste</td><td id="rScenarioMidRate">0 €</td><td id="rScenarioMidOcc">0 %</td><td id="rScenarioMidCA">0 €</td><td id="rScenarioMidCash">0 €</td></tr><tr><td>Optimiste</td><td id="rScenarioHighRate">0 €</td><td id="rScenarioHighOcc">0 %</td><td id="rScenarioHighCA">0 €</td><td id="rScenarioHighCash">0 €</td></tr></tbody></table><div class="r-chart-card" style="margin-top:5mm"><h3>Amplitude du résultat</h3><div class="r-bars"><div class="r-bar orange" id="rScenarioBarLow"><b id="rScenarioBarLowV">0 €</b><span>Prudent</span></div><div class="r-bar green" id="rScenarioBarMid"><b id="rScenarioBarMidV">0 €</b><span>Réaliste</span></div><div class="r-bar" id="rScenarioBarHigh"><b id="rScenarioBarHighV">0 €</b><span>Optimiste</span></div></div></div><div class="premium-band"><div class="ico">◎</div><div><h3>Scénario de décision</h3><p>Le scénario réaliste doit financer la dette et les charges sans dépendre du scénario optimiste. L’optimiste est un objectif, pas une garantie.</p></div></div><div class="r-footer"><span>Scénarios d’exploitation</span><span>7</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Scénarios</div></div><h1 class="r-title">Trois scénarios d’exploitation</h1><div class="scenario-strip"><div class="scenario-card"><h3>Prudent</h3><b id="rScenarioLowRevenue">0 €</b><p id="rScenarioLowText">Démarrage progressif et pression sur les prix.</p></div><div class="scenario-card mid"><h3>Réaliste</h3><b id="rScenarioMidRevenue">0 €</b><p id="rScenarioMidText">Hypothèse centrale de décision.</p></div><div class="scenario-card"><h3>Optimiste</h3><b id="rScenarioHighRevenue">0 €</b><p id="rScenarioHighText">Exploitation optimisée et avis installés.</p></div></div><table class="premium-table"><thead><tr><th>Hypothèse</th><th>Prix/nuit</th><th>Occupation</th><th>CA annuel</th><th>Cash-flow estimé</th></tr></thead><tbody><tr><td>Prudent</td><td id="rScenarioLowRate">0 €</td><td id="rScenarioLowOcc">0 %</td><td id="rScenarioLowCA">0 €</td><td id="rScenarioLowCash">0 €</td></tr><tr><td>Réaliste</td><td id="rScenarioMidRate">0 €</td><td id="rScenarioMidOcc">0 %</td><td id="rScenarioMidCA">0 €</td><td id="rScenarioMidCash">0 €</td></tr><tr><td>Optimiste</td><td id="rScenarioHighRate">0 €</td><td id="rScenarioHighOcc">0 %</td><td id="rScenarioHighCA">0 €</td><td id="rScenarioHighCash">0 €</td></tr></tbody></table><div class="r-chart-card" style="margin-top:5mm"><h3>Amplitude du résultat</h3><div class="r-bars"><div class="r-bar orange" id="rScenarioBarLow"><b id="rScenarioBarLowV">0 €</b><span>Prudent</span></div><div class="r-bar green" id="rScenarioBarMid"><b id="rScenarioBarMidV">0 €</b><span>Réaliste</span></div><div class="r-bar" id="rScenarioBarHigh"><b id="rScenarioBarHighV">0 €</b><span>Optimiste</span></div></div></div><div class="premium-band"><div class="ico">◎</div><div><h3>Scénario de décision</h3><p id="rScenarioDecision">Le scénario réaliste doit financer la dette et les charges sans dépendre du scénario optimiste. L’optimiste est un objectif, pas une garantie.</p></div></div><div class="r-footer"><span>Scénarios d’exploitation</span><span>7</span></div></article>
 <!-- 8 — risques -->
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Risques</div></div><h1 class="r-title">Matrice des risques</h1><div class="premium-kpis"><div class="premium-kpi"><b id="rRiskIndex">0 / 10</b><span>Indice de risque</span></div><div class="premium-kpi"><b id="rValuePotential">Moyen</b><span>Potentiel de valorisation</span></div><div class="premium-kpi"><b id="rVacancyRiskPremium">Modéré</b><span>Vacance locative</span></div><div class="premium-kpi"><b id="rRegulatoryRiskPremium">À vérifier</b><span>Réglementation</span></div></div><div class="risk-matrix" id="rRisks"></div><div class="risk-quadrant"><div class="risk-cell high"><h3>Impact fort / probabilité forte</h3><p id="rRiskCritical">Aucun risque critique identifié.</p></div><div class="risk-cell medium"><h3>Impact fort / probabilité modérée</h3><p id="rRiskWatch">À surveiller selon les hypothèses.</p></div><div class="risk-cell low"><h3>Impact limité / maîtrisable</h3><p id="rRiskControlled">Risques absorbables par une réserve adaptée.</p></div><div class="risk-cell control"><h3>Réponse recommandée</h3><p id="rRiskResponse">Négociation, vérifications et scénario prudent.</p></div></div><h2 style="color:#5F2BEA;font-size:16pt;margin-top:4mm">Leviers de sécurisation</h2><div class="risk-matrix" id="rLevers"></div><div class="r-card r-ai-reading" style="margin-top:5mm"><h3>Lecture CleanUp</h3><p id="rRiskAdvice">À générer.</p></div><div class="r-grid-2"><div class="r-card"><h3>Priorité opérationnelle</h3><p id="rPriorityLever">À déterminer.</p></div><div class="r-card"><h3>Décision sous conditions</h3><p>Le compromis doit intégrer les vérifications juridiques, techniques, bancaires et locatives avant levée des conditions suspensives.</p></div></div><div class="r-footer"><span>Risques et sécurisation</span><span>8</span></div></article>
 <!-- 9 — plan d'action -->
-<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Plan d’action</div></div><h1 class="r-title">Plan d’action avant acquisition</h1><div class="action-timeline"><div class="action-step"><b>1</b><h3>Négociation</h3><p>Fixer une offre recommandée sans jamais dépasser le prix affiché ni le plafond économique calculé.</p></div><div class="action-step"><b>2</b><h3>Vérifications</h3><p>Contrôler copropriété, urbanisme, réglementation et diagnostics.</p></div><div class="action-step"><b>3</b><h3>Financement</h3><p>Obtenir une simulation bancaire conforme au scénario réaliste.</p></div><div class="action-step"><b>4</b><h3>Travaux</h3><p>Chiffrer précisément les travaux et conserver une réserve.</p></div><div class="action-step"><b>5</b><h3>Lancement</h3><p>Préparer photos, annonce, tarification et exploitation.</p></div></div><div class="r-grid-2" style="margin-top:6mm"><div class="r-card"><h3>Prix d’offre recommandé</h3><p><strong id="rOfferPricePremium" style="font-size:22pt;color:#5F2BEA">0 €</strong></p><p>Prix d’offre recommandé : il ne dépasse jamais le prix affiché, même lorsque le plafond économique est supérieur.</p></div><div class="r-card"><h3>Réserve de sécurité</h3><p><strong id="rReservePremium" style="font-size:22pt;color:#5F2BEA">0 €</strong></p><p>Réserve indicative pour imprévus et démarrage d’exploitation.</p></div></div><h2 style="color:#5F2BEA;font-size:16pt">Checklist avant compromis</h2><div class="premium-grid4"><div class="premium-card" id="check-regulation"><h3>Règlement</h3><p>Copropriété et restrictions de location.</p></div><div class="premium-card" id="check-urbanism"><h3>Urbanisme</h3><p>Usage, changement d’usage et déclaration.</p></div><div class="premium-card" id="check-works"><h3>Travaux</h3><p>Devis, délais, autorisations et marge d’imprévu.</p></div><div class="premium-card" id="check-market"><h3>Marché</h3><p>Prix, occupation, concurrence et saisonnalité.</p></div><div class="premium-card" id="check-bank"><h3>Banque</h3><p>Taux, assurance, différé et apport réel.</p></div><div class="premium-card" id="check-tax"><h3>Fiscalité</h3><p>Régime adapté et incidence sur le net.</p></div><div class="premium-card" id="check-operation"><h3>Exploitation</h3><p>Conciergerie, ménage, linge et automatisation.</p></div><div class="premium-card" id="check-resale"><h3>Revente</h3><p>Liquidité, valeur patrimoniale et horizon.</p></div></div><div class="r-footer"><span>Plan d’action opérationnel</span><span>9</span></div></article>
+<article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Plan d’action</div></div><h1 class="r-title">Plan d’action avant acquisition</h1><div class="action-timeline"><div class="action-step"><b>1</b><h3>Négociation</h3><p id="rActionNegotiation">Fixer une offre recommandée sans jamais dépasser le prix affiché ni le plafond économique calculé.</p></div><div class="action-step"><b>2</b><h3>Vérifications</h3><p id="rActionChecks">Contrôler copropriété, urbanisme, réglementation et diagnostics.</p></div><div class="action-step"><b>3</b><h3>Financement</h3><p id="rActionFinancing">Obtenir une simulation bancaire conforme au scénario réaliste.</p></div><div class="action-step"><b>4</b><h3>Travaux</h3><p id="rActionWorks">Chiffrer précisément les travaux et conserver une réserve.</p></div><div class="action-step"><b>5</b><h3>Lancement</h3><p id="rActionLaunch">Préparer photos, annonce, tarification et exploitation.</p></div></div><div class="r-card r-ai-reading expert-reading" style="margin-top:5mm"><h3>Lecture de décision</h3><p id="rActionAdvice">Plan à personnaliser.</p></div><div class="r-grid-2" style="margin-top:4mm"><div class="r-card"><h3>Prix d’offre recommandé</h3><p><strong id="rOfferPricePremium" style="font-size:22pt;color:#5F2BEA">0 €</strong></p><p>Prix d’offre recommandé : il ne dépasse jamais le prix affiché, même lorsque le plafond économique est supérieur.</p></div><div class="r-card"><h3>Réserve de sécurité</h3><p><strong id="rReservePremium" style="font-size:22pt;color:#5F2BEA">0 €</strong></p><p>Réserve indicative pour imprévus et démarrage d’exploitation.</p></div></div><h2 style="color:#5F2BEA;font-size:16pt">Checklist avant compromis</h2><div class="premium-grid4"><div class="premium-card" id="check-regulation"><h3>Règlement</h3><p>Copropriété et restrictions de location.</p></div><div class="premium-card" id="check-urbanism"><h3>Urbanisme</h3><p>Usage, changement d’usage et déclaration.</p></div><div class="premium-card" id="check-works"><h3>Travaux</h3><p>Devis, délais, autorisations et marge d’imprévu.</p></div><div class="premium-card" id="check-market"><h3>Marché</h3><p>Prix, occupation, concurrence et saisonnalité.</p></div><div class="premium-card" id="check-bank"><h3>Banque</h3><p>Taux, assurance, différé et apport réel.</p></div><div class="premium-card" id="check-tax"><h3>Fiscalité</h3><p>Régime adapté et incidence sur le net.</p></div><div class="premium-card" id="check-operation"><h3>Exploitation</h3><p>Conciergerie, ménage, linge et automatisation.</p></div><div class="premium-card" id="check-resale"><h3>Revente</h3><p>Liquidité, valeur patrimoniale et horizon.</p></div></div><div class="r-footer"><span>Plan d’action opérationnel</span><span>9</span></div></article>
 <!-- 10 — conclusion -->
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Conclusion</div></div><h1 class="r-title">Décision finale</h1><div class="final-decision"><div class="r-score" id="rFinalDonut" style="--score:0"><div class="r-score-in"><div><b id="rFinalScore">0</b><span>/100</span></div></div></div><div><h2 id="rRecommendation">Projet à analyser</h2><p id="rFinalAdvice">Avis final à générer.</p></div></div><div class="r-final-price"><div class="r-price-card"><b id="rPriceShown2">0 €</b><span>Prix affiché</span></div><div class="r-price-card highlight"><b id="rMaxPrice2">0 €</b><span>Plafond économique calculé</span></div><div class="r-price-card"><b id="rDiscount2">0 €</b><span>Décote recommandée</span></div></div><div class="r-score-breakdown"><h3>Composition du score</h3><div class="r-score-line"><span>Emplacement</span><i><b id="rScoreLocationBar"></b></i><strong id="rScoreLocation">0</strong></div><div class="r-score-line"><span>Marché</span><i><b id="rScoreMarketBar"></b></i><strong id="rScoreMarket">0</strong></div><div class="r-score-line"><span>Rentabilité</span><i><b id="rScoreProfitBar"></b></i><strong id="rScoreProfit">0</strong></div><div class="r-score-line"><span>Financement</span><i><b id="rScoreFinanceBar"></b></i><strong id="rScoreFinance">0</strong></div><div class="r-score-line"><span>Maîtrise du risque</span><i><b id="rScoreRiskBar"></b></i><strong id="rScoreRisk">0</strong></div></div><div class="premium-band" style="margin-top:5mm"><div class="ico">✓</div><div><h3 id="rRecommendationText">Recommandation à générer.</h3><p>Cette étude est une aide à la décision. Les données financières, juridiques, fiscales et locales doivent être confirmées avant engagement.</p></div></div><div class="r-grid-2"><div class="r-card"><h3>Décision recommandée</h3><p id="rDecisionPremium">À déterminer.</p></div><div class="r-card"><h3>Prochaine étape</h3><p id="rNextStepPremium">Valider les hypothèses et négocier sur une base chiffrée.</p></div></div><div class="r-footer"><span>Powered by CleanUp</span><span>10</span></div></article>
 </section>
@@ -1790,68 +1795,59 @@ function clientVerdict(engine){
     AVOID:'À éviter'
   })[code] || engine?.decision?.verdictLabel || 'À analyser';
 }
+function expertHtml(page, lead=''){
+  if(!page)return lead;
+  const blocks=[];
+  if(lead)blocks.push(lead);
+  if(page.meaning)blocks.push(`<span class="expert-block"><strong>Ce que cela signifie :</strong> ${page.meaning}</span>`);
+  if(page.advice)blocks.push(`<span class="expert-block"><strong>Ce que je vous conseille :</strong> ${page.advice}</span>`);
+  if(page.decisionImpact)blocks.push(`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${page.decisionImpact}</span>`);
+  return blocks.join('');
+}
 function applyAIToReport(ai,engine){
   if(!ai)return;
   const txt=(id,value)=>{const el=$(id);if(el&&value!==undefined&&value!==null)el.textContent=value};
-  const html=(id,value)=>{const el=$(id);if(el&&value!==undefined&&value!==null)el.innerHTML=value};
+  const html=(id,value)=>{const el=$(id);if(el&&value!==undefined&&value!==null){el.innerHTML=value;el.classList.add('expert-reading')}};
   const verdict=clientVerdict(engine);
 
-  // Page 1 : aucun doublon. Résumé puis raison de décision.
   txt('rVerdictTitle',verdict);
   txt('rVerdictIntro',ai.page1?.summary || ai.page1?.headline);
-  txt('rPage1Advice',ai.page1?.decisionReason || ai.page1?.riskComment);
+  html('rPage1Advice',expertHtml(ai.page1, ai.page1?.riskComment?`<span class="expert-block"><strong>Vigilance :</strong> ${ai.page1.riskComment}</span>`:''));
   txt('rVerdictBadge',verdict);
 
-  // Page 2
-  txt('rSectorAnalysis',ai.page2?.analysis);
   makeItems('rStrengths',ai.page2?.strengths||[],'good');
   makeItems('rWeaknesses',ai.page2?.weaknesses||[],'bad');
-  txt('rAreaType',ai.page2?.district);txt('rAccess',ai.page2?.accessibility);
-  txt('rShops',ai.page2?.shops);txt('rTransit',ai.page2?.transport);
-  txt('rTourism',ai.page2?.tourism);txt('rEconomy',ai.page2?.economy);
-  txt('rDemand',ai.page2?.rentalDemand);
+  txt('rAreaType',ai.page2?.district); txt('rAccess',ai.page2?.accessibility);
+  txt('rShops',ai.page2?.shops); txt('rTransit',ai.page2?.transport);
+  txt('rTourism',ai.page2?.tourism); txt('rEconomy',ai.page2?.economy); txt('rDemand',ai.page2?.rentalDemand);
+  html('rSectorAnalysis',expertHtml(ai.page2));
 
-  // Page 3
-  txt('rPlatforms',(ai.page3?.platforms||[]).join(', '));
-  txt('rPositioning',ai.page3?.positioning);
-  txt('rSeasonality',ai.page3?.seasonality);
-  html('rMarketAnalysis',
-    `<strong>Ce que cela signifie pour vous :</strong> ${ai.page3?.marketSummary||''}`+
-    `<br><br><strong>Décision tarifaire :</strong> ${ai.page3?.pricingComment||''}`
-  );
+  txt('rPlatforms',(ai.page3?.platforms||[]).join(', ')); txt('rPositioning',ai.page3?.positioning); txt('rSeasonality',ai.page3?.seasonality);
+  html('rMarketAnalysis',expertHtml(ai.page3,`<span class="expert-block"><strong>Lecture du marché :</strong> ${ai.page3?.marketSummary||''}</span><span class="expert-block"><strong>Décision tarifaire :</strong> ${ai.page3?.pricingComment||''}</span>`));
 
-  // Pages 4 et 5 : analyse pédagogique, comme un conseiller qui explique le choix.
-  html('rFinancingAdvice',
-    `<strong>Lecture du montage :</strong> ${ai.page4?.financingAnalysis||''}`+
-    ((ai.page4?.strengths||[]).length?`<br><br><strong>Points favorables :</strong> ${(ai.page4.strengths||[]).join(' • ')}`:'')+
-    ((ai.page4?.warnings||[]).length?`<br><br><strong>À sécuriser avant l’offre :</strong> ${(ai.page4.warnings||[]).join(' • ')}`:'')
-  );
-  html('rBestStrategy',
-    `<strong>Comparaison :</strong> ${ai.page4?.comparisonAnalysis||''}`+
-    `<br><br><strong>Ce qui semble le mieux pour ce projet :</strong> ${ai.page4?.bestStrategyReason||''}`
-  );
+  html('rBestStrategy',expertHtml(ai.page4,`<span class="expert-block"><strong>Comparaison :</strong> ${ai.page4?.comparisonAnalysis||''}</span><span class="expert-block"><strong>Stratégie retenue :</strong> ${ai.page4?.bestStrategyReason||''}</span>`));
 
-  // Page risques
-  makeItems('rRisks',ai.page5?.risks||[],'bad');
-  makeItems('rLevers',ai.page5?.levers||[],'gold');
-  html('rRiskAdvice',
-    `<strong>Niveau d’exposition :</strong> ${ai.page5?.riskReading||''}`+
-    `<br><br><strong>Potentiel patrimonial :</strong> ${ai.page5?.valueReading||''}`
-  );
+  html('rFinancingAdvice',expertHtml(ai.page5,`<span class="expert-block"><strong>Analyse du financement :</strong> ${ai.page5?.financingAnalysis||''}</span><span class="expert-block"><strong>Sensibilité au taux :</strong> ${ai.page5?.rateSensitivity||''}</span><span class="expert-block"><strong>Levier d'apport :</strong> ${ai.page5?.depositLeverage||''}</span>${(ai.page5?.warnings||[]).length?`<span class="expert-block"><strong>À sécuriser :</strong> ${ai.page5.warnings.join(' • ')}</span>`:''}`));
 
-  // Conclusion : vocabulaire unique.
-  html('rFinalAdvice',
-    `<strong>Décision :</strong> ${ai.page6?.finalOpinion||''}`+
-    `<br><br><strong>Lecture du prix :</strong> ${ai.page6?.priceExplanation||''}`
-  );
+  html('rProfitReadingPremium',expertHtml(ai.page6,`<span class="expert-block"><strong>Lecture de la rentabilité :</strong> ${ai.page6?.profitabilityReading||''}</span><span class="expert-block"><strong>Stress-test :</strong> ${ai.page6?.stressTest||''}</span>`));
+  html('rSafetyMargin',`<strong>Marge de sécurité :</strong> ${ai.page6?.safetyMargin||''}<br><br>${expertHtml({meaning:ai.page6?.meaning,advice:ai.page6?.advice,decisionImpact:ai.page6?.decisionImpact})}`);
+
+  txt('rScenarioLowText',ai.page7?.prudentReading); txt('rScenarioMidText',ai.page7?.realisticReading); txt('rScenarioHighText',ai.page7?.optimisticReading);
+  html('rScenarioDecision',expertHtml(ai.page7,`<span class="expert-block"><strong>Scénario à retenir :</strong> ${ai.page7?.scenarioChoice||''}</span>`));
+
+  makeItems('rRisks',ai.page8?.risks||[],'bad'); makeItems('rLevers',ai.page8?.levers||[],'gold');
+  html('rRiskAdvice',expertHtml(ai.page8,`<span class="expert-block"><strong>Hiérarchie des risques :</strong> ${ai.page8?.riskReading||''}</span>`));
+  html('rPriorityLever',`<strong>Premier levier :</strong> ${ai.page8?.priorityLever||''}<br><br>${expertHtml({meaning:ai.page8?.meaning,advice:ai.page8?.advice,decisionImpact:ai.page8?.decisionImpact})}`);
+
+  txt('rActionNegotiation',ai.page9?.negotiationAction); txt('rActionChecks',ai.page9?.checksAction); txt('rActionFinancing',ai.page9?.financingAction); txt('rActionWorks',ai.page9?.worksAction); txt('rActionLaunch',ai.page9?.launchAction);
+  html('rActionAdvice',expertHtml(ai.page9,`<span class="expert-block"><strong>Priorité de la checklist :</strong> ${ai.page9?.checklistPriority||''}</span>`));
+
+  html('rFinalAdvice',expertHtml(ai.page10,`<span class="expert-block"><strong>Mon avis :</strong> ${ai.page10?.finalOpinion||''}</span><span class="expert-block"><strong>Lecture du prix :</strong> ${ai.page10?.priceExplanation||''}</span>`));
   txt('rRecommendation',verdict);
-  html('rRecommendationText',
-    `${ai.page6?.recommendationText||''}`+
-    ((ai.page6?.nextChecks||[]).length?`<br><br><strong>Avant de vous engager :</strong> ${ai.page6.nextChecks.join(' • ')}`:'')
-  );
+  html('rRecommendationText',`${ai.page10?.recommendationText||''}${(ai.page10?.nextChecks||[]).length?`<br><br><strong>Avant de vous engager :</strong> ${ai.page10.nextChecks.join(' • ')}`:''}`);
 
   txt('verdictTitle',verdict);
-  txt('verdictText',[ai.page1?.summary,ai.page1?.decisionReason].filter(Boolean).join(' '));
+  txt('verdictText',[ai.page1?.summary,ai.page1?.advice].filter(Boolean).join(' '));
 }
 function applyBackendStudy(engine,ai){
   const short=strategy(engine,'short_term');
