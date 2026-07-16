@@ -530,6 +530,33 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
 .decision-support h3{color:var(--purple)}
 .decision-support strong{color:var(--blue)}
 
+
+/* V8 — expérience client simplifiée, expertise IA */
+.ai-experience{max-width:1260px;margin:0 auto 22px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.ai-wizard{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.ai-wizard-head{padding:24px 28px 18px;background:linear-gradient(135deg,#FBFAFF,#F5F0FF);border-bottom:1px solid #E8E2FA}
+.ai-wizard-head h2{margin:0;color:var(--navy);font-family:"DM Serif Display",Georgia,serif;font-size:32px;font-weight:400}
+.ai-wizard-head p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.ai-simple-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:18px}
+.ai-simple-step{border:0;border-radius:12px;padding:10px 7px;background:#fff;color:#7A8796;font-size:10px;font-weight:900;border:1px solid #E5E0F3}
+.ai-simple-step.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ai-simple-step.done{color:var(--green);background:var(--greenSoft);border-color:#C7E8DA}
+.ai-pane{display:none;padding:26px 28px 28px}.ai-pane.active{display:block}
+.ai-pane-title{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}
+.ai-pane-title h3{margin:0;color:var(--navy);font-size:22px}.ai-pane-title p{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.simple-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.simple-choice{border:1px solid var(--line);background:#FBFCFD;border-radius:14px;padding:14px;cursor:pointer;color:var(--navy);font-size:11px;font-weight:850;text-align:center}
+.simple-choice input{display:none}.simple-choice:has(input:checked){border-color:var(--purple);background:#F5F0FF;box-shadow:0 0 0 3px rgba(95,43,234,.08)}
+.ai-estimate-note{margin-top:16px;border-radius:15px;background:#F7F0FF;border:1px solid #DDD1FF;padding:13px 14px;color:var(--navy);font-size:10.5px;line-height:1.45}
+.ai-wizard-actions{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.ai-recap{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.ai-recap-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:#FBFCFD}.ai-recap-card b{display:block;color:var(--navy);font-size:16px}.ai-recap-card span{font-size:9.5px;color:var(--muted);font-weight:800}
+.ai-final-call{margin-top:16px;padding:18px;border-radius:17px;background:linear-gradient(135deg,var(--navy),var(--purple));color:#fff}.ai-final-call h3{color:#fff;margin:0 0 7px}.ai-final-call p{color:rgba(255,255,255,.78);font-size:11px;line-height:1.45}
+.ai-trust-list{display:grid;gap:9px;margin-top:14px}.ai-trust-list div{display:flex;gap:9px;align-items:flex-start;font-size:10.5px;color:var(--navy);font-weight:750}.ai-trust-list i{width:20px;height:20px;border-radius:50%;background:var(--greenSoft);color:var(--green);display:grid;place-items:center;font-style:normal;font-weight:900;flex:0 0 auto}
+.legacy-input-flow{display:none!important}
+@media(max-width:980px){.ai-experience{grid-template-columns:1fr}.simple-choice-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.ai-simple-steps{grid-template-columns:1fr 1fr}.ai-pane{padding:20px}.simple-choice-grid,.ai-recap{grid-template-columns:1fr}}
+@media print{.ai-experience{display:none!important}}
+
 </style>
 </head>
 <body>
@@ -580,7 +607,93 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
     <div class="coverage-result" id="coverageResult">La France métropolitaine, la Corse et l’outre-mer sont couverts au niveau territorial. Orléans, la Sologne et le Val de Loire disposent d’un niveau local enrichi.</div>
   </section>
 
-  <nav class="stepper" aria-label="Étapes">
+
+  <section class="ai-experience" id="aiExperience">
+    <div class="ai-wizard">
+      <div class="ai-wizard-head">
+        <h2>Votre projet, notre expertise</h2>
+        <p>Renseignez uniquement ce que vous connaissez. CleanUp estimera le marché, les charges, les loyers, les risques et la stratégie locative la plus adaptée.</p>
+        <div class="ai-simple-steps">
+          <button class="ai-simple-step active" data-ai-step="1">1 · Le bien</button>
+          <button class="ai-simple-step" data-ai-step="2">2 · Financement</button>
+          <button class="ai-simple-step" data-ai-step="3">3 · Votre projet</button>
+          <button class="ai-simple-step" data-ai-step="4">4 · Analyse IA</button>
+        </div>
+      </div>
+      <div class="ai-pane active" id="aiPane1">
+        <div class="ai-pane-title"><div><h3>Le bien à analyser</h3><p>Les informations objectives de l’annonce suffisent.</p></div><div class="section-badge">1 / 4</div></div>
+        <div class="form-grid">
+          <div class="field full"><label>Adresse du bien</label><input class="input" id="uxAddress" placeholder="Adresse complète"></div>
+          <div class="field"><label>Type de bien</label><select class="select" id="uxPropertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Immeuble</option><option>Villa</option><option>Chalet</option></select></div>
+          <div class="field"><label>Prix affiché</label><input class="input" id="uxPurchasePrice" type="number" min="0" placeholder="180000"></div>
+          <div class="field"><label>Surface</label><input class="input" id="uxSurface" type="number" min="10" placeholder="55"></div>
+          <div class="field"><label>Nombre de voyageurs envisagé</label><input class="input" id="uxCapacity" type="number" min="1" placeholder="4"></div>
+          <div class="field full"><label>Photo du bien ou de la ville <small>(facultatif)</small></label><input class="input" id="uxPhoto" type="file" accept="image/*"><div class="photo-upload-preview" id="uxPhotoPreview">Aucune photo sélectionnée.</div></div>
+        </div>
+        <div class="ai-wizard-actions"><span></span><button class="btn primary" type="button" data-ai-next="2">Continuer →</button></div>
+      </div>
+      <div class="ai-pane" id="aiPane2">
+        <div class="ai-pane-title"><div><h3>Votre financement</h3><p>Trois données suffisent. Le reste sera calculé automatiquement.</p></div><div class="section-badge">2 / 4</div></div>
+        <div class="form-grid three">
+          <div class="field"><label>Apport personnel</label><input class="input" id="uxDeposit" type="number" min="0" placeholder="30000"></div>
+          <div class="field"><label>Durée du prêt</label><select class="select" id="uxLoanYears"><option value="15">15 ans</option><option value="20" selected>20 ans</option><option value="25">25 ans</option></select></div>
+          <div class="field"><label>Taux du prêt <small>(facultatif)</small></label><input class="input" id="uxLoanRate" type="number" min="0" step="0.01" placeholder="Je ne sais pas"></div>
+        </div>
+        <div class="simple-choice-grid" style="margin-top:16px">
+          <label class="simple-choice"><input type="radio" name="uxWorks" value="0">Aucun travaux</label>
+          <label class="simple-choice"><input type="radio" name="uxWorks" value="light" checked>Rafraîchissement léger</label>
+          <label class="simple-choice"><input type="radio" name="uxWorks" value="medium">Travaux intermédiaires</label>
+          <label class="simple-choice"><input type="radio" name="uxWorks" value="heavy">Travaux importants</label>
+          <label class="simple-choice"><input type="radio" name="uxFurniture" value="furnished">Déjà meublé</label>
+          <label class="simple-choice"><input type="radio" name="uxFurniture" value="equip" checked>À meubler / équiper</label>
+        </div>
+        <div class="ai-estimate-note">Les frais de notaire, travaux, mobilier et assurance seront estimés par CleanUp à partir du prix, de la surface et de l’état déclaré. Ils seront clairement identifiés comme hypothèses dans le rapport.</div>
+        <div class="ai-wizard-actions"><button class="btn ghost" type="button" data-ai-prev="1">← Précédent</button><button class="btn primary" type="button" data-ai-next="3">Continuer →</button></div>
+      </div>
+      <div class="ai-pane" id="aiPane3">
+        <div class="ai-pane-title"><div><h3>Votre objectif d’investisseur</h3><p>CleanUp comparera la courte durée, le meublé et la location vide selon vos priorités.</p></div><div class="section-badge">3 / 4</div></div>
+        <div class="simple-choice-grid">
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="yield" checked>Maximiser la rentabilité</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="cashflow">Obtenir du cash-flow</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="stability">Privilégier la stabilité</label>
+          <label class="simple-choice"><input type="radio" name="uxGoal" value="patrimonial">Construire du patrimoine</label>
+          <label class="simple-choice"><input type="radio" name="uxManagement" value="low" checked>Peu de gestion souhaitée</label>
+          <label class="simple-choice"><input type="radio" name="uxManagement" value="active">Gestion active acceptée</label>
+        </div>
+        <div class="field full" style="margin-top:16px"><label>Éléments particuliers <small>(facultatif)</small></label><textarea class="textarea" id="uxComments" placeholder="Ex. proximité gare, vue, parking, règlement de copropriété connu, projet de résidence secondaire..."></textarea></div>
+        <div class="ai-wizard-actions"><button class="btn ghost" type="button" data-ai-prev="2">← Précédent</button><button class="btn primary" type="button" data-ai-next="4">Préparer l’analyse →</button></div>
+      </div>
+      <div class="ai-pane" id="aiPane4">
+        <div class="ai-pane-title"><div><h3>Votre étude Premium est prête à être analysée</h3><p>Le moteur financier sécurise les calculs. L’IA analyse le quartier, estime le marché et rédige les recommandations personnalisées.</p></div><div class="section-badge">4 / 4</div></div>
+        <div class="ai-recap">
+          <div class="ai-recap-card"><b id="uxRecapAddress">—</b><span>Bien analysé</span></div>
+          <div class="ai-recap-card"><b id="uxRecapPrice">0 €</b><span>Prix affiché</span></div>
+          <div class="ai-recap-card"><b id="uxRecapLoan">20 ans</b><span>Financement</span></div>
+          <div class="ai-recap-card"><b>10 pages A4</b><span>Rapport Premium PDF</span></div>
+        </div>
+        <div class="ai-trust-list">
+          <div><i>✓</i><span>Estimation du prix moyen, de l’occupation et des charges sans vous demander de les deviner.</span></div>
+          <div><i>✓</i><span>Comparaison courte durée, meublé, vide et moyenne durée selon le rendement et votre mode de vie.</span></div>
+          <div><i>✓</i><span>Scénarios prudent, réaliste, optimiste et stress-test avec prix maximum conseillé.</span></div>
+        </div>
+        <div class="ai-final-call"><h3>Une seule génération finale</h3><p>CleanUp croise vos données, les hypothèses de marché et le moteur financier pour produire une décision argumentée, pas un simple calcul.</p></div>
+        <button class="btn gold" id="uxGenerateStudy" type="button" style="width:100%;margin-top:16px;padding:15px">✦ Lancer l’analyse Premium IA</button>
+        <div class="study-generation-progress" id="uxStudyGenerationProgress">
+          <div class="study-progress-head"><span id="uxStudyProgressText">Préparation de l’analyse…</span><strong id="uxStudyProgressPercent">0 %</strong></div>
+          <div class="study-progress-track"><span id="uxStudyProgressBar"></span></div>
+          <small>Analyse du quartier, estimation du marché, comparaison locative, risques, leviers et génération du rapport 10 pages.</small>
+        </div>
+        <div id="uxStudyReady" style="display:none;margin-top:16px;padding:16px;border-radius:16px;background:#E8F7F1;border:1px solid #BEE4D4">
+          <h3 style="margin:0 0 6px;color:#0F8A5F">✓ Étude Premium terminée</h3>
+          <p style="margin:0 0 12px;color:#344054;font-size:11px">Le rapport de 10 pages est prêt. Vérifiez l’aperçu d’impression puis enregistrez-le en PDF.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" type="button" id="uxPrintPdf">Imprimer / Enregistrer en PDF</button><button class="btn soft" type="button" id="uxNewStudy">Créer une nouvelle étude</button></div>
+        </div>
+        <div class="ai-wizard-actions"><button class="btn ghost" type="button" data-ai-prev="3">← Précédent</button><span></span></div>
+      </div>
+    </div>
+    <aside class="side-card"><div class="side-head"><strong>Assistant CleanUp</strong><span>Cabinet d’expertise automatisé</span></div><div class="side-body"><div class="ai-note good"><b>Vous renseignez les faits.</b><br>CleanUp estime le marché et construit l’analyse.</div><div class="ai-note"><b>Livrable :</b> rapport Premium de 10 pages A4, graphiques et recommandation locative.</div><div class="ai-note warn"><b>Prix :</b> 129 € — aide à la décision avant acquisition.</div></div></aside>
+  </section>
+  <div class="legacy-input-flow"><nav class="stepper" aria-label="Étapes">
     <button class="step active" data-step="1"><span class="num">1</span>Synthèse</button>
     <button class="step" data-step="2"><span class="num">2</span>Quartier</button>
     <button class="step" data-step="3"><span class="num">3</span>Marché LCD</button>
@@ -782,7 +895,7 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
         <div class="study-generation-progress" id="studyGenerationProgress">
           <div class="study-progress-head"><span id="studyProgressText">Préparation de l’étude…</span><strong id="studyProgressPercent">0 %</strong></div>
           <div class="study-progress-track"><span id="studyProgressBar"></span></div>
-          <small>L’analyse complète et la rédaction des six pages peuvent prendre entre 30 secondes et 1 minute 30.</small>
+          <small>L’analyse complète et la rédaction des 10 pages peuvent prendre entre 30 secondes et 1 minute 30.</small>
         </div>
       </div>
 
@@ -872,6 +985,7 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
     </aside>
   </div>
 
+</div>
 <section class="invest-report" id="investReport">
 <!-- 1 — synthèse -->
 <article class="invest-page"><div class="r-head"><div class="r-brand"><div class="r-mark">€</div><div>CleanUp<small>INVESTMENT STUDY</small></div></div><div class="r-badge">Décision</div></div><h1 class="r-title">Étude d’investissement</h1><div class="premium-cover"><div class="premium-photo" id="rPropertyPhoto"><div><h2 id="rAddress">Adresse du projet</h2><p>Analyse financière, locative et patrimoniale</p></div></div><div class="premium-score"><div><div class="score-title">Indice CleanUp</div><div class="r-score" id="rScoreDonut" style="--score:0"><div class="r-score-in"><div><b id="rScore">0</b><span>/100</span></div></div></div><span class="r-status orange" id="rVerdictBadge">À analyser</span><h3 id="rVerdictTitle" style="margin-top:8px">Projet à analyser</h3></div></div></div><div class="premium-kpis"><div class="premium-kpi"><b id="rPriceShown">0 €</b><span>Prix affiché</span></div><div class="premium-kpi"><b id="rMaxPrice1">0 €</b><span>Prix maximum conseillé</span></div><div class="premium-kpi"><b id="rDiscount1">0 €</b><span>Négociation cible</span></div><div class="premium-kpi"><b id="rGrossYield">0 %</b><span>Rentabilité brute</span></div></div><div class="premium-band"><div class="ico">✦</div><div><h3>Avis exécutif</h3><p id="rVerdictIntro">L’étude doit être générée.</p><p id="rPage1Advice"></p></div></div><div class="r-grid-2"><div class="r-card"><h3>Structure du financement</h3><p id="rFundingSummary">À calculer.</p></div><div class="r-card"><h3>Point de vigilance principal</h3><p id="rMainWatch">À déterminer.</p></div></div><div style="display:none"><span id="rCashflow"></span><span id="rRiskLevel"></span></div><div class="r-footer"><span>Rapport premium CleanUp</span><span>1</span></div></article>
@@ -1294,7 +1408,14 @@ function investmentPayload(){
       leverDirect:checked('leverDirect'),leverMixed:checked('leverMixed'),
       leverTax:checked('leverTax'),leverResale:checked('leverResale')
     },
-    otherRisks:val('otherRisks')
+    otherRisks:val('otherRisks'),
+    mode:'premium_ai_assistant',
+    estimationRequired:{market:true,nightRate:true,occupancy:true,charges:true,longTermRents:true,risks:true,levers:true},
+    investorProfile:{
+      goal:document.querySelector('input[name="uxGoal"]:checked')?.value||'yield',
+      management:document.querySelector('input[name="uxManagement"]:checked')?.value||'low',
+      comments:$('uxComments')?.value||''
+    }
   };
 }
 function strategy(engine,key){
@@ -1302,43 +1423,39 @@ function strategy(engine,key){
 }
 function setScoreBreakdown(engine){
   const pairs=[
-    ['Location',engine.scores.location],['Market',engine.scores.market],
-    ['Profit',engine.scores.profitability],['Finance',engine.scores.financing],
-    ['Risk',engine.scores.risk],['Value',engine.scores.value]
+    ['Location',engine?.scores?.location],['Market',engine?.scores?.market],
+    ['Profit',engine?.scores?.profitability],['Finance',engine?.scores?.financing],
+    ['Risk',engine?.scores?.risk]
   ];
   pairs.forEach(([name,value])=>{
-    const score=Math.round(Number(value||0));
-    $(`rScore${name}`).textContent=score;
-    $(`rScore${name}Bar`).style.width=score+'%';
+    const score=Math.max(0,Math.min(100,Math.round(Number(value||0))));
+    const valueEl=$(`rScore${name}`);
+    const barEl=$(`rScore${name}Bar`);
+    if(valueEl)valueEl.textContent=score;
+    if(barEl)barEl.style.width=score+'%';
   });
 }
 function applyAIToReport(ai,engine){
   if(!ai)return;
-  $('rPage1Advice').textContent=[ai.page1.summary,ai.page1.decisionReason].filter(Boolean).join(' ');
-  $('rSectorAnalysis').textContent=ai.page2.analysis;
-  makeItems('rStrengths',ai.page2.strengths||[],'good');
-  makeItems('rWeaknesses',ai.page2.weaknesses||[],'bad');
-  $('rAreaType').textContent=ai.page2.district;
-  $('rAccess').textContent=ai.page2.accessibility;
-  $('rShops').textContent=ai.page2.shops;
-  $('rTransit').textContent=ai.page2.transport;
-  $('rTourism').textContent=ai.page2.tourism;
-  $('rEconomy').textContent=ai.page2.economy;
-  $('rDemand').textContent=ai.page2.rentalDemand;
-  $('rPlatforms').textContent=(ai.page3.platforms||[]).join(', ');
-  $('rPositioning').textContent=ai.page3.positioning;
-  $('rSeasonality').textContent=ai.page3.seasonality;
-  $('rMarketAnalysis').textContent=[ai.page3.marketSummary,ai.page3.pricingComment].filter(Boolean).join(' ');
-  $('rFinancingAdvice').textContent=[ai.page4.financingAnalysis,...(ai.page4.warnings||[])].join(' ');
-  $('rBestStrategy').textContent=[ai.page4.comparisonAnalysis,ai.page4.bestStrategyReason].join(' ');
-  makeItems('rRisks',ai.page5.risks||[],'bad');
-  makeItems('rLevers',ai.page5.levers||[],'gold');
-  $('rRiskAdvice').textContent=[ai.page5.riskReading,ai.page5.valueReading].join(' ');
-  $('rFinalAdvice').textContent=[ai.page6.finalOpinion,ai.page6.priceExplanation].join(' ');
-  $('rRecommendation').textContent=ai.page6.recommendationTitle;
-  $('rRecommendationText').textContent=[ai.page6.recommendationText,'Vérifications suivantes : '+(ai.page6.nextChecks||[]).join(' • ')].join(' ');
-  $('verdictTitle').textContent=ai.page1.headline;
-  $('verdictText').textContent=[ai.page1.summary,ai.page1.decisionReason].join(' ');
+  const txt=(id,value)=>{const el=$(id);if(el&&value!==undefined&&value!==null)el.textContent=value};
+  txt('rPage1Advice',[ai.page1?.summary,ai.page1?.decisionReason].filter(Boolean).join(' '));
+  txt('rSectorAnalysis',ai.page2?.analysis);
+  makeItems('rStrengths',ai.page2?.strengths||[],'good');
+  makeItems('rWeaknesses',ai.page2?.weaknesses||[],'bad');
+  txt('rAreaType',ai.page2?.district);txt('rAccess',ai.page2?.accessibility);
+  txt('rShops',ai.page2?.shops);txt('rTransit',ai.page2?.transport);
+  txt('rTourism',ai.page2?.tourism);txt('rEconomy',ai.page2?.economy);
+  txt('rDemand',ai.page2?.rentalDemand);txt('rPlatforms',(ai.page3?.platforms||[]).join(', '));
+  txt('rPositioning',ai.page3?.positioning);txt('rSeasonality',ai.page3?.seasonality);
+  txt('rMarketAnalysis',[ai.page3?.marketSummary,ai.page3?.pricingComment].filter(Boolean).join(' '));
+  txt('rFinancingAdvice',[ai.page4?.financingAnalysis,...(ai.page4?.warnings||[])].filter(Boolean).join(' '));
+  txt('rBestStrategy',[ai.page4?.comparisonAnalysis,ai.page4?.bestStrategyReason].filter(Boolean).join(' '));
+  makeItems('rRisks',ai.page5?.risks||[],'bad');makeItems('rLevers',ai.page5?.levers||[],'gold');
+  txt('rRiskAdvice',[ai.page5?.riskReading,ai.page5?.valueReading].filter(Boolean).join(' '));
+  txt('rFinalAdvice',[ai.page6?.finalOpinion,ai.page6?.priceExplanation].filter(Boolean).join(' '));
+  txt('rRecommendation',ai.page6?.recommendationTitle);
+  txt('rRecommendationText',[ai.page6?.recommendationText,(ai.page6?.nextChecks||[]).length?'Vérifications suivantes : '+ai.page6.nextChecks.join(' • '):''].filter(Boolean).join(' '));
+  txt('verdictTitle',ai.page1?.headline);txt('verdictText',[ai.page1?.summary,ai.page1?.decisionReason].filter(Boolean).join(' '));
 }
 function applyBackendStudy(engine,ai){
   const short=strategy(engine,'short_term');
@@ -1651,6 +1768,79 @@ if(photoInput)photoInput.addEventListener('change',e=>{const file=e.target.files
 
 calculateFinance();
 showStep(1);
+
+
+/* V8 — assistant d'investissement : saisie minimale + estimation automatique */
+let aiUxStep=1;
+function setAIUxStep(step){
+  aiUxStep=Math.max(1,Math.min(4,Number(step)||1));
+  document.querySelectorAll('.ai-pane').forEach((el,i)=>el.classList.toggle('active',i===aiUxStep-1));
+  document.querySelectorAll('.ai-simple-step').forEach((el,i)=>{el.classList.toggle('active',i===aiUxStep-1);el.classList.toggle('done',i<aiUxStep-1)});
+  if(aiUxStep===4)updateAIRecap();
+  window.scrollTo({top:document.getElementById('aiExperience')?.offsetTop-80||0,behavior:'smooth'});
+}
+function syncUxToEngine(){
+  const copy=(from,to)=>{const a=$(from),b=$(to);if(a&&b)b.value=a.value};
+  copy('uxAddress','address');copy('uxPropertyType','propertyType');copy('uxPurchasePrice','purchasePrice');copy('uxSurface','surface');copy('uxCapacity','capacity');copy('uxDeposit','deposit');copy('uxLoanYears','loanYears');
+  const rate=Number($('uxLoanRate')?.value||0);if($('loanRate'))$('loanRate').value=rate>0?rate:3.8;
+  if($('insuranceRate'))$('insuranceRate').value=0.35;
+  const price=Number($('uxPurchasePrice')?.value||0),surface=Number($('uxSurface')?.value||55),capacity=Number($('uxCapacity')?.value||4);
+  const workMode=document.querySelector('input[name="uxWorks"]:checked')?.value||'light';
+  const works=workMode==='0'?0:workMode==='light'?surface*180:workMode==='medium'?surface*450:surface*850;
+  const furnished=document.querySelector('input[name="uxFurniture"]:checked')?.value==='furnished';
+  const furniture=furnished?0:Math.max(5500,capacity*1800+surface*55);
+  const values={notary:Math.round(price*.08),works:Math.round(works),furniture:Math.round(furniture),propertyTax:Math.round(Math.max(700,price*.0065)),condoFees:Math.round(surface*24),insurance:420,utilities:Math.round(surface*28),maintenance:Math.round(Math.max(900,price*.006)),managementRate:20,platformRate:15,cleaningCost:0,otherCosts:500};
+  Object.entries(values).forEach(([id,v])=>{if($(id))$(id).value=v});
+  const cityBoost=/paris|lyon|bordeaux|nice|cannes|annecy|la rochelle|orleans|orléans|nantes|lille|strasbourg|montpellier|toulouse/i.test($('uxAddress')?.value||'')?12:0;
+  const night=Math.round(Math.max(58,52+capacity*11+surface*.28+cityBoost));
+  const occ=58;
+  if($('nightRate'))$('nightRate').value=night;if($('occupancy'))$('occupancy').value=occ;
+  if($('rateLow'))$('rateLow').value=Math.round(night*.82);if($('rateMid'))$('rateMid').value=night;if($('rateHigh'))$('rateHigh').value=Math.round(night*1.18);
+  if($('occLow'))$('occLow').value=42;if($('occMid'))$('occMid').value=occ;if($('occHigh'))$('occHigh').value=70;
+  const emptyRent=Math.round(Math.max(500,surface*(/paris/i.test($('uxAddress')?.value||'')?28:15)));
+  if($('emptyRent'))$('emptyRent').value=emptyRent;if($('furnishedRent'))$('furnishedRent').value=Math.round(emptyRent*1.15);if($('midTermRent'))$('midTermRent').value=Math.round(emptyRent*1.28);
+  if($('emptyVacancy'))$('emptyVacancy').value=5;if($('furnishedVacancy'))$('furnishedVacancy').value=8;if($('longTermCosts'))$('longTermCosts').value=Math.round(900+surface*12);
+  if($('resaleValue'))$('resaleValue').value=Math.round(price*1.1);if($('appreciation'))$('appreciation').value=2;
+  if($('areaStrengths'))$('areaStrengths').value=$('uxComments')?.value||'';
+  if($('condition'))$('condition').value=workMode==='heavy'?'Travaux importants':workMode==='0'?'Bon état':'À rafraîchir';
+  if($('business'))$('business').checked=true;if($('family'))$('family').checked=capacity>=4;
+  calculateFinance();
+}
+function updateAIRecap(){
+  syncUxToEngine();
+  setPremiumText('uxRecapAddress',$('uxAddress')?.value||'Adresse à compléter');
+  setPremiumText('uxRecapPrice',money(Number($('uxPurchasePrice')?.value||0)));
+  setPremiumText('uxRecapLoan',($('uxLoanYears')?.value||20)+' ans');
+}
+function validateAIUxStep(step){
+  if(step===1){
+    if(!$('uxAddress')?.value.trim())return alert('Indiquez l’adresse du bien.'),false;
+    if(Number($('uxPurchasePrice')?.value||0)<=0)return alert('Indiquez le prix affiché.'),false;
+    if(Number($('uxSurface')?.value||0)<10)return alert('Indiquez une surface valide.'),false;
+    if(Number($('uxCapacity')?.value||0)<1)return alert('Indiquez le nombre de voyageurs envisagé.'),false;
+  }
+  return true;
+}
+document.querySelectorAll('[data-ai-next]').forEach(btn=>btn.addEventListener('click',()=>{if(validateAIUxStep(aiUxStep))setAIUxStep(btn.dataset.aiNext)}));
+document.querySelectorAll('[data-ai-prev]').forEach(btn=>btn.addEventListener('click',()=>setAIUxStep(btn.dataset.aiPrev)));
+document.querySelectorAll('.ai-simple-step').forEach(btn=>btn.addEventListener('click',()=>{const target=Number(btn.dataset.aiStep);if(target<=aiUxStep||validateAIUxStep(aiUxStep))setAIUxStep(target)}));
+$('uxPhoto')?.addEventListener('change',e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  const reader=new FileReader();reader.onload=()=>{window.propertyPhotoData=reader.result;const preview=$('uxPhotoPreview');if(preview){preview.textContent='Photo sélectionnée';preview.style.backgroundImage=`url(${reader.result})`;preview.style.backgroundSize='cover';preview.style.backgroundPosition='center'}};reader.readAsDataURL(file);
+});
+function mirrorProgress(){
+  const srcBar=$('studyProgressBar'),srcPct=$('studyProgressPercent'),srcText=$('studyProgressText');
+  const dst=$('uxStudyGenerationProgress');if(dst)dst.classList.add('show');
+  const timer=setInterval(()=>{if($('uxStudyProgressBar')&&srcBar)$('uxStudyProgressBar').style.width=srcBar.style.width;if($('uxStudyProgressPercent')&&srcPct)$('uxStudyProgressPercent').textContent=srcPct.textContent;if($('uxStudyProgressText')&&srcText)$('uxStudyProgressText').textContent=srcText.textContent;if(generated){clearInterval(timer);setTimeout(()=>dst?.classList.remove('show'),1800)}},250);
+}
+$('uxGenerateStudy')?.addEventListener('click',async()=>{
+  if(!validateAIUxStep(1))return;
+  syncUxToEngine();
+  const btn=$('uxGenerateStudy');btn.disabled=true;btn.textContent='Analyse en cours…';mirrorProgress();
+  try{await generateInvestmentStudy();if(generated){const ready=$('uxStudyReady');if(ready)ready.style.display='block';btn.style.display='none'}}finally{btn.disabled=false;btn.textContent='✦ Lancer l’analyse Premium IA'}
+});
+setAIUxStep(1);
+
 </script>
 </body>
 </html>
