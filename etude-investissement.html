@@ -613,6 +613,7 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
       <div class="ai-wizard-head">
         <h2>Votre projet, notre expertise</h2>
         <p>Renseignez uniquement ce que vous connaissez. CleanUp estimera le marché, les charges, les loyers, les risques et la stratégie locative la plus adaptée.</p>
+        <div style="margin:12px 0 4px"><a class="btn ghost" href="les-indispensables-du-proprietaire.html">← Retour vers Les indispensables</a></div>
         <div class="ai-simple-steps">
           <button class="ai-simple-step active" data-ai-step="1">1 · Le bien</button>
           <button class="ai-simple-step" data-ai-step="2">2 · Financement</button>
@@ -686,7 +687,7 @@ h1 span{color:#D8CCFF}.btn.primary{background:linear-gradient(135deg,var(--diag-
         <div id="uxStudyReady" style="display:none;margin-top:16px;padding:16px;border-radius:16px;background:#E8F7F1;border:1px solid #BEE4D4">
           <h3 style="margin:0 0 6px;color:#0F8A5F">✓ Étude Premium terminée</h3>
           <p style="margin:0 0 12px;color:#344054;font-size:11px">Le rapport de 10 pages est prêt. Vérifiez l’aperçu d’impression puis enregistrez-le en PDF.</p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" type="button" id="uxPrintPdf">Imprimer / Enregistrer en PDF</button><button class="btn soft" type="button" id="uxNewStudy">Créer une nouvelle étude</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" type="button" id="uxPrintPdf">Imprimer / Enregistrer en PDF</button><button class="btn soft" type="button" id="uxNewStudy">Créer une nouvelle étude</button><a class="btn ghost" href="les-indispensables-du-proprietaire.html">← Retour vers Les indispensables</a></div>
         </div>
         <div class="ai-wizard-actions"><button class="btn ghost" type="button" data-ai-prev="3">← Précédent</button><span></span></div>
       </div>
@@ -1752,16 +1753,28 @@ async function downloadWordReport(){
 }
 function printInvestmentPdf(){
   try{
-    if(!generated||!window.studySummary)return alert('Générez d’abord l’étude.');
+    if(!generated||!window.studySummary){
+      alert('Générez d’abord l’étude Premium.');
+      return;
+    }
     populateInvestReport(window.studySummary);
-    setTimeout(()=>window.print(),80);
-  }catch(error){console.error('Export PDF',error);alert('L’impression PDF a rencontré une erreur : '+(error.message||error));}
+    const report=document.getElementById('investReport');
+    if(!report)throw new Error('Le rapport d’impression est introuvable.');
+    // Laisse au navigateur le temps de recalculer les graphiques et les 10 pages A4.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+  }catch(error){
+    console.error('Export PDF',error);
+    alert('L’impression PDF a rencontré une erreur : '+(error.message||error));
+  }
 }
-$('printPdf').addEventListener('click',printInvestmentPdf);
-$('newStudy').onclick=()=>{
-  if(STRIPE_PAYMENT_LINK)location.href=STRIPE_PAYMENT_LINK;
-  else alert('Le paiement Stripe sera connecté avant la mise en ligne.');
-};
+$('printPdf')?.addEventListener('click',printInvestmentPdf);
+$('uxPrintPdf')?.addEventListener('click',printInvestmentPdf);
+function startNewStudy(){
+  window.scrollTo({top:document.getElementById('aiExperience')?.offsetTop-80||0,behavior:'smooth'});
+  location.reload();
+}
+$('uxNewStudy')?.addEventListener('click',startNewStudy);
+$('newStudy')?.addEventListener('click',startNewStudy);
 
 const photoInput=$('propertyPhoto');
 if(photoInput)photoInput.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{window.propertyPhotoData=reader.result;const pv=$('propertyPhotoPreview');pv.classList.add('has-photo');pv.style.backgroundImage=`url(${reader.result})`;pv.textContent='Photo intégrée au rapport.'};reader.readAsDataURL(file)});
