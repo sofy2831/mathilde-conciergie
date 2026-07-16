@@ -800,6 +800,19 @@ body.study-final-locked .step:not(.active){
   .market-page .expert-reading .expert-block,
   .market-page .expert-block{margin-top:1.1mm!important}
 }
+
+/* V8 — lecture consultant : blocs complets, fluides et imprimables */
+.expert-reading .expert-block{display:block;margin-top:9px}
+.expert-reading .expert-block:first-child{margin-top:0}
+.expert-reading strong{font-weight:900;color:var(--diag-blue)}
+@media screen{
+  .analysis-output,.expert-scroll{max-height:240px;overflow-y:auto;scrollbar-gutter:stable;padding-right:10px}
+}
+@media print{
+  .r-ai-reading,.expert-reading{overflow:visible!important;max-height:none!important}
+  .r-ai-reading p,.expert-reading{overflow:visible!important;max-height:none!important}
+  .expert-reading .expert-block{break-inside:avoid;page-break-inside:avoid;margin-top:1.6mm!important}
+}
 </style>
 </head>
 <body>
@@ -1852,26 +1865,26 @@ function applyAIToReport(ai,engine){
   html('rSectorAnalysis',expertHtml(ai.page2));
 
   txt('rPlatforms',(ai.page3?.platforms||[]).join(', ')); txt('rPositioning',ai.page3?.positioning); txt('rSeasonality',ai.page3?.seasonality);
-  html('rMarketAnalysis',expertHtml(ai.page3,`<span class="expert-block"><strong>Lecture du marché :</strong> ${ai.page3?.marketSummary||''}</span><span class="expert-block"><strong>Décision tarifaire :</strong> ${ai.page3?.pricingComment||''}</span>`));
+  html('rMarketAnalysis',[`<span class="expert-block"><strong>Lecture du marché :</strong> ${ai.page3?.marketSummary||''}</span>`,`<span class="expert-block"><strong>Décision tarifaire :</strong> ${ai.page3?.pricingComment||''}</span>`,ai.page3?.advice?`<span class="expert-block"><strong>Ce que je vous conseille :</strong> ${ai.page3.advice}</span>`:'',ai.page3?.decisionImpact?`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${ai.page3.decisionImpact}</span>`:''].join(''));
 
   html('rBestStrategy',expertHtml(ai.page4,`<span class="expert-block"><strong>Comparaison :</strong> ${ai.page4?.comparisonAnalysis||''}</span><span class="expert-block"><strong>Stratégie retenue :</strong> ${ai.page4?.bestStrategyReason||''}</span>`));
 
-  html('rFinancingAdvice',expertHtml(ai.page5,`<span class="expert-block"><strong>Analyse du financement :</strong> ${ai.page5?.financingAnalysis||''}</span><span class="expert-block"><strong>Sensibilité au taux :</strong> ${ai.page5?.rateSensitivity||''}</span><span class="expert-block"><strong>Levier d'apport :</strong> ${ai.page5?.depositLeverage||''}</span>${(ai.page5?.warnings||[]).length?`<span class="expert-block"><strong>À sécuriser :</strong> ${ai.page5.warnings.join(' • ')}</span>`:''}`));
+  html('rFinancingAdvice',[`<span class="expert-block"><strong>Mon analyse :</strong> ${ai.page5?.financingAnalysis||''}</span>`,`<span class="expert-block"><strong>Sensibilité :</strong> ${ai.page5?.rateSensitivity||''}</span>`,`<span class="expert-block"><strong>Levier recommandé :</strong> ${ai.page5?.depositLeverage||ai.page5?.advice||''}</span>`,(ai.page5?.warnings||[]).length?`<span class="expert-block"><strong>À sécuriser :</strong> ${ai.page5.warnings.join(' • ')}</span>`:'',ai.page5?.decisionImpact?`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${ai.page5.decisionImpact}</span>`:''].join(''));
 
   html('rProfitReadingPremium',expertHtml(ai.page6,`<span class="expert-block"><strong>Lecture de la rentabilité :</strong> ${ai.page6?.profitabilityReading||''}</span><span class="expert-block"><strong>Stress-test :</strong> ${ai.page6?.stressTest||''}</span>`));
   html('rSafetyMargin',`<strong>Marge de sécurité :</strong> ${ai.page6?.safetyMargin||''}<br><br>${expertHtml({meaning:ai.page6?.meaning,advice:ai.page6?.advice,decisionImpact:ai.page6?.decisionImpact})}`);
 
   txt('rScenarioLowText',ai.page7?.prudentReading); txt('rScenarioMidText',ai.page7?.realisticReading); txt('rScenarioHighText',ai.page7?.optimisticReading);
-  html('rScenarioDecision',expertHtml(ai.page7,`<span class="expert-block"><strong>Scénario à retenir :</strong> ${ai.page7?.scenarioChoice||''}</span>`));
+  html('rScenarioDecision',[`<span class="expert-block"><strong>Scénario à retenir :</strong> ${ai.page7?.scenarioChoice||''}</span>`,ai.page7?.advice?`<span class="expert-block"><strong>Ce que je vous conseille :</strong> ${ai.page7.advice}</span>`:'',ai.page7?.decisionImpact?`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${ai.page7.decisionImpact}</span>`:''].join(''));
 
   makeItems('rRisks',ai.page8?.risks||[],'bad'); makeItems('rLevers',ai.page8?.levers||[],'gold');
   html('rRiskAdvice',expertHtml(ai.page8,`<span class="expert-block"><strong>Hiérarchie des risques :</strong> ${ai.page8?.riskReading||''}</span>`));
   html('rPriorityLever',`<strong>Premier levier :</strong> ${ai.page8?.priorityLever||''}<br><br>${expertHtml({meaning:ai.page8?.meaning,advice:ai.page8?.advice,decisionImpact:ai.page8?.decisionImpact})}`);
 
   txt('rActionNegotiation',ai.page9?.negotiationAction); txt('rActionChecks',ai.page9?.checksAction); txt('rActionFinancing',ai.page9?.financingAction); txt('rActionWorks',ai.page9?.worksAction); txt('rActionLaunch',ai.page9?.launchAction);
-  html('rActionAdvice',expertHtml(ai.page9,`<span class="expert-block"><strong>Priorité de la checklist :</strong> ${ai.page9?.checklistPriority||''}</span>`));
+  html('rActionAdvice',[`<span class="expert-block"><strong>Priorité de la checklist :</strong> ${ai.page9?.checklistPriority||''}</span>`,ai.page9?.advice?`<span class="expert-block"><strong>Ce que je vous conseille :</strong> ${ai.page9.advice}</span>`:'',ai.page9?.decisionImpact?`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${ai.page9.decisionImpact}</span>`:''].join(''));
 
-  html('rFinalAdvice',expertHtml(ai.page10,`<span class="expert-block"><strong>Mon avis :</strong> ${ai.page10?.finalOpinion||''}</span><span class="expert-block"><strong>Lecture du prix :</strong> ${ai.page10?.priceExplanation||''}</span>`));
+  html('rFinalAdvice',[`<span class="expert-block"><strong>Mon avis :</strong> ${ai.page10?.finalOpinion||''}</span>`,`<span class="expert-block"><strong>Lecture du prix :</strong> ${ai.page10?.priceExplanation||''}</span>`,ai.page10?.advice?`<span class="expert-block"><strong>À votre place :</strong> ${ai.page10.advice}</span>`:'',ai.page10?.decisionImpact?`<span class="expert-block"><strong>Condition de décision :</strong> ${ai.page10.decisionImpact}</span>`:''].join(''));
   txt('rRecommendation',verdict);
   html('rRecommendationText',`${ai.page10?.recommendationText||''}${(ai.page10?.nextChecks||[]).length?`<br><br><strong>Avant de vous engager :</strong> ${ai.page10.nextChecks.join(' • ')}`:''}`);
 
