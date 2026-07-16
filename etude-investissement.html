@@ -1160,6 +1160,9 @@ $('rFinalScore').textContent=s.score;$('rFinalDonut').style.setProperty('--score
 function setPremiumText(id,text){const el=$(id);if(el)el.textContent=text}
 function setPremiumBar(id,value,max){const el=$(id);if(el)el.style.height=(12+Math.max(0,value)/Math.max(1,max)*70)+'%'}
 function populatePremiumExtras(s){
+  const premiumRiskIds=['riskSeason','riskRegulation','riskCondo','riskWorks','riskVacancy','riskRate','riskCompetition','riskManagement','riskResale'];
+  const premiumRiskCount=premiumRiskIds.filter(checked).length;
+  const riskIndex=Math.min(10,Math.max(1,premiumRiskCount+Math.round(Math.max(0,-(s.cashflow||0))/3000)));
   const price=num('purchasePrice'),notary=num('notary'),works=num('works'),furniture=num('furniture'),deposit=num('deposit');
   const loan=Math.max(0,s.total-deposit),monthly=s.debt/12,midGross=num('midTermRent')*12*.92,midNet=midGross-num('longTermCosts')-num('propertyTax')-num('condoFees')-num('insurance');
   setPremiumText('rParkingPremium',val('parking')||'À préciser');setPremiumText('rPropertyTypePremium',val('propertyType')||'Bien');setPremiumText('rSurfaceCapacity',`${num('surface')||55} m² / ${num('capacity')||4} pers.`);
