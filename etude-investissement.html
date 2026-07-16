@@ -746,6 +746,26 @@ body.study-final-locked .step:not(.active){
 .preflight-ai-card p{margin:0;font-size:10.5px;line-height:1.45;color:#344054}
 .preflight-ai-card .impact{display:block;margin-top:5px;color:#027A48;font-weight:800}
 
+
+/* V12 — pré-analyse rassurante et progression détaillée */
+.preflight-help{margin-top:12px;padding:14px;border-radius:13px;background:#ECFDF3;border:1px solid #ABEFC6;color:#067647}
+.preflight-help-title{font-size:13px;font-weight:900;margin-bottom:5px}
+.preflight-help p{margin:3px 0;font-size:10.5px;line-height:1.45}
+.preflight-item.optional{background:#FFF8E8;color:#9A6700;border-left:4px solid #F4B740}
+.preflight-item.info{background:#F5F3FF;color:#5B21B6;border-left:4px solid #7C3AED}
+.preflight-optional-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.preflight-optional-card{padding:12px;border-radius:12px;background:white;border:1px solid #E4DDF8;box-shadow:0 6px 18px rgba(76,29,149,.06)}
+.preflight-optional-card strong{display:block;margin-bottom:5px;color:#2E1065;font-size:11px}
+.preflight-optional-card p{margin:0;color:#667085;font-size:9.7px;line-height:1.4}
+.preflight-good-to-know{margin-top:10px;padding:12px;border-radius:12px;background:#ECFDF3;color:#067647;border:1px solid #ABEFC6;font-size:10.5px;line-height:1.45;font-weight:750}
+.generation-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;margin-top:12px}
+.generation-steps div{position:relative;padding-left:20px;color:#667085;font-size:9.5px;line-height:1.35;font-weight:750}
+.generation-steps div::before{content:"○";position:absolute;left:0;top:-1px;color:#98A2B3;font-size:13px;font-weight:900}
+.generation-steps div.active{color:#5F2BEA}.generation-steps div.active::before{content:"◉";color:#7C3AED}
+.generation-steps div.done{color:#067647}.generation-steps div.done::before{content:"✓";color:#12B76A}
+@media(max-width:760px){.preflight-optional-grid{grid-template-columns:1fr}.generation-steps{grid-template-columns:1fr}}
+@media print{.preflight-panel,.generation-steps{display:none!important}}
+
 </style>
 </head>
 <body>
@@ -1093,13 +1113,19 @@ body.study-final-locked .step:not(.active){
       <h3>Contrôle avant génération</h3>
       <p>CleanUp vérifie les informations manquantes, incohérentes ou trop imprécises avant de produire le rapport final.</p>
     </div>
-    <button class="btn soft" id="runPreflight" type="button">Vérifier mon projet</button>
+    <button class="btn soft" id="runPreflight" type="button">Préparer mon analyse</button>
   </div>
-  <div class="preflight-results" id="preflightResults">
-    <div class="preflight-item neutral">Aucun contrôle réalisé pour le moment.</div>
+  
+<div class="preflight-help" id="preflightHelp" style="display:none">
+  <div class="preflight-help-title">✓ CleanUp a vérifié votre projet</div>
+  <p>Votre projet est suffisamment renseigné pour lancer une étude Premium.</p>
+  <p>Quelques informations complémentaires peuvent toutefois améliorer la précision de certains résultats.</p>
+</div>
+<div class="preflight-results" id="preflightResults">
+    <div class="preflight-item neutral"><strong>Pré-analyse non réalisée.</strong><br>Cliquez sur « Préparer mon analyse » pour vérifier votre projet et obtenir des recommandations avant la génération finale.</div>
   </div>
   <div class="preflight-actions" id="preflightActions" style="display:none">
-    <strong>Corrigez les points signalés, puis relancez le contrôle.</strong>
+    <strong>Ces compléments sont facultatifs. Vous pouvez les ajouter pour affiner l’étude, puis relancer la pré-analyse.</strong>
   </div>
 </div>
 </div>
@@ -1107,6 +1133,17 @@ body.study-final-locked .step:not(.active){
         <div class="study-generation-progress" id="studyGenerationProgress">
           <div class="study-progress-head"><span id="studyProgressText">Préparation de l’étude…</span><strong id="studyProgressPercent">0 %</strong></div>
           <div class="study-progress-track"><span id="studyProgressBar"></span></div>
+<div class="generation-steps" id="generationSteps" style="display:none">
+  <div data-gstep="1">Vérification des informations</div>
+  <div data-gstep="2">Analyse du quartier</div>
+  <div data-gstep="3">Étude du marché locatif</div>
+  <div data-gstep="4">Comparaison courte durée / meublé / vide</div>
+  <div data-gstep="5">Calcul des scénarios financiers</div>
+  <div data-gstep="6">Analyse des risques</div>
+  <div data-gstep="7">Détermination du plafond économique</div>
+  <div data-gstep="8">Génération du rapport Premium</div>
+</div>
+
           <small>L’analyse complète et la rédaction des 10 pages peuvent prendre entre 30 secondes et 1 minute 30.</small>
         </div>
       </div>
@@ -1249,73 +1286,52 @@ function inputText(id){
   return (document.getElementById(id)?.value || '').trim();
 }
 async function preflightCheck(){
-  const issues=[];
-  const add=(type,title,text,step)=>issues.push({type,title,text,step});
-
-  if(!inputText('address')) add('error','Adresse manquante','Renseignez l’adresse complète du bien.',1);
-  if(inputNumber('surface')<10) add('error','Surface manquante','Indiquez la surface habitable du bien.',1);
-  if(inputNumber('capacity')<1) add('warn','Capacité non définie','Indiquez la capacité envisagée en location courte durée.',1);
-  if(inputNumber('purchasePrice')<=0) add('error','Prix d’achat manquant','Renseignez le prix affiché du bien.',1);
-  if(inputNumber('loanYears')<=0) add('error','Durée du prêt manquante','Indiquez la durée prévue du financement.',4);
+  const hardIssues=[];
+  const addHard=(title,text,step)=>hardIssues.push({title,text,step});
+  if(!inputText('address')) addHard('Adresse manquante','Renseignez l’adresse complète du bien.',1);
+  if(inputNumber('surface')<10) addHard('Surface manquante','Indiquez la surface habitable du bien.',1);
+  if(inputNumber('capacity')<1) addHard('Capacité non définie','Indiquez la capacité envisagée.',1);
+  if(inputNumber('purchasePrice')<=0) addHard('Prix d’achat manquant','Renseignez le prix affiché du bien.',1);
+  if(inputNumber('loanYears')<=0) addHard('Durée du prêt manquante','Indiquez la durée prévue du financement.',2);
 
   const container=document.getElementById('preflightResults');
   const actions=document.getElementById('preflightActions');
-  if(issues.some(x=>x.type==='error')){
+  const help=document.getElementById('preflightHelp');
+  if(hardIssues.length){
     preflightValidated=false;
-    container.innerHTML=issues.map(issue=>`
-      <div class="preflight-item ${issue.type}" data-preflight-step="${issue.step}">
-        <strong>${issue.title}</strong><br>${issue.text}
-      </div>`).join('');
+    if(help)help.style.display='none';
+    container.innerHTML=hardIssues.map(issue=>`<div class="preflight-item error" data-preflight-step="${issue.step}"><strong>${issue.title}</strong><br>${issue.text}</div>`).join('');
     actions.style.display='block';
+    actions.innerHTML='<strong>Complétez uniquement ces informations indispensables, puis relancez la pré-analyse.</strong>';
     return false;
   }
 
-  container.innerHTML='<div class="preflight-item neutral">CleanUp analyse les informations et recherche les corrections susceptibles d’améliorer la solidité du projet…</div>';
+  container.innerHTML='<div class="preflight-item neutral">CleanUp analyse votre projet et prépare ses recommandations…</div>';
   actions.style.display='none';
   try{
-    const payload=investmentPayload();
-    payload.mode='preflight';
-    const response=await fetch(CLEANUP_AI_ENDPOINT,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
+    const payload=investmentPayload(); payload.mode='preflight';
+    const response=await fetch(CLEANUP_AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data=await response.json().catch(()=>({}));
     if(!response.ok||!data.ok)throw new Error(data.error||`Erreur HTTP ${response.status}`);
     const ai=data.ai||{};
-    const cards=(ai.corrections||[]).map(item=>`
-      <div class="preflight-ai-card">
-        <h4>${item.priority} — ${item.title}</h4>
-        <p>${item.action}<span class="impact">Effet attendu : ${item.expectedEffect}</span></p>
-      </div>`).join('');
-    const missing=(ai.missing||[]).length
-      ? `<div class="preflight-item warn"><strong>Informations à compléter</strong><br>${ai.missing.join(' • ')}</div>`
-      : '';
-    const external=(ai.externalChecks||[]).length
-      ? `<div class="preflight-item neutral"><strong>Vérifications externes</strong><br>${ai.externalChecks.join(' • ')}</div>`
-      : '';
-    container.innerHTML=`
-      <div class="preflight-item ${ai.ready?'ok':'warn'}"><strong>${ai.ready?'Projet prêt pour la génération':'Corrections recommandées avant génération'}</strong><br>${ai.summary||''}</div>
-      ${missing}${cards}${external}
-      <div class="preflight-item neutral"><strong>Impact sur le score</strong><br>${ai.scoreImpact||'Le score sera recalculé après correction des données.'}</div>`;
-    preflightValidated=Boolean(ai.ready);
-    actions.style.display=ai.ready?'none':'block';
-    actions.innerHTML=ai.ready
-      ? ''
-      : '<strong>Corrigez les éléments que vous pouvez confirmer, puis cliquez de nouveau sur « Vérifier mon projet ».</strong>';
-    window.preflightAI=ai;
-    return preflightValidated;
+    const optionalCards=[];
+    const missingText=(ai.missing||[]).join(' ').toLowerCase();
+    if(missingText.includes('commerce')||!inputText('areaStrengths')) optionalCards.push(`<div class="preflight-optional-card"><strong>🏪 Commerces de proximité</strong><p>Si vous connaissez les principaux commerces — supermarché, boulangerie, pharmacie ou restaurants — indiquez-les. À défaut, CleanUp utilisera une estimation prudente du secteur.</p></div>`);
+    if(missingText.includes('bruit')||missingText.includes('sonore')||!inputText('areaWeaknesses')) optionalCards.push(`<div class="preflight-optional-card"><strong>🔇 Niveau sonore</strong><p>Précisez, lorsque vous le savez, si le logement se situe dans une rue calme, passante ou proche d’une nuisance particulière.</p></div>`);
+    if(inputNumber('propertyTax')<=0) optionalCards.push(`<div class="preflight-optional-card"><strong>💰 Taxe foncière</strong><p>Le montant sera estimé. Si vous connaissez la valeur réelle, renseignez-la pour améliorer la précision financière.</p></div>`);
+    const aiCards=(ai.corrections||[]).map(item=>`<div class="preflight-ai-card"><h4>${item.priority} — ${item.title}</h4><p>${item.action}<span class="impact">Effet attendu : ${item.expectedEffect}</span></p></div>`).join('');
+    if(help)help.style.display='block';
+    container.innerHTML=`${optionalCards.length?`<div class="preflight-item optional"><strong>Informations pouvant améliorer l’analyse</strong><br>Ces éléments ne bloquent pas la génération.</div><div class="preflight-optional-grid">${optionalCards.join('')}</div>`:`<div class="preflight-item ok"><strong>Aucun complément indispensable.</strong><br>Votre projet est prêt pour la génération.</div>`}${aiCards}${(ai.externalChecks||[]).length?`<div class="preflight-item info"><strong>Vérifications extérieures à prévoir</strong><br>${ai.externalChecks.join(' • ')}</div>`:''}<div class="preflight-good-to-know">🟢 Ces informations restent facultatives. Vous pouvez lancer l’analyse immédiatement ou compléter les éléments connus pour obtenir une étude encore plus précise.</div><div class="preflight-item neutral"><strong>Impact possible sur le score</strong><br>${ai.scoreImpact||'Le score sera recalculé automatiquement à partir des données corrigées.'}</div>`;
+    preflightValidated=true; actions.style.display='none'; window.preflightAI=ai; return true;
   }catch(error){
-    console.error('Pré-analyse',error);
-    preflightValidated=false;
-    container.innerHTML=`<div class="preflight-item error"><strong>Pré-analyse indisponible</strong><br>${error.message}</div>`;
-    actions.style.display='block';
-    return false;
+    console.error('Pré-analyse',error); preflightValidated=true; if(help)help.style.display='block';
+    container.innerHTML=`<div class="preflight-item warn"><strong>Pré-analyse détaillée momentanément indisponible.</strong><br>Votre projet contient les informations essentielles. Vous pouvez malgré tout lancer l’étude Premium.</div><div class="preflight-good-to-know">🟢 Les compléments locaux et la taxe foncière peuvent être ajoutés plus tard si vous les connaissez.</div>`;
+    actions.style.display='none'; return true;
   }
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('runPreflight')?.addEventListener('click',async()=>{const b=document.getElementById('runPreflight');b.disabled=true;b.textContent='Analyse en cours…';try{await preflightCheck();}finally{b.disabled=false;b.textContent='Vérifier mon projet';}});
+  document.getElementById('runPreflight')?.addEventListener('click',async()=>{const b=document.getElementById('runPreflight');b.disabled=true;b.textContent='Analyse en cours…';try{await preflightCheck();}finally{b.disabled=false;b.textContent='Préparer mon analyse';}});
 });
 
 let generated=false;
@@ -1625,22 +1641,32 @@ const _populateInvestReport=populateInvestReport;populateInvestReport=function(s
 let studyProgressTimer=null;
 let studyProgressValue=0;
 
+function updateGenerationStepList(value){
+  const thresholds=[8,20,34,48,62,74,86,96];
+  document.querySelectorAll('#generationSteps [data-gstep]').forEach((el,index)=>{
+    const threshold=thresholds[index],next=thresholds[index+1]||101;
+    el.classList.toggle('done',value>=next);
+    el.classList.toggle('active',value>=threshold&&value<next);
+  });
+}
 function updateStudyProgress(value,label){
   studyProgressValue=Math.max(0,Math.min(100,Math.round(value)));
   $('studyGenerationProgress')?.classList.add('show');
+  $('generationSteps').style.display='grid';
   $('studyProgressBar').style.width=studyProgressValue+'%';
   $('studyProgressPercent').textContent=studyProgressValue+' %';
   if(label)$('studyProgressText').textContent=label;
+  updateGenerationStepList(studyProgressValue);
 }
 function startStudyProgress(){
   clearInterval(studyProgressTimer);
   studyProgressValue=3;
-  updateStudyProgress(3,'Contrôle des données du projet…');
+  updateStudyProgress(3,'Vérification des informations…');
   studyProgressTimer=setInterval(()=>{
     let inc=.4,label='Rédaction du rapport financier…';
-    if(studyProgressValue<24){inc=3+Math.random()*3;label='Analyse du secteur et du marché…'}
-    else if(studyProgressValue<50){inc=1.7+Math.random()*2.3;label='Calcul du financement et des charges…'}
-    else if(studyProgressValue<72){inc=1+Math.random()*1.6;label='Comparaison des stratégies locatives…'}
+    if(studyProgressValue<24){inc=3+Math.random()*3;label='Analyse du quartier et du marché locatif…'}
+    else if(studyProgressValue<50){inc=1.7+Math.random()*2.3;label='Calcul des scénarios financiers et du financement…'}
+    else if(studyProgressValue<72){inc=1+Math.random()*1.6;label='Comparaison courte durée, meublé et location vide…'}
     else if(studyProgressValue<90){inc=.35+Math.random()*.75;label='Rédaction et mise en forme des dix pages…'}
     if(studyProgressValue<90)updateStudyProgress(Math.min(90,studyProgressValue+inc),label);
   },950);
@@ -1649,7 +1675,7 @@ function finishStudyProgress(success){
   clearInterval(studyProgressTimer);
   studyProgressTimer=null;
   if(success){
-    updateStudyProgress(100,'Étude d’investissement terminée.');
+    updateStudyProgress(100,'Étude d’investissement terminée.'); document.querySelectorAll('#generationSteps [data-gstep]').forEach(el=>{el.classList.remove('active');el.classList.add('done');});
     setTimeout(()=>$('studyGenerationProgress')?.classList.remove('show'),1800);
   }else{
     updateStudyProgress(studyProgressValue,'La génération a été interrompue.');
