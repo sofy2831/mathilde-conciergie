@@ -1540,37 +1540,114 @@ ${s.text}\n\n${window.studyAI?.page6?.finalOpinion||''}\n${window.studyAI?.page6
   });
 };
 
-function downloadWordReport(){
+async function loadExternalScript(src,globalName){
+  if(globalName&&window[globalName])return;
+  const existing=[...document.scripts].find(s=>s.src===src);
+  if(existing){
+    await new Promise((resolve,reject)=>{
+      if(globalName&&window[globalName])return resolve();
+      existing.addEventListener('load',resolve,{once:true});
+      existing.addEventListener('error',reject,{once:true});
+    });
+    return;
+  }
+  await new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src=src;
+    script.async=true;
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error('Impossible de charger '+src));
+    document.head.appendChild(script);
+  });
+}
+function canvasToArrayBuffer(canvas){
+  return new Promise((resolve,reject)=>{
+    canvas.toBlob(async blob=>{
+      if(!blob)return reject(new Error('Conversion de la page Word impossible.'));
+      resolve(await blob.arrayBuffer());
+    },'image/png',1);
+  });
+}
+async function downloadWordReport(){
+  const button=$('downloadWord');
+  let report=null;
+  let previousStyle='';
   try{
-  if(!generated||!window.studySummary)return alert('Générez d’abord l’étude.');
-  const x=window.studySummary;populateInvestReport(x);
-  const photo=window.propertyPhotoData?`<img src="${window.propertyPhotoData}" style="width:100%;height:250px;object-fit:cover;border-radius:16px;display:block">`:'';
-  const purple='#5F2BEA',blue='#071A49',green='#049B4F',light='#F7F5FF',line='#DDD6FE';
-  const m=v=>money(v), pct=v=>Number(v||0).toFixed(1).replace('.',',')+' %';
-  const cell=(value,label,accent=purple)=>`<td style="width:25%;padding:15px 8px;text-align:center;border:1px solid ${line};background:#fff"><div style="font-size:22px;font-weight:900;color:${accent}">${value}</div><div style="font-size:9px;font-weight:800;color:${blue};margin-top:7px">${label}</div></td>`;
-  const header=(badge)=>`<table style="width:100%;border-collapse:collapse;margin-bottom:20px"><tr><td style="font-size:25px;font-weight:900;color:${purple}">€ CleanUp<div style="font-size:7px;letter-spacing:3px;color:${blue}">INVESTMENT STUDY</div></td><td style="text-align:right"><span style="background:#E7F8EE;color:#027A48;padding:7px 12px;border-radius:20px;font-size:9px;font-weight:900">${badge}</span></td></tr></table>`;
-  const page=(badge,title,body)=>`<div class="word-page">${header(badge)}<h1>${title}</h1>${body}<div class="word-footer">Rapport premium CleanUp</div></div>`;
-  const card=(title,text)=>`<div class="card"><h3>${title}</h3><p>${text}</p></div>`;
-  const shortCash=x.netOperating-x.debt,furnCash=x.furnishedNet-x.debt,emptyCash=x.emptyNet-x.debt;
-  const midGross=num('midTermRent')*12*.92,midNet=midGross-num('longTermCosts')-num('propertyTax')-num('condoFees')-num('insurance'),midCash=midNet-x.debt;
-  const pages=[];
-  pages.push(page('Décision','ÉTUDE D’INVESTISSEMENT',`<table style="width:100%;border-collapse:separate;border-spacing:12px"><tr><td style="width:54%">${photo}<div class="photo-title">${val('address')||'Adresse du projet'}</div></td><td class="decision"><div class="score">${x.score}<small>/100</small></div><h2>${x.title}</h2><p>${x.text}</p></td></tr></table><table class="kpis"><tr>${cell(m(num('purchasePrice')),'Prix affiché')}${cell(m(x.maxPurchase),'Prix maximum conseillé')}${cell(m(Math.max(0,num('purchasePrice')-x.maxPurchase)),'Négociation cible')}${cell(pct(x.grossYield),'Rentabilité brute')}</tr></table><div class="band"><h3>Avis exécutif</h3><p>${x.text}</p></div><table class="two"><tr><td>${card('Structure du financement',`Coût total ${m(x.total)} · Financement ${m(x.loan)} · Annuité ${m(x.debt)}.`)}</td><td>${card('Point de vigilance',shortCash<0?'Le scénario réaliste ne couvre pas totalement la dette.':'Le scénario réaliste couvre la dette avant fiscalité.')}</td></tr></table>`));
-  pages.push(page('Bien & secteur','LE BIEN ET SON ENVIRONNEMENT',`<table class="two"><tr><td>${card('Profil du bien',`${val('propertyType')||'Bien'} · ${num('surface')||0} m² · ${num('capacity')||0} personnes · ${val('parking')||'Stationnement à confirmer'}.`)}</td><td>${card('Profil du secteur',`${val('areaType')||'Secteur à préciser'}. ${val('areaStrengths')||'Atouts locaux à confirmer.'}`)}</td></tr></table><table class="kpis"><tr>${cell(checked('business')?'Soutenue':'À confirmer','Activité économique')}${cell(x.revMid>25000?'Forte':x.revMid>16000?'Moyenne':'Prudente','Demande locative')}${cell(val('parking')==='Pas de stationnement'?'Faible':'Correcte','Accessibilité')}${cell(num('appreciation')>=3?'Élevé':'Moyen','Potentiel patrimonial')}</tr></table><div class="card"><h3>Forces</h3><p>${val('areaStrengths')||'Demande familiale, clientèle professionnelle et stationnement à confirmer.'}</p></div><div class="card"><h3>Points de vigilance</h3><p>${val('areaWeaknesses')||'Concurrence, réglementation locale et niveau réel de demande.'}</p></div><div class="band"><h3>Lecture CleanUp</h3><p>Le secteur doit être compatible avec le mode d’exploitation retenu. Les données locales seront consolidées par l’IA lors du branchement final.</p></div>`));
-  pages.push(page('Marché courte durée','POTENTIEL AIRBNB / BOOKING',`<table class="kpis"><tr>${cell(m(num('rateMid')||num('nightRate')),'Prix moyen / nuit')}${cell((num('occMid')||num('occupancy'))+' %','Occupation réaliste')}${cell(m(x.revMid),'CA annuel réaliste')}${cell([checked('airbnb')?'Airbnb':'',checked('booking')?'Booking':'',checked('abritel')?'Abritel':''].filter(Boolean).join(', ')||'À définir','Canaux')}</tr></table><div class="barbox"><h3>Trois niveaux de chiffre d’affaires</h3>${[['Prudent',x.revLow,'#F59E0B'],['Réaliste',x.revMid,green],['Optimiste',x.revHigh,purple]].map(a=>`<div class="wbar"><span>${a[0]}</span><i><b style="width:${Math.max(10,a[1]/Math.max(x.revHigh,1)*100)}%;background:${a[2]}"></b></i><strong>${m(a[1])}</strong></div>`).join('')}</div><table class="three"><tr><td>${card('Prudent',(num('occLow')||42)+' % d’occupation')}</td><td>${card('Réaliste',(num('occMid')||num('occupancy')||58)+' % d’occupation')}</td><td>${card('Optimiste',(num('occHigh')||70)+' % d’occupation')}</td></tr></table><div class="band"><h3>Lecture du marché</h3><p>Le scénario réaliste constitue la base de décision. Le scénario optimiste reste un objectif commercial, jamais une hypothèse bancaire.</p></div>`));
-  const rows=[['Courte durée',x.revMid,x.netOperating,shortCash],['Meublée',x.furnishedGross,x.furnishedNet,furnCash],['Location vide',x.emptyGross,x.emptyNet,emptyCash],['Moyenne durée',midGross,midNet,midCash]];
-  pages.push(page('Comparaison locative','QUELLE STRATÉGIE LOCATIVE CHOISIR ?',`<table class="kpis"><tr>${cell(m(x.netOperating),'Courte durée nette')}${cell(m(x.furnishedNet),'Meublée nette')}${cell(m(x.emptyNet),'Location vide nette')}${cell(m(midNet),'Moyenne durée nette')}</tr></table><table class="data"><tr><th>Mode</th><th>Revenu brut</th><th>Revenu net</th><th>Cash-flow</th><th>Rendement net</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${m(r[1])}</td><td>${m(r[2])}</td><td>${m(r[3])}</td><td>${pct(r[2]/Math.max(1,x.total)*100)}</td></tr>`).join('')}</table><div class="barbox"><h3>Comparaison des revenus nets</h3>${rows.map((r,i)=>`<div class="wbar"><span>${r[0]}</span><i><b style="width:${Math.max(8,r[2]/Math.max(...rows.map(z=>z[2]),1)*100)}%;background:${[purple,green,'#F59E0B','#2F80ED'][i]}"></b></i><strong>${m(r[2])}</strong></div>`).join('')}</div><div class="band"><h3>Décision locative</h3><p>${$('rBestStrategy').textContent}</p></div>`));
-  pages.push(page('Financement','COÛT DU PROJET ET FINANCEMENT',`<table class="kpis"><tr>${cell(m(x.total),'Coût total')}${cell(m(x.loan),'Montant financé')}${cell(m(x.debt/12),'Mensualité')}${cell(m(x.fixed+annualVariableCosts(x.revMid)),'Charges annuelles')}</tr></table><table class="two"><tr><td>${card('Répartition du projet',`Acquisition ${m(num('purchasePrice'))}<br>Notaire ${m(num('notary'))}<br>Travaux ${m(num('works'))}<br>Mobilier ${m(num('furniture'))}`)}</td><td>${card('Structure bancaire',`Apport ${m(num('deposit'))}<br>Durée ${num('loanYears')} ans<br>Taux ${pct(num('loanRate'))}<br>Annuité ${m(x.debt)}`)}</td></tr></table><table class="kpis"><tr>${cell(pct(x.loan/Math.max(1,x.total)*100),'Part financée')}${cell(pct(x.netOperating/Math.max(1,x.debt)*100),'Couverture dette')}${cell(pct(num('notary')/Math.max(1,x.total)*100),'Poids notaire')}${cell(pct((num('works')+num('furniture'))/Math.max(1,x.total)*100),'Travaux + mobilier')}</tr></table><div class="band"><h3>Analyse du financement</h3><p>${x.netOperating>=x.debt?'Le revenu net d’exploitation couvre l’annuité bancaire.':'Le financement actuel génère un effort d’épargne et doit être renégocié ou compensé par un prix d’achat inférieur.'}</p></div>`));
-  pages.push(page('Rentabilité','RENTABILITÉ ET TRÉSORERIE',`<table class="kpis"><tr>${cell(pct(x.grossYield),'Rendement brut')}${cell(pct(x.netYield),'Rendement net')}${cell(m(x.cashflow),'Cash-flow annuel')}${cell(x.cashflow>0?Math.ceil(num('deposit')/x.cashflow)+' ans':'Non atteint','Retour estimatif')}</tr></table><div class="barbox"><h3>Du chiffre d’affaires au cash-flow</h3>${[['CA',x.revMid,purple],['Net exploitation',x.netOperating,green],['Dette',x.debt,'#F59E0B'],['Cash-flow',Math.max(0,x.cashflow),'#2F80ED']].map(r=>`<div class="wbar"><span>${r[0]}</span><i><b style="width:${Math.max(5,r[1]/Math.max(x.revMid,1)*100)}%;background:${r[2]}"></b></i><strong>${m(r[1])}</strong></div>`).join('')}</div><table class="data"><tr><th>Hypothèse CA</th><th>-10 %</th><th>-5 %</th><th>Centrale</th><th>+5 %</th><th>+10 %</th></tr><tr><td>Cash-flow</td>${[-10,-5,0,5,10].map(v=>`<td>${m(x.revMid*(1+v/100)-x.fixed-annualVariableCosts(x.revMid*(1+v/100))-x.debt)}</td>`).join('')}</tr></table><div class="band"><h3>Lecture de la rentabilité</h3><p>${x.cashflow>=0?'Le scénario central produit une trésorerie positive avant fiscalité.':'Le scénario central reste déficitaire : le prix, le financement ou le revenu doivent être corrigés.'}</p></div>`));
-  const cashAt=rev=>rev-x.fixed-annualVariableCosts(rev)-x.debt;
-  pages.push(page('Scénarios','TROIS SCÉNARIOS D’EXPLOITATION',`<table class="three"><tr>${[['Prudent',x.revLow,cashAt(x.revLow)],['Réaliste',x.revMid,cashAt(x.revMid)],['Optimiste',x.revHigh,cashAt(x.revHigh)]].map((r,i)=>`<td class="scenario ${i==1?'active':''}"><h2>${r[0]}</h2><div>${m(r[1])}</div><p>Cash-flow ${m(r[2])}</p></td>`).join('')}</tr></table><table class="data"><tr><th>Hypothèse</th><th>Prix/nuit</th><th>Occupation</th><th>CA annuel</th><th>Cash-flow</th></tr><tr><td>Prudent</td><td>${m(num('rateLow'))}</td><td>${num('occLow')} %</td><td>${m(x.revLow)}</td><td>${m(cashAt(x.revLow))}</td></tr><tr><td>Réaliste</td><td>${m(num('rateMid'))}</td><td>${num('occMid')} %</td><td>${m(x.revMid)}</td><td>${m(cashAt(x.revMid))}</td></tr><tr><td>Optimiste</td><td>${m(num('rateHigh'))}</td><td>${num('occHigh')} %</td><td>${m(x.revHigh)}</td><td>${m(cashAt(x.revHigh))}</td></tr></table><div class="band"><h3>Scénario de décision</h3><p>Le scénario réaliste doit financer la dette et les charges. L’optimiste ne doit jamais servir à justifier un prix d’achat trop élevé.</p></div>`));
-  const selectedLevers=[['leverPrice','Négociation du prix'],['leverWorks','Travaux ciblés'],['leverPremium','Montée en gamme'],['leverDynamic','Tarification dynamique'],['leverAutomation','Automatisation'],['leverDirect','Réservation directe'],['leverMixed','Stratégie mixte'],['leverTax','Optimisation des charges'],['leverResale','Création de valeur']].filter(z=>checked(z[0])).map(z=>z[1]);
-  pages.push(page('Risques','MATRICE DES RISQUES',`<table class="kpis"><tr>${cell($('rRiskIndex').textContent,'Indice de risque')}${cell($('rValuePotential').textContent,'Valorisation')}${cell($('rVacancyRiskPremium').textContent,'Vacance locative')}${cell($('rRegulatoryRiskPremium').textContent,'Réglementation')}</tr></table><table class="two"><tr><td>${card('Risques critiques',$('rRiskCritical').textContent)}</td><td>${card('Risques à surveiller',$('rRiskWatch').textContent)}</td></tr><tr><td>${card('Risques maîtrisables',$('rRiskControlled').textContent)}</td><td>${card('Réponse recommandée',$('rRiskResponse').textContent)}</td></tr></table><h2 class="sub">Leviers présélectionnés par l’analyse</h2><div class="checkgrid">${selectedLevers.map(v=>`<div>✓ ${v}</div>`).join('')}</div><div class="band"><h3>Lecture CleanUp</h3><p>${$('rRiskAdvice').textContent}</p></div>`));
-  pages.push(page('Plan d’action','PLAN D’ACTION AVANT ACQUISITION',`<table class="five"><tr>${['Négociation','Vérifications','Financement','Travaux','Lancement'].map((v,i)=>`<td><b>${i+1}</b><h3>${v}</h3><p>${['Fixer une offre plafond.','Contrôler urbanisme et règlement.','Obtenir une offre bancaire ferme.','Valider devis et délais.','Préparer exploitation et tarification.'][i]}</p></td>`).join('')}</tr></table><table class="two"><tr><td>${card('Prix d’offre recommandé',`<strong class="huge">${m(x.maxPurchase)}</strong><br>Plafond à ajuster après vérifications.`)}</td><td>${card('Réserve de sécurité',`<strong class="huge">${m(Math.max(3000,num('works')*.1+num('furniture')*.05))}</strong><br>Imprévus et démarrage.`)}</td></tr></table><h2 class="sub">Checklist avant compromis</h2><div class="checkgrid">${['Règlement de copropriété','Urbanisme et changement d’usage','Devis travaux','Validation du marché','Accord bancaire','Régime fiscal','Organisation de l’exploitation','Liquidité à la revente'].map(v=>`<div>□ ${v}</div>`).join('')}</div>`));
-  pages.push(page('Conclusion','DÉCISION FINALE',`<div class="final"><div class="score">${x.score}<small>/100</small></div><div><h2>${x.title}</h2><p>${x.text}</p></div></div><table class="kpis"><tr>${cell(m(num('purchasePrice')),'Prix affiché')}${cell(m(x.maxPurchase),'Prix maximum conseillé',green)}${cell(m(Math.max(0,num('purchasePrice')-x.maxPurchase)),'Négociation cible')}</tr></table><div class="band"><h3>${$('rRecommendationText').textContent}</h3><p>Cette étude constitue une aide à la décision. Les données locales, juridiques, fiscales et bancaires doivent être confirmées avant engagement.</p></div><table class="two"><tr><td>${card('Décision recommandée',$('rDecisionPremium').textContent)}</td><td>${card('Prochaine étape',$('rNextStepPremium').textContent)}</td></tr></table>`));
-  const css=`@page{size:21cm 29.7cm;margin:1.1cm}body{font-family:Arial,sans-serif;color:${blue};margin:0}.word-page{page-break-after:always;min-height:25.5cm;position:relative;padding-bottom:30px}.word-page:last-child{page-break-after:auto}h1{font-size:29px;margin:0 0 18px;color:${blue};letter-spacing:-1px}h2.sub{font-size:18px;color:${purple};margin:18px 0 10px}h3{margin:0 0 7px}p{font-size:11px;line-height:1.45;margin:0}.kpis,.two,.three,.five,.data{width:100%;border-collapse:collapse;margin:14px 0}.two td{width:50%;vertical-align:top;padding:6px}.three td{width:33%;vertical-align:top;padding:10px}.five td{width:20%;vertical-align:top;padding:10px;border:1px solid ${line};background:#FCFCFF}.five b{display:inline-block;background:${purple};color:#fff;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center}.card{border:1px solid ${line};border-radius:14px;padding:14px;background:#FCFCFF;min-height:75px}.band{background:linear-gradient(135deg,#2E1065,${purple});color:white;border-radius:16px;padding:18px;margin:16px 0}.band h3,.band p{color:white}.decision{background:${light};border:1px solid ${line};border-radius:16px;padding:20px;text-align:center;vertical-align:middle}.score{font-size:42px;font-weight:900;color:${blue}}.score small{font-size:12px}.photo-title{background:${blue};color:white;padding:12px;font-size:16px;font-weight:900}.data th{background:${purple};color:white;padding:9px;font-size:9px}.data td{padding:9px;border:1px solid #E4E7EC;text-align:center;font-size:10px}.barbox{border:1px solid ${line};border-radius:14px;padding:15px;margin:15px 0}.wbar{display:grid;grid-template-columns:110px 1fr 80px;gap:10px;align-items:center;margin:10px 0;font-size:10px;font-weight:800}.wbar i{height:14px;background:#ECEAF5;border-radius:10px;overflow:hidden}.wbar i b{display:block;height:100%;border-radius:10px}.scenario{text-align:center;border:1px solid ${line};border-radius:14px}.scenario.active{background:${purple};color:white}.scenario div{font-size:24px;font-weight:900}.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.checkgrid div{border:1px solid ${line};background:#FCFCFF;padding:11px;border-radius:10px;font-size:10px;font-weight:800}.final{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:center;background:linear-gradient(135deg,#2E1065,${purple});color:white;padding:22px;border-radius:18px}.final .score,.final h2,.final p{color:white}.huge{font-size:26px;color:${purple}}.word-footer{position:absolute;bottom:0;font-size:8px;color:#667085}`;
-  const html=`<!doctype html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Étude d’investissement CleanUp</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>90</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>${css}</style></head><body>${pages.join('')}</body></html>`;
-  const blob=new Blob(['\ufeff',html],{type:'application/msword'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='etude-investissement-premium-cleanup.doc';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1500);
-  }catch(error){console.error('Export Word',error);alert('L’export Word a rencontré une erreur : '+(error.message||error));}
+    if(!generated||!window.studySummary)return alert('Générez d’abord l’étude.');
+    if(button){button.disabled=true;button.textContent='Création du DOCX…';}
+    populateInvestReport(window.studySummary);
+
+    await Promise.all([
+      loadExternalScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js','html2canvas'),
+      loadExternalScript('https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js','docx')
+    ]);
+    if(!window.html2canvas||!window.docx)throw new Error('Les composants Word n’ont pas pu être chargés.');
+
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    report=document.querySelector('.invest-report');
+    if(!report)throw new Error('Le rapport premium est introuvable.');
+    previousStyle=report.getAttribute('style')||'';
+    report.style.cssText='display:block!important;position:fixed!important;left:-12000px!important;top:0!important;width:210mm!important;margin:0!important;background:#fff!important;z-index:-1!important;';
+
+    const pages=[...report.querySelectorAll('.invest-page')];
+    if(pages.length!==10)throw new Error(`Le rapport Word doit contenir 10 pages, ${pages.length} trouvées.`);
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+
+    const {Document,Packer,Paragraph,ImageRun,AlignmentType}=window.docx;
+    const sections=[];
+    for(let i=0;i<pages.length;i++){
+      if(button)button.textContent=`Création du DOCX… ${i+1}/10`;
+      const page=pages[i];
+      const canvas=await window.html2canvas(page,{
+        scale:1.65,
+        useCORS:true,
+        allowTaint:false,
+        backgroundColor:'#ffffff',
+        logging:false,
+        width:page.scrollWidth,
+        height:page.scrollHeight,
+        windowWidth:page.scrollWidth,
+        windowHeight:page.scrollHeight
+      });
+      const data=await canvasToArrayBuffer(canvas);
+      sections.push({
+        properties:{
+          page:{
+            size:{width:11906,height:16838},
+            margin:{top:170,right:170,bottom:170,left:170,header:0,footer:0,gutter:0}
+          }
+        },
+        children:[new Paragraph({
+          alignment:AlignmentType.CENTER,
+          spacing:{before:0,after:0,line:1},
+          children:[new ImageRun({data,transformation:{width:770,height:1089},type:'png'})]
+        })]
+      });
+    }
+    const doc=new Document({
+      creator:'CleanUp Manager',
+      title:'Étude d’investissement Premium',
+      description:'Étude financière, locative et patrimoniale CleanUp',
+      sections
+    });
+    const blob=await Packer.toBlob(doc);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='etude-investissement-premium-cleanup.docx';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},2000);
+  }catch(error){
+    console.error('Export DOCX',error);
+    alert('L’export DOCX a rencontré une erreur : '+(error.message||error));
+  }finally{
+    if(report){
+      if(previousStyle)report.setAttribute('style',previousStyle);
+      else report.removeAttribute('style');
+    }
+    if(button){button.disabled=false;button.textContent='Télécharger Word (.docx)';}
+  }
 }
 $('downloadWord').addEventListener('click',downloadWordReport);
 function printInvestmentPdf(){
