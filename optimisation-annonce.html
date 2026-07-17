@@ -1,42 +1,433 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Optimisation de mon annonce — CleanUp</title><meta name="description" content="Auditez puis améliorez une annonce existante pour la rendre plus claire, attractive et rassurante."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Optimisation de mon annonce — CleanUp</title><meta name="description" content="Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
 :root{--brown:#3E2D25;--brown2:#5A4033;--sand:#E9DDCF;--beige:#F5EFE7;--cream:#FCFAF7;--white:#fff;--taupe:#8C7B70;--terracotta:#B96F52;--terracottaSoft:#F5E4DC;--sage:#7E927C;--sageSoft:#E7EEE5;--text:#2F2926;--muted:#766C66;--line:#E4D9CF;--shadow:0 22px 60px rgba(62,45,37,.10);--soft:0 10px 28px rgba(62,45,37,.07);--radius:24px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 5% 0%,rgba(233,221,207,.8),transparent 28%),radial-gradient(circle at 100% 10%,rgba(245,228,220,.8),transparent 30%),#F7F3EE;color:var(--text)}button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.site-header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:rgba(252,250,247,.88);border-bottom:1px solid rgba(228,217,207,.85)}.header-inner{max-width:1220px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--brown),var(--brown2));color:white;display:grid;place-items:center;font-size:22px}.brand-text strong{display:block;font-size:23px;line-height:.9;color:var(--brown);font-weight:900;letter-spacing:-.05em}.brand-text span{display:block;font-size:7.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--terracotta);margin-top:5px;font-weight:900}.header-note{font-size:12px;color:var(--taupe);font-weight:600}.header-pill{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;background:var(--sageSoft);color:#536B52;font-size:12px;font-weight:800}.header-pill i{width:8px;height:8px;border-radius:50%;background:var(--sage)}.page{max-width:1220px;margin:auto;padding:34px 24px 80px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:38px;align-items:center;margin:12px 0 28px}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--terracotta);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.eyebrow:before{content:"";width:28px;height:2px;background:var(--terracotta)}h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-height:.98;font-weight:400;letter-spacing:-.035em;color:var(--brown)}h1 span{color:var(--terracotta)}.hero p{margin:0;max-width:720px;font-size:17px;line-height:1.7;color:var(--muted)}.benefits{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.benefit{display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:12px;font-weight:700;color:var(--brown)}.benefit b{color:var(--sage)}.hero-card{background:linear-gradient(145deg,var(--brown),#6D4F40);color:white;border-radius:30px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero-card .price{font-family:"DM Serif Display",serif;font-size:58px;line-height:1}.hero-card .price small{font-family:Inter;font-size:14px;font-weight:700}.hero-card h3{font-size:18px;margin:8px 0 12px}.hero-card p{color:rgba(255,255,255,.78);font-size:13px;line-height:1.55}.mini-list{display:grid;gap:9px;margin-top:18px}.mini-list span{display:flex;gap:9px;align-items:center;font-size:12px;font-weight:700}.stepper{background:rgba(255,255,255,.74);border:1px solid var(--line);border-radius:22px;padding:13px;display:grid;grid-template-columns:repeat(var(--steps),1fr);gap:8px;margin:0 0 20px;box-shadow:var(--soft)}.step{border:0;background:transparent;border-radius:16px;padding:12px 8px;display:flex;gap:9px;align-items:center;justify-content:center;color:var(--taupe);font-size:11px;font-weight:800}.step .num{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:var(--beige);color:var(--brown)}.step.active{background:var(--brown);color:white}.step.active .num{background:white;color:var(--brown)}.step.done{color:var(--sage)}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}.main-card,.assistant-card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.main-card{padding:30px;min-height:690px}.assistant-card{position:sticky;top:98px;overflow:hidden}.assistant-head{padding:22px;background:linear-gradient(145deg,var(--brown),var(--brown2));color:white}.assistant-title{display:flex;align-items:center;gap:12px}.ai-icon{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-size:22px}.assistant-title strong{display:block;font-size:16px}.assistant-title span{display:block;font-size:11px;color:rgba(255,255,255,.68);margin-top:4px}.assistant-body{padding:18px}.ai-message{padding:13px 14px;border-radius:16px;background:var(--beige);border:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--brown);margin-bottom:10px}.ai-message.good{background:var(--sageSoft)}.assistant-progress{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.row{display:flex;justify-content:space-between;font-size:11px;color:var(--taupe);font-weight:700;margin-bottom:8px}.progress{height:8px;border-radius:999px;background:var(--beige);overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--terracotta),#D39980);border-radius:inherit}.section{display:none}.section.active{display:block}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:25px}.section-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:36px;font-weight:400;color:var(--brown)}.section-head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55;max-width:640px}.section-badge{padding:9px 12px;border-radius:999px;background:var(--terracottaSoft);color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:var(--brown)}.input,.select,.textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--cream);padding:13px 14px;color:var(--text);outline:none}.textarea{min-height:110px;resize:vertical}.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.check-pill{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:white;font-size:11px;font-weight:700;color:var(--brown)}.check-pill input{accent-color:var(--terracotta)}.panel{border:1px solid var(--line);border-radius:20px;background:var(--cream);padding:20px;margin-top:18px}.panel h3{margin:0 0 12px;font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown)}.btn{border:0;border-radius:999px;padding:13px 18px;font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:linear-gradient(135deg,var(--brown),var(--brown2));color:white}.btn.terracotta{background:linear-gradient(135deg,var(--terracotta),#C9896F);color:white}.btn.soft{background:var(--beige);color:var(--brown);border:1px solid var(--line)}.btn.ghost{background:white;color:var(--brown);border:1px solid var(--line)}.nav-actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}.preview-card{border:1px solid var(--line);border-radius:24px;background:white;overflow:hidden;box-shadow:var(--soft)}.preview-cover{min-height:220px;background:linear-gradient(135deg,var(--sand),var(--beige));display:grid;place-items:center;padding:12px}.preview-cover img{max-width:100%;max-height:340px;object-fit:contain}.preview-content{padding:24px}.preview-content h3{font-family:"DM Serif Display",serif;font-size:31px;font-weight:400;margin:0 0 8px;color:var(--brown)}.preview-content p{font-size:12px;line-height:1.7;color:var(--muted);white-space:pre-line}.preview-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.preview-tags span{padding:8px 10px;border-radius:999px;background:var(--beige);font-size:10px;font-weight:700;color:var(--brown)}.export-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.export-card{border:1px solid var(--line);border-radius:20px;background:var(--cream);padding:20px}.export-card h3{margin:8px 0 6px;font-size:15px}.export-card p{margin:0 0 14px;font-size:11px;line-height:1.5;color:var(--muted)}.photo-drop{border:2px dashed #D9C6B4;border-radius:22px;padding:30px;text-align:center;background:var(--cream)}.photo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.photo-card{position:relative;border-radius:15px;overflow:hidden;aspect-ratio:1.25;background:var(--beige);border:1px solid var(--line)}.photo-card img{width:100%;height:100%;object-fit:cover}.photo-card button{position:absolute;right:7px;top:7px;width:27px;height:27px;border:0;border-radius:50%;background:rgba(62,45,37,.84);color:white}.cta{margin-top:18px;padding:22px;border-radius:22px;background:linear-gradient(145deg,var(--brown),#6A4A3A);color:white;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.cta h3{margin:0 0 6px;font-family:"DM Serif Display",serif;font-size:26px;font-weight:400}.cta p{margin:0;color:rgba(255,255,255,.75);font-size:11px;line-height:1.5}@media(max-width:980px){.hero{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.assistant-card{position:static}.stepper{grid-template-columns:repeat(3,1fr)}}@media(max-width:680px){.page{padding:22px 14px 60px}.header-note{display:none}h1{font-size:42px}.main-card{padding:20px}.form-grid,.form-grid.three,.check-grid,.export-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(2,1fr)}.section-head{display:block}.section-badge{display:inline-block;margin-top:12px}.cta{grid-template-columns:1fr}.nav-actions{flex-direction:column}}@media print{body{background:white}.site-header,.hero,.stepper,.assistant-card,.nav-actions,.export-grid,.cta,.section:not(.active){display:none!important}.page{max-width:none;padding:0}.workspace{display:block}.main-card{box-shadow:none;border:0;padding:0}@page{size:A4;margin:12mm}}
 .step.locked{opacity:.45;cursor:not-allowed;pointer-events:none}
 .export-lock-note{margin-top:16px;padding:14px 16px;border-radius:16px;background:var(--sageSoft);border:1px solid #D3DFD0;color:var(--brown);font-size:11px;line-height:1.55;display:none}
 .export-lock-note.show{display:block}
-.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.score-box{padding:14px;border:1px solid var(--line);border-radius:15px;background:#fff}.score-box span{display:block;font-size:10px;color:var(--muted)}.score-box strong{font-size:23px;color:var(--brown)}.audit-list{display:grid;gap:9px}.audit-item{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}.audit-item strong{font-size:12px;color:var(--brown)}.audit-item p{font-size:11px;color:var(--muted);margin:4px 0 0}.report-print{display:none}.report-page{width:210mm;height:297mm;padding:14mm 15mm 13mm;background:#fff;position:relative;overflow:hidden;page-break-after:always}.report-page:last-child{page-break-after:auto}.report-header{display:flex;justify-content:space-between;border-bottom:1px solid #E4D9CF;padding-bottom:4mm;margin-bottom:5mm}.report-title{font-family:"DM Serif Display",Georgia,serif;font-size:26px;color:#3E2D25;margin:3mm 0 2mm}.report-brand{font-weight:900;color:#3E2D25}.report-brand small{display:block;font-size:6px;letter-spacing:.25em;color:#B96F52}.report-score{width:35mm;height:35mm;border:3px solid #B96F52;border-radius:50%;display:grid;place-items:center;text-align:center}.report-score strong{font-size:22px}.report-card{border:1px solid #E4D9CF;border-radius:4mm;padding:4mm;background:#FCFAF7;margin-bottom:4mm}.report-card h3{font-size:11px;margin:0 0 2mm}.report-card p,.report-card li{font-size:8px;line-height:1.42;color:#766C66}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm}.report-footer{position:absolute;left:15mm;right:15mm;bottom:7mm;display:flex;justify-content:space-between;font-size:6.8px;color:#8C7B70;border-top:1px solid #E4D9CF;padding-top:2mm}@media print{html,body{width:210mm}body *{visibility:hidden!important}.report-print,.report-print *{visibility:visible!important}.report-print{display:block!important;position:absolute;left:0;top:0;width:210mm}.report-page{display:block!important;margin:0!important}@page{size:A4;margin:0}}</style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Auditez puis améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Analyse</button><button class="step " data-step="4"><span class="num">4</span>Réécriture</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
+
+.compare-grid{display:grid;grid-template-columns:1fr 48px 1fr;gap:14px;align-items:stretch;margin-bottom:18px}
+.compare-card{border:1px solid var(--line);border-radius:20px;background:white;padding:20px;min-height:190px}
+.compare-card.after{background:var(--sageSoft);border-color:#D3DFD0}
+.compare-label{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.14em;color:var(--terracotta);margin-bottom:10px}
+.compare-card h3{font-family:"DM Serif Display",serif;font-size:22px;font-weight:400;color:var(--brown);margin:0 0 9px}
+.compare-card p{white-space:pre-line;font-size:11px;line-height:1.55;color:var(--muted);margin:0;max-height:205px;overflow:auto}
+.compare-arrow{display:grid;place-items:center;font-size:26px;color:var(--terracotta)}
+.audit-score-wrap{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center}
+.audit-score{width:140px;height:140px;border:9px solid var(--terracotta);border-radius:50%;display:grid;place-items:center;text-align:center;background:white}
+.audit-score strong{display:block;font-size:40px;line-height:1;color:var(--brown)}
+.audit-score small{font-size:10px;color:var(--muted)}
+.audit-scores{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:13px}
+.audit-mini{padding:11px;border:1px solid var(--line);border-radius:14px;background:white}
+.audit-mini span{display:block;font-size:9px;color:var(--muted);font-weight:700}
+.audit-mini strong{font-size:20px;color:var(--brown)}
+.audit-columns{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px}
+.audit-list{display:grid;gap:8px}
+.audit-item{padding:12px;border:1px solid var(--line);border-radius:13px;background:white}
+.audit-item strong{display:block;font-size:11px;color:var(--brown)}
+.audit-item p{margin:4px 0 0;font-size:10px;line-height:1.45;color:var(--muted)}
+.audit-item.good{background:var(--sageSoft)}
+.audit-item.warn{background:var(--terracottaSoft)}
+.loading-box{display:none;margin-top:14px;padding:14px 16px;border-radius:15px;background:var(--terracottaSoft);color:var(--brown);font-size:11px;font-weight:700}
+.loading-box.show{display:block}
+.report-print{display:none}
+.report-page{width:210mm;height:297mm;padding:14mm 15mm 13mm;background:#fff;color:#2F2926;position:relative;overflow:hidden;page-break-after:always;font-family:Inter,Arial,sans-serif}
+.report-page:last-child{page-break-after:auto}
+.r-head{display:flex;justify-content:space-between;gap:8mm;align-items:flex-start;border-bottom:1px solid #E4D9CF;padding-bottom:4mm;margin-bottom:5mm}
+.r-brand{font-weight:900;color:#3E2D25;font-size:15px}.r-brand small{display:block;font-size:6px;letter-spacing:.25em;color:#B96F52}
+.r-title{font-family:"DM Serif Display",Georgia,serif;font-size:26px;color:#3E2D25;margin:3mm 0 2mm}
+.r-sub{font-size:8px;color:#766C66;margin:0}.r-score{width:34mm;height:34mm;border:3px solid #B96F52;border-radius:50%;display:grid;place-items:center;text-align:center}
+.r-score strong{font-size:22px}.r-score span{display:block;font-size:7px;color:#766C66}
+.r-grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm}.r-grid.three{grid-template-columns:repeat(3,1fr)}
+.r-card{border:1px solid #E4D9CF;border-radius:4mm;padding:4mm;background:#FCFAF7;overflow:hidden}
+.r-card h3{font-size:10.5px;margin:0 0 2mm;color:#3E2D25}.r-card p,.r-card li{font-size:7.7px;line-height:1.42;color:#655C57;margin:0}
+.r-card ul,.r-card ol{margin:0;padding-left:4mm;display:grid;gap:1.2mm}.r-status{padding:4mm;border:1px solid #E8CABD;background:#F5E4DC;border-radius:4mm;margin-bottom:5mm}
+.r-status strong{display:block;font-size:11px;color:#7D4634}.r-status span{font-size:8px;color:#655C57}
+.r-text{font-size:7.7px;line-height:1.42;color:#655C57;white-space:pre-line}
+.r-footer{position:absolute;left:15mm;right:15mm;bottom:7mm;display:flex;justify-content:space-between;font-size:6.5px;color:#8C7B70;border-top:1px solid #E4D9CF;padding-top:2mm}
+@media(max-width:680px){.compare-grid,.audit-score-wrap,.audit-columns,.audit-scores{grid-template-columns:1fr}.compare-arrow{transform:rotate(90deg)}}
+@media print{
+ body *{visibility:hidden!important}
+ .report-print,.report-print *{visibility:visible!important}
+ .report-print{display:block!important;position:absolute;left:0;top:0;width:210mm}
+ .report-page{display:block!important;margin:0!important}
+ @page{size:A4;margin:0}
+}
+
+</style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Mieux ressortir dans les recherches</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
-<div class="section" id="step3"><div class="section-head"><div><h2>Audit de votre annonce</h2><p>CleanUp mesure la clarté, la confiance, la structure et le potentiel de conversion avant toute réécriture.</p></div><div class="section-badge">Étape 3 sur 5</div></div><button class="btn terracotta" id="analyzeBtn">✦ Analyser mon annonce</button><div class="panel" id="analysisBox"><h3>Résultat</h3><p>Ajoutez votre annonce puis lancez l’analyse.</p></div></div>
-<div class="section" id="step4"><div class="section-head"><div><h2>Avant / Après — annonce optimisée</h2><p>La version ci-dessous reste modifiable avant export.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn terracotta" id="generateBtn">✦ Générer la version optimisée</button></div><div class="generated-card panel"><div class="field"><label>Nouveau titre</label><textarea class="textarea" id="newTitle"></textarea></div><div class="field"><label>Nouvelle accroche</label><textarea class="textarea" id="newIntro"></textarea></div><div class="field"><label>Description optimisée</label><textarea class="textarea" id="newDescription" style="min-height:240px"></textarea></div><div class="field"><label>Informations pratiques</label><textarea class="textarea" id="newRules"></textarea></div></div></div>
-<div class="section" id="step5"><div class="section-head"><div><h2>Rapport d’optimisation</h2><p>Copiez le contenu ou téléchargez un document modifiable.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Votre nouveau titre</h3><p id="previewText">Votre annonce optimisée apparaîtra ici.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier l’annonce</h3><p>Copiez tout le contenu prêt à publier.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Récupérez une version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Utilisez l’impression du navigateur.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Optimiser une autre annonce</h3><p>Une nouvelle optimisation nécessite un nouveau paiement.</p><button class="btn soft" id="newOptimization">Optimiser une autre annonce (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre annonce optimisée a été générée.</strong><br>Vous pouvez encore la copier, la télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div><div class="cta"><div><h3>Découvrez les autres indispensables</h3><p>Guide d’accueil bilingue, livret voyageur, diagnostic de rentabilité et autres outils sont disponibles séparément, sans abonnement.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div></div>
-<div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div class="report-print" id="reportPrint" aria-hidden="true"></div><script>
-const GENERATE_OPTIMIZATION_ENDPOINT='https://europe-west9-PROJECT_ID.cloudfunctions.net/generateOptimization';
+<div class="section" id="step3"><div class="section-head"><div><h2>Audit de votre annonce</h2><p>CleanUp mesure la clarté, la confiance, la structure et le potentiel de conversion avant toute réécriture.</p></div><div class="section-badge">Étape 3 sur 5</div></div><button class="btn terracotta" id="analyzeBtn">✦ Lancer l’audit</button><div class="panel" id="analysisBox"><h3>Résultat</h3><p>Ajoutez votre annonce puis lancez l’analyse.</p></div></div>
+<div class="section" id="step4"><div class="section-head"><div><h2>Avant / Après</h2><p>Comparez l’annonce actuelle avec la version optimisée. Le texte reste modifiable avant export.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div class="compare-grid">
+<div class="compare-card"><span class="compare-label">AVANT</span><h3 id="beforeTitle">Titre actuel</h3><p id="beforeDescription">Votre annonce actuelle apparaîtra ici.</p></div>
+<div class="compare-arrow">→</div>
+<div class="compare-card after"><span class="compare-label">APRÈS</span><h3 id="afterTitle">Titre optimisé</h3><p id="afterDescription">Lancez l’audit pour générer la nouvelle version.</p></div>
+</div><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn terracotta" id="generateBtn">✦ Afficher la version optimisée</button></div><div class="generated-card panel"><div class="field"><label>Nouveau titre</label><textarea class="textarea" id="newTitle"></textarea></div><div class="field"><label>Nouvelle accroche</label><textarea class="textarea" id="newIntro"></textarea></div><div class="field"><label>Description optimisée</label><textarea class="textarea" id="newDescription" style="min-height:240px"></textarea></div><div class="field"><label>Informations pratiques</label><textarea class="textarea" id="newRules"></textarea></div></div></div>
+<div class="section" id="step5"><div class="section-head"><div><h2>Rapport d’optimisation</h2><p>Copiez l’annonce optimisée ou téléchargez le rapport professionnel.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Votre nouveau titre</h3><p id="previewText">Votre annonce optimisée apparaîtra ici.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier l’annonce</h3><p>Copiez tout le contenu prêt à publier.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Récupérez une version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Téléchargez le rapport professionnel de 6 pages.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Optimiser une autre annonce</h3><p>Une nouvelle optimisation nécessite un nouveau paiement.</p><button class="btn soft" id="newOptimization">Optimiser une autre annonce (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre annonce optimisée a été générée.</strong><br>Vous pouvez encore la copier, la télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div><div class="cta"><div><h3>Découvrez les autres indispensables</h3><p>Guide d’accueil bilingue, livret voyageur, diagnostic de rentabilité et autres outils sont disponibles séparément, sans abonnement.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div></div>
+<div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div class="report-print" id="reportPrint"></div><script>
 const STRIPE_PAYMENT_LINK='';
-const $=id=>document.getElementById(id),qa=s=>[...document.querySelectorAll(s)],val=id=>($(id)?.value||'').trim(),num=id=>Number($(id)?.value||0),checked=id=>!!$(id)?.checked;
-let currentStep=1,result=null,exportLocked=false;const STEPS=5;
-function showStep(n){if(exportLocked&&n<5)return;currentStep=Math.max(1,Math.min(5,n));qa('.section').forEach(s=>s.classList.remove('active'));$('step'+currentStep).classList.add('active');qa('.step').forEach(b=>{const x=Number(b.dataset.step);b.classList.toggle('active',x===currentStep);b.classList.toggle('done',x<currentStep);b.classList.toggle('locked',exportLocked&&x<5)});$('prevBtn').style.display=currentStep===1||exportLocked?'none':'inline-flex';$('nextBtn').style.display=currentStep===5?'none':'inline-flex';const p=Math.round((currentStep-1)/4*100);$('progressBar').style.width=p+'%';$('progressLabel').textContent=p+' %';updateAssistant();window.scrollTo({top:document.querySelector('.stepper').offsetTop-90,behavior:'smooth'})}
-qa('.step').forEach(b=>b.onclick=()=>showStep(Number(b.dataset.step)));$('prevBtn').onclick=()=>showStep(currentStep-1);$('nextBtn').onclick=()=>showStep(currentStep+1);
-function payload(){return{current:{title:val('currentTitle'),description:val('currentDescription'),rules:val('currentRules'),platform:val('platform'),listingUrl:val('listingUrl')},property:{propertyType:val('propertyType'),capacity:num('capacity'),strengths:val('strengths'),weaknesses:val('weaknesses')},goals:{title:checked('goalTitle'),clarity:checked('goalClarity'),seo:checked('goalSEO'),trust:checked('goalTrust'),premium:checked('goalPremium'),families:checked('goalFamilies')}}}
-function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-function updateAssistant(){const m=currentStep===1?['Base de travail','Collez exactement le texte publié.']:currentStep===2?['Vérité avant marketing','CleanUp n’invente aucun avantage.']:currentStep===3?['Audit métier','Le score évalue le contenu éditorial, pas un classement garanti.']:currentStep===4?['Avant / Après','Vérifiez les informations concrètes.']:['À télécharger','Aucune annonce n’est conservée.'];$('assistantMessages').innerHTML=`<div class="ai-message"><strong>${m[0]}</strong>${m[1]}</div>`}
-function list(items){return `<div class="audit-list">${(items||[]).map(x=>`<div class="audit-item"><strong>${esc(x.title||x.label)}</strong><p>${esc(x.detail)}</p></div>`).join('')}</div>`}
-function render(){const e=result.engine,a=result.ai;$('analysisBox').innerHTML=`<h3>${esc(a.verdict.title)}</h3><p>${esc(a.summary)}</p><div class="score-grid"><div class="score-box"><span>Potentiel actuel</span><strong>${e.scores.current}</strong></div><div class="score-box"><span>Titre</span><strong>${e.scores.title}</strong></div><div class="score-box"><span>Clarté</span><strong>${e.scores.clarity}</strong></div><div class="score-box"><span>Confiance</span><strong>${e.scores.trust}</strong></div></div><h3 style="margin-top:20px">Ce qui fonctionne</h3>${list(a.strengths)}<h3 style="margin-top:20px">Ce qui pénalise</h3>${list(a.weaknesses)}`;const o=a.optimized;$('newTitle').value=o.title;$('newIntro').value=o.intro;$('newDescription').value=o.description;$('newRules').value=o.rules;refresh();buildReport()}
-function refresh(){$('previewTitle').textContent=val('newTitle')||'Votre nouveau titre';$('previewText').textContent=[val('newIntro'),val('newDescription'),val('newRules')].filter(Boolean).join('
+const OPTIMIZATION_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateOptimization';
 
-')||'Votre annonce optimisée apparaîtra ici.'}qa('#step4 textarea').forEach(x=>x.oninput=refresh);
-$('analyzeBtn').onclick=async()=>{const p=payload();if(p.current.title.length<5)return alert('Renseignez le titre actuel.');if(p.current.description.length<120)return alert('La description doit contenir au moins 120 caractères.');if(!p.property.capacity)return alert('Renseignez la capacité.');$('analyzeBtn').disabled=true;$('analysisBox').innerHTML='<h3>Analyse en cours…</h3><p>CleanUp audite puis réécrit votre annonce.</p>';try{const r=await fetch(GENERATE_OPTIMIZATION_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||'Erreur pendant l’analyse.');result=d;render()}catch(e){alert(e.message+'
+document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>{
+  const s=b.parentElement.querySelector('.stripeStatus');
+  if(!STRIPE_PAYMENT_LINK){
+    s.textContent='Lien Stripe à connecter avant la mise en ligne.';
+    s.style.color='#FFD8C7';
+    return;
+  }
+  location.href=STRIPE_PAYMENT_LINK;
+});
 
-Vérifiez l’URL de la Cloud Function et son déploiement.')}finally{$('analyzeBtn').disabled=false}};
-function page(n,title,score,body){return `<section class="report-page"><header class="report-header"><div><div class="report-brand">CleanUp<small>MANAGER · OPTIMISATION · PAGE ${n}/6</small></div><h1 class="report-title">${esc(title)}</h1></div><div class="report-score"><div><strong>${score}</strong><br><small>/100</small></div></div></header>${body}<footer class="report-footer"><span>Optimisation de mon annonce — CleanUp Manager</span><span>${n}/6</span></footer></section>`}
-function buildReport(){if(!result)return;const e=result.engine,a=result.ai,o=a.optimized,s=a.scoresAfter;const li=x=>(x||[]).slice(0,7).map(i=>`<li><strong>${esc(i.title)}</strong> — ${esc(i.detail)}</li>`).join('');const comp=(a.comparison||[]).slice(0,6).map(x=>`<div class="report-card"><h3>${esc(x.element)}</h3><p><strong>Avant :</strong> ${esc(x.before)}</p><p><strong>Après :</strong> ${esc(x.after)}</p><p>${esc(x.benefit)}</p></div>`).join('');$('reportPrint').innerHTML=page(1,'Audit de votre annonce',e.scores.current,`<div class="report-card"><h3>${esc(a.verdict.title)}</h3><p>${esc(a.summary)}</p></div><div class="report-grid"><div class="report-card"><h3>Avant</h3><p style="font-size:20px"><strong>${e.scores.current}/100</strong></p></div><div class="report-card"><h3>Après optimisation</h3><p style="font-size:20px"><strong>${s.global}/100</strong></p></div></div>`)+page(2,'Ce qui fonctionne',e.scores.current,`<div class="report-card"><ul>${li(a.strengths)}</ul></div><div class="report-grid"><div class="report-card"><h3>Titre</h3><p>${esc(a.audit.title)}</p></div><div class="report-card"><h3>Clarté</h3><p>${esc(a.audit.clarity)}</p></div></div>`)+page(3,'Freins et opportunités',e.scores.current,`<div class="report-card"><ul>${li(a.weaknesses)}</ul></div><div class="report-grid"><div class="report-card"><h3>Confiance</h3><p>${esc(a.audit.trust)}</p></div><div class="report-card"><h3>SEO éditorial</h3><p>${esc(a.audit.seo)}</p></div></div>`)+page(4,'Avant / Après',s.global,`<div class="report-grid">${comp}</div>`)+page(5,'Annonce optimisée',s.global,`<div class="report-card"><h3>${esc(o.title)}</h3><p><strong>Accroche</strong></p><p>${esc(o.intro)}</p><p><strong>Description</strong></p><p>${esc(o.description)}</p><p><strong>Informations pratiques</strong></p><p>${esc(o.rules)}</p></div>`)+page(6,'Plan d’action final',s.global,`<div class="report-card"><ol>${li(a.actionPlan)}</ol></div><div class="report-card"><h3>Important</h3><p>Le score est une estimation éditoriale, pas une garantie de réservations. Vérifiez les équipements, distances, règles, tarifs et disponibilités avant publication.</p></div>`)}
-function lock(){exportLocked=true;qa('.step').forEach(b=>{if(Number(b.dataset.step)<5)b.classList.add('locked')});$('prevBtn').style.display='none';$('nextBtn').style.display='none'}
-function copyText(t,b){navigator.clipboard.writeText(t).then(()=>{const o=b.textContent;b.textContent='Copié ✓';setTimeout(()=>b.textContent=o,1400)})}
-function word(){const a=result.ai,e=result.engine,o={title:val('newTitle'),intro:val('newIntro'),description:val('newDescription'),rules:val('newRules')};const html=`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial;color:#2F2926;margin:35px}h1{color:#3E2D25}h2{color:#5A4033;border-bottom:1px solid #D9C6B4;padding-bottom:7px}.box{padding:15px;background:#FAF1DC;border:1px solid #EEDCB4}.page{page-break-after:always}p,li{line-height:1.55}</style></head><body><div class="page"><h1>Optimisation de mon annonce</h1><div class="box"><strong>${esc(a.verdict.title)}</strong><p>${esc(a.summary)}</p></div><p><strong>Avant : ${e.scores.current}/100 — Après : ${a.scoresAfter.global}/100</strong></p><h2>Points à améliorer</h2><ul>${a.weaknesses.map(x=>`<li><strong>${esc(x.title)}</strong> — ${esc(x.detail)}</li>`).join('')}</ul></div><h1>${esc(o.title)}</h1><p><strong>${esc(o.intro)}</strong></p><h2>Description optimisée</h2><p>${esc(o.description).replace(/
-/g,'<br>')}</p><h2>Informations pratiques</h2><p>${esc(o.rules).replace(/
-/g,'<br>')}</p></body></html>`;const blob=new Blob(['﻿',html],{type:'application/msword'}),u=URL.createObjectURL(blob),ael=document.createElement('a');ael.href=u;ael.download='optimisation-annonce.doc';ael.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-$('copyAll').onclick=e=>{if(!result)return alert('Lancez d’abord l’audit.');lock();copyText([val('newTitle'),val('newIntro'),val('newDescription'),val('newRules')].join('
+const $=id=>document.getElementById(id);
+const qa=s=>[...document.querySelectorAll(s)];
+const val=id=>($(id)?.value||'').trim();
+const num=id=>Number($(id)?.value||0);
+const checked=id=>!!$(id)?.checked;
+const STEPS=5;
 
-'),e.currentTarget)};$('downloadWord').onclick=()=>{if(!result)return alert('Lancez d’abord l’audit.');lock();word()};$('printPdf').onclick=()=>{if(!result)return alert('Lancez d’abord l’audit.');lock();buildReport();window.print()};$('newOptimization').onclick=()=>STRIPE_PAYMENT_LINK?location.href=STRIPE_PAYMENT_LINK:alert('Le lien Stripe sera connecté avant mise en ligne.');document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>STRIPE_PAYMENT_LINK?location.href=STRIPE_PAYMENT_LINK:alert('Le lien Stripe sera connecté avant mise en ligne.'));
+let currentStep=1;
+let exportLocked=false;
+let optimizationResult=null;
+
+function escapeHtml(value){
+  return String(value||'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[c]));
+}
+
+function showStep(n){
+  if(exportLocked && n<STEPS) return;
+  currentStep=Math.max(1,Math.min(STEPS,n));
+  qa('.section').forEach(s=>s.classList.remove('active'));
+  $('step'+currentStep).classList.add('active');
+
+  qa('.step').forEach(b=>{
+    const x=Number(b.dataset.step);
+    b.classList.toggle('active',x===currentStep);
+    b.classList.toggle('done',x<currentStep);
+    b.classList.toggle('locked',exportLocked && x<STEPS);
+  });
+
+  $('prevBtn').style.display=(currentStep===1 || exportLocked)?'none':'inline-flex';
+  $('nextBtn').style.display=currentStep===STEPS?'none':'inline-flex';
+
+  const p=Math.round((currentStep-1)/(STEPS-1)*100);
+  $('progressBar').style.width=p+'%';
+  $('progressLabel').textContent=p+' %';
+  updateAssistant();
+  window.scrollTo({top:document.querySelector('.stepper').offsetTop-90,behavior:'smooth'});
+}
+
+qa('.step').forEach(b=>b.onclick=()=>showStep(Number(b.dataset.step)));
+$('prevBtn').onclick=()=>showStep(currentStep-1);
+$('nextBtn').onclick=()=>showStep(currentStep+1);
+
+function updateAssistant(){
+  const messages=[];
+  if(currentStep===1) messages.push('<div class="ai-message"><strong>Base de travail</strong><br>Collez exactement le texte publié, même s’il est imparfait.</div>');
+  if(currentStep===2) messages.push('<div class="ai-message"><strong>Objectif</strong><br>CleanUp améliore la présentation sans inventer d’équipement ni masquer une limite utile.</div>');
+  if(currentStep===3) messages.push('<div class="ai-message"><strong>Audit professionnel</strong><br>Le score mesure la qualité éditoriale de l’annonce, pas un classement garanti.</div>');
+  if(currentStep===4) messages.push('<div class="ai-message good"><strong>Avant / Après</strong><br>Relisez les informations concrètes avant de valider la version optimisée.</div>');
+  if(currentStep===5) messages.push('<div class="ai-message good"><strong>Avant de quitter</strong><br>Téléchargez votre rapport. Aucune annonce n’est conservée après cette utilisation.</div>');
+  $('assistantMessages').innerHTML=messages.join('');
+}
+
+function buildPayload(){
+  return {
+    current:{
+      title:val('currentTitle'),
+      description:val('currentDescription'),
+      rules:val('currentRules'),
+      platform:val('platform'),
+      listingUrl:val('listingUrl')
+    },
+    property:{
+      propertyType:val('propertyType'),
+      capacity:num('capacity'),
+      strengths:val('strengths'),
+      weaknesses:val('weaknesses')
+    },
+    goals:{
+      title:checked('goalTitle'),
+      clarity:checked('goalClarity'),
+      seo:checked('goalSEO'),
+      trust:checked('goalTrust'),
+      premium:checked('goalPremium'),
+      families:checked('goalFamilies')
+    }
+  };
+}
+
+function validateBeforeAudit(payload){
+  if(payload.current.title.length<5) return 'Renseignez le titre actuel.';
+  if(payload.current.description.length<120) return 'La description actuelle doit contenir au moins 120 caractères.';
+  if(!payload.property.capacity || payload.property.capacity<1) return 'Renseignez la capacité du logement.';
+  return '';
+}
+
+function adviceList(items,type){
+  return `<div class="audit-list">${(items||[]).slice(0,7).map(item=>`
+    <div class="audit-item ${type}">
+      <strong>${escapeHtml(item.title||item.label)}</strong>
+      <p>${escapeHtml(item.detail||'')}</p>
+    </div>`).join('')}</div>`;
+}
+
+function renderAudit(){
+  const e=optimizationResult.engine;
+  const a=optimizationResult.ai;
+  $('analysisBox').innerHTML=`
+    <h3>${escapeHtml(a.verdict.title)}</h3>
+    <div class="audit-score-wrap">
+      <div class="audit-score"><div><strong>${e.scores.current}</strong><small>/100 avant optimisation</small></div></div>
+      <div>
+        <p>${escapeHtml(a.summary)}</p>
+        <div class="audit-scores">
+          <div class="audit-mini"><span>Titre</span><strong>${e.scores.title}</strong></div>
+          <div class="audit-mini"><span>Clarté</span><strong>${e.scores.clarity}</strong></div>
+          <div class="audit-mini"><span>Confiance</span><strong>${e.scores.trust}</strong></div>
+          <div class="audit-mini"><span>Conversion</span><strong>${e.scores.conversion}</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="audit-columns">
+      <div><h3>Ce qui fonctionne</h3>${adviceList(a.strengths,'good')}</div>
+      <div><h3>Ce qui pénalise</h3>${adviceList(a.weaknesses,'warn')}</div>
+    </div>`;
+}
+
+function applyOptimizedVersion(){
+  const optimized=optimizationResult.ai.optimized;
+  $('newTitle').value=optimized.title;
+  $('newIntro').value=optimized.intro;
+  $('newDescription').value=optimized.description;
+  $('newRules').value=optimized.rules;
+  refresh();
+}
+
+function refresh(){
+  const oldTitle=val('currentTitle')||'Titre actuel';
+  const oldText=val('currentDescription')||'Votre annonce actuelle apparaîtra ici.';
+  const newTitle=val('newTitle')||'Titre optimisé';
+  const newText=[val('newIntro'),val('newDescription')].filter(Boolean).join('\n\n')||'Lancez l’audit pour générer la nouvelle version.';
+
+  $('beforeTitle').textContent=oldTitle;
+  $('beforeDescription').textContent=oldText;
+  $('afterTitle').textContent=newTitle;
+  $('afterDescription').textContent=newText;
+  $('previewTitle').textContent=newTitle;
+  $('previewText').textContent=[val('newIntro'),val('newDescription'),val('newRules')].filter(Boolean).join('\n\n')||'Votre annonce optimisée apparaîtra ici.';
+}
+qa('#step4 textarea').forEach(x=>x.oninput=refresh);
+
+$('analysisBox').insertAdjacentHTML('beforebegin','<div class="loading-box" id="loadingBox">Analyse et réécriture en cours…</div>');
+
+$('analyzeBtn').onclick=async()=>{
+  const payload=buildPayload();
+  const validationError=validateBeforeAudit(payload);
+  if(validationError){
+    alert(validationError);
+    return;
+  }
+
+  $('analyzeBtn').disabled=true;
+  $('loadingBox').classList.add('show');
+
+  try{
+    const response=await fetch(OPTIMIZATION_FUNCTION_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await response.json();
+
+    if(!response.ok || !data.ok){
+      throw new Error(data.error||'Erreur pendant l’optimisation.');
+    }
+
+    optimizationResult=data;
+    renderAudit();
+    applyOptimizedVersion();
+    buildReport();
+  }catch(error){
+    console.error(error);
+    alert(error.message||'Impossible de lancer l’optimisation.');
+  }finally{
+    $('analyzeBtn').disabled=false;
+    $('loadingBox').classList.remove('show');
+  }
+};
+
+$('generateBtn').onclick=()=>{
+  if(!optimizationResult){
+    alert('Lancez d’abord l’audit à l’étape 3.');
+    showStep(3);
+    return;
+  }
+  applyOptimizedVersion();
+};
+
+function reportPage(number,title,subtitle,score,content){
+  return `<section class="report-page">
+    <header class="r-head">
+      <div>
+        <div class="r-brand">CleanUp<small>MANAGER · OPTIMISATION · PAGE ${number}/6</small></div>
+        <h1 class="r-title">${escapeHtml(title)}</h1>
+        <p class="r-sub">${escapeHtml(subtitle)}</p>
+      </div>
+      <div class="r-score"><div><strong>${score}</strong><span>/100</span></div></div>
+    </header>
+    ${content}
+    <footer class="r-footer"><span>Optimisation de mon annonce — CleanUp Manager</span><span>${number}/6</span></footer>
+  </section>`;
+}
+
+function buildReport(){
+  if(!optimizationResult) return;
+
+  const e=optimizationResult.engine;
+  const a=optimizationResult.ai;
+  const o={
+    title:val('newTitle')||a.optimized.title,
+    intro:val('newIntro')||a.optimized.intro,
+    description:val('newDescription')||a.optimized.description,
+    rules:val('newRules')||a.optimized.rules
+  };
+  const after=a.scoresAfter;
+
+  const strengths=(a.strengths||[]).slice(0,7).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
+  const weaknesses=(a.weaknesses||[]).slice(0,7).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
+  const actions=(a.actionPlan||[]).slice(0,7).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
+  const comparison=(a.comparison||[]).slice(0,6).map(x=>`
+    <div class="r-card">
+      <h3>${escapeHtml(x.element)}</h3>
+      <p><strong>Avant :</strong> ${escapeHtml(x.before)}</p>
+      <p style="margin-top:2mm"><strong>Après :</strong> ${escapeHtml(x.after)}</p>
+      <p style="margin-top:2mm">${escapeHtml(x.benefit)}</p>
+    </div>`).join('');
+
+  const page1=reportPage(1,'Audit de votre annonce','Vue d’ensemble avant optimisation.',e.scores.current,`
+    <div class="r-status"><strong>${escapeHtml(a.verdict.title)}</strong><span>${escapeHtml(a.verdict.text)}</span></div>
+    <div class="r-grid three">
+      <div class="r-card"><h3>Potentiel actuel</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${e.scores.current}/100</p></div>
+      <div class="r-card"><h3>Après optimisation</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${after.global}/100</p></div>
+      <div class="r-card"><h3>Gain estimé</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">+${Math.max(0,after.global-e.scores.current)}</p></div>
+    </div>
+    <div class="r-card" style="margin-top:5mm"><h3>Synthèse CleanUp</h3><p>${escapeHtml(a.summary)}</p></div>`);
+
+  const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver.',e.scores.current,`
+    <div class="r-card"><h3>Points forts</h3><ul>${strengths}</ul></div>
+    <div class="r-grid" style="margin-top:5mm">
+      <div class="r-card"><h3>Titre</h3><p>${escapeHtml(a.audit.title)}</p></div>
+      <div class="r-card"><h3>Clarté</h3><p>${escapeHtml(a.audit.clarity)}</p></div>
+      <div class="r-card"><h3>Confiance</h3><p>${escapeHtml(a.audit.trust)}</p></div>
+      <div class="r-card"><h3>Conversion</h3><p>${escapeHtml(a.audit.conversion)}</p></div>
+    </div>`);
+
+  const page3=reportPage(3,'Freins et opportunités','Les corrections prioritaires.',e.scores.current,`
+    <div class="r-card"><h3>Freins détectés</h3><ul>${weaknesses}</ul></div>
+    <div class="r-grid" style="margin-top:5mm">
+      <div class="r-card"><h3>SEO éditorial</h3><p>${escapeHtml(a.audit.seo)}</p></div>
+      <div class="r-card"><h3>Règlement</h3><p>${escapeHtml(a.audit.rules)}</p></div>
+    </div>`);
+
+  const page4=reportPage(4,'Avant / Après','Les changements les plus importants.',after.global,`
+    <div class="r-grid">${comparison}</div>`);
+
+  const page5=reportPage(5,'Annonce optimisée','Version complète prête à relire.',after.global,`
+    <div class="r-card">
+      <h3>${escapeHtml(o.title)}</h3>
+      <p><strong>Accroche</strong></p>
+      <p class="r-text">${escapeHtml(o.intro)}</p>
+      <p style="margin-top:3mm"><strong>Description optimisée</strong></p>
+      <p class="r-text">${escapeHtml(o.description)}</p>
+      <p style="margin-top:3mm"><strong>Informations pratiques</strong></p>
+      <p class="r-text">${escapeHtml(o.rules)}</p>
+    </div>`);
+
+  const page6=reportPage(6,'Plan d’action final','Dernières vérifications avant publication.',after.global,`
+    <div class="r-status"><strong>Potentiel après optimisation : ${after.global}/100</strong><span>Estimation éditoriale, sans garantie de classement ni de réservation.</span></div>
+    <div class="r-card"><h3>Actions recommandées</h3><ol>${actions}</ol></div>
+    <div class="r-card" style="margin-top:5mm"><h3>À vérifier avant publication</h3><p>Contrôlez les équipements, les distances, les règles, les horaires, les tarifs et les disponibilités directement sur la plateforme.</p></div>`);
+
+  $('reportPrint').innerHTML=page1+page2+page3+page4+page5+page6;
+}
+
+function lockAfterExport(){
+  if(exportLocked) return;
+  exportLocked=true;
+  qa('.step').forEach(b=>{
+    if(Number(b.dataset.step)<STEPS) b.classList.add('locked');
+  });
+  $('prevBtn').style.display='none';
+  $('nextBtn').style.display='none';
+  $('exportLockNote').classList.add('show');
+}
+
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    const old=btn.textContent;
+    btn.textContent='Copié ✓';
+    setTimeout(()=>btn.textContent=old,1400);
+  });
+}
+
+function downloadDoc(){
+  const a=optimizationResult.ai;
+  const e=optimizationResult.engine;
+  const content=`<!doctype html><html><head><meta charset="utf-8">
+  <style>
+  body{font-family:Arial,sans-serif;color:#2F2926;margin:38px;line-height:1.5}
+  h1{color:#3E2D25;font-size:28px}h2{color:#5A4033;border-bottom:1px solid #D9C6B4;padding-bottom:7px}
+  .status{padding:15px;background:#F5E4DC;border:1px solid #E8CABD}
+  .scores{display:table;width:100%;margin:18px 0}.score{display:table-cell;border:1px solid #E4D9CF;padding:12px;text-align:center}
+  .page{page-break-after:always}p,li{font-size:11pt}
+  </style></head><body>
+  <div class="page">
+    <h1>Optimisation de mon annonce</h1>
+    <div class="status"><strong>${escapeHtml(a.verdict.title)}</strong><p>${escapeHtml(a.verdict.text)}</p></div>
+    <div class="scores"><div class="score">Avant<br><strong>${e.scores.current}/100</strong></div><div class="score">Après<br><strong>${a.scoresAfter.global}/100</strong></div></div>
+    <h2>Audit</h2><p>${escapeHtml(a.summary)}</p>
+    <h3>Points à améliorer</h3><ul>${a.weaknesses.map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('')}</ul>
+  </div>
+  <div>
+    <h1>${escapeHtml(val('newTitle'))}</h1>
+    <p><strong>${escapeHtml(val('newIntro'))}</strong></p>
+    <h2>Description optimisée</h2><p>${escapeHtml(val('newDescription')).replace(/\n/g,'<br>')}</p>
+    <h2>Informations pratiques</h2><p>${escapeHtml(val('newRules')).replace(/\n/g,'<br>')}</p>
+  </div></body></html>`;
+
+  const blob=new Blob(['\ufeff',content],{type:'application/msword'});
+  const link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download='optimisation-annonce.doc';
+  link.click();
+  setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+}
+
+$('copyAll').onclick=e=>{
+  if(!optimizationResult) return alert('Lancez d’abord l’audit.');
+  lockAfterExport();
+  copyText([val('newTitle'),val('newIntro'),val('newDescription'),val('newRules')].join('\n\n'),e.currentTarget);
+};
+
+$('downloadWord').onclick=()=>{
+  if(!optimizationResult) return alert('Lancez d’abord l’audit.');
+  lockAfterExport();
+  downloadDoc();
+};
+
+$('printPdf').onclick=()=>{
+  if(!optimizationResult) return alert('Lancez d’abord l’audit.');
+  lockAfterExport();
+  buildReport();
+  window.print();
+};
+
+$('newOptimization').onclick=()=>{
+  if(STRIPE_PAYMENT_LINK) location.href=STRIPE_PAYMENT_LINK;
+  else alert('Le paiement Stripe sera connecté à cette action avant la mise en ligne.');
+};
+
+refresh();
 showStep(1);
 </script></body></html>
