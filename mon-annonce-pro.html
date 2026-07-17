@@ -680,9 +680,9 @@ h1 span{color:var(--terracotta)}
             <button class="btn primary" type="button" id="copyAll">Copier tout</button>
           </div>
           <div class="export-card">
-            <div class="icon">📄</div><h3>Télécharger en Word (.docx)</h3>
+            <div class="icon">📄</div><h3>Télécharger en Word</h3>
             <p>Récupérez un document modifiable avec le titre, la description et les recommandations.</p>
-            <button class="btn primary" type="button" id="downloadWord">Télécharger le .docx</button>
+            <button class="btn primary" type="button" id="downloadWord">Télécharger Word</button>
           </div>
           <div class="export-card">
             <div class="icon">🖨️</div><h3>Enregistrer en PDF</h3>
@@ -736,7 +736,6 @@ h1 span{color:var(--terracotta)}
 
 <div class="report-print" id="reportPrint" aria-hidden="true"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const qa = sel => [...document.querySelectorAll(sel)];
@@ -1205,99 +1204,21 @@ function buildPrintableReport(){
   $('reportPrint').innerHTML=pages.join('');
   return {scores,photo,ready,level,statusTitle,statusText};
 }
-async function downloadWord(){
+function downloadWord(){
   lockGeneratedAnnouncement();
-  const {scores,photo,level,statusTitle,statusText}=buildPrintableReport();
-  if(typeof JSZip==='undefined'){
-    alert('Le module Word n’a pas pu être chargé. Vérifiez votre connexion puis réessayez.');
-    return;
-  }
-
-  const blocking=controlIssues.filter(x=>x.type==='error').slice(0,10);
-  const recommendations=controlIssues.filter(x=>x.type==='warn').slice(0,12);
-  const advice=adviceItems.slice(0,8);
-
-  const x=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const run=(value,bold=false,size=22,color='2F2926')=>`<w:r><w:rPr>${bold?'<w:b/>':''}<w:sz w:val="${size}"/><w:color w:val="${color}"/></w:rPr><w:t xml:space="preserve">${x(value)}</w:t></w:r>`;
-  const p=(value='',opts={})=>`<w:p><w:pPr>${opts.style?`<w:pStyle w:val="${opts.style}"/>`:''}${opts.pageBreak?'<w:pageBreakBefore/>':''}${opts.spacing?`<w:spacing w:after="${opts.spacing}"/>`:''}</w:pPr>${run(value,!!opts.bold,opts.size||22,opts.color||'2F2926')}</w:p>`;
-  const bullet=value=>`<w:p><w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr><w:spacing w:after="70"/></w:pPr>${run(value,false,20)}</w:p>`;
-  const heading=(value,level=1,pageBreak=false)=>p(value,{style:`Heading${level}`,pageBreak});
-  const cell=(value,bold=false)=>`<w:tc><w:tcPr><w:tcW w:w="2300" w:type="dxa"/><w:shd w:fill="FCFAF7"/><w:tcBorders><w:top w:val="single" w:sz="4" w:color="E4D9CF"/><w:left w:val="single" w:sz="4" w:color="E4D9CF"/><w:bottom w:val="single" w:sz="4" w:color="E4D9CF"/><w:right w:val="single" w:sz="4" w:color="E4D9CF"/></w:tcBorders></w:tcPr>${p(value,{bold,size:bold?28:20})}</w:tc>`;
-  const scoreTable=`<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/></w:tblPr><w:tr>${cell(`Cohérence\n${scores.coherence}/100`,true)}${cell(`Équipements\n${scores.equipment}/100`,true)}${cell(`Photos\n${scores.photo}/100`,true)}${cell(`Global\n${scores.global}/100`,true)}</w:tr></w:tbl>`;
-
-  const statusColor=level==='ready'?'536B52':level==='improve'?'8A6324':'8D3E35';
-  let body='';
-  body+=p('CleanUp Manager',{bold:true,size:26,color:'3E2D25'});
-  body+=p('MON ANNONCE PRO',{bold:true,size:16,color:'B96F52',spacing:180});
-  body+=heading('Synthèse de votre annonce',1);
-  body+=p(statusTitle,{bold:true,size:26,color:statusColor});
-  body+=p(statusText,{size:20,spacing:220});
-  body+=scoreTable;
-  body+=heading('Audit du logement',1,true);
-  body+=heading('Points bloquants',2);
-  body+=(blocking.length?blocking.map(i=>bullet(`${i.title} — ${i.text}`)).join(''):bullet('Aucun point bloquant détecté.'));
-  body+=heading('Recommandations',2);
-  body+=(recommendations.length?recommendations.map(i=>bullet(`${i.title} — ${i.text}`)).join(''):bullet('Aucune recommandation prioritaire.'));
-  body+=heading('Audit de la galerie photos',1,true);
-  body+=p(`${photo.total} photo(s) prévue(s) — couverture ${photo.coverSelected?'sélectionnée':'à choisir'}.`,{bold:true});
-  body+=heading('Points forts',2);
-  body+=(photo.strengths.length?photo.strengths:['Galerie à compléter.']).map(bullet).join('');
-  body+=heading('Points à améliorer',2);
-  body+=photo.improvements.map(bullet).join('');
-  body+=p('Les photos ne sont pas intégrées au document. Elles doivent être ajoutées directement sur Airbnb, Booking.com ou Abritel.',{color:'766C66'});
-  body+=heading('Annonce générée',1,true);
-  body+=heading(val('generatedTitle')||'Titre à générer',2);
-  body+=p(val('generatedIntro'),{bold:true});
-  body+=heading('Description',2);
-  val('generatedDescription').split(/\n+/).filter(Boolean).forEach(t=>body+=p(t));
-  body+=heading('Informations pratiques',2);
-  body+=p(val('generatedRules'));
-  body+=heading('Conseils d’optimisation',1,true);
-  body+=(advice.length?advice:['Relire toutes les informations avant publication.']).map(bullet).join('');
-  body+=heading('Validation finale',1,true);
-  body+=p(statusTitle,{bold:true,size:26,color:statusColor});
-  body+=p(statusText);
-  body+=p('Prochaine étape : copiez les textes, ajoutez vos photos sur la plateforme choisie, complétez les tarifs et les disponibilités, puis relisez l’annonce depuis la vue voyageur.',{spacing:160});
-
-  const documentXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-    <w:body>${body}
-      <w:sectPr>
-        <w:pgSz w:w="11906" w:h="16838"/>
-        <w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="850" w:header="400" w:footer="400" w:gutter="0"/>
-      </w:sectPr>
-    </w:body>
-  </w:document>`;
-
-  const stylesXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-    <w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="21"/><w:color w:val="2F2926"/></w:rPr><w:pPr><w:spacing w:after="100" w:line="276" w:lineRule="auto"/></w:pPr></w:style>
-    <w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="34"/><w:color w:val="3E2D25"/></w:rPr><w:pPr><w:spacing w:before="220" w:after="150"/><w:keepNext/></w:pPr></w:style>
-    <w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="25"/><w:color w:val="B96F52"/></w:rPr><w:pPr><w:spacing w:before="170" w:after="90"/><w:keepNext/></w:pPr></w:style>
-  </w:styles>`;
-
-  const numberingXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  <w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-    <w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="hybridMultilevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="•"/><w:lvlJc w:val="left"/><w:pPr><w:tabs><w:tab w:val="num" w:pos="720"/></w:tabs><w:ind w:left="720" w:hanging="360"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr></w:lvl></w:abstractNum>
-    <w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num>
-  </w:numbering>`;
-
-  const zip=new JSZip();
-  zip.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/></Types>`);
-  zip.folder('_rels').file('.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
-  zip.folder('word').file('document.xml',documentXml);
-  zip.folder('word').file('styles.xml',stylesXml);
-  zip.folder('word').file('numbering.xml',numberingXml);
-  zip.folder('word').folder('_rels').file('document.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rIdNumbering" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/></Relationships>`);
-
-  const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',compression:'DEFLATE'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='mon-annonce-pro.docx';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  const {scores,photo,ready,statusTitle,statusText}=buildPrintableReport();
+  const issueList=(controlIssues.slice(0,10).map(x=>`<li><strong>${esc(x.title)}</strong> — ${esc(x.text)}</li>`).join('')||'<li>Aucune incohérence majeure détectée.</li>');
+  const adviceList=(adviceItems.slice(0,8).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Relire les informations avant publication.</li>');
+  const content=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Mon Annonce Pro</title><style>@page{size:A4;margin:16mm}body{font-family:Arial;color:#2F2926;font-size:10.5pt;line-height:1.45}h1{color:#3E2D25;font-size:24pt}h2{color:#3E2D25;font-size:17pt;border-bottom:1px solid #E4D9CF;padding-bottom:6pt}h3{color:#B96F52;font-size:11pt}.page{page-break-after:always;max-height:250mm;overflow:hidden}.page:last-child{page-break-after:auto}.score{font-size:28pt;font-weight:bold;color:#3E2D25}.status{padding:12pt;border-radius:8pt}.status.ready{background:#E7EEE5;border:1px solid #D3DFD0;color:#536B52}.status.warning{background:#FAF1DC;border:1px solid #EEDCB4;color:#8A6324}table{width:100%;border-collapse:collapse}td{border:1px solid #E4D9CF;padding:8pt;vertical-align:top}ul{margin-top:5pt}</style></head><body>
+  <section class="page"><h1>Mon Annonce Pro</h1><div class="status ${ready?'ready':'warning'}"><strong>${ready?'🟢':'🟠'} ${esc(statusTitle)}</strong><br>${esc(statusText)}</div><h2>Synthèse</h2><table><tr><td>Cohérence<br><span class="score">${scores.coherence}</span>/100</td><td>Équipements<br><span class="score">${scores.equipment}</span>/100</td><td>Photos<br><span class="score">${scores.photo}</span>/100</td><td>Global<br><span class="score">${scores.global}</span>/100</td></tr></table></section>
+  <section class="page"><h2>Audit du logement</h2><ul>${issueList}</ul></section>
+  <section class="page"><h2>Audit de la galerie photos</h2><p><strong>${photo.total} photo(s) prévue(s)</strong> — Couverture : ${photo.coverSelected?'sélectionnée':'à choisir'}.</p><h3>Points forts</h3><ul>${(photo.strengths.length?photo.strengths:['Galerie à compléter.']).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h3>Points à améliorer</h3><ul>${photo.improvements.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><em>Les photos ne sont pas intégrées au document. Elles doivent être ajoutées directement sur Airbnb, Booking.com ou Abritel.</em></p></section>
+  <section class="page"><h2>Annonce générée</h2><h1>${esc(val('generatedTitle'))}</h1><p><strong>${esc(val('generatedIntro'))}</strong></p><h3>Description</h3><p>${esc(clampText(val('generatedDescription'),1500)).replace(/\n/g,'<br>')}</p><h3>Informations pratiques</h3><p>${esc(clampText(val('generatedRules'),650)).replace(/\n/g,'<br>')}</p></section>
+  <section class="page"><h2>Conseils d’optimisation</h2><ul>${adviceList}</ul></section>
+  <section><h2>Validation finale</h2><div class="status ${ready?'ready':'warning'}"><strong>${ready?'🟢':'🟠'} ${esc(statusTitle)}</strong><br>${esc(statusText)}</div><p>Prochaine étape : copiez les textes, ajoutez vos photos sur la plateforme choisie, complétez les tarifs et les disponibilités, puis relisez l’annonce depuis la vue voyageur.</p></section>
+  </body></html>`;
+  const blob=new Blob(['\ufeff',content],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mon-annonce-pro.doc';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 $('downloadWord').addEventListener('click',downloadWord);
 $('printPdf').addEventListener('click',()=>{
