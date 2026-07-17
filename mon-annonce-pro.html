@@ -345,7 +345,7 @@ h1 span{color:var(--terracotta)}
 .report-card p,.report-card li{font-size:8.3px;line-height:1.45;color:var(--muted);margin:0}
 .report-card ul,.report-card ol{margin:0;padding-left:4mm;display:grid;gap:1.5mm}
 .report-stat{font-size:21px;font-weight:800;color:var(--brown);line-height:1}.report-stat small{font-size:8px;color:var(--muted);font-weight:600}
-.report-status{display:flex;gap:3mm;align-items:center;padding:4mm 5mm;border-radius:4mm;background:var(--sage-soft);border:1px solid #D3DFD0;margin:5mm 0}.report-status .dot{width:9mm;height:9mm;border-radius:50%;background:var(--sage);color:#fff;display:grid;place-items:center;font-weight:900}.report-status strong{display:block;font-size:12px;color:#536B52}.report-status span{display:block;font-size:8px;color:#60705E;margin-top:1mm}.report-status.warning{background:var(--amber-soft);border-color:#EEDCB4}.report-status.warning .dot{background:var(--amber)}.report-status.warning strong{color:#8A6324}.report-status.warning span{color:#7B6643}
+.report-status{display:flex;gap:3mm;align-items:center;padding:4mm 5mm;border-radius:4mm;background:var(--sage-soft);border:1px solid #D3DFD0;margin:5mm 0}.report-status .dot{width:9mm;height:9mm;border-radius:50%;background:var(--sage);color:#fff;display:grid;place-items:center;font-weight:900}.report-status strong{display:block;font-size:12px;color:#536B52}.report-status span{display:block;font-size:8px;color:#60705E;margin-top:1mm}.report-status.warning{background:var(--amber-soft);border-color:#EEDCB4}.report-status.warning .dot{background:var(--amber)}.report-status.warning strong{color:#8A6324}.report-status.warning span{color:#7B6643}.report-status.error{background:var(--red-soft);border-color:#EBCAC4}.report-status.error .dot{background:var(--red)}.report-status.error strong{color:#8D3E35}.report-status.error span{color:#7B514C}
 .report-list{display:grid;gap:2.2mm}.report-row{display:grid;grid-template-columns:7mm 1fr;gap:2mm;align-items:start;font-size:8.3px;line-height:1.35}.report-row i{width:6mm;height:6mm;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;background:var(--beige);color:var(--brown)}.report-row.ok i{background:var(--sage-soft);color:var(--sage)}.report-row.warn i{background:var(--amber-soft);color:var(--amber)}.report-row.error i{background:var(--red-soft);color:var(--red)}
 .report-platform{border:1px solid var(--line);border-radius:4mm;padding:4mm;background:#fff;margin-bottom:3mm;overflow:hidden}.report-platform h3{font-size:11px;margin:0 0 2mm;color:var(--brown)}.report-platform h4{font-size:8px;margin:2mm 0 1mm;color:var(--terracotta);text-transform:uppercase;letter-spacing:.06em}.report-platform p{font-size:7.8px;line-height:1.38;color:var(--muted);margin:0;white-space:pre-line}
 .report-footer{position:absolute;left:15mm;right:15mm;bottom:7mm;display:flex;justify-content:space-between;font-size:6.8px;color:var(--taupe);border-top:1px solid var(--line);padding-top:2mm}
@@ -680,9 +680,9 @@ h1 span{color:var(--terracotta)}
             <button class="btn primary" type="button" id="copyAll">Copier tout</button>
           </div>
           <div class="export-card">
-            <div class="icon">📄</div><h3>Télécharger en Word</h3>
+            <div class="icon">📄</div><h3>Télécharger en Word (.docx)</h3>
             <p>Récupérez un document modifiable avec le titre, la description et les recommandations.</p>
-            <button class="btn primary" type="button" id="downloadWord">Télécharger Word</button>
+            <button class="btn primary" type="button" id="downloadWord">Télécharger le .docx</button>
           </div>
           <div class="export-card">
             <div class="icon">🖨️</div><h3>Enregistrer en PDF</h3>
@@ -736,6 +736,7 @@ h1 span{color:var(--terracotta)}
 
 <div class="report-print" id="reportPrint" aria-hidden="true"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const qa = sel => [...document.querySelectorAll(sel)];
@@ -982,13 +983,23 @@ function grammaticalStyle(style,feminine){
 function titleCaseWords(text){
   return String(text||'').trim().toLowerCase().replace(/(^|[\s'’-])([a-zà-öø-ÿ])/g,(m,sep,ch)=>sep+ch.toUpperCase());
 }
+function restoreFrenchCityAccents(city){
+  const normalized=String(city||'').trim();
+  const key=normalized.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const known={
+    'orleans':'Orléans','evry':'Évry','evry-courcouronnes':'Évry-Courcouronnes',
+    'saint-etienne':'Saint-Étienne','creteil':'Créteil','nimes':'Nîmes',
+    'ales':'Alès','beziers':'Béziers','sete':'Sète','cherbourg-en-cotentin':'Cherbourg-en-Cotentin'
+  };
+  return known[key]||titleCaseWords(normalized);
+}
 function extractCity(address){
   const clean=String(address||'').replace(/\s+/g,' ').trim();
   if(!clean) return '';
   const postal=clean.match(/\b\d{5}\s+(.+)$/);
-  if(postal) return titleCaseWords(postal[1].replace(/[,;].*$/,'').trim());
+  if(postal) return restoreFrenchCityAccents(postal[1].replace(/[,;].*$/,'').trim());
   const parts=clean.split(',').map(x=>x.trim()).filter(Boolean);
-  if(parts.length>1) return titleCaseWords(parts[parts.length-1].replace(/^\d{5}\s*/,''));
+  if(parts.length>1) return restoreFrenchCityAccents(parts[parts.length-1].replace(/^\d{5}\s*/,''));
   return '';
 }
 function cleanStrength(text){
@@ -1028,7 +1039,7 @@ function generateListing(){
 
 Il comprend ${rooms} chambre${rooms>1?'s':''}, ${num('bathrooms')||1} salle${num('bathrooms')>1?'s':''} de bain et ${num('beds')||cap} couchages. Les espaces ont été organisés pour offrir confort et convivialité tout au long du séjour.
 
-Vous disposerez notamment de ${equipmentPhrase}. La cuisine permet de préparer les repas sur place, tandis que la pièce de vie se prête aussi bien aux séjours en couple qu’aux vacances en famille ou entre amis.
+Vous disposerez notamment des équipements suivants : ${equipmentPhrase}. La cuisine permet de préparer les repas sur place, tandis que la pièce de vie se prête aussi bien aux séjours en couple qu’aux vacances en famille ou entre amis.
 
 ${locationText}`;
   } else if(currentPlatform==='booking'){
@@ -1046,13 +1057,13 @@ ${locationText}`;
     intro=`Une adresse agréable pour se retrouver, se reposer et profiter du séjour, jusqu’à ${cap} voyageurs.`;
     desc=`${lang.demonstrative.charAt(0).toUpperCase()+lang.demonstrative.slice(1)} ${lang.noun} ${style} offre un cadre accueillant pour un séjour jusqu’à ${cap} voyageurs. Il comprend ${rooms} chambre${rooms>1?'s':''} et ${num('beds')||cap} couchages.
 
-Vous apprécierez particulièrement ${strength}.${extras.length?` Vous profiterez également de ${equipmentPhrase}.`:''}
+Vous apprécierez particulièrement ${strength}.${extras.length?` Vous profiterez également des équipements suivants : ${equipmentPhrase}.`:''}
 
 Les espaces facilitent les repas, les moments de détente et la vie en groupe. La cuisine est équipée pour les séjours autonomes, et les informations nécessaires à l’arrivée seront communiquées avant le séjour.
 
 ${locationText}`;
   }
-  rules=`Arrivée selon les horaires convenus. Merci de respecter le voisinage, les équipements et les consignes du logement. Hébergement non-fumeur${checked('pets')?' ; animaux acceptés selon les conditions précisées par l’hôte':' ; animaux non admis sauf accord préalable'}. Les fêtes et événements sont interdits sans autorisation écrite.`;
+  rules=`Arrivée selon les horaires convenus. Merci de respecter le voisinage, les équipements et les consignes du logement. Hébergement non-fumeur${checked('pets')?' ; les animaux peuvent être acceptés sous réserve d’un accord préalable avec l’hôte':' ; animaux non admis sauf accord préalable'}. Les fêtes et événements sont interdits sans autorisation écrite.`;
   $('generatedTitle').value=title;
   $('generatedIntro').value=intro;
   $('generatedDescription').value=desc;
@@ -1168,37 +1179,125 @@ function footer(page){return `<div class="report-footer"><span>Mon Annonce Pro �
 function buildPrintableReport(){
   if(!controlIssues.length) runControl();
   const photo=photoAuditData(), scores=reportScores();
-  const ready=scores.global>=75 && !controlIssues.some(x=>x.type==='error');
-  const statusTitle=ready?'Annonce prête à publier':'Annonce à corriger avant publication';
-  const statusText=ready?'Votre annonce est cohérente et peut être transférée sur Airbnb, Booking.com et Abritel.':'Corrigez les points bloquants signalés avant de transférer l’annonce sur les plateformes.';
+  const hasBlocking=controlIssues.some(x=>x.type==='error');
+  const level=(!hasBlocking && scores.global>=90)?'ready':(!hasBlocking && scores.global>=75)?'improve':'error';
+  const ready=level==='ready';
+  const statusTitle=level==='ready'
+    ?'Annonce prête à publier'
+    :level==='improve'
+      ?'Annonce de bonne qualité — quelques améliorations recommandées'
+      :'Corrections nécessaires avant publication';
+  const statusText=level==='ready'
+    ?'Votre annonce est cohérente et peut être transférée sur Airbnb, Booking.com et Abritel.'
+    :level==='improve'
+      ?'L’annonce peut être utilisée, mais les recommandations signalées amélioreront sa qualité et sa capacité à rassurer les voyageurs.'
+      :'Corrigez les points bloquants signalés avant de transférer l’annonce sur les plateformes.';
   const topIssues=controlIssues.slice(0,8);
   const topAdvice=adviceItems.slice(0,7);
   const order=['1. Séjour ou principal atout','2. Terrasse, jardin ou vue','3. Chambre principale','4. Autres couchages','5. Cuisine','6. Salle de bain','7. Équipements et détails'];
   const pages=[];
-  pages.push(`<section class="report-page">${reportHeader(1,'Synthèse de votre annonce','Vue d’ensemble du niveau de préparation avant publication.',scores.global)}<div class="report-status ${ready?'':'warning'}"><div class="dot">${ready?'✓':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div><div class="report-grid three"><div class="report-card"><h3>Cohérence</h3><div class="report-stat">${scores.coherence}<small>/100</small></div></div><div class="report-card"><h3>Équipements</h3><div class="report-stat">${scores.equipment}<small>/100</small></div></div><div class="report-card"><h3>Photos</h3><div class="report-stat">${scores.photo}<small>/100</small></div></div></div><div class="report-grid" style="margin-top:4mm"><div class="report-card"><h3>Logement</h3><p>${esc(val('propertyType')||'Logement')} · ${num('capacity')||0} voyageurs · ${num('bedrooms')||0} chambre(s) · ${num('bathrooms')||0} salle(s) de bain</p></div><div class="report-card"><h3>Localisation déclarée</h3><p class="report-clamp-2">${esc(val('address')||'Adresse non renseignée')}</p></div></div><div class="report-card" style="margin-top:4mm"><h3>Verdict CleanUp</h3><p>${esc(statusText)} Le rapport ci-après reprend les contrôles du logement, l’audit photo, les textes générés et les dernières recommandations.</p></div>${footer(1)}</section>`);
+  pages.push(`<section class="report-page">${reportHeader(1,'Synthèse de votre annonce','Vue d’ensemble du niveau de préparation avant publication.',scores.global)}<div class="report-status ${level==='ready'?'':level==='improve'?'warning':'error'}"><div class="dot">${level==='ready'?'✓':level==='improve'?'~':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div><div class="report-grid three"><div class="report-card"><h3>Cohérence</h3><div class="report-stat">${scores.coherence}<small>/100</small></div></div><div class="report-card"><h3>Équipements</h3><div class="report-stat">${scores.equipment}<small>/100</small></div></div><div class="report-card"><h3>Photos</h3><div class="report-stat">${scores.photo}<small>/100</small></div></div></div><div class="report-grid" style="margin-top:4mm"><div class="report-card"><h3>Logement</h3><p>${esc(val('propertyType')||'Logement')} · ${num('capacity')||0} voyageurs · ${num('bedrooms')||0} chambre(s) · ${num('bathrooms')||0} salle(s) de bain</p></div><div class="report-card"><h3>Localisation déclarée</h3><p class="report-clamp-2">${esc(val('address')||'Adresse non renseignée')}</p></div></div><div class="report-card" style="margin-top:4mm"><h3>Verdict CleanUp</h3><p>${esc(statusText)} Le rapport ci-après reprend les contrôles du logement, l’audit photo, les textes générés et les dernières recommandations.</p></div>${footer(1)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(2,'Audit du logement','Contrôle de la capacité, du confort, des équipements et des informations indispensables.',scores.coherence)}<div class="report-grid"><div class="report-card"><h3>Données principales</h3><ul><li>Capacité : ${num('capacity')||0} voyageurs</li><li>Couchages : ${num('beds')||0}</li><li>Places à table : ${num('tableSeats')||0}</li><li>Chaises : ${num('chairs')||0}</li><li>Jeux de clés : ${num('keys')||0}</li></ul></div><div class="report-card"><h3>Contrôles prioritaires</h3><div class="report-list">${topIssues.length?topIssues.map(x=>`<div class="report-row ${x.type}"><i>${x.type==='error'?'!':'?'}</i><div><strong>${esc(x.title)}</strong><br>${esc(clampText(x.text,115))}</div></div>`).join(''):'<div class="report-row ok"><i>✓</i><div>Aucune incohérence majeure détectée.</div></div>'}</div></div></div><div class="report-card" style="margin-top:4mm"><h3>Points forts déclarés</h3><p class="report-clamp-4">${esc(val('strengths')||'Aucun point fort particulier n’a été indiqué. L’annonce met donc principalement en avant le confort, la capacité d’accueil et les équipements déclarés.')}</p></div>${footer(2)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(3,'Audit de la galerie photos','Les photos ne sont pas reproduites dans ce rapport : seules leur préparation et leur organisation sont auditées.',scores.photo)}<div class="report-grid three"><div class="report-card"><h3>Photos ajoutées</h3><div class="report-stat">${photos.length}</div></div><div class="report-card"><h3>Total prévu</h3><div class="report-stat">${photo.total}</div></div><div class="report-card"><h3>Couverture</h3><div class="report-stat" style="font-size:15px">${photo.coverSelected?'Choisie':'À choisir'}</div></div></div><div class="report-grid" style="margin-top:4mm"><div class="report-card"><h3>Points forts</h3><ul>${(photo.strengths.length?photo.strengths:['Galerie à compléter avant publication.']).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="report-card"><h3>Points à améliorer</h3><ul>${photo.improvements.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div><div class="report-card" style="margin-top:4mm"><h3>Ordre recommandé</h3><ol>${order.map(x=>`<li>${esc(x.replace(/^\d+\.\s*/,''))}</li>`).join('')}</ol></div><div class="report-card" style="margin-top:4mm"><h3>Conseil CleanUp</h3><p>La première image doit montrer le principal atout du logement. Privilégiez une photo horizontale, lumineuse, nette et sans élément personnel visible.</p></div>${footer(3)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(4,'Annonce générée','Version de travail prête à être copiée et adaptée sur chaque plateforme.',scores.description)}<div class="report-platform"><h3>${esc(val('generatedTitle')||'Titre à générer')}</h3><h4>Accroche</h4><p class="report-clamp-4">${esc(clampText(val('generatedIntro'),420))}</p><h4>Description</h4><p class="report-clamp-7">${esc(clampText(val('generatedDescription'),1250))}</p><h4>Informations pratiques</h4><p class="report-clamp-4">${esc(clampText(val('generatedRules'),500))}</p></div><div class="report-card"><h3>Utilisation</h3><p>Copiez ce contenu dans Airbnb, Booking.com ou Abritel, puis vérifiez les limites de caractères et les champs propres à chaque plateforme avant publication.</p></div>${footer(4)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(5,'Conseils d’optimisation','Actions simples pour rendre l’annonce plus claire, plus rassurante et plus attractive.')}<div class="report-grid"><div class="report-card"><h3>Priorités</h3><div class="report-list">${topAdvice.map((x,i)=>`<div class="report-row"><i>${i+1}</i><div>${esc(clampText(x,145))}</div></div>`).join('')}</div></div><div class="report-card"><h3>Rappels de publication</h3><ul><li>Ne promettez aucun équipement non vérifié.</li><li>Précisez les limites du logement et les éventuelles nuisances.</li><li>Vérifiez l’orthographe, les horaires et les règles.</li><li>Adaptez le titre à la longueur autorisée par la plateforme.</li><li>Ajoutez vos photos directement sur chaque plateforme.</li></ul></div></div><div class="report-card" style="margin-top:4mm"><h3>Positionnement conseillé</h3><p>Décrivez des bénéfices concrets plutôt que des superlatifs. Le voyageur doit comprendre rapidement pour qui le logement est adapté, combien de personnes peuvent réellement y séjourner et quels sont ses principaux atouts.</p></div>${footer(5)}</section>`);
-  pages.push(`<section class="report-page">${reportHeader(6,'Validation finale','Dernière checklist avant la mise en ligne.',scores.global)}<div class="report-status ${ready?'':'warning'}"><div class="dot">${ready?'✓':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div><div class="report-grid"><div class="report-card"><h3>Checklist</h3><ul><li>${val('generatedTitle')?'✓':'○'} Titre final relu</li><li>${val('generatedDescription')?'✓':'○'} Description complète</li><li>${val('generatedRules')?'✓':'○'} Règles précisées</li><li>${photo.coverSelected?'✓':'○'} Photo de couverture choisie</li><li>${photo.total>=8?'✓':'○'} Galerie suffisamment complète</li><li>${controlIssues.some(x=>x.type==='error')?'○':'✓'} Aucun contrôle bloquant</li></ul></div><div class="report-card"><h3>Prochaine étape</h3><p>Copiez les textes générés, ajoutez les photos directement sur la plateforme choisie, complétez les tarifs et les disponibilités, puis effectuez une dernière vérification depuis la vue voyageur.</p></div></div><div class="report-card" style="margin-top:4mm"><h3>Indice CleanUp</h3><p><strong>${scores.global}/100 — ${statusTitle}</strong></p><p style="margin-top:2mm">Cette note reflète la cohérence des informations fournies, la préparation des équipements, la galerie prévue et la qualité du contenu généré.</p></div>${footer(6)}</section>`);
+  pages.push(`<section class="report-page">${reportHeader(6,'Validation finale','Dernière checklist avant la mise en ligne.',scores.global)}<div class="report-status ${level==='ready'?'':level==='improve'?'warning':'error'}"><div class="dot">${level==='ready'?'✓':level==='improve'?'~':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div><div class="report-grid"><div class="report-card"><h3>Checklist</h3><ul><li>${val('generatedTitle')?'✓':'○'} Titre final relu</li><li>${val('generatedDescription')?'✓':'○'} Description complète</li><li>${val('generatedRules')?'✓':'○'} Règles précisées</li><li>${photo.coverSelected?'✓':'○'} Photo de couverture choisie</li><li>${photo.total>=8?'✓':'○'} Galerie suffisamment complète</li><li>${controlIssues.some(x=>x.type==='error')?'○':'✓'} Aucun contrôle bloquant</li></ul></div><div class="report-card"><h3>Prochaine étape</h3><p>Copiez les textes générés, ajoutez les photos directement sur la plateforme choisie, complétez les tarifs et les disponibilités, puis effectuez une dernière vérification depuis la vue voyageur.</p></div></div><div class="report-card" style="margin-top:4mm"><h3>Indice CleanUp</h3><p><strong>${scores.global}/100 — ${statusTitle}</strong></p><p style="margin-top:2mm">Cette note reflète la cohérence des informations fournies, la préparation des équipements, la galerie prévue et la qualité du contenu généré.</p></div>${footer(6)}</section>`);
   $('reportPrint').innerHTML=pages.join('');
-  return {scores,photo,ready,statusTitle,statusText};
+  return {scores,photo,ready,level,statusTitle,statusText};
 }
-function downloadWord(){
+async function downloadWord(){
   lockGeneratedAnnouncement();
-  const {scores,photo,ready,statusTitle,statusText}=buildPrintableReport();
-  const issueList=(controlIssues.slice(0,10).map(x=>`<li><strong>${esc(x.title)}</strong> — ${esc(x.text)}</li>`).join('')||'<li>Aucune incohérence majeure détectée.</li>');
-  const adviceList=(adviceItems.slice(0,8).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Relire les informations avant publication.</li>');
-  const content=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Mon Annonce Pro</title><style>@page{size:A4;margin:16mm}body{font-family:Arial;color:#2F2926;font-size:10.5pt;line-height:1.45}h1{color:#3E2D25;font-size:24pt}h2{color:#3E2D25;font-size:17pt;border-bottom:1px solid #E4D9CF;padding-bottom:6pt}h3{color:#B96F52;font-size:11pt}.page{page-break-after:always;max-height:250mm;overflow:hidden}.page:last-child{page-break-after:auto}.score{font-size:28pt;font-weight:bold;color:#3E2D25}.status{padding:12pt;border-radius:8pt}.status.ready{background:#E7EEE5;border:1px solid #D3DFD0;color:#536B52}.status.warning{background:#FAF1DC;border:1px solid #EEDCB4;color:#8A6324}table{width:100%;border-collapse:collapse}td{border:1px solid #E4D9CF;padding:8pt;vertical-align:top}ul{margin-top:5pt}</style></head><body>
-  <section class="page"><h1>Mon Annonce Pro</h1><div class="status ${ready?'ready':'warning'}"><strong>${ready?'🟢':'🟠'} ${esc(statusTitle)}</strong><br>${esc(statusText)}</div><h2>Synthèse</h2><table><tr><td>Cohérence<br><span class="score">${scores.coherence}</span>/100</td><td>Équipements<br><span class="score">${scores.equipment}</span>/100</td><td>Photos<br><span class="score">${scores.photo}</span>/100</td><td>Global<br><span class="score">${scores.global}</span>/100</td></tr></table></section>
-  <section class="page"><h2>Audit du logement</h2><ul>${issueList}</ul></section>
-  <section class="page"><h2>Audit de la galerie photos</h2><p><strong>${photo.total} photo(s) prévue(s)</strong> — Couverture : ${photo.coverSelected?'sélectionnée':'à choisir'}.</p><h3>Points forts</h3><ul>${(photo.strengths.length?photo.strengths:['Galerie à compléter.']).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h3>Points à améliorer</h3><ul>${photo.improvements.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><em>Les photos ne sont pas intégrées au document. Elles doivent être ajoutées directement sur Airbnb, Booking.com ou Abritel.</em></p></section>
-  <section class="page"><h2>Annonce générée</h2><h1>${esc(val('generatedTitle'))}</h1><p><strong>${esc(val('generatedIntro'))}</strong></p><h3>Description</h3><p>${esc(clampText(val('generatedDescription'),1500)).replace(/\n/g,'<br>')}</p><h3>Informations pratiques</h3><p>${esc(clampText(val('generatedRules'),650)).replace(/\n/g,'<br>')}</p></section>
-  <section class="page"><h2>Conseils d’optimisation</h2><ul>${adviceList}</ul></section>
-  <section><h2>Validation finale</h2><div class="status ${ready?'ready':'warning'}"><strong>${ready?'🟢':'🟠'} ${esc(statusTitle)}</strong><br>${esc(statusText)}</div><p>Prochaine étape : copiez les textes, ajoutez vos photos sur la plateforme choisie, complétez les tarifs et les disponibilités, puis relisez l’annonce depuis la vue voyageur.</p></section>
-  </body></html>`;
-  const blob=new Blob(['\ufeff',content],{type:'application/msword'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mon-annonce-pro.doc';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const {scores,photo,level,statusTitle,statusText}=buildPrintableReport();
+  if(typeof JSZip==='undefined'){
+    alert('Le module Word n’a pas pu être chargé. Vérifiez votre connexion puis réessayez.');
+    return;
+  }
+
+  const blocking=controlIssues.filter(x=>x.type==='error').slice(0,10);
+  const recommendations=controlIssues.filter(x=>x.type==='warn').slice(0,12);
+  const advice=adviceItems.slice(0,8);
+
+  const x=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const run=(value,bold=false,size=22,color='2F2926')=>`<w:r><w:rPr>${bold?'<w:b/>':''}<w:sz w:val="${size}"/><w:color w:val="${color}"/></w:rPr><w:t xml:space="preserve">${x(value)}</w:t></w:r>`;
+  const p=(value='',opts={})=>`<w:p><w:pPr>${opts.style?`<w:pStyle w:val="${opts.style}"/>`:''}${opts.pageBreak?'<w:pageBreakBefore/>':''}${opts.spacing?`<w:spacing w:after="${opts.spacing}"/>`:''}</w:pPr>${run(value,!!opts.bold,opts.size||22,opts.color||'2F2926')}</w:p>`;
+  const bullet=value=>`<w:p><w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr><w:spacing w:after="70"/></w:pPr>${run(value,false,20)}</w:p>`;
+  const heading=(value,level=1,pageBreak=false)=>p(value,{style:`Heading${level}`,pageBreak});
+  const cell=(value,bold=false)=>`<w:tc><w:tcPr><w:tcW w:w="2300" w:type="dxa"/><w:shd w:fill="FCFAF7"/><w:tcBorders><w:top w:val="single" w:sz="4" w:color="E4D9CF"/><w:left w:val="single" w:sz="4" w:color="E4D9CF"/><w:bottom w:val="single" w:sz="4" w:color="E4D9CF"/><w:right w:val="single" w:sz="4" w:color="E4D9CF"/></w:tcBorders></w:tcPr>${p(value,{bold,size:bold?28:20})}</w:tc>`;
+  const scoreTable=`<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/></w:tblPr><w:tr>${cell(`Cohérence\n${scores.coherence}/100`,true)}${cell(`Équipements\n${scores.equipment}/100`,true)}${cell(`Photos\n${scores.photo}/100`,true)}${cell(`Global\n${scores.global}/100`,true)}</w:tr></w:tbl>`;
+
+  const statusColor=level==='ready'?'536B52':level==='improve'?'8A6324':'8D3E35';
+  let body='';
+  body+=p('CleanUp Manager',{bold:true,size:26,color:'3E2D25'});
+  body+=p('MON ANNONCE PRO',{bold:true,size:16,color:'B96F52',spacing:180});
+  body+=heading('Synthèse de votre annonce',1);
+  body+=p(statusTitle,{bold:true,size:26,color:statusColor});
+  body+=p(statusText,{size:20,spacing:220});
+  body+=scoreTable;
+  body+=heading('Audit du logement',1,true);
+  body+=heading('Points bloquants',2);
+  body+=(blocking.length?blocking.map(i=>bullet(`${i.title} — ${i.text}`)).join(''):bullet('Aucun point bloquant détecté.'));
+  body+=heading('Recommandations',2);
+  body+=(recommendations.length?recommendations.map(i=>bullet(`${i.title} — ${i.text}`)).join(''):bullet('Aucune recommandation prioritaire.'));
+  body+=heading('Audit de la galerie photos',1,true);
+  body+=p(`${photo.total} photo(s) prévue(s) — couverture ${photo.coverSelected?'sélectionnée':'à choisir'}.`,{bold:true});
+  body+=heading('Points forts',2);
+  body+=(photo.strengths.length?photo.strengths:['Galerie à compléter.']).map(bullet).join('');
+  body+=heading('Points à améliorer',2);
+  body+=photo.improvements.map(bullet).join('');
+  body+=p('Les photos ne sont pas intégrées au document. Elles doivent être ajoutées directement sur Airbnb, Booking.com ou Abritel.',{color:'766C66'});
+  body+=heading('Annonce générée',1,true);
+  body+=heading(val('generatedTitle')||'Titre à générer',2);
+  body+=p(val('generatedIntro'),{bold:true});
+  body+=heading('Description',2);
+  val('generatedDescription').split(/\n+/).filter(Boolean).forEach(t=>body+=p(t));
+  body+=heading('Informations pratiques',2);
+  body+=p(val('generatedRules'));
+  body+=heading('Conseils d’optimisation',1,true);
+  body+=(advice.length?advice:['Relire toutes les informations avant publication.']).map(bullet).join('');
+  body+=heading('Validation finale',1,true);
+  body+=p(statusTitle,{bold:true,size:26,color:statusColor});
+  body+=p(statusText);
+  body+=p('Prochaine étape : copiez les textes, ajoutez vos photos sur la plateforme choisie, complétez les tarifs et les disponibilités, puis relisez l’annonce depuis la vue voyageur.',{spacing:160});
+
+  const documentXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+    <w:body>${body}
+      <w:sectPr>
+        <w:pgSz w:w="11906" w:h="16838"/>
+        <w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="850" w:header="400" w:footer="400" w:gutter="0"/>
+      </w:sectPr>
+    </w:body>
+  </w:document>`;
+
+  const stylesXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+    <w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="21"/><w:color w:val="2F2926"/></w:rPr><w:pPr><w:spacing w:after="100" w:line="276" w:lineRule="auto"/></w:pPr></w:style>
+    <w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="34"/><w:color w:val="3E2D25"/></w:rPr><w:pPr><w:spacing w:before="220" w:after="150"/><w:keepNext/></w:pPr></w:style>
+    <w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="25"/><w:color w:val="B96F52"/></w:rPr><w:pPr><w:spacing w:before="170" w:after="90"/><w:keepNext/></w:pPr></w:style>
+  </w:styles>`;
+
+  const numberingXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+    <w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="hybridMultilevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="•"/><w:lvlJc w:val="left"/><w:pPr><w:tabs><w:tab w:val="num" w:pos="720"/></w:tabs><w:ind w:left="720" w:hanging="360"/></w:pPr><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr></w:lvl></w:abstractNum>
+    <w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num>
+  </w:numbering>`;
+
+  const zip=new JSZip();
+  zip.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/></Types>`);
+  zip.folder('_rels').file('.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+  zip.folder('word').file('document.xml',documentXml);
+  zip.folder('word').file('styles.xml',stylesXml);
+  zip.folder('word').file('numbering.xml',numberingXml);
+  zip.folder('word').folder('_rels').file('document.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rIdNumbering" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/></Relationships>`);
+
+  const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',compression:'DEFLATE'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='mon-annonce-pro.docx';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
 }
 $('downloadWord').addEventListener('click',downloadWord);
 $('printPdf').addEventListener('click',()=>{
