@@ -739,6 +739,9 @@ let photos = [];
 let controlIssues = [];
 let adviceItems = [];
 let generationLocked = false;
+let listingAiResult = null;
+let listingEngineResult = null;
+const LISTING_FUNCTION_URL = 'https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateListing';
 
 const num = id => Number($(id)?.value || 0);
 const val = id => ($(id)?.value || '').trim();
@@ -943,66 +946,125 @@ $('toggleAdvice').addEventListener('click',()=>{
 });
 
 qa('.platform-tab').forEach(btn=>btn.addEventListener('click',()=>{
-  qa('.platform-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+  qa('.platform-tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
   currentPlatform=btn.dataset.platform;
   $('platformTitle').textContent='Version '+(currentPlatform==='airbnb'?'Airbnb':currentPlatform==='booking'?'Booking':'Abritel');
+  if(listingAiResult) renderGeneratedPlatform(currentPlatform);
 }));
 
-function generateListing(){
-  const type=val('propertyType')||'Logement', city=(val('address').split(',').pop()||'').trim();
-  const cap=num('capacity')||2, rooms=num('bedrooms')||1;
-  const strength=val('strengths')||'un cadre confortable et soigné';
-  const cityName = city.replace(/^\d{5}\s*/, '').trim();
-  const locationText = cityName
-    ? `Le logement bénéficie d’un emplacement pratique à ${cityName}, à proximité des commerces, restaurants et principaux points d’intérêt.`
-    : `Le logement bénéficie d’un emplacement pratique, à proximité des commerces, restaurants et principaux points d’intérêt.`;
-  const style=val('style').toLowerCase();
-  const target=val('target').toLowerCase();
-  const extras=[];
-  if(checked('terrace')) extras.push('terrasse');
-  if(checked('garden')) extras.push('jardin');
-  if(checked('pool')) extras.push('piscine');
-  if(checked('parking')) extras.push('stationnement');
-  if(checked('wifi')) extras.push('Wi-Fi');
-  const asset=extras.length?extras.slice(0,2).join(' & '):`${rooms} chambre${rooms>1?'s':''}`;
-  let title='', intro='', desc='', rules='';
-  if(currentPlatform==='airbnb'){
-    title=`${type} ${style} · ${asset} · ${cap} voyageurs`;
-    intro=`Installez-vous dans ce ${type.toLowerCase()} pensé pour ${cap} voyageurs, idéal pour les ${target}. Vous profiterez de ${strength}.`;
-    desc=`Bienvenue dans ce ${type.toLowerCase()} ${style}, conçu pour accueillir confortablement jusqu’à ${cap} voyageurs.
+function collectListingPayload(){
+  const inventoryIds = [
+    'plates','bowls','glasses','wineGlasses','forks','knives','spoons','teaspoons',
+    'pillows','duvets','sheets','towels','hangers','keys'
+  ];
+  const equipmentIds = [
+    'hob','oven','microwave','dishwasher','coffee','coffeeSupplies','kettle','fridge',
+    'pots','servingDishes','jug','kitchenUtensils','cuttingBoard','corkscrew','colander',
+    'teaTowels','bin','bedLinen','duvetProvided','pillowsProvided','blackout','shutters',
+    'bedsideTable','bedsideLight','mirror','iron','ironingBoard','shower','bathtub',
+    'hairdryer','bathTowels','bathMat','toiletPaper','wifi','tv','sofa','sofaBed',
+    'coffeeTable','ac','washer','dryer','workspace','lighting','parking','selfcheckin',
+    'smoke','coDetector','firstaid','extinguisher','outdoorLighting','baby','terrace',
+    'garden','pool','bbq','pets','linen'
+  ];
 
-Le logement comprend ${rooms} chambre${rooms>1?'s':''}, ${num('bathrooms')||1} salle${num('bathrooms')>1?'s':''} de bain et ${num('beds')||cap} couchages. ${strength.charAt(0).toUpperCase()+strength.slice(1)}.
+  return {
+    property:{
+      address:val('address'),
+      propertyType:val('propertyType'),
+      surface:num('surface'),
+      capacity:num('capacity'),
+      bedrooms:num('bedrooms'),
+      beds:num('beds'),
+      bathrooms:num('bathrooms'),
+      toilets:num('toilets'),
+      tableSeats:num('tableSeats'),
+      chairs:num('chairs'),
+      style:val('style'),
+      target:val('target'),
+      strengths:val('strengths')
+    },
+    inventory:{
+      ...Object.fromEntries(inventoryIds.map(id=>[id,num(id)])),
+      coffeeBrand:val('coffeeBrand')
+    },
+    equipment:Object.fromEntries(equipmentIds.map(id=>[id,checked(id)])),
+    photos:{
+      uploadedCount:photos.length,
+      plannedCount:num('photoCountPlanned'),
+      coverIndex:Number($('coverChoice').value||0),
+      dimensions:photos.map(photo=>({width:photo.width||0,height:photo.height||0}))
+    }
+  };
+}
 
-Les voyageurs disposent notamment de ${extras.length?extras.join(', '):'tout le nécessaire pour un séjour confortable'}. La cuisine permet de préparer les repas sur place et l’espace de vie est adapté aux séjours en couple, en famille ou entre amis.
-
-${locationText}`;
-  } else if(currentPlatform==='booking'){
-    title=`${type} pour ${cap} personnes avec ${asset}`;
-    intro=`Hébergement fonctionnel et confortable proposant ${rooms} chambre${rooms>1?'s':''}, ${num('beds')||cap} couchages et les équipements essentiels.`;
-    desc=`Cet hébergement accueille jusqu’à ${cap} personnes. Il comprend ${rooms} chambre${rooms>1?'s':''}, ${num('bathrooms')||1} salle${num('bathrooms')>1?'s':''} de bain et ${num('toilets')||1} WC.
-
-Équipements disponibles : ${extras.length?extras.join(', '):'équipements de base'}, cuisine équipée${checked('coffee')?`, machine à café ${val('coffeeBrand')||''}`:''}${checked('dishwasher')?', lave-vaisselle':''}${checked('washer')?', lave-linge':''}${checked('dryer')?', sèche-linge':''}.
-
-Points forts : ${strength}. L’hébergement convient particulièrement aux ${target}.
-
-${locationText}`;
-  } else {
-    title=`Séjour ${target} dans un ${type.toLowerCase()} ${style}`;
-    intro=`Une adresse pensée pour se retrouver, se reposer et profiter pleinement du séjour jusqu’à ${cap} voyageurs.`;
-    desc=`Ce ${type.toLowerCase()} offre un cadre ${style} pour des vacances en ${target}. Sa capacité maximale est de ${cap} voyageurs, avec ${rooms} chambre${rooms>1?'s':''} et ${num('beds')||cap} couchages.
-
-Vous apprécierez particulièrement ${strength}. ${extras.length?`Le logement dispose également de ${extras.join(', ')}.`:''}
-
-Les espaces ont été pensés pour faciliter les repas, les temps de repos et la vie en groupe. La cuisine est équipée pour les séjours autonomes et les informations pratiques seront communiquées avant l’arrivée.
-
-${locationText}`;
-  }
-  rules=`Arrivée selon les horaires convenus. Respect du voisinage et des équipements. Logement non-fumeur${checked('pets')?' ; animaux acceptés selon conditions':' ; animaux non admis sauf accord préalable'}. Les fêtes et événements ne sont pas autorisés sans accord écrit.`;
-  $('generatedTitle').value=title;
-  $('generatedIntro').value=intro;
-  $('generatedDescription').value=desc;
-  $('generatedRules').value=rules;
+function renderGeneratedPlatform(platform){
+  const data=listingAiResult?.platforms?.[platform];
+  if(!data) return;
+  $('generatedTitle').value=data.title||'';
+  $('generatedIntro').value=data.intro||'';
+  $('generatedDescription').value=data.description||'';
+  $('generatedRules').value=data.rules||'';
   refreshPreview();
+}
+
+function renderAiControl(ai,engine){
+  const corrections=Array.isArray(ai?.corrections)?ai.corrections:[];
+  const cards=corrections.map(item=>{
+    const type=item.priority==='Bloquant'?'error':item.priority==='Important'?'warn':'ok';
+    const icon=type==='error'?'!':type==='warn'?'?':'✓';
+    return `<div class="result-card ${type}"><div class="icon">${icon}</div><div><h4>${item.title}</h4><p>${item.action}</p></div></div>`;
+  });
+  cards.unshift(`<div class="result-card ${ai?.publicationStatus==='Prête à publier après relecture'?'ok':'warn'}"><div class="icon">✦</div><div><h4>${ai?.publicationStatus||engine?.quality?.readiness||'Analyse terminée'}</h4><p>${ai?.controlSummary||''}</p></div></div>`);
+  $('controlResults').innerHTML=cards.join('');
+  adviceItems=[
+    ...(Array.isArray(ai?.photoAdvice)?ai.photoAdvice:[]),
+    ai?.finalAdvice||''
+  ].filter(Boolean);
+  $('adviceList').innerHTML=adviceItems.map((x,i)=>`<div class="advice-item"><i>${i+1}</i><div>${x}</div></div>`).join('');
+  $('advicePanel').style.display='block';
+}
+
+async function generateListing(){
+  const button=$('generateListing');
+  const original=button.textContent;
+  button.disabled=true;
+  button.textContent='Analyse et rédaction en cours…';
+
+  try{
+    const response=await fetch(LISTING_FUNCTION_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(collectListingPayload())
+    });
+
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.ok){
+      throw new Error(data.error||`Erreur HTTP ${response.status}`);
+    }
+
+    listingAiResult=data.ai;
+    listingEngineResult=data.engine;
+    controlIssues=[
+      ...(data.engine?.control?.issues||[]),
+      ...(data.engine?.control?.warnings||[])
+    ].map(item=>({
+      type:item.severity==='Bloquant'?'error':'warn',
+      title:item.title,
+      text:item.detail
+    }));
+
+    renderAiControl(data.ai,data.engine);
+    renderGeneratedPlatform(currentPlatform);
+    button.textContent='Annonce générée ✓';
+    updateAssistant();
+  }catch(error){
+    console.error('generateListing error:',error);
+    alert(`La génération n'a pas abouti : ${error.message}`);
+    button.disabled=false;
+    button.textContent=original;
+  }
 }
 $('generateListing').addEventListener('click',generateListing);
 ['generatedTitle','generatedIntro','generatedDescription','generatedRules'].forEach(id=>$(id).addEventListener('input',refreshPreview));
@@ -1070,6 +1132,7 @@ function downloadWord(){
   <h2>Informations pratiques</h2><p>${val('generatedRules').replace(/\n/g,'<br>')}</p>
   <h2>Contrôle du logement</h2><ul>${controlIssues.map(x=>`<li><strong>${x.title}</strong> — ${x.text}</li>`).join('')}</ul>
   <h2>Optimisations recommandées</h2><ul>${adviceItems.map(x=>`<li>${x}</li>`).join('')}</ul>
+  ${listingAiResult?`<h2>Verdict CleanUp</h2><p>${listingAiResult.publicationStatus}</p><p>${listingAiResult.finalAdvice}</p>`:''}
   </body></html>`;
   const blob=new Blob(['\ufeff',content],{type:'application/msword'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mon-annonce-pro.doc';a.click();URL.revokeObjectURL(a.href);
