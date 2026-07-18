@@ -327,8 +327,16 @@ $('analyzeBtn').onclick=async()=>{
       showStep(4);
     },650);
   }catch(error){
-    console.error(error);
-    alert(error.message||'Impossible de lancer l’optimisation.');
+    console.error('Erreur generateOptimization :',error);
+    clearInterval(auditProgressTimer);
+    $('auditProgressBar').style.width='0%';
+    $('auditProgressLabel').textContent='Erreur';
+    $('auditProgressMessage').textContent='La connexion au service d’analyse a échoué.';
+    const localOrigin=location.origin==='null'?'fichier local':location.origin;
+    const message=error instanceof TypeError
+      ? `Connexion impossible avec le service CleanUp depuis ${localOrigin}. Vérifiez que cette origine est autorisée par CORS dans generateOptimization.`
+      : (error.message||'Impossible de lancer l’optimisation.');
+    alert(message);
   }finally{
     $('analyzeBtn').disabled=false;
     if(!optimizationResult){
