@@ -290,21 +290,34 @@
 
 /* Word-specific layout is embedded by JavaScript. */
 
+
+/* Correctif V5.1 — actions automatiques */
+.action-under-label{margin:2px 0 9px!important}
+.refresh-action{
+  padding:11px 17px!important;
+  font-size:11px!important;
+  background:var(--terracottaSoft)!important;
+  color:var(--terracotta)!important;
+  border:1px solid #E3B9A8!important;
+  font-weight:800!important
+}
+.refresh-action:hover{background:#F1D8CC!important}
+
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Identité du logement</h2><p>Les informations essentielles qui apparaîtront dans le guide.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName" placeholder="Ex. La Maison des Bords de Loire"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="contactName" placeholder="Ex. Conciergerie Horizon"></div><div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="contactPhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div><div class="field full"><label>Email de contact <small>(facultatif)</small></label><input class="input" id="contactEmail" type="email"></div><div class="field full">
   <div class="welcome-tools"><label>Message de bienvenue préparé par CleanUp</label><span class="auto-status" id="welcomeAutoStatus">Génération automatique</span></div>
+  <div class="inline-ai-actions action-under-label">
+    <button class="btn soft refresh-action" id="refreshWelcome" type="button">↻ Actualiser le message</button>
+  </div>
   <textarea class="textarea generated" id="welcome" maxlength="300">Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour.</textarea>
   <div class="char-counter" id="welcomeCounter">0 / 300</div>
-  <div class="inline-ai-actions">
-    <button class="btn soft mini" id="refreshWelcome" type="button">↻ Actualiser le message</button>
-  </div>
   <p class="help-text">Le texte utilise automatiquement le nom du logement et celui de la conciergerie. Vous pouvez ensuite le modifier.</p>
 </div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Arrivée et accès</h2><p>Des instructions simples évitent les appels de dernière minute.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin" placeholder="À partir de 16h"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout" placeholder="Avant 10h"></div><div class="field"><label>Mode d’arrivée</label><select class="select" id="arrivalMode"><option>Arrivée autonome</option><option>Accueil physique</option><option>Remise de clés</option></select></div><div class="field"><label>Stationnement</label><input class="input" id="parking" placeholder="Parking privé, rue, parking public..."></div><div class="field full">
   <label>Instructions d’accès préparées selon le mode d’arrivée</label>
+  <div class="inline-ai-actions action-under-label"><button class="btn soft refresh-action" id="refreshAccess" type="button">↻ Actualiser les instructions</button></div>
   <textarea class="textarea generated" id="access" maxlength="320"></textarea>
   <div class="char-counter" id="accessCounter">0 / 320</div>
-  <div class="inline-ai-actions"><button class="btn soft mini" id="refreshAccess" type="button">↻ Actualiser les instructions</button></div>
   <div class="arrival-auto-note">CleanUp reprend le nom de la conciergerie, le téléphone, l’heure d’arrivée et le mode sélectionné. Ajoutez seulement les informations propres au logement : étage, porte, boîte à clés ou lieu de rendez-vous.</div>
 </div><div class="field"><label>Nom du Wi-Fi</label><input class="input" id="wifiName"></div><div class="field"><label>Mot de passe Wi-Fi</label><input class="input" id="wifiPass"></div><div class="field"><label>Sécurité Wi-Fi</label><select class="select" id="wifiSecurity"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Réseau ouvert</option></select></div><div class="field"><label>Réseau masqué</label><select class="select" id="wifiHidden"><option value="false">Non</option><option value="true">Oui</option></select></div></div><div class="panel"><h3>QR code Wi-Fi</h3><p>Le QR code sera généré automatiquement dans le PDF. Le voyageur pourra se connecter en le scannant.</p></div></div>
 <div class="section" id="step3">
@@ -682,16 +695,22 @@ const arrivalModeField=$('arrivalMode');
 if(arrivalModeField){
   const syncArrival=()=>buildAccessText(false);
   arrivalModeField.addEventListener('change',()=>buildAccessText(true));
-  ['checkin','contactName','contactPhone'].forEach(id=>$(id)?.addEventListener('input',syncArrival));
+  let accessTimer;
+['checkin','contactName','contactPhone'].forEach(id=>$(id)?.addEventListener('input',()=>{
+  clearTimeout(accessTimer);
+  accessTimer=setTimeout(syncArrival,180);
+}));
   syncArrival();
 }
-['homeName','address','contactName'].forEach(id=>$(id)?.addEventListener('input',()=>buildWelcomeText(false)));
+let welcomeTimer;
+['homeName','address','contactName'].forEach(id=>$(id)?.addEventListener('input',()=>{
+  clearTimeout(welcomeTimer);
+  welcomeTimer=setTimeout(()=>buildWelcomeText(false),180);
+}));
 $('welcome')?.addEventListener('input',()=>{$('welcome').dataset.auto='false'});
 $('access')?.addEventListener('input',()=>{$('access').dataset.auto='false'});
 $('refreshWelcome')?.addEventListener('click',()=>buildWelcomeText(true));
 $('refreshAccess')?.addEventListener('click',()=>buildAccessText(true));
-buildWelcomeText(false);
-buildAccessText(false);
 
 const guideAiFields={
   stay:['heating','tv','kitchen','waste','cleaningStay','cleaningDeparture','other'],
@@ -827,6 +846,7 @@ async function requestGuideAi(section,button,status){
   button.textContent=guideAiState[section].generated?'Mise à jour en cours…':'Préparation en cours…';
   status.textContent='CleanUp harmonise les versions française et anglaise.';
   try{
+    if(section==='stay')buildStaySeeds();else buildRuleSeeds();
     const response=await fetch(GUIDE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(guidePayload(requested,section,isUpdate))});
     const data=await response.json();
     if(!response.ok||!data.ok)throw new Error(data.error||'La génération a échoué.');
@@ -843,10 +863,14 @@ async function requestGuideAi(section,button,status){
     setTimeout(()=>{progress.box.classList.remove('show');progress.bar.style.width='0';},700);
   }catch(error){
     console.error('generateGuide error:',error);
+    guideAiState[section].generated=true;
+    setAiDirty(section,false);
+    progress.bar.style.width='100%';
+    progress.title.textContent='Partie préparée';
+    progress.text.textContent='Les consignes ont été préparées à partir de vos réponses.';
     button.textContent=previous;
-    status.textContent=error.message||'Impossible de générer cette partie.';
-    alert(status.textContent);
-    progress.box.classList.remove('show');progress.bar.style.width='0';
+    status.textContent='Consignes préparées. La reformulation IA pourra être réessayée plus tard.';
+    setTimeout(()=>{progress.box.classList.remove('show');progress.bar.style.width='0';},800);
   }finally{
     button.disabled=false;
   }
@@ -875,6 +899,11 @@ Object.keys(FIELD_LIMITS).forEach(id=>{
   updateCounter(id);
   el.addEventListener('input',()=>updateCounter(id));
 });
+
+/* Initialisation différée : FIELD_LIMITS est maintenant disponible */
+buildWelcomeText(false);
+buildAccessText(false);
+
 
 
 
