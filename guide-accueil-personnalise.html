@@ -110,6 +110,12 @@
 
   @page{size:A4 portrait;margin:0}
 }
+
+.guide-ai-loading{display:none;margin-top:14px;padding:14px 16px;border-radius:15px;background:var(--terracottaSoft);border:1px solid #E8CABD;color:var(--brown)}
+.guide-ai-loading.show{display:block}
+.guide-ai-loading strong{display:block;font-size:11px;margin-bottom:6px}
+.guide-ai-loading p{margin:0;font-size:10px;color:var(--muted)}
+
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Identité du logement</h2><p>Les informations essentielles qui apparaîtront dans le guide.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName" placeholder="Ex. La Maison des Bords de Loire"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="contactName" placeholder="Ex. Conciergerie Horizon"></div><div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="contactPhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div><div class="field full"><label>Email de contact <small>(facultatif)</small></label><input class="input" id="contactEmail" type="email"></div><div class="field full"><label>Message de bienvenue</label><textarea class="textarea" id="welcome" maxlength="250">Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour.</textarea><div class="char-counter" id="welcomeCounter">0 / 250</div></div></div><div class="photo-drop" style="margin-top:18px"><strong>Photo de couverture</strong><p>La photo reste uniquement dans votre navigateur.</p><button class="btn soft" id="choosePhotos" type="button">Choisir une photo</button><input id="photoInput" type="file" accept="image/*" hidden></div><div id="photoGrid" class="photo-grid"></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Arrivée et accès</h2><p>Des instructions simples évitent les appels de dernière minute.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin" placeholder="À partir de 16h"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout" placeholder="Avant 10h"></div><div class="field"><label>Mode d’arrivée</label><select class="select" id="arrivalMode"><option>Arrivée autonome</option><option>Accueil physique</option><option>Remise de clés</option></select></div><div class="field"><label>Stationnement</label><input class="input" id="parking" placeholder="Parking privé, rue, parking public..."></div><div class="field full"><label>Instructions d’accès</label><textarea class="textarea" id="access" maxlength="260"></textarea><div class="char-counter" id="accessCounter">0 / 260</div></div><div class="field"><label>Nom du Wi-Fi</label><input class="input" id="wifiName"></div><div class="field"><label>Mot de passe Wi-Fi</label><input class="input" id="wifiPass"></div><div class="field"><label>Sécurité Wi-Fi</label><select class="select" id="wifiSecurity"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Réseau ouvert</option></select></div><div class="field"><label>Réseau masqué</label><select class="select" id="wifiHidden"><option value="false">Non</option><option value="true">Oui</option></select></div></div><div class="panel"><h3>QR code Wi-Fi</h3><p>Le QR code sera généré automatiquement dans le PDF. Le voyageur pourra se connecter en le scannant.</p></div></div>
@@ -129,7 +135,11 @@
   <p>CleanUp pourra rédiger une version claire, accueillante et bilingue des règles, du ménage avant départ, des consignes de départ et des urgences. Vous pourrez ensuite tout modifier.</p>
   <button class="btn terracotta" id="generateRulesWithCleanup" type="button">✦ Demander à CleanUp de générer pour vous</button>
   <p id="generateRulesStatus" style="margin:10px 0 0;font-size:10px;color:var(--muted)">Option non activée.</p>
-</div><div class="check-grid"><label class="check-pill"><input id="noSmoking" type="checkbox" checked> Logement non-fumeur</label><label class="check-pill"><input id="noParty" type="checkbox" checked> Fêtes interdites</label><label class="check-pill"><input id="quiet" type="checkbox" checked> Respect du voisinage</label><label class="check-pill"><input id="pets" type="checkbox"> Animaux acceptés</label><label class="check-pill"><input id="dishes" type="checkbox" checked> Vaisselle rangée</label><label class="check-pill"><input id="trash" type="checkbox" checked> Poubelles sorties</label></div><div class="form-grid" style="margin-top:18px"><div class="field full"><label>Consignes de départ</label><textarea class="textarea" id="departure" maxlength="220"></textarea><div class="char-counter" id="departureCounter">0 / 220</div></div><div class="field full"><label>Urgences et numéros utiles</label><textarea class="textarea" id="emergency" placeholder="Conciergerie, propriétaire, dépannage..." maxlength="180"></textarea><div class="char-counter" id="emergencyCounter">0 / 180</div></div></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px">Créer le guide</button></div>
+</div><div class="check-grid"><label class="check-pill"><input id="noSmoking" type="checkbox" checked> Logement non-fumeur</label><label class="check-pill"><input id="noParty" type="checkbox" checked> Fêtes interdites</label><label class="check-pill"><input id="quiet" type="checkbox" checked> Respect du voisinage</label><label class="check-pill"><input id="pets" type="checkbox"> Animaux acceptés</label><label class="check-pill"><input id="dishes" type="checkbox" checked> Vaisselle rangée</label><label class="check-pill"><input id="trash" type="checkbox" checked> Poubelles sorties</label></div><div class="form-grid" style="margin-top:18px"><div class="field full"><label>Consignes de départ</label><textarea class="textarea" id="departure" maxlength="220"></textarea><div class="char-counter" id="departureCounter">0 / 220</div></div><div class="field full"><label>Urgences et numéros utiles</label><textarea class="textarea" id="emergency" placeholder="Conciergerie, propriétaire, dépannage..." maxlength="180"></textarea><div class="char-counter" id="emergencyCounter">0 / 180</div></div></div><div class="guide-ai-loading" id="guideAiLoading">
+  <strong>CleanUp prépare les rubriques bilingues…</strong>
+  <p id="guideAiLoadingText">Analyse des informations du logement.</p>
+</div>
+<button class="btn terracotta" id="buildGuide" style="margin-top:18px">Créer le guide</button></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-cover" id="previewCover">⌂</div><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
 <div class="cta services-cta">
   <div>
@@ -197,7 +207,7 @@
     <div class="powered">Powered by CleanUp</div>
   </div>
 </section>
-</main><script>const STRIPE_PAYMENT_LINK='';document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>{const s=b.parentElement.querySelector('.stripeStatus');if(!STRIPE_PAYMENT_LINK){s.textContent='Lien Stripe à connecter avant la mise en ligne.';s.style.color='#FFD8C7';return}location.href=STRIPE_PAYMENT_LINK});
+</main><script>const STRIPE_PAYMENT_LINK='';const GUIDE_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateGuide';document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>{const s=b.parentElement.querySelector('.stripeStatus');if(!STRIPE_PAYMENT_LINK){s.textContent='Lien Stripe à connecter avant la mise en ligne.';s.style.color='#FFD8C7';return}location.href=STRIPE_PAYMENT_LINK});
 const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];let currentStep=1,photos=[],exportLocked=false,cleanupStayRequested=false,cleanupRulesRequested=false;const STEPS=Number(document.body.dataset.steps||5);const val=id=>($(id)?.value||'').trim(),num=id=>Number($(id)?.value||0),checked=id=>!!$(id)?.checked;
 function refreshExportPreview(){
   const cover=$('previewCover');
@@ -493,19 +503,100 @@ function preparePrintSheet(){
   $('printAddress').textContent=val('address');
 }
 
-$('buildGuide').onclick=()=>{
-  if(cleanupStayRequested){
-    if(!val('heating')) $('heating').value='Le chauffage se règle depuis le thermostat principal. Merci de conserver une température raisonnable. / Heating is controlled from the main thermostat. Please keep a reasonable temperature.';
-    if(!val('tv')) $('tv').value='Allumez la télévision avec la télécommande principale, puis sélectionnez la source souhaitée. / Turn on the TV with the main remote control, then select the required source.';
-    if(!val('kitchen')) $('kitchen').value='Les équipements peuvent être utilisés normalement. Merci de laisser la cuisine propre après utilisation. / Kitchen appliances may be used normally. Please leave the kitchen clean after use.';
-    if(!val('waste')) $('waste').value='Merci de respecter les consignes de tri indiquées près des poubelles. / Please follow the recycling instructions displayed near the bins.';
-    if(!val('cleaningStay')) $('cleaningStay').value='Le matériel de ménage se trouve dans le placard prévu à cet effet. / Cleaning supplies are stored in the designated cupboard.';
-    if(!val('cleaningDeparture')) $('cleaningDeparture').value='Avant le départ, laissez le logement rangé et rassemblez le linge utilisé. / Before departure, leave the accommodation tidy and gather used linen.';
+
+function buildGuideAiPayload(){
+  return {
+    requested:{
+      stay:cleanupStayRequested,
+      rules:cleanupRulesRequested
+    },
+    property:{
+      homeName:val('homeName'),
+      address:val('address'),
+      welcome:val('welcome')
+    },
+    arrival:{
+      checkin:val('checkin'),
+      checkout:val('checkout'),
+      arrivalMode:val('arrivalMode'),
+      parking:val('parking'),
+      access:val('access')
+    },
+    existing:{
+      heating:val('heating'),
+      tv:val('tv'),
+      kitchen:val('kitchen'),
+      waste:val('waste'),
+      cleaningStay:val('cleaningStay'),
+      cleaningDeparture:val('cleaningDeparture'),
+      other:val('other'),
+      departure:val('departure'),
+      emergency:val('emergency')
+    },
+    rules:{
+      noSmoking:checked('noSmoking'),
+      noParty:checked('noParty'),
+      quiet:checked('quiet'),
+      pets:checked('pets'),
+      dishes:checked('dishes'),
+      trash:checked('trash')
+    },
+    contact:{
+      name:val('contactName'),
+      phone:val('contactPhone'),
+      email:val('contactEmail')
+    }
+  };
+}
+
+function applyGuideAi(ai){
+  if(cleanupStayRequested && ai?.stay){
+    ['heating','tv','kitchen','waste','cleaningStay','cleaningDeparture','other']
+      .forEach(id=>{
+        if(ai.stay[id]) $(id).value=ai.stay[id];
+      });
   }
-  if(cleanupRulesRequested){
-    if(!val('departure')) $('departure').value='Fermez les fenêtres, éteignez les lumières et vérifiez que vous n’avez rien oublié. / Close the windows, turn off the lights and make sure you have not left anything behind.';
-    if(!val('emergency')) $('emergency').value='En cas de problème urgent, contactez la conciergerie ou le contact indiqué en bas du document. / In an emergency, contact the concierge or the contact shown at the bottom of this document.';
+
+  if(cleanupRulesRequested && ai?.rules){
+    if(ai.rules.departure) $('departure').value=ai.rules.departure;
+    if(ai.rules.emergency) $('emergency').value=ai.rules.emergency;
   }
+
+  Object.keys(FIELD_LIMITS).forEach(updateCounter);
+}
+
+async function generateGuideWithCleanup(){
+  const box=$('guideAiLoading');
+  const text=$('guideAiLoadingText');
+  box.classList.add('show');
+  text.textContent='Rédaction des consignes françaises et anglaises…';
+
+  const response=await fetch(GUIDE_FUNCTION_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(buildGuideAiPayload())
+  });
+
+  const data=await response.json();
+  if(!response.ok || !data.ok){
+    throw new Error(data.error||'Impossible de générer les rubriques du guide.');
+  }
+
+  text.textContent='Rubriques générées. Préparation du guide…';
+  applyGuideAi(data.ai);
+  return data;
+}
+
+
+$('buildGuide').onclick=async()=>{
+  const button=$('buildGuide');
+  button.disabled=true;
+
+  try{
+    if(cleanupStayRequested || cleanupRulesRequested){
+      await generateGuideWithCleanup();
+    }
+
   Object.keys(FIELD_LIMITS).forEach(updateCounter);
   const rules=buildRules();
   guideText=`BIENVENUE / WELCOME
@@ -550,6 +641,14 @@ Contact : ${[val('contactName'),val('contactPhone'),val('contactEmail')].filter(
   refreshExportPreview();
   preparePrintSheet();
   showStep(5);
+  }catch(error){
+    console.error('generateGuide error:',error);
+    $('guideAiLoading').classList.remove('show');
+    alert(error.message||'Impossible de créer le guide.');
+  }finally{
+    button.disabled=false;
+    setTimeout(()=>$('guideAiLoading').classList.remove('show'),500);
+  }
 };
 
 $('copyAll').onclick=e=>{
