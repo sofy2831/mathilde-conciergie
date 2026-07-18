@@ -300,6 +300,16 @@
   .print-sheet .print-col{gap:3.2mm!important}
 }
 
+
+/* Version 1.0 — verrouillage de génération */
+#buildGuide[disabled]{
+  background:#C9C3BE!important;
+  color:#716A65!important;
+  cursor:not-allowed!important;
+  opacity:1!important;
+  box-shadow:none!important;
+}
+
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Identité du logement</h2><p>Les informations essentielles qui apparaîtront dans le guide.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName" placeholder="Ex. La Maison des Bords de Loire"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="contactName" placeholder="Ex. Conciergerie Horizon"></div><div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="contactPhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div><div class="field full"><label>Email de contact <small>(facultatif)</small></label><input class="input" id="contactEmail" type="email"></div><div class="field full">
   <div class="welcome-tools"><label>Message de bienvenue préparé par CleanUp</label><span class="auto-status" id="welcomeAutoStatus">Génération automatique</span></div>
@@ -310,7 +320,7 @@
 <div class="section" id="step2"><div class="section-head"><div><h2>Arrivée et accès</h2><p>Des instructions simples évitent les appels de dernière minute.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin" placeholder="À partir de 16h"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout" placeholder="Avant 10h"></div><div class="field"><label>Mode d’arrivée</label><select class="select" id="arrivalMode"><option>Arrivée autonome</option><option>Accueil physique</option><option>Remise de clés</option></select></div><div class="field"><label>Stationnement</label><input class="input" id="parking" placeholder="Parking privé, rue, parking public..."></div><div class="field full">
   <label>Instructions d’accès préparées selon le mode d’arrivée</label>
   <textarea class="textarea generated" id="access" maxlength="520"></textarea>
-  <div class="char-counter" id="accessCounter">0 / 320</div>
+  <div class="char-counter" id="accessCounter">0 / 520</div>
   <div class="arrival-auto-note">CleanUp reprend le nom de la conciergerie, le téléphone, l’heure d’arrivée et le mode sélectionné. Ajoutez seulement les informations propres au logement : étage, porte, boîte à clés ou lieu de rendez-vous.</div>
 </div><div class="field"><label>Nom du Wi-Fi</label><input class="input" id="wifiName"></div><div class="field"><label>Mot de passe Wi-Fi</label><input class="input" id="wifiPass"></div><div class="field"><label>Sécurité Wi-Fi</label><select class="select" id="wifiSecurity"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Réseau ouvert</option></select></div><div class="field"><label>Réseau masqué</label><select class="select" id="wifiHidden"><option value="false">Non</option><option value="true">Oui</option></select></div></div><div class="panel"><h3>QR code Wi-Fi</h3><p>Le QR code sera généré automatiquement dans le PDF. Le voyageur pourra se connecter en le scannant.</p></div></div>
 <div class="section" id="step3">
@@ -456,10 +466,10 @@
 
 
 <div class="form-grid" style="margin-top:18px">
-  <div class="field full"><label>Consignes de départ préparées par CleanUp</label><textarea class="textarea generated" id="departure" maxlength="650"></textarea><div class="char-counter" id="departureCounter">0 / 380</div></div>
+  <div class="field full"><label>Consignes de départ préparées par CleanUp</label><textarea class="textarea generated" id="departure" maxlength="650"></textarea><div class="char-counter" id="departureCounter">0 / 650</div></div>
   <div class="field full"><label>Urgences et numéros utiles préparés automatiquement</label><textarea class="textarea generated" id="emergency" maxlength="700"></textarea><div class="char-counter" id="emergencyCounter">0 / 700</div></div>
 </div>
-<div class="guide-generation" id="guideGeneration"><strong id="guideGenerationTitle">Préparation du guide…</strong><div class="track"><span id="guideGenerationBar"></span></div><p id="guideGenerationText">Lecture des informations du logement.</p></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px">Créer le guide</button></div>
+<div class="guide-generation" id="guideGeneration"><strong id="guideGenerationTitle">Préparation du guide…</strong><div class="track"><span id="guideGenerationBar"></span></div><p id="guideGenerationText">Lecture des informations du logement.</p></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px" disabled>Préparez d’abord les consignes</button></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
 <div class="cta services-cta">
   <div>
@@ -524,7 +534,14 @@
   </div>
 </section>
 </main><script>const STRIPE_PAYMENT_LINK='';const GUIDE_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateGuide';document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>{const s=b.parentElement.querySelector('.stripeStatus');if(!STRIPE_PAYMENT_LINK){s.textContent='Lien Stripe à connecter avant la mise en ligne.';s.style.color='#FFD8C7';return}location.href=STRIPE_PAYMENT_LINK});
-const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];let currentStep=1,photos=[],exportLocked=false,cleanupStayRequested=false,cleanupRulesRequested=false;const STEPS=Number(document.body.dataset.steps||5);const val=id=>($(id)?.value||'').trim(),num=id=>Number($(id)?.value||0),checked=id=>!!$(id)?.checked;
+const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];
+function setBuildGuideReady(ready,label){
+  const btn=$('buildGuide');
+  if(!btn)return;
+  btn.disabled=!ready;
+  btn.textContent=label||(ready?'Créer le guide':'Préparation en cours…');
+}
+let currentStep=1,photos=[],exportLocked=false,cleanupStayRequested=false,cleanupRulesRequested=false;const STEPS=Number(document.body.dataset.steps||5);const val=id=>($(id)?.value||'').trim(),num=id=>Number($(id)?.value||0),checked=id=>!!$(id)?.checked;
 function refreshExportPreview(){
   const cover=$('previewCover');
   if(cover){
@@ -607,7 +624,7 @@ function renderPhotos(){
 }
 function downloadDoc(filename,title,html){const content=html.trim().toLowerCase().startsWith('<!doctype')?html:`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title></head><body>${html}</body></html>`;const blob=new Blob(['\ufeff',content],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href)}
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const old=btn.textContent;btn.textContent='Copié ✓';setTimeout(()=>btn.textContent=old,1400)})}
-bindPhotos();showStep(1);
+bindPhotos();showStep(1);setBuildGuideReady(false,'Préparez d’abord les consignes');
 
 
 function selectedValues(name){
@@ -713,25 +730,25 @@ function buildRuleSeeds(){
     'rassembler le linge utilisé':'gather the used linen',
     'restituer les clés selon les instructions reçues':'return the keys as instructed'
   };
-  const actionsEn=actions.map(action=>actionTranslations[action]||action);
 
-  const shortFr=actions.slice(0,3);
-  const shortEn=actionsEn.slice(0,3);
-  const departureFr=`Départ avant ${checkout}. Merci de ${sentenceList(shortFr)}${actions.length>3?'…':''}.${val('departureNote')?' '+val('departureNote'):''}`;
-  const departureEn=`Check-out before ${checkout}. Please ${sentenceListEnglish(shortEn)}${actionsEn.length>3?'…':''}.`;
-  $('departure').value=`${departureFr} / ${departureEn}`.slice(0,650);
+  const selectedFr=actions.slice(0,3);
+  const selectedEn=selectedFr.map(action=>actionTranslations[action]||action);
 
-  const lines=[
-    `Conciergerie / Contact: ${contactLabel()}`,
-    val('contactPhone')?`Téléphone / Phone: ${val('contactPhone')}`:'',
-    val('contactEmail')?`Email: ${val('contactEmail')}`:'',
-    '',
-    'Urgences médicales / Medical emergencies: 15',
-    'Police: 17',
-    'Pompiers / Fire brigade: 18',
-    "112 • Numéro d'urgence européen / European emergency number"
-  ];
-  $('emergency').value=lines.join('\n').slice(0,700);
+  const departureFr=`Départ avant ${checkout}. Merci de ${sentenceList(selectedFr)}.`;
+  const departureEn=`Check-out before ${checkout}. Please ${sentenceListEnglish(selectedEn)}.`;
+  $('departure').value=`${departureFr} / ${departureEn}`;
+
+  const emergencyLines=[
+    `Conciergerie / Contact : ${contactLabel()}`,
+    val('contactPhone')?`Téléphone / Phone : ${val('contactPhone')}`:'',
+    val('contactEmail')?`Email : ${val('contactEmail')}`:'',
+    'Urgences médicales / Medical emergencies : 15',
+    'Police : 17',
+    'Pompiers / Fire brigade : 18',
+    "Numéro d'urgence européen / European emergency number : 112"
+  ].filter(Boolean);
+
+  $('emergency').value=emergencyLines.join('\n');
   updateCounter('departure');
   updateCounter('emergency');
 }
@@ -851,7 +868,7 @@ bindAiDirtyTracking('rules');
 qa('.smart-panel input,.smart-panel .smart-note').forEach(field=>{
   field.addEventListener(field.type==='checkbox'?'change':'input',()=>{
     const section=field.closest('#step3')?'stay':'rules';
-    if(guideAiState[section]?.generated)setAiDirty(section,true);
+    if(guideAiState[section]?.generated)setAiDirty(section,true); if(section==='rules')setBuildGuideReady(false,'Mettez à jour les consignes');
   });
 });
 
@@ -915,6 +932,11 @@ async function requestGuideAi(section,button,status){
     status.textContent='Consignes préparées. La reformulation IA pourra être réessayée plus tard.';
     setTimeout(()=>{progress.box.classList.remove('show');progress.bar.style.width='0';},800);
   }finally{
+    if(section==='rules'){
+      buildRuleSeeds();
+      const ready=!!val('departure')&&!!val('emergency');
+      setBuildGuideReady(ready,ready?'Créer le guide':'Préparez d’abord les consignes');
+    }
     button.disabled=false;
   }
 }
@@ -1030,21 +1052,7 @@ function compactText(text,max){
 
 function tr(value,max,fallback=''){
   const text=((value||'').trim()||fallback).replace(/\s+/g,' ').trim();
-  if(!max||text.length<=max)return text;
-
-  const separator=' / ';
-  const split=text.indexOf(separator);
-  if(split>0){
-    const fr=text.slice(0,split).trim();
-    const en=text.slice(split+separator.length).trim();
-    const available=Math.max(40,max-separator.length);
-    const total=Math.max(1,fr.length+en.length);
-    let frMax=Math.max(20,Math.floor(available*(fr.length/total)));
-    let enMax=Math.max(20,available-frMax);
-    if(frMax+enMax>available)enMax=available-frMax;
-    return `${compactText(fr,frMax)} / ${compactText(en,enMax)}`;
-  }
-  return compactText(text,max);
+  return cleanBilingualText(text);
 }
 
 function buildRules(){
@@ -1091,7 +1099,51 @@ function ensureEmergencyNumbers(text){
   return result;
 }
 
+
+function cleanBilingualText(text){
+  return (text||'')
+    .replace(/\\n/g,'\n')
+    .replace(/\s*\/\s*$/,'')
+    .replace(/\s{2,}/g,' ')
+    .replace(/ \n/g,'\n')
+    .trim();
+}
+
+
+function compactGuideFields(){
+  const compactMap={
+    tv:[
+      ['télévision avec chaînes TNT','chaînes TNT'],
+      ['TV with TNT channels','TNT channels']
+    ],
+    kitchen:[
+      ['machine Nespresso','Nespresso'],
+      ['cafetière filtre','cafetière'],
+      ['Nespresso machine','Nespresso'],
+      ['filter coffee maker','coffee maker']
+    ],
+    cleaningStay:[
+      ['ménage intermédiaire possible sur demande','ménage sur demande'],
+      ['mid-stay cleaning is available on request','cleaning available on request']
+    ],
+    cleaningDeparture:[
+      ['dans un état normal de propreté avant votre départ','propre et rangé'],
+      ['in a normal state of cleanliness before you go','clean and tidy']
+    ]
+  };
+  Object.entries(compactMap).forEach(([id,replacements])=>{
+    const el=$(id);
+    if(!el)return;
+    let text=el.value;
+    replacements.forEach(([from,to])=>{text=text.replaceAll(from,to)});
+    el.value=cleanBilingualText(text);
+    updateCounter(id);
+  });
+}
+
 function preparePrintSheet(){
+  compactGuideFields();
+  buildRuleSeeds();
   $('printTitle').textContent=(val('homeName')||'Bienvenue / Welcome').toUpperCase();
   $('printSubtitle').textContent=tr(val('welcome'),FIELD_LIMITS.welcome,'Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour. / Welcome to your accommodation. We wish you a wonderful stay.');
 
@@ -1142,18 +1194,15 @@ function preparePrintSheet(){
     checked('trash')?'• Poubelles sorties / Take out the trash':''
   ].filter(Boolean).join('\n\n');
 
-  $('printEmergency').textContent=ensureEmergencyNumbers(
-    val('emergency') || [
-      `Conciergerie / Contact: ${contactLabel()}`,
-      val('contactPhone')?`Téléphone / Phone: ${val('contactPhone')}`:'',
-      val('contactEmail')?`Email: ${val('contactEmail')}`:'',
-      '',
-      'Urgences médicales / Medical emergencies: 15',
-      'Police: 17',
-      'Pompiers / Fire brigade: 18',
-      "Numéro d'urgence européen / European emergency number: 112"
-    ].join('\n')
-  );
+  $('printEmergency').textContent=cleanBilingualText([
+    `Conciergerie / Contact : ${contactLabel()}`,
+    val('contactPhone')?`Téléphone / Phone : ${val('contactPhone')}`:'',
+    val('contactEmail')?`Email : ${val('contactEmail')}`:'',
+    'Urgences médicales / Medical emergencies : 15',
+    'Police : 17',
+    'Pompiers / Fire brigade : 18',
+    "Numéro d'urgence européen / European emergency number : 112"
+  ].filter(Boolean).join('\n'));
 
   const contact=[val('contactName'),val('contactPhone'),val('contactEmail')].filter(Boolean);
   $('printContact').textContent=contact.length
@@ -1163,6 +1212,7 @@ function preparePrintSheet(){
 }
 
 $('buildGuide').onclick=async()=>{
+  if($('buildGuide').disabled)return;
   if(!val('departure')||!val('emergency')||!val('departure').includes(' / '))buildRuleSeeds();
   if(!val('access').includes(' / '))buildAccessText(true);
   buildWelcomeText(false);buildAccessText(false);
