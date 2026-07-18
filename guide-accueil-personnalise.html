@@ -715,8 +715,10 @@ function buildRuleSeeds(){
   };
   const actionsEn=actions.map(action=>actionTranslations[action]||action);
 
-  const departureFr=`Le départ doit avoir lieu avant ${checkout}. Merci de ${sentenceList(actions)}.${val('departureNote')?' '+val('departureNote'):''}`;
-  const departureEn=`Check-out is before ${checkout}. Please ${sentenceListEnglish(actionsEn)}.`;
+  const shortFr=actions.slice(0,3);
+  const shortEn=actionsEn.slice(0,3);
+  const departureFr=`Départ avant ${checkout}. Merci de ${sentenceList(shortFr)}${actions.length>3?'…':''}.${val('departureNote')?' '+val('departureNote'):''}`;
+  const departureEn=`Check-out before ${checkout}. Please ${sentenceListEnglish(shortEn)}${actionsEn.length>3?'…':''}.`;
   $('departure').value=`${departureFr} / ${departureEn}`.slice(0,650);
 
   const lines=[
@@ -727,7 +729,7 @@ function buildRuleSeeds(){
     'Urgences médicales / Medical emergencies: 15',
     'Police: 17',
     'Pompiers / Fire brigade: 18',
-    "Numéro d'urgence européen / European emergency number: 112"
+    "112 • Numéro d'urgence européen / European emergency number"
   ];
   $('emergency').value=lines.join('\n').slice(0,700);
   updateCounter('departure');
