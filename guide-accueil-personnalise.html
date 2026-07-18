@@ -309,7 +309,7 @@
 </div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Arrivée et accès</h2><p>Des instructions simples évitent les appels de dernière minute.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin" placeholder="À partir de 16h"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout" placeholder="Avant 10h"></div><div class="field"><label>Mode d’arrivée</label><select class="select" id="arrivalMode"><option>Arrivée autonome</option><option>Accueil physique</option><option>Remise de clés</option></select></div><div class="field"><label>Stationnement</label><input class="input" id="parking" placeholder="Parking privé, rue, parking public..."></div><div class="field full">
   <label>Instructions d’accès préparées selon le mode d’arrivée</label>
-  <textarea class="textarea generated" id="access" maxlength="320"></textarea>
+  <textarea class="textarea generated" id="access" maxlength="520"></textarea>
   <div class="char-counter" id="accessCounter">0 / 320</div>
   <div class="arrival-auto-note">CleanUp reprend le nom de la conciergerie, le téléphone, l’heure d’arrivée et le mode sélectionné. Ajoutez seulement les informations propres au logement : étage, porte, boîte à clés ou lieu de rendez-vous.</div>
 </div><div class="field"><label>Nom du Wi-Fi</label><input class="input" id="wifiName"></div><div class="field"><label>Mot de passe Wi-Fi</label><input class="input" id="wifiPass"></div><div class="field"><label>Sécurité Wi-Fi</label><select class="select" id="wifiSecurity"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Réseau ouvert</option></select></div><div class="field"><label>Réseau masqué</label><select class="select" id="wifiHidden"><option value="false">Non</option><option value="true">Oui</option></select></div></div><div class="panel"><h3>QR code Wi-Fi</h3><p>Le QR code sera généré automatiquement dans le PDF. Le voyageur pourra se connecter en le scannant.</p></div></div>
@@ -456,8 +456,8 @@
 
 
 <div class="form-grid" style="margin-top:18px">
-  <div class="field full"><label>Consignes de départ préparées par CleanUp</label><textarea class="textarea generated" id="departure" maxlength="380"></textarea><div class="char-counter" id="departureCounter">0 / 380</div></div>
-  <div class="field full"><label>Urgences et numéros utiles préparés automatiquement</label><textarea class="textarea generated" id="emergency" maxlength="600"></textarea><div class="char-counter" id="emergencyCounter">0 / 420</div></div>
+  <div class="field full"><label>Consignes de départ préparées par CleanUp</label><textarea class="textarea generated" id="departure" maxlength="650"></textarea><div class="char-counter" id="departureCounter">0 / 380</div></div>
+  <div class="field full"><label>Urgences et numéros utiles préparés automatiquement</label><textarea class="textarea generated" id="emergency" maxlength="700"></textarea><div class="char-counter" id="emergencyCounter">0 / 700</div></div>
 </div>
 <div class="guide-generation" id="guideGeneration"><strong id="guideGenerationTitle">Préparation du guide…</strong><div class="track"><span id="guideGenerationBar"></span></div><p id="guideGenerationText">Lecture des informations du logement.</p></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px">Créer le guide</button></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
@@ -619,6 +619,12 @@ function sentenceList(items){
   if(clean.length===1)return clean[0];
   return clean.slice(0,-1).join(', ')+' et '+clean.at(-1);
 }
+function sentenceListEnglish(items){
+  const clean=items.filter(Boolean);
+  if(!clean.length)return 'follow the departure instructions';
+  if(clean.length===1)return clean[0];
+  return clean.slice(0,-1).join(', ')+' and '+clean.at(-1);
+}
 function contactLabel(){
   return val('contactName')||'votre contact sur place';
 }
@@ -655,15 +661,21 @@ function buildAccessText(force=false){
   const phone=val('contactPhone');
   const time=val('checkin')||'l’heure convenue';
   let proposed='';
+
   if(mode==='Accueil physique'){
-    proposed=`Votre accueil sera assuré sur place par ${contact} à partir de ${time}. Merci de prévenir environ 30 minutes avant votre arrivée${phone?` au ${phone}`:''}.`;
+    proposed=`Votre accueil sera assuré sur place par ${contact} à partir de ${time}. Merci de prévenir environ 30 minutes avant votre arrivée${phone?` au ${phone}`:''}. / ${contact} will welcome you at the property from ${time}. Please contact them about 30 minutes before arrival${phone?` on ${phone}`:''}.`;
   }else if(mode==='Remise de clés'){
-    proposed=`La remise des clés sera organisée par ${contact} à partir de ${time}. Merci de confirmer votre heure d’arrivée${phone?` au ${phone}`:''}.`;
+    proposed=`La remise des clés sera organisée par ${contact} à partir de ${time}. Merci de confirmer votre heure d’arrivée${phone?` au ${phone}`:''}. / Key handover will be arranged by ${contact} from ${time}. Please confirm your arrival time${phone?` on ${phone}`:''}.`;
   }else{
-    proposed=`Votre arrivée est autonome à partir de ${time}. Les informations d’accès et le code vous seront transmis avant votre arrivée. En cas de difficulté, contactez ${contact}${phone?` au ${phone}`:''}.`;
+    proposed=`Votre arrivée est autonome à partir de ${time}. Les informations d’accès et le code vous seront transmis avant votre arrivée. En cas de difficulté, contactez ${contact}${phone?` au ${phone}`:''}. / Self check-in is available from ${time}. Access instructions and the code will be sent before arrival. If you need help, contact ${contact}${phone?` on ${phone}`:''}.`;
   }
+
   const generic=field.value.trim()===''||field.dataset.auto==='true';
-  if(force||generic){field.value=proposed.slice(0,320);field.dataset.auto='true';updateCounter('access');}
+  if(force||generic){
+    field.value=proposed.slice(0,520);
+    field.dataset.auto='true';
+    updateCounter('access');
+  }
 }
 function buildStaySeeds(){
   const heat=selectedValues('heatEquip'),tv=selectedValues('tvEquip'),kitchen=selectedValues('kitchenEquip'),waste=selectedValues('wasteEquip'),clean=selectedValues('cleanEquip');
@@ -690,19 +702,34 @@ function departureActions(){
 function buildRuleSeeds(){
   const actions=departureActions();
   const checkout=val('checkout')||'l’heure indiquée';
-  $('departure').value=`Le départ doit avoir lieu avant ${checkout}. Merci de ${sentenceList(actions)}.${val('departureNote')?' '+val('departureNote'):''}`.slice(0,380);
+
+  const actionTranslations={
+    'ranger la vaisselle':'put away the dishes',
+    'lancer le lave-vaisselle':'start the dishwasher',
+    'sortir les poubelles':'take out the rubbish',
+    'fermer les fenêtres':'close the windows',
+    'éteindre les lumières':'switch off the lights',
+    'réduire le chauffage ou la climatisation':'turn down the heating or air conditioning',
+    'rassembler le linge utilisé':'gather the used linen',
+    'restituer les clés selon les instructions reçues':'return the keys as instructed'
+  };
+  const actionsEn=actions.map(action=>actionTranslations[action]||action);
+
+  const departureFr=`Le départ doit avoir lieu avant ${checkout}. Merci de ${sentenceList(actions)}.${val('departureNote')?' '+val('departureNote'):''}`;
+  const departureEn=`Check-out is before ${checkout}. Please ${sentenceListEnglish(actionsEn)}.`;
+  $('departure').value=`${departureFr} / ${departureEn}`.slice(0,650);
 
   const lines=[
-    `Conciergerie / Contact : ${contactLabel()}`,
-    val('contactPhone')?`Téléphone : ${val('contactPhone')}`:'',
-    val('contactEmail')?`Email : ${val('contactEmail')}`:'',
+    `Conciergerie / Contact: ${contactLabel()}`,
+    val('contactPhone')?`Téléphone / Phone: ${val('contactPhone')}`:'',
+    val('contactEmail')?`Email: ${val('contactEmail')}`:'',
     '',
-    'Urgences médicales : 15',
-    'Police : 17',
-    'Pompiers : 18',
-    "Numéro d'urgence européen : 112"
+    'Urgences médicales / Medical emergencies: 15',
+    'Police: 17',
+    'Pompiers / Fire brigade: 18',
+    "Numéro d'urgence européen / European emergency number: 112"
   ];
-  $('emergency').value=lines.join('\\n').slice(0,600);
+  $('emergency').value=lines.join('\n').slice(0,700);
   updateCounter('departure');
   updateCounter('emergency');
 }
@@ -900,7 +927,7 @@ const rulesUpdateBtn=$('updateRulesWithCleanup');
 if(rulesAiBtn)rulesAiBtn.onclick=()=>requestGuideAi('rules',rulesAiBtn,$('generateRulesStatus'));
 if(rulesUpdateBtn)rulesUpdateBtn.onclick=()=>requestGuideAi('rules',rulesUpdateBtn,$('generateRulesStatus'));
 
-const FIELD_LIMITS={'welcome':300,'access':320,'parking':120,'heating':300,'tv':300,'kitchen':340,'waste':300,'cleaningStay':280,'cleaningDeparture':300,'other':180,'departure':380,'emergency':600};
+const FIELD_LIMITS={'welcome':300,'access':520,'parking':120,'heating':300,'tv':300,'kitchen':340,'waste':300,'cleaningStay':280,'cleaningDeparture':300,'other':180,'departure':650,'emergency':700};
 function updateCounter(id){
   const el=$(id),counter=$(id+'Counter');
   if(!el||!counter)return;
@@ -991,11 +1018,31 @@ function updateAssistant(){
   $('assistantMessages').innerHTML=msgs.join('');
 }
 
+function compactText(text,max){
+  const value=(text||'').trim();
+  if(!max||value.length<=max)return value;
+  const cut=value.slice(0,max).replace(/\s+\S*$/,'').replace(/[,:;/-]\s*$/,'').trim();
+  const sentence=cut.match(/^.*[.!?](?=\s|$)/s);
+  return (sentence?.[0]||cut||value.slice(0,max)).trim();
+}
+
 function tr(value,max,fallback=''){
-  let t=(value||'').trim()||fallback;
-  if(t.length<=max)return t;
-  const cut=t.slice(0,max-1).replace(/\s+\S*$/,'').trim();
-  return (cut||t.slice(0,max-1))+'…';
+  const text=((value||'').trim()||fallback).replace(/\s+/g,' ').trim();
+  if(!max||text.length<=max)return text;
+
+  const separator=' / ';
+  const split=text.indexOf(separator);
+  if(split>0){
+    const fr=text.slice(0,split).trim();
+    const en=text.slice(split+separator.length).trim();
+    const available=Math.max(40,max-separator.length);
+    const total=Math.max(1,fr.length+en.length);
+    let frMax=Math.max(20,Math.floor(available*(fr.length/total)));
+    let enMax=Math.max(20,available-frMax);
+    if(frMax+enMax>available)enMax=available-frMax;
+    return `${compactText(fr,frMax)} / ${compactText(en,enMax)}`;
+  }
+  return compactText(text,max);
 }
 
 function buildRules(){
@@ -1017,12 +1064,37 @@ function wifiPayload(){
   return `WIFI:T:${sec};S:${esc(ssid)};P:${esc(pass)};H:${hidden};;`;
 }
 
+
+function arrivalModeEnglish(mode){
+  if(mode==='Accueil physique')return 'In-person welcome';
+  if(mode==='Remise de clés')return 'Key handover';
+  return 'Self check-in';
+}
+function bilingualTime(value,fallbackFr,fallbackEn){
+  const clean=(value||'').trim();
+  return clean?`${clean} / ${clean}`:`${fallbackFr} / ${fallbackEn}`;
+}
+function ensureEmergencyNumbers(text){
+  let result=(text||'').trim();
+  const required=[
+    ['15','Urgences médicales / Medical emergencies: 15'],
+    ['17','Police: 17'],
+    ['18','Pompiers / Fire brigade: 18'],
+    ['112',"Numéro d'urgence européen / European emergency number: 112"]
+  ];
+  for(const [number,line] of required){
+    const regex=new RegExp(`(^|\\D)${number}(\\D|$)`);
+    if(!regex.test(result))result+=(result?'\\n':'')+line;
+  }
+  return result;
+}
+
 function preparePrintSheet(){
   $('printTitle').textContent=(val('homeName')||'Bienvenue / Welcome').toUpperCase();
   $('printSubtitle').textContent=tr(val('welcome'),FIELD_LIMITS.welcome,'Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour. / Welcome to your accommodation. We wish you a wonderful stay.');
 
   $('printArrival').textContent=[
-    `${val('checkin')||'Heure à préciser'} / ${val('arrivalMode')||'Mode d’arrivée à préciser'}`,
+    `${val('checkin')||'Heure à préciser'} — ${val('arrivalMode')||'Mode d’arrivée à préciser'} / ${val('checkin')||'Time to be specified'} — ${arrivalModeEnglish(val('arrivalMode'))}`,
     tr(val('access'),FIELD_LIMITS.access,'Instructions d’accès à compléter. / Access instructions to be completed.'),
     `Stationnement / Parking : ${tr(val('parking'),FIELD_LIMITS.parking,'À préciser / To be specified')}`
   ].join('\n\n');
@@ -1062,24 +1134,23 @@ function preparePrintSheet(){
   ].filter(Boolean).join('\n\n') || 'Aucune consigne particulière / No specific instructions';
 
   $('printDeparture').textContent=[
-    `${val('checkout')||'Heure à préciser'} / Check-out time to be specified`,
+    `${val('checkout')||'Heure à préciser'} / ${val('checkout')||'Check-out time to be specified'}`,
     tr(val('departure'),FIELD_LIMITS.departure,'Consignes de départ à compléter. / Departure instructions to be completed.'),
     checked('dishes')?'• Vaisselle rangée / Put dishes away':'',
     checked('trash')?'• Poubelles sorties / Take out the trash':''
   ].filter(Boolean).join('\n\n');
 
-  $('printEmergency').textContent=tr(
+  $('printEmergency').textContent=ensureEmergencyNumbers(
     val('emergency') || [
-      `Conciergerie / Contact : ${contactLabel()}`,
-      val('contactPhone')?`Téléphone : ${val('contactPhone')}`:'',
-      val('contactEmail')?`Email : ${val('contactEmail')}`:'',
+      `Conciergerie / Contact: ${contactLabel()}`,
+      val('contactPhone')?`Téléphone / Phone: ${val('contactPhone')}`:'',
+      val('contactEmail')?`Email: ${val('contactEmail')}`:'',
       '',
-      'Urgences médicales : 15',
-      'Police : 17',
-      'Pompiers : 18',
-      "Numéro d'urgence européen : 112"
-    ].join('\\n'),
-    FIELD_LIMITS.emergency
+      'Urgences médicales / Medical emergencies: 15',
+      'Police: 17',
+      'Pompiers / Fire brigade: 18',
+      "Numéro d'urgence européen / European emergency number: 112"
+    ].join('\n')
   );
 
   const contact=[val('contactName'),val('contactPhone'),val('contactEmail')].filter(Boolean);
@@ -1090,7 +1161,8 @@ function preparePrintSheet(){
 }
 
 $('buildGuide').onclick=async()=>{
-  if(!val('departure')||!val('emergency'))buildRuleSeeds();
+  if(!val('departure')||!val('emergency')||!val('departure').includes(' / '))buildRuleSeeds();
+  if(!val('access').includes(' / '))buildAccessText(true);
   buildWelcomeText(false);buildAccessText(false);
   const button=$('buildGuide'),box=$('guideGeneration'),bar=$('guideGenerationBar'),text=$('guideGenerationText'),title=$('guideGenerationTitle');
   button.disabled=true;box.classList.add('show');
