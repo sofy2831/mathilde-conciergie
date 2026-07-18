@@ -78,6 +78,20 @@
 .audit-loading-track span{display:block;height:100%;width:0;background:linear-gradient(90deg,#B96F52,#D39980);border-radius:inherit;transition:width .35s ease}
 .audit-loading-message{margin-top:9px;font-size:11px;line-height:1.45;color:#655C57}
 
+
+.premium-annonce{display:grid;gap:3mm}
+.premium-hero{border:1px solid #D7C9BD;background:linear-gradient(145deg,#FCFAF7,#F7F1EA);border-radius:4mm;padding:4mm}
+.premium-hero h3{font-size:12px;margin:0 0 2mm;color:#3E2D25}
+.premium-kicker{font-size:6.8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#B96F52;margin-bottom:1mm}
+.premium-blocks{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+.premium-section{border:1px solid #E4D9CF;border-radius:4mm;padding:3.5mm;background:#fff}
+.premium-section h4{margin:0 0 1.8mm;font-size:9.2px;color:#3E2D25;display:flex;gap:2mm;align-items:center}
+.premium-section h4 span{width:6mm;height:6mm;border-radius:50%;display:inline-grid;place-items:center;background:#F5E4DC;color:#8A4530;font-size:7px}
+.premium-section p{font-size:7.45px;line-height:1.42;color:#655C57;margin:0;white-space:pre-line}
+.premium-practical{border:1px solid #D3DFD0;background:#E7EEE5;border-radius:4mm;padding:3.5mm}
+.premium-practical h4{margin:0 0 1.8mm;font-size:9.2px;color:#3E2D25}
+.premium-practical p{font-size:7.3px;line-height:1.38;color:#556254;margin:0;white-space:pre-line}
+
 </style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Mieux ressortir dans les recherches</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
@@ -385,6 +399,68 @@ function reportPage(number,title,subtitle,score,content){
   </section>`;
 }
 
+
+function guidedEditorialTitle(a){
+  const raw=(a?.audit?.title||'').trim();
+  if(raw.length>55 && !/^(titre|audit synthétique|titre clair et conforme)$/i.test(raw)){
+    return raw;
+  }
+  return 'Le titre met correctement en avant les principaux atouts du logement, mais il peut encore gagner en impact. Il est recommandé d’intégrer dès les premiers mots la capacité d’accueil et les éléments les plus recherchés, comme le parking privé, le Wi‑Fi fibre ou l’arrivée autonome. Un titre plus précis améliore la visibilité et favorise le taux de clic.';
+}
+
+function splitPremiumDescription(text){
+  const clean=String(text||'').trim();
+  if(!clean) return {
+    presentation:'',
+    equipment:'',
+    location:'',
+    service:''
+  };
+
+  const markers=[
+    ['presentation',/^(présentation|presentation)\s*$/im],
+    ['equipment',/^(équipements et confort|equipements et confort|hébergement et équipements|hebergement et equipements)\s*$/im],
+    ['location',/^(localisation|emplacement et accès|emplacement et acces)\s*$/im],
+    ['service',/^(service et disponibilité|service et disponibilite|disponibilité|disponibilite)\s*$/im],
+    ['know',/^(points à savoir avant la réservation|points a savoir avant la reservation|transparence sur les points à connaître|transparence sur les points a connaitre)\s*$/im]
+  ];
+
+  const positions=[];
+  for(const [key,rx] of markers){
+    const m=clean.match(rx);
+    if(m) positions.push({key,index:m.index,length:m[0].length});
+  }
+  positions.sort((a,b)=>a.index-b.index);
+
+  if(!positions.length){
+    const paragraphs=clean.split(/\n\s*\n+/).filter(Boolean);
+    return {
+      presentation:paragraphs[0]||'',
+      equipment:paragraphs[1]||'',
+      location:paragraphs[2]||'',
+      service:paragraphs.slice(3).join('\n\n')
+    };
+  }
+
+  const parts={presentation:'',equipment:'',location:'',service:'',know:''};
+  for(let i=0;i<positions.length;i++){
+    const current=positions[i];
+    const start=current.index+current.length;
+    const end=i+1<positions.length?positions[i+1].index:clean.length;
+    parts[current.key]=clean.slice(start,end).trim();
+  }
+
+  const intro=clean.slice(0,positions[0].index).trim();
+  if(intro && !parts.presentation) parts.presentation=intro;
+
+  return {
+    presentation:parts.presentation,
+    equipment:parts.equipment,
+    location:parts.location,
+    service:[parts.know,parts.service].filter(Boolean).join('\n\n')
+  };
+}
+
 function buildReport(){
   if(!optimizationResult) return;
 
@@ -421,7 +497,7 @@ function buildReport(){
   const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver.',e.scores.current,`
     <div class="r-card"><h3>Points forts</h3><ul>${strengths}</ul></div>
     <div class="r-grid" style="margin-top:5mm">
-      <div class="r-card"><h3>Titre</h3><p>${escapeHtml(a.audit.title)}</p></div>
+      <div class="r-card"><h3>Lecture éditoriale</h3><p>${escapeHtml(guidedEditorialTitle(a))}</p></div>
       <div class="r-card"><h3>Clarté</h3><p>${escapeHtml(a.audit.clarity)}</p></div>
       <div class="r-card"><h3>Confiance</h3><p>${escapeHtml(a.audit.trust)}</p></div>
       <div class="r-card"><h3>Conversion</h3><p>${escapeHtml(a.audit.conversion)}</p></div>
@@ -500,10 +576,7 @@ function downloadDoc(){
       <td><strong>+${r[2]-r[1]}</strong></td>
     </tr>`).join('');
 
-  const editorialTitle=
-    (a.audit.title && a.audit.title.trim().length>20 && !/^(titre|audit synthétique)$/i.test(a.audit.title.trim()))
-      ? a.audit.title
-      : 'Le titre présente déjà les principaux atouts du logement. Pour être plus efficace, il doit rester court, préciser la capacité et mettre en avant les éléments réellement différenciants dès les premiers mots.';
+  const editorialTitle=guidedEditorialTitle(a);
 
   const content=`<!doctype html><html><head><meta charset="utf-8">
   <style>
@@ -639,14 +712,50 @@ buildReport=function(){
   const targets=targetAudiences().map(x=>`<div class="target-card"><strong>${escapeHtml(x[0])}</strong><span>${escapeHtml(x[1])}</span></div>`).join('');
   const comparisonRows=[['Titre',s.before.title,s.afterDetail.title],['Clarté',s.before.clarity,s.afterDetail.clarity],['Confiance',s.before.trust,s.afterDetail.trust],['Conversion',s.before.conversion,s.afterDetail.conversion],['SEO éditorial',s.before.seo,s.afterDetail.seo]].map(r=>`<tr><td><strong>${r[0]}</strong></td><td><span class="score-chip before">${r[1]}</span></td><td><span class="score-chip after">${r[2]}</span></td><td><span class="gain-chip">+${r[2]-r[1]}</span></td></tr>`).join('');
   const page1=reportPage(1,'Audit de votre annonce','Vue d’ensemble avant optimisation.',s.current,`<div class="r-status"><strong>${escapeHtml(a.verdict.title)}</strong><span>${escapeHtml(a.verdict.text)}</span></div><div class="r-grid three"><div class="r-card"><h3>Potentiel actuel</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${s.current}/100</p></div><div class="r-card"><h3>Après optimisation</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${s.after}/100</p></div><div class="r-card"><h3>Gain éditorial</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">+${s.gain}</p></div></div><div class="metric-grid">${scoreMetric('Titre',s.before.title)}${scoreMetric('Clarté',s.before.clarity)}${scoreMetric('Confiance',s.before.trust)}${scoreMetric('Conversion',s.before.conversion)}</div><div class="r-card"><h3>Synthèse CleanUp</h3><p>${escapeHtml(a.summary)}</p></div>`);
-  const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver et à mieux valoriser.',s.current,`<div class="r-card"><h3>Points forts de l’annonce</h3><ul>${strengths}</ul></div><div class="metric-grid">${scoreMetric('Titre',s.before.title)}${scoreMetric('Clarté',s.before.clarity)}${scoreMetric('Confiance',s.before.trust)}${scoreMetric('Conversion',s.before.conversion)}</div><div class="r-grid"><div class="r-card"><h3>Lecture éditoriale</h3><p>${escapeHtml(
-        (a.audit.title && a.audit.title.trim().length > 20 && !/^(titre|audit synthétique)$/i.test(a.audit.title.trim()))
-          ? a.audit.title
-          : 'Le titre présente déjà les principaux atouts du logement. Pour être plus efficace, il doit rester court, préciser la capacité et mettre en avant les éléments réellement différenciants dès les premiers mots.'
-      )}</p></div><div class="r-card"><h3>Capacité à rassurer</h3><p>${escapeHtml(a.audit.trust)}</p></div></div>`);
+  const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver et à mieux valoriser.',s.current,`<div class="r-card"><h3>Points forts de l’annonce</h3><ul>${strengths}</ul></div><div class="metric-grid">${scoreMetric('Titre',s.before.title)}${scoreMetric('Clarté',s.before.clarity)}${scoreMetric('Confiance',s.before.trust)}${scoreMetric('Conversion',s.before.conversion)}</div><div class="r-grid"><div class="r-card"><h3>Lecture éditoriale</h3><p>${escapeHtml(guidedEditorialTitle(a))}</p></div><div class="r-card"><h3>Capacité à rassurer</h3><p>${escapeHtml(a.audit.trust)}</p></div></div>`);
   const page3=reportPage(3,'Freins et priorités','Les corrections classées par importance.',s.current,`${priorityMarkup(a.weaknesses)}<div class="r-grid" style="margin-top:5mm"><div class="r-card"><h3>SEO éditorial</h3><p>${escapeHtml(a.audit.seo)}</p></div><div class="r-card"><h3>Règlement et transparence</h3><p>${escapeHtml(a.audit.rules)}</p></div></div>`);
   const page4=reportPage(4,'Avant / Après','Les progrès mesurés sur les principaux critères.',s.after,`<table class="compare-table"><thead><tr><th>Critère</th><th>Avant</th><th>Après</th><th>Gain</th></tr></thead><tbody>${comparisonRows}</tbody></table><div class="performance-note"><h3>Pourquoi cette version est plus performante</h3><p>Le titre devient plus précis, la lecture est plus rapide sur mobile, les bénéfices concrets sont visibles dès les premières lignes et les limites utiles sont présentées avec transparence. L’annonce aide ainsi le voyageur à se projeter et à décider plus facilement.</p></div>`);
-  const page5=reportPage(5,'Annonce optimisée','Version complète prête à relire et publier.',s.after,`<div class="r-card"><h3>${escapeHtml(o.title)}</h3><p><strong>Accroche</strong></p><p class="r-text">${escapeHtml(o.intro)}</p><p style="margin-top:3mm"><strong>Description optimisée</strong></p><p class="r-text">${escapeHtml(o.description)}</p><p style="margin-top:3mm"><strong>Informations pratiques</strong></p><p class="r-text">${escapeHtml(o.rules)}</p></div><div class="performance-note"><h3>Les leviers intégrés dans la réécriture</h3><p>Promesse plus claire, bénéfices voyageurs, lecture segmentée, mots-clés naturels, transparence sur les contraintes et appel implicite à la réservation.</p></div>`);
+  const premium=splitPremiumDescription(o.description);
+  const page5=reportPage(5,'Annonce optimisée','Une présentation claire, premium et prête à publier.',s.after,`
+    <div class="premium-annonce">
+      <div class="premium-hero">
+        <div class="premium-kicker">Nouvelle annonce optimisée</div>
+        <h3>${escapeHtml(o.title)}</h3>
+        <p class="r-text"><strong>Accroche</strong><br>${escapeHtml(o.intro)}</p>
+      </div>
+
+      <div class="premium-blocks">
+        <div class="premium-section">
+          <h4><span>1</span>Présentation</h4>
+          <p>${escapeHtml(premium.presentation)}</p>
+        </div>
+
+        <div class="premium-section">
+          <h4><span>2</span>Hébergement et équipements</h4>
+          <p>${escapeHtml(premium.equipment)}</p>
+        </div>
+
+        <div class="premium-section">
+          <h4><span>3</span>Localisation</h4>
+          <p>${escapeHtml(premium.location)}</p>
+        </div>
+
+        <div class="premium-section">
+          <h4><span>4</span>Service et points à savoir</h4>
+          <p>${escapeHtml(premium.service)}</p>
+        </div>
+      </div>
+
+      <div class="premium-practical">
+        <h4>Informations pratiques</h4>
+        <p>${escapeHtml(o.rules)}</p>
+      </div>
+    </div>
+
+    <div class="performance-note">
+      <h3>Les leviers intégrés dans la réécriture</h3>
+      <p>Promesse plus claire, bénéfices voyageurs, lecture segmentée, mots-clés naturels, transparence sur les contraintes et appel implicite à la réservation.</p>
+    </div>`);
   const confidence=s.after>=90?'Excellent':(s.after>=84?'Très bon':'Bon');
   const page6=reportPage(6,'Plan d’action final','Publics cibles et dernières vérifications.',s.after,`<div class="r-grid three"><div class="r-card"><h3>Potentiel éditorial</h3><p style="font-size:18px;font-weight:800;color:#3E2D25">${s.after}/100</p></div><div class="r-card"><h3>Niveau de confiance</h3><p style="font-size:14px;font-weight:800;color:#3E2D25">${confidence}</p></div><div class="r-card"><h3>Gain obtenu</h3><p style="font-size:18px;font-weight:800;color:#3E2D25">+${s.gain}</p></div></div><h3 style="font-size:10.5px;color:#3E2D25;margin:5mm 0 2mm">Publics les plus adaptés</h3><div class="target-grid">${targets}</div><div class="r-card" style="margin-top:5mm"><h3>Actions recommandées</h3><ol>${actions}</ol></div><div class="r-card" style="margin-top:4mm"><h3>Checklist avant publication</h3><div class="checklist"><div class="check-row">Vérifier les équipements annoncés</div><div class="check-row">Contrôler les horaires d’arrivée et de départ</div><div class="check-row">Confirmer les distances et accès</div><div class="check-row">Relire les couchages et la capacité</div><div class="check-row">Mettre à jour les règles du logement</div><div class="check-row">Vérifier tarifs et disponibilités</div></div></div>`);
   $('reportPrint').innerHTML=page1+page2+page3+page4+page5+page6;
