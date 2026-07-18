@@ -137,14 +137,92 @@
   .print-sheet .powered{margin-top:1.2mm!important;font-size:5.6pt!important}
 }
 
+
+/* V3 — progression IA, mise à jour et rendu A4 professionnel */
+.cleanup-ai-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.cleanup-update-btn{display:none}
+.cleanup-update-btn.show{display:inline-flex}
+.cleanup-ai-progress{
+  display:none;margin-top:14px;padding:13px 14px;border:1px solid #E3D4C8;
+  border-radius:14px;background:#FFFDFC
+}
+.cleanup-ai-progress.show{display:block}
+.cleanup-ai-progress strong{display:block;font-size:11px;color:var(--brown);margin-bottom:7px}
+.cleanup-ai-progress .bar{height:7px;border-radius:999px;background:#EEE4DB;overflow:hidden}
+.cleanup-ai-progress .bar span{
+  display:block;width:0;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,var(--terracotta),#D6A28D);
+  transition:width .38s ease
+}
+.cleanup-ai-progress p{margin:7px 0 0;font-size:10px;color:var(--muted)}
+.cleanup-edit-note{display:none;margin-top:8px;font-size:10px;color:var(--terracotta);font-weight:700}
+.cleanup-edit-note.show{display:block}
+
+@media print{
+  .print-sheet{
+    padding:10mm 11mm!important;
+    background:#FBF8F3!important;
+    border:1px solid rgba(62,45,37,.22)!important;
+    box-shadow:inset 0 0 0 1.8mm #FBF8F3,inset 0 0 0 2mm rgba(62,45,37,.12)!important
+  }
+  .print-sheet h1{
+    font-size:23pt!important;
+    letter-spacing:.015em!important;
+    color:#2F241F!important
+  }
+  .print-sheet .print-subtitle{
+    max-width:170mm!important;margin:2.4mm auto 5.5mm!important;
+    font-size:8.1pt!important;line-height:1.32!important;color:#62574F!important
+  }
+  .print-sheet .print-grid{
+    gap:5mm!important;border:0!important;align-items:stretch!important
+  }
+  .print-sheet .print-col{
+    padding:0!important;border:0!important;display:flex!important;
+    flex-direction:column!important;gap:3mm!important
+  }
+  .print-sheet .print-col:first-child{border:0!important}
+  .print-sheet .print-section{
+    margin:0!important;padding:3.2mm 3.5mm!important;
+    border:1px solid rgba(62,45,37,.18)!important;border-radius:2.5mm!important;
+    background:rgba(255,255,255,.72)!important;break-inside:avoid!important
+  }
+  .print-sheet h2{
+    margin:0 0 1.4mm!important;font-size:10.8pt!important;
+    text-decoration:none!important;color:#3E2D25!important;
+    border-bottom:1px solid rgba(185,111,82,.35)!important;padding-bottom:1mm!important
+  }
+  .print-sheet .print-body{
+    font-size:7.35pt!important;line-height:1.23!important;color:#342C28!important
+  }
+  .wifi-print{gap:2mm!important}
+  #wifiQr{width:22mm!important;height:22mm!important}
+  .print-sheet .print-footer{
+    padding-top:4mm!important;font-size:10.5pt!important;color:#3E2D25!important
+  }
+  .print-sheet .print-footer small{font-size:6.8pt!important}
+  .print-sheet #printContact{margin-top:1.6mm!important;font-size:7.2pt!important}
+  .print-sheet #printAddress{font-size:6.5pt!important}
+  .print-sheet .powered{margin-top:1.6mm!important;font-size:5.9pt!important}
+}
+
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Identité du logement</h2><p>Les informations essentielles qui apparaîtront dans le guide.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName" placeholder="Ex. La Maison des Bords de Loire"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="contactName" placeholder="Ex. Conciergerie Horizon"></div><div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="contactPhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div><div class="field full"><label>Email de contact <small>(facultatif)</small></label><input class="input" id="contactEmail" type="email"></div><div class="field full"><label>Message de bienvenue</label><textarea class="textarea" id="welcome" maxlength="250">Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour.</textarea><div class="char-counter" id="welcomeCounter">0 / 250</div></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Arrivée et accès</h2><p>Des instructions simples évitent les appels de dernière minute.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin" placeholder="À partir de 16h"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout" placeholder="Avant 10h"></div><div class="field"><label>Mode d’arrivée</label><select class="select" id="arrivalMode"><option>Arrivée autonome</option><option>Accueil physique</option><option>Remise de clés</option></select></div><div class="field"><label>Stationnement</label><input class="input" id="parking" placeholder="Parking privé, rue, parking public..."></div><div class="field full"><label>Instructions d’accès</label><textarea class="textarea" id="access" maxlength="260"></textarea><div class="char-counter" id="accessCounter">0 / 260</div></div><div class="field"><label>Nom du Wi-Fi</label><input class="input" id="wifiName"></div><div class="field"><label>Mot de passe Wi-Fi</label><input class="input" id="wifiPass"></div><div class="field"><label>Sécurité Wi-Fi</label><select class="select" id="wifiSecurity"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Réseau ouvert</option></select></div><div class="field"><label>Réseau masqué</label><select class="select" id="wifiHidden"><option value="false">Non</option><option value="true">Oui</option></select></div></div><div class="panel"><h3>QR code Wi-Fi</h3><p>Le QR code sera généré automatiquement dans le PDF. Le voyageur pourra se connecter en le scannant.</p></div></div>
 <div class="section" id="step3"><div class="section-head"><div><h2>Utilisation du logement</h2><p>Expliquez uniquement ce qui peut réellement poser question.</p></div><div class="section-badge">Étape 3 sur 5</div></div>
 <div class="panel" style="margin-top:0;margin-bottom:18px">
-  <h3>Demander à CleanUp de préparer cette partie</h3>
-  <p>CleanUp pourra rédiger des consignes simples et bilingues pour le chauffage, la télévision, la cuisine, les déchets et le ménage. Vous pourrez ensuite tout modifier.</p>
-  <button class="btn terracotta" id="generateStayWithCleanup" type="button">✦ Demander à CleanUp de générer pour vous</button>
+  <h3>Préparer cette partie avec CleanUp</h3>
+  <p>CleanUp rédige des consignes courtes et bilingues. Après une modification en français, utilisez « Mettre à jour » pour adapter automatiquement la version anglaise.</p>
+  <div class="cleanup-ai-actions">
+    <button class="btn terracotta" id="generateStayWithCleanup" type="button">✦ Préparer par CleanUp</button>
+    <button class="btn soft cleanup-update-btn" id="updateStayWithCleanup" type="button">↻ Mettre à jour avec CleanUp</button>
+  </div>
+  <div class="cleanup-ai-progress" id="stayAiProgress">
+    <strong id="stayAiProgressTitle">Préparation en cours…</strong>
+    <div class="bar"><span id="stayAiProgressBar"></span></div>
+    <p id="stayAiProgressText">Lecture des informations du logement.</p>
+  </div>
+  <p class="cleanup-edit-note" id="stayEditNote">Des modifications ont été détectées. Mettez à jour pour harmoniser la version anglaise.</p>
   <p id="generateStayStatus" style="margin:10px 0 0;font-size:10px;color:var(--muted)">Option non activée.</p>
 </div><div class="form-grid"><div class="field full"><label>Chauffage / climatisation</label><textarea class="textarea" id="heating" maxlength="120"></textarea><div class="char-counter" id="heatingCounter">0 / 180</div></div><div class="field full"><label>Télévision et équipements multimédias</label><textarea class="textarea" id="tv" maxlength="120"></textarea><div class="char-counter" id="tvCounter">0 / 180</div></div><div class="field full"><label>Cuisine et électroménager</label><textarea class="textarea" id="kitchen" maxlength="150"></textarea><div class="char-counter" id="kitchenCounter">0 / 220</div></div><div class="field full"><label>Déchets et tri</label><textarea class="textarea" id="waste" maxlength="120"></textarea><div class="char-counter" id="wasteCounter">0 / 180</div></div>
 <div class="field full"><label>Ménage pendant le séjour</label><textarea class="textarea" id="cleaningStay" maxlength="120" placeholder="Ex. ménage intermédiaire sur demande, où trouver l’aspirateur, produits disponibles..."></textarea><div class="char-counter" id="cleaningStayCounter">0 / 180</div></div>
@@ -152,9 +230,18 @@
 <div class="field full"><label>Autres informations utiles</label><textarea class="textarea" id="other" maxlength="100"></textarea><div class="char-counter" id="otherCounter">0 / 180</div></div></div></div>
 <div class="section" id="step4"><div class="section-head"><div><h2>Règles et départ</h2><p>Des consignes claires, sans transformer le guide en règlement militaire.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
 <div class="panel" style="margin-top:0;margin-bottom:18px">
-  <h3>Demander à CleanUp de préparer les règles et le départ</h3>
-  <p>CleanUp pourra rédiger une version claire, accueillante et bilingue des règles, du ménage avant départ, des consignes de départ et des urgences. Vous pourrez ensuite tout modifier.</p>
-  <button class="btn terracotta" id="generateRulesWithCleanup" type="button">✦ Demander à CleanUp de générer pour vous</button>
+  <h3>Préparer les règles et le départ avec CleanUp</h3>
+  <p>CleanUp rédige une version claire et bilingue. Après une modification, utilisez « Mettre à jour » pour synchroniser le français et l’anglais.</p>
+  <div class="cleanup-ai-actions">
+    <button class="btn terracotta" id="generateRulesWithCleanup" type="button">✦ Préparer par CleanUp</button>
+    <button class="btn soft cleanup-update-btn" id="updateRulesWithCleanup" type="button">↻ Mettre à jour avec CleanUp</button>
+  </div>
+  <div class="cleanup-ai-progress" id="rulesAiProgress">
+    <strong id="rulesAiProgressTitle">Préparation en cours…</strong>
+    <div class="bar"><span id="rulesAiProgressBar"></span></div>
+    <p id="rulesAiProgressText">Lecture des règles sélectionnées.</p>
+  </div>
+  <p class="cleanup-edit-note" id="rulesEditNote">Des modifications ont été détectées. Mettez à jour pour harmoniser la version anglaise.</p>
   <p id="generateRulesStatus" style="margin:10px 0 0;font-size:10px;color:var(--muted)">Option non activée.</p>
 </div><div class="check-grid"><label class="check-pill"><input id="noSmoking" type="checkbox" checked> Logement non-fumeur</label><label class="check-pill"><input id="noParty" type="checkbox" checked> Fêtes interdites</label><label class="check-pill"><input id="quiet" type="checkbox" checked> Respect du voisinage</label><label class="check-pill"><input id="pets" type="checkbox"> Animaux acceptés</label><label class="check-pill"><input id="dishes" type="checkbox" checked> Vaisselle rangée</label><label class="check-pill"><input id="trash" type="checkbox" checked> Poubelles sorties</label></div><div class="form-grid" style="margin-top:18px"><div class="field full"><label>Consignes de départ</label><textarea class="textarea" id="departure" maxlength="220"></textarea><div class="char-counter" id="departureCounter">0 / 220</div></div><div class="field full"><label>Urgences et numéros utiles</label><textarea class="textarea" id="emergency" placeholder="Conciergerie, propriétaire, dépannage..." maxlength="280"></textarea><div class="char-counter" id="emergencyCounter">0 / 180</div></div></div><div class="guide-generation" id="guideGeneration"><strong id="guideGenerationTitle">Préparation du guide…</strong><div class="track"><span id="guideGenerationBar"></span></div><p id="guideGenerationText">Lecture des informations du logement.</p></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px">Créer le guide</button></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
@@ -245,7 +332,7 @@ function showStep(n){
     b.classList.toggle('locked',exportLocked && x<STEPS);
   });
   $('prevBtn').style.display=(currentStep===1 || exportLocked)?'none':'inline-flex';
-  $('nextBtn').style.display=currentStep===STEPS?'none':'inline-flex';
+  $('nextBtn').style.display=(currentStep===STEPS || currentStep===4)?'none':'inline-flex';
   $('nextBtn').textContent='Continuer →';
   const p=Math.round((currentStep-1)/(STEPS-1)*100);
   $('progressBar').style.width=p+'%';
@@ -320,7 +407,11 @@ if(arrivalModeField){
 }
 
 
-const guideAiFields={stay:['heating','tv','kitchen','waste','cleaningStay','cleaningDeparture','other'],rules:['departure','emergency']};
+const guideAiFields={
+  stay:['heating','tv','kitchen','waste','cleaningStay','cleaningDeparture','other'],
+  rules:['departure','emergency']
+};
+const guideAiState={stay:{generated:false,dirty:false},rules:{generated:false,dirty:false}};
 
 function guidePayload(requested){
   return {
@@ -343,35 +434,83 @@ function fillGuideAi(ai,section){
   });
 }
 
+function setAiDirty(section,dirty){
+  guideAiState[section].dirty=dirty;
+  const updateBtn=$(section==='stay'?'updateStayWithCleanup':'updateRulesWithCleanup');
+  const note=$(section==='stay'?'stayEditNote':'rulesEditNote');
+  if(updateBtn)updateBtn.classList.toggle('show',guideAiState[section].generated&&dirty);
+  if(note)note.classList.toggle('show',guideAiState[section].generated&&dirty);
+}
+
+function bindAiDirtyTracking(section){
+  guideAiFields[section].forEach(id=>{
+    const field=$(id);
+    if(!field)return;
+    field.addEventListener('input',()=>{
+      if(guideAiState[section].generated)setAiDirty(section,true);
+    });
+  });
+}
+bindAiDirtyTracking('stay');
+bindAiDirtyTracking('rules');
+
+async function animateAiProgress(section){
+  const prefix=section==='stay'?'stay':'rules';
+  const box=$(prefix+'AiProgress'),bar=$(prefix+'AiProgressBar'),text=$(prefix+'AiProgressText'),title=$(prefix+'AiProgressTitle');
+  box.classList.add('show');
+  title.textContent=guideAiState[section].generated?'Mise à jour en cours…':'Préparation en cours…';
+  const stages=section==='stay'
+    ?[[18,'Lecture des équipements.'],[42,'Rédaction des consignes en français.'],[68,'Adaptation de la version anglaise.'],[88,'Vérification des longueurs.']]
+    :[[18,'Lecture des règles sélectionnées.'],[43,'Rédaction des consignes de départ.'],[70,'Adaptation de la version anglaise.'],[90,'Vérification de la clarté.']];
+  for(const [percent,label] of stages){
+    bar.style.width=percent+'%';text.textContent=label;
+    await new Promise(resolve=>setTimeout(resolve,260));
+  }
+  return {box,bar,text,title};
+}
+
 async function requestGuideAi(section,button,status){
   const requested={stay:section==='stay',rules:section==='rules'};
   const previous=button.textContent;
+  const progress=await animateAiProgress(section);
   button.disabled=true;
-  button.textContent='CleanUp prépare cette partie…';
-  status.textContent='Analyse et rédaction bilingue en cours.';
+  button.textContent=guideAiState[section].generated?'Mise à jour en cours…':'Préparation en cours…';
+  status.textContent='CleanUp harmonise les versions française et anglaise.';
   try{
     const response=await fetch(GUIDE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(guidePayload(requested))});
     const data=await response.json();
     if(!response.ok||!data.ok)throw new Error(data.error||'La génération a échoué.');
     fillGuideAi(data.ai,section);
+    guideAiState[section].generated=true;
+    setAiDirty(section,false);
     if(section==='stay')cleanupStayRequested=true;
     if(section==='rules')cleanupRulesRequested=true;
-    button.textContent='✓ Partie préparée par CleanUp';
-    status.textContent='Rubriques générées. Vous pouvez les modifier.';
+    progress.bar.style.width='100%';
+    progress.title.textContent='Partie terminée';
+    progress.text.textContent='Les textes français et anglais sont harmonisés.';
+    button.textContent=previous;
+    status.textContent='Rubriques préparées. Vous pouvez les modifier puis les mettre à jour.';
+    setTimeout(()=>{progress.box.classList.remove('show');progress.bar.style.width='0';},700);
   }catch(error){
     console.error('generateGuide error:',error);
     button.textContent=previous;
     status.textContent=error.message||'Impossible de générer cette partie.';
     alert(status.textContent);
+    progress.box.classList.remove('show');progress.bar.style.width='0';
   }finally{
     button.disabled=false;
   }
 }
 
 const stayAiBtn=$('generateStayWithCleanup');
+const stayUpdateBtn=$('updateStayWithCleanup');
 if(stayAiBtn)stayAiBtn.onclick=()=>requestGuideAi('stay',stayAiBtn,$('generateStayStatus'));
+if(stayUpdateBtn)stayUpdateBtn.onclick=()=>requestGuideAi('stay',stayUpdateBtn,$('generateStayStatus'));
+
 const rulesAiBtn=$('generateRulesWithCleanup');
+const rulesUpdateBtn=$('updateRulesWithCleanup');
 if(rulesAiBtn)rulesAiBtn.onclick=()=>requestGuideAi('rules',rulesAiBtn,$('generateRulesStatus'));
+if(rulesUpdateBtn)rulesUpdateBtn.onclick=()=>requestGuideAi('rules',rulesUpdateBtn,$('generateRulesStatus'));
 
 const FIELD_LIMITS={'welcome':250,'access':260,'parking':120,'heating':120,'tv':120,'kitchen':150,'waste':120,'cleaningStay':120,'cleaningDeparture':140,'other':100,'departure':220,'emergency':280};
 function updateCounter(id){
@@ -418,14 +557,14 @@ async function buildWordHtml(){
   }
 
   const contact=[val('contactName'),val('contactPhone'),val('contactEmail')].filter(Boolean).join(' - ');
-  const pStyle='margin:0 0 4px;font-size:7.2pt;line-height:1.08;color:#2F2926;';
-  const h2Style='margin:0 0 2px;font-family:Georgia,serif;font-size:9.6pt;line-height:1.05;color:#211B17;';
-  const section=(title,content)=>`<h2 style="${h2Style}">${title}</h2><p style="${pStyle}">${content}</p>`;
+  const pStyle='margin:0;font-size:7.6pt;line-height:1.2;color:#2F2926;';
+  const h2Style='margin:0 0 4px;font-family:Georgia,serif;font-size:10.2pt;line-height:1.08;color:#3E2D25;';
+  const section=(title,content)=>`<div style="margin:0 0 7px;padding:7px 8px;border:1px solid #DED3CA;border-radius:6px;background:#FCFAF7"><h2 style="${h2Style};padding-bottom:3px;border-bottom:1px solid #E8D7CC">${title}</h2><p style="${pStyle}">${content}</p></div>`;
 
   return `
-  <div style="font-family:Arial,sans-serif;color:#2F2926;width:100%;margin:0;padding:0">
-    <h1 style="margin:0 0 4px;text-align:center;font-family:Georgia,serif;font-size:17pt;line-height:1.02">${val('homeName')||'Guide d’accueil'}</h1>
-    <p style="margin:0 0 9px;text-align:center;color:#766C66;font-size:7pt;line-height:1.08">${tr(val('welcome'),FIELD_LIMITS.welcome)}</p>
+  <div style="font-family:Arial,sans-serif;color:#2F2926;width:100%;margin:0;padding:12px 14px;border:1px solid #D8CDC4;background:#FBF8F3">
+    <h1 style="margin:0 0 4px;text-align:center;font-family:Georgia,serif;font-size:19pt;line-height:1.04;color:#3E2D25">${val('homeName')||'Guide d’accueil'}</h1>
+    <p style="margin:0 0 9px;text-align:center;color:#766C66;font-size:7.6pt;line-height:1.18">${tr(val('welcome'),FIELD_LIMITS.welcome)}</p>
     ${coverHtml}
     <table style="width:100%;border-collapse:collapse;table-layout:fixed">
       <tr>
