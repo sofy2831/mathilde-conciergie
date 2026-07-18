@@ -206,6 +206,51 @@
   .print-sheet .powered{margin-top:1.6mm!important;font-size:5.9pt!important}
 }
 
+
+/* V4 — occupation équilibrée de la page A4 */
+@media print{
+  .print-sheet{padding:10mm 11mm!important}
+  .print-sheet h1{font-size:24pt!important;line-height:1.04!important}
+  .print-sheet .print-subtitle{
+    margin:2.8mm auto 6mm!important;
+    font-size:8.6pt!important;line-height:1.38!important
+  }
+  .print-sheet .print-grid{
+    flex:1!important;min-height:0!important;
+    gap:6mm!important;align-items:stretch!important
+  }
+  .print-sheet .print-col{
+    height:100%!important;
+    display:flex!important;flex-direction:column!important;
+    justify-content:space-between!important;gap:3.5mm!important
+  }
+  .print-sheet .print-section{
+    padding:4mm 4.2mm!important;
+    border-radius:3mm!important;
+    display:flex!important;flex-direction:column!important;
+    justify-content:flex-start!important
+  }
+  .print-sheet .print-col:first-child .print-section{flex:1 1 0!important}
+  .print-sheet .print-col:last-child .print-section{flex:1 1 0!important}
+  .print-sheet h2{
+    font-size:11.5pt!important;
+    margin-bottom:1.8mm!important;
+    padding-bottom:1.2mm!important
+  }
+  .print-sheet .print-body{
+    font-size:8.05pt!important;
+    line-height:1.31!important
+  }
+  .wifi-print{justify-content:center!important}
+  #wifiQr{width:24mm!important;height:24mm!important}
+  .print-sheet .print-footer{
+    padding-top:4.5mm!important;
+    font-size:11pt!important;line-height:1.18!important
+  }
+  .print-sheet #printContact{font-size:7.5pt!important}
+  .print-sheet #printAddress{font-size:6.8pt!important}
+}
+
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Identité du logement</h2><p>Les informations essentielles qui apparaîtront dans le guide.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName" placeholder="Ex. La Maison des Bords de Loire"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="contactName" placeholder="Ex. Conciergerie Horizon"></div><div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="contactPhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div><div class="field full"><label>Email de contact <small>(facultatif)</small></label><input class="input" id="contactEmail" type="email"></div><div class="field full"><label>Message de bienvenue</label><textarea class="textarea" id="welcome" maxlength="250">Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour.</textarea><div class="char-counter" id="welcomeCounter">0 / 250</div></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Arrivée et accès</h2><p>Des instructions simples évitent les appels de dernière minute.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin" placeholder="À partir de 16h"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout" placeholder="Avant 10h"></div><div class="field"><label>Mode d’arrivée</label><select class="select" id="arrivalMode"><option>Arrivée autonome</option><option>Accueil physique</option><option>Remise de clés</option></select></div><div class="field"><label>Stationnement</label><input class="input" id="parking" placeholder="Parking privé, rue, parking public..."></div><div class="field full"><label>Instructions d’accès</label><textarea class="textarea" id="access" maxlength="260"></textarea><div class="char-counter" id="accessCounter">0 / 260</div></div><div class="field"><label>Nom du Wi-Fi</label><input class="input" id="wifiName"></div><div class="field"><label>Mot de passe Wi-Fi</label><input class="input" id="wifiPass"></div><div class="field"><label>Sécurité Wi-Fi</label><select class="select" id="wifiSecurity"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Réseau ouvert</option></select></div><div class="field"><label>Réseau masqué</label><select class="select" id="wifiHidden"><option value="false">Non</option><option value="true">Oui</option></select></div></div><div class="panel"><h3>QR code Wi-Fi</h3><p>Le QR code sera généré automatiquement dans le PDF. Le voyageur pourra se connecter en le scannant.</p></div></div>
@@ -413,22 +458,62 @@ const guideAiFields={
 };
 const guideAiState={stay:{generated:false,dirty:false},rules:{generated:false,dirty:false}};
 
-function guidePayload(requested){
+
+function frenchSource(value){
+  const text=(value||'').trim();
+  if(!text)return '';
+  const separators=[' / ','\n/ ',' — ','\n— '];
+  for(const separator of separators){
+    const index=text.indexOf(separator);
+    if(index>0)return text.slice(0,index).trim();
+  }
+  return text;
+}
+
+function guideExistingPayload(section,isUpdate){
+  const values={
+    heating:val('heating'),
+    tv:val('tv'),
+    kitchen:val('kitchen'),
+    waste:val('waste'),
+    cleaningStay:val('cleaningStay'),
+    cleaningDeparture:val('cleaningDeparture'),
+    other:val('other'),
+    departure:val('departure'),
+    emergency:val('emergency')
+  };
+  if(isUpdate){
+    guideAiFields[section].forEach(id=>values[id]=frenchSource(values[id]));
+  }
+  return values;
+}
+
+function guidePayload(requested,section,isUpdate){
   return {
     requested,
     property:{homeName:val('homeName'),address:val('address'),welcome:val('welcome')},
     arrival:{checkin:val('checkin'),checkout:val('checkout'),arrivalMode:val('arrivalMode'),parking:val('parking'),access:val('access')},
-    existing:{heating:val('heating'),tv:val('tv'),kitchen:val('kitchen'),waste:val('waste'),cleaningStay:val('cleaningStay'),cleaningDeparture:val('cleaningDeparture'),other:val('other'),departure:val('departure'),emergency:val('emergency')},
+    existing:guideExistingPayload(section,isUpdate),
     rules:{noSmoking:checked('noSmoking'),noParty:checked('noParty'),quiet:checked('quiet'),pets:checked('pets'),dishes:checked('dishes'),trash:checked('trash')},
-    contact:{name:val('contactName'),phone:val('contactPhone'),email:val('contactEmail')}
+    contact:{name:val('contactName'),phone:val('contactPhone'),email:val('contactEmail')},updateMode:isUpdate,forceBilingualRewrite:isUpdate
   };
+}
+
+
+function cleanGeneratedOther(value){
+  const other=(value||'').trim();
+  const welcome=val('welcome').trim();
+  if(!other)return '';
+  if(welcome && (other===welcome || other.startsWith(welcome.slice(0,80))))return '';
+  return other;
 }
 
 function fillGuideAi(ai,section){
   const source=ai?.[section]||{};
   guideAiFields[section].forEach(id=>{
     if(typeof source[id]==='string'&&source[id].trim()){
-      $(id).value=source[id].trim();
+      const generated=id==='other'?cleanGeneratedOther(source[id]):source[id].trim();
+      $(id).value=generated;
       updateCounter(id);
     }
   });
@@ -454,6 +539,14 @@ function bindAiDirtyTracking(section){
 bindAiDirtyTracking('stay');
 bindAiDirtyTracking('rules');
 
+['noSmoking','noParty','quiet','pets','dishes','trash'].forEach(id=>{
+  const field=$(id);
+  if(field)field.addEventListener('change',()=>{
+    if(guideAiState.rules.generated)setAiDirty('rules',true);
+  });
+});
+
+
 async function animateAiProgress(section){
   const prefix=section==='stay'?'stay':'rules';
   const box=$(prefix+'AiProgress'),bar=$(prefix+'AiProgressBar'),text=$(prefix+'AiProgressText'),title=$(prefix+'AiProgressTitle');
@@ -471,13 +564,14 @@ async function animateAiProgress(section){
 
 async function requestGuideAi(section,button,status){
   const requested={stay:section==='stay',rules:section==='rules'};
+  const isUpdate=guideAiState[section].generated;
   const previous=button.textContent;
   const progress=await animateAiProgress(section);
   button.disabled=true;
   button.textContent=guideAiState[section].generated?'Mise à jour en cours…':'Préparation en cours…';
   status.textContent='CleanUp harmonise les versions française et anglaise.';
   try{
-    const response=await fetch(GUIDE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(guidePayload(requested))});
+    const response=await fetch(GUIDE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(guidePayload(requested,section,isUpdate))});
     const data=await response.json();
     if(!response.ok||!data.ok)throw new Error(data.error||'La génération a échoué.');
     fillGuideAi(data.ai,section);
@@ -557,24 +651,24 @@ async function buildWordHtml(){
   }
 
   const contact=[val('contactName'),val('contactPhone'),val('contactEmail')].filter(Boolean).join(' - ');
-  const pStyle='margin:0;font-size:7.6pt;line-height:1.2;color:#2F2926;';
-  const h2Style='margin:0 0 4px;font-family:Georgia,serif;font-size:10.2pt;line-height:1.08;color:#3E2D25;';
-  const section=(title,content)=>`<div style="margin:0 0 7px;padding:7px 8px;border:1px solid #DED3CA;border-radius:6px;background:#FCFAF7"><h2 style="${h2Style};padding-bottom:3px;border-bottom:1px solid #E8D7CC">${title}</h2><p style="${pStyle}">${content}</p></div>`;
+  const pStyle='margin:0;font-size:8pt;line-height:1.24;color:#2F2926;';
+  const h2Style='margin:0 0 5px;font-family:Georgia,serif;font-size:10.8pt;line-height:1.1;color:#3E2D25;';
+  const section=(title,content)=>`<div style="margin:0 0 9px;padding:9px 10px;border:1px solid #DED3CA;border-radius:7px;background:#FCFAF7"><h2 style="${h2Style};padding-bottom:3px;border-bottom:1px solid #E8D7CC">${title}</h2><p style="${pStyle}">${content}</p></div>`;
 
   return `
-  <div style="font-family:Arial,sans-serif;color:#2F2926;width:100%;margin:0;padding:12px 14px;border:1px solid #D8CDC4;background:#FBF8F3">
-    <h1 style="margin:0 0 4px;text-align:center;font-family:Georgia,serif;font-size:19pt;line-height:1.04;color:#3E2D25">${val('homeName')||'Guide d’accueil'}</h1>
-    <p style="margin:0 0 9px;text-align:center;color:#766C66;font-size:7.6pt;line-height:1.18">${tr(val('welcome'),FIELD_LIMITS.welcome)}</p>
+  <div style="font-family:Arial,sans-serif;color:#2F2926;width:100%;margin:0;padding:16px 18px;border:1px solid #D8CDC4;background:#FBF8F3">
+    <h1 style="margin:0 0 4px;text-align:center;font-family:Georgia,serif;font-size:20pt;line-height:1.04;color:#3E2D25">${val('homeName')||'Guide d’accueil'}</h1>
+    <p style="margin:0 0 9px;text-align:center;color:#766C66;font-size:8pt;line-height:1.24">${tr(val('welcome'),FIELD_LIMITS.welcome)}</p>
     ${coverHtml}
     <table style="width:100%;border-collapse:collapse;table-layout:fixed">
       <tr>
-        <td style="width:50%;vertical-align:top;padding:4px 7px 3px 4px;border-right:1px solid #B7A79C">
+        <td style="width:50%;vertical-align:top;padding:6px 9px 5px 5px;border-right:1px solid #B7A79C">
           ${section('Arrivée / Check-in',$('printArrival').textContent.replace(/\n/g,'<br>'))}
           ${section('Wi-Fi',$('printWifi').textContent.replace(/\n/g,'<br>'))}
           ${qrHtml}
           ${section('Utilisation / How to use',$('printUse').textContent.replace(/\n/g,'<br>'))}
         </td>
-        <td style="width:50%;vertical-align:top;padding:4px 4px 3px 7px">
+        <td style="width:50%;vertical-align:top;padding:6px 5px 5px 9px">
           ${section('Règles / House rules',$('printRules').textContent.replace(/\n/g,'<br>'))}
           ${section('Ménage / Housekeeping',$('printCleaning').textContent.replace(/\n/g,'<br>'))}
           ${section('Départ / Check-out',$('printDeparture').textContent.replace(/\n/g,'<br>'))}
