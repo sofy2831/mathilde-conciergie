@@ -86,7 +86,7 @@
 <div class="compare-card"><span class="compare-label">AVANT</span><h3 id="beforeTitle">Titre actuel</h3><p id="beforeDescription">Votre annonce actuelle apparaîtra ici.</p></div>
 <div class="compare-arrow">→</div>
 <div class="compare-card after"><span class="compare-label">APRÈS</span><h3 id="afterTitle">Titre optimisé</h3><p id="afterDescription">Lancez l’audit pour générer la nouvelle version.</p></div>
-</div><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn terracotta" id="generateBtn">✦ Afficher la version optimisée</button></div><div class="generated-card panel"><div class="field"><label>Nouveau titre</label><textarea class="textarea" id="newTitle"></textarea></div><div class="field"><label>Nouvelle accroche</label><textarea class="textarea" id="newIntro"></textarea></div><div class="field"><label>Description optimisée</label><textarea class="textarea" id="newDescription" style="min-height:240px"></textarea></div><div class="field"><label>Informations pratiques</label><textarea class="textarea" id="newRules"></textarea></div></div></div>
+</div><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn terracotta" id="generateBtn">✎ Modifier la version optimisée</button></div><div class="generated-card panel" id="optimizedEditor"><div class="field"><label>Nouveau titre</label><textarea class="textarea" id="newTitle"></textarea></div><div class="field"><label>Nouvelle accroche</label><textarea class="textarea" id="newIntro"></textarea></div><div class="field"><label>Description optimisée</label><textarea class="textarea" id="newDescription" style="min-height:240px"></textarea></div><div class="field"><label>Informations pratiques</label><textarea class="textarea" id="newRules"></textarea></div></div></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Rapport d’optimisation</h2><p>Copiez l’annonce optimisée ou téléchargez le rapport professionnel.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Votre nouveau titre</h3><p id="previewText">Votre annonce optimisée apparaîtra ici.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier l’annonce</h3><p>Copiez tout le contenu prêt à publier.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Récupérez une version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Téléchargez le rapport professionnel de 6 pages.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Optimiser une autre annonce</h3><p>Une nouvelle optimisation nécessite un nouveau paiement.</p><button class="btn soft" id="newOptimization">Optimiser une autre annonce (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre annonce optimisée a été générée.</strong><br>Vous pouvez encore la copier, la télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div><div class="cta"><div><h3>Découvrez les autres indispensables</h3><p>Guide d’accueil bilingue, livret voyageur, diagnostic de rentabilité et autres outils sont disponibles séparément, sans abonnement.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div></div>
 <div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div class="report-print" id="reportPrint"></div><script>
 const STRIPE_PAYMENT_LINK='';
@@ -352,7 +352,22 @@ $('generateBtn').onclick=()=>{
     showStep(3);
     return;
   }
+
   applyOptimizedVersion();
+
+  const editor=$('optimizedEditor');
+  editor.scrollIntoView({behavior:'smooth',block:'start'});
+
+  editor.animate(
+    [
+      {boxShadow:'0 0 0 0 rgba(185,111,82,0)'},
+      {boxShadow:'0 0 0 5px rgba(185,111,82,.22)'},
+      {boxShadow:'0 0 0 0 rgba(185,111,82,0)'}
+    ],
+    {duration:1100,easing:'ease-out'}
+  );
+
+  setTimeout(()=>$('newTitle').focus({preventScroll:true}),500);
 };
 
 function reportPage(number,title,subtitle,score,content){
