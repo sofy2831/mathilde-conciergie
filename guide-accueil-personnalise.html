@@ -640,7 +640,17 @@ function buildWelcomeText(force=false){
   const place=city?` à ${city}`:'';
   const proposed=`Bienvenue à ${home}${place}.${team} Ce guide rassemble les informations utiles pour votre arrivée, votre séjour et votre départ.`;
   const generic=field.value.trim()===''||field.value.includes('Bienvenue dans votre logement')||field.dataset.auto==='true';
-  if(force||generic){field.value=proposed.slice(0,300);field.dataset.auto='true';updateCounter('welcome');}
+  if(force||generic){
+    field.value=proposed.slice(0,300);
+    field.dataset.auto='true';
+    updateCounter('welcome');
+    const status=$('welcomeAutoStatus');
+    if(status){
+      status.textContent='Message actualisé ✓';
+      clearTimeout(status._resetTimer);
+      status._resetTimer=setTimeout(()=>status.textContent='Génération automatique',1400);
+    }
+  }
 }
 function buildAccessText(force=false){
   const field=$('access');
@@ -696,11 +706,10 @@ if(arrivalModeField){
   const syncArrival=()=>buildAccessText(false);
   arrivalModeField.addEventListener('change',()=>buildAccessText(true));
   let accessTimer;
-['checkin','contactName','contactPhone'].forEach(id=>$(id)?.addEventListener('input',()=>{
-  clearTimeout(accessTimer);
-  accessTimer=setTimeout(syncArrival,180);
-}));
-  syncArrival();
+  ['checkin','contactName','contactPhone'].forEach(id=>$(id)?.addEventListener('input',()=>{
+    clearTimeout(accessTimer);
+    accessTimer=setTimeout(syncArrival,180);
+  }));
 }
 let welcomeTimer;
 ['homeName','address','contactName'].forEach(id=>$(id)?.addEventListener('input',()=>{
@@ -709,8 +718,20 @@ let welcomeTimer;
 }));
 $('welcome')?.addEventListener('input',()=>{$('welcome').dataset.auto='false'});
 $('access')?.addEventListener('input',()=>{$('access').dataset.auto='false'});
-$('refreshWelcome')?.addEventListener('click',()=>buildWelcomeText(true));
-$('refreshAccess')?.addEventListener('click',()=>buildAccessText(true));
+const refreshWelcomeBtn=$('refreshWelcome');
+if(refreshWelcomeBtn){
+  refreshWelcomeBtn.onclick=(event)=>{
+    event.preventDefault();
+    buildWelcomeText(true);
+  };
+}
+const refreshAccessBtn=$('refreshAccess');
+if(refreshAccessBtn){
+  refreshAccessBtn.onclick=(event)=>{
+    event.preventDefault();
+    buildAccessText(true);
+  };
+}
 
 const guideAiFields={
   stay:['heating','tv','kitchen','waste','cleaningStay','cleaningDeparture','other'],
