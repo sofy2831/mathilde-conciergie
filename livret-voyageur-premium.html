@@ -309,16 +309,10 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 </div>
 
 <div class="section" id="step4">
-<div class="section-head"><div><h2>Période du livret</h2><p>Choisissez une période large afin que le propriétaire puisse conserver le même livret plus longtemps.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
+<div class="section-head"><div><h2>Création du livret</h2><p>CleanUp finalise automatiquement les recommandations et les événements utiles à vos voyageurs.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
 <div class="panel" style="margin-top:0">
-<h3>Pour quelle période souhaitez-vous préparer le livret ?</h3>
-<div class="options">
-<label class="option"><input type="radio" name="season" value="Toute l’année" checked> Toute l’année</label>
-<label class="option"><input type="radio" name="season" value="Basse saison"> Basse saison</label>
-<label class="option"><input type="radio" name="season" value="Moyenne saison"> Moyenne saison</label>
-<label class="option"><input type="radio" name="season" value="Haute saison"> Haute saison</label>
-</div>
-<p>CleanUp sélectionnera les événements majeurs et récurrents de la ville avec leurs dates lorsqu’elles sont connues et vérifiables.</p>
+<h3>Des événements sélectionnés automatiquement</h3>
+<p>CleanUp sélectionnera les événements majeurs et récurrents de la destination afin de créer un livret utile toute l’année.</p>
 </div>
 <div class="panel">
 <h3>Génération finale</h3>
@@ -455,7 +449,7 @@ function payload(){
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
   ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value},
   ownerAdditions:{restaurants:$('customRestaurants').value,shops:$('customShops').value,activities:$('customActivities').value,transport:$('customTransport').value,events:$('customTips').value},
-  events:{season:(document.querySelector('input[name="season"]:checked')||{}).value||'Toute l’année',period:(document.querySelector('input[name="season"]:checked')||{}).value||'Toute l’année',count:6}
+  events:{season:'Toute l’année',period:'Toute l’année',count:6}
  };
 }
 function sanitizeText(value){
