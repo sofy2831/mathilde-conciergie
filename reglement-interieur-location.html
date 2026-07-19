@@ -1,0 +1,98 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Règlement intérieur — CleanUp</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
+:root{--brown:#3E2D25;--brown2:#5A4033;--sand:#E9DDCF;--beige:#F5EFE7;--cream:#FCFAF7;--white:#fff;--taupe:#8C7B70;--terracotta:#B96F52;--terracottaSoft:#F5E4DC;--sage:#7E927C;--sageSoft:#E7EEE5;--text:#2F2926;--muted:#766C66;--line:#E4D9CF;--shadow:0 22px 60px rgba(62,45,37,.10);--soft:0 10px 28px rgba(62,45,37,.07);--radius:24px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 5% 0%,rgba(233,221,207,.8),transparent 28%),radial-gradient(circle at 100% 10%,rgba(245,228,220,.8),transparent 30%),#F7F3EE;color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.site-header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:rgba(252,250,247,.88);border-bottom:1px solid rgba(228,217,207,.85)}
+.header-inner{max-width:1220px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--brown),var(--brown2));color:white;display:grid;place-items:center;font-size:22px}
+.brand-text strong{display:block;font-size:23px;line-height:.9;color:var(--brown);font-weight:900;letter-spacing:-.05em}.brand-text span{display:block;font-size:7.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--terracotta);margin-top:5px;font-weight:900}
+.header-note{font-size:12px;color:var(--taupe);font-weight:600}.header-pill{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;background:var(--sageSoft);color:#536B52;font-size:12px;font-weight:800}.header-pill i{width:8px;height:8px;border-radius:50%;background:var(--sage)}
+.page{max-width:1220px;margin:auto;padding:34px 24px 80px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:38px;align-items:center;margin:12px 0 28px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--terracotta);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.eyebrow:before{content:"";width:28px;height:2px;background:var(--terracotta)}
+h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-height:.98;font-weight:400;letter-spacing:-.035em;color:var(--brown)}h1 span{color:var(--terracotta)}
+.hero p{margin:0;max-width:720px;font-size:17px;line-height:1.7;color:var(--muted)}.benefits{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.benefit{display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:12px;font-weight:700;color:var(--brown)}
+.hero-card{background:linear-gradient(145deg,var(--brown),#6D4F40);color:white;border-radius:30px;padding:28px;box-shadow:var(--shadow)}.hero-card .price{font-family:"DM Serif Display",serif;font-size:58px;line-height:1}.hero-card .price small{font-family:Inter;font-size:14px;font-weight:700}.hero-card h3{font-size:18px;margin:8px 0 12px}.hero-card p{color:rgba(255,255,255,.78);font-size:13px;line-height:1.55}
+.stepper{background:rgba(255,255,255,.74);border:1px solid var(--line);border-radius:22px;padding:13px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 20px;box-shadow:var(--soft)}.step{border:0;background:transparent;border-radius:16px;padding:12px 8px;color:var(--taupe);font-size:11px;font-weight:800}.step.active{background:var(--brown);color:white}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}.main-card,.assistant-card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.main-card{padding:30px;min-height:690px}.assistant-card{position:sticky;top:98px;overflow:hidden}.assistant-head{padding:22px;background:linear-gradient(145deg,var(--brown),var(--brown2));color:white}.assistant-body{padding:18px}.ai-message{padding:13px 14px;border-radius:16px;background:var(--beige);border:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--brown)}
+.section{display:none}.section.active{display:block}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:25px}.section-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:36px;font-weight:400;color:var(--brown)}.section-head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55;max-width:640px}.section-badge{padding:9px 12px;border-radius:999px;background:var(--terracottaSoft);color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:var(--brown)}
+.input,.select,.textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--cream);padding:13px 14px;color:var(--text);outline:none}.textarea{min-height:110px;resize:vertical}
+.smart-options{display:flex;flex-wrap:wrap;gap:8px}.smart-option{display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid var(--line);border-radius:999px;background:white;font-size:10px;font-weight:700;color:var(--brown);cursor:pointer}.smart-option:has(input:checked){background:var(--sageSoft);border-color:#BFCDBD;color:#526650}.smart-option input{accent-color:var(--sage)}
+.panel{border:1px solid var(--line);border-radius:20px;background:var(--cream);padding:20px;margin-top:18px}.panel h3{margin:0 0 12px;font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown)}
+.btn{border:0;border-radius:999px;padding:13px 18px;font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:linear-gradient(135deg,var(--brown),var(--brown2));color:white}.btn.terracotta{background:linear-gradient(135deg,var(--terracotta),#C9896F);color:white}.btn.soft{background:var(--beige);color:var(--brown);border:1px solid var(--line)}
+.nav-actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.preview{white-space:pre-wrap;background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:20px;min-height:420px;font-size:12px;line-height:1.65}.export-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.export-card{border:1px solid var(--line);border-radius:20px;background:var(--cream);padding:20px}
+@media(max-width:980px){.hero,.workspace{grid-template-columns:1fr}.assistant-card{position:static}.stepper{grid-template-columns:repeat(3,1fr)}}@media(max-width:680px){.page{padding:22px 14px 60px}.header-note{display:none}h1{font-size:42px}.main-card{padding:20px}.form-grid,.export-grid{grid-template-columns:1fr}.section-head{display:block}}
+</style></head><body>
+<header class="site-header"><div class="header-inner"><div class="brand"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></div><div class="header-note">Règlement intérieur</div><div class="header-pill"><i></i> Sans abonnement</div></div></header>
+<main class="page"><section class="hero"><div><div class="eyebrow">Les indispensables du propriétaire</div><h1>Règlement <span>intérieur</span></h1><p>Créez un règlement intérieur clair, accueillant et adapté à votre logement sans transformer le séjour en liste d’interdictions.</p><div class="benefits"><div class="benefit">✓ Simple et guidé</div><div class="benefit">✓ Word et PDF</div><div class="benefit">✓ Sans compte client</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Document prêt à personnaliser</h3><p>Une génération, sans abonnement ni stockage permanent.</p></aside></section>
+<nav class="stepper"><button class="step active" data-step="1">1. Logement</button><button class="step" data-step="2">2. Voyageurs</button><button class="step" data-step="3">3. Règles</button><button class="step" data-step="4">4. Consignes</button><button class="step" data-step="5">5. Export</button></nav>
+<div class="workspace"><section class="main-card">
+<div class="section active" id="step1"><div class="section-head"><div><h2>Le logement</h2><p>Les informations utilisées dans le document.</p></div><div class="section-badge">Étape 1 sur 5</div></div>
+<div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom du contact</label><input class="input" id="contactName"></div><div class="field"><label>Téléphone</label><input class="input" id="contactPhone"></div><div class="field"><label>Heure d’arrivée</label><input class="input" id="checkin"></div><div class="field"><label>Heure de départ</label><input class="input" id="checkout"></div></div></div>
+
+<div class="section" id="step2"><div class="section-head"><div><h2>Profil du séjour</h2><p>Quelques éléments pour adapter le ton.</p></div><div class="section-badge">Étape 2 sur 5</div></div>
+<div class="smart-options"><label class="smart-option"><input type="checkbox" id="families"> Familles</label><label class="smart-option"><input type="checkbox" id="couples" checked> Couples</label><label class="smart-option"><input type="checkbox" id="business"> Professionnels</label><label class="smart-option"><input type="checkbox" id="groups"> Groupes</label></div>
+<div class="field full" style="margin-top:18px"><label>Ton souhaité</label><select class="select" id="tone"><option>Chaleureux et ferme</option><option>Élégant et discret</option><option>Familial et pédagogique</option><option>Simple et direct</option></select></div></div>
+
+<div class="section" id="step3"><div class="section-head"><div><h2>Règles essentielles</h2><p>Cochez uniquement ce qui s’applique réellement.</p></div><div class="section-badge">Étape 3 sur 5</div></div>
+<div class="smart-options"><label class="smart-option"><input type="checkbox" id="noSmoking" checked> Non-fumeur</label><label class="smart-option"><input type="checkbox" id="noParty" checked> Fêtes interdites</label><label class="smart-option"><input type="checkbox" id="quiet" checked> Respect du voisinage</label><label class="smart-option"><input type="checkbox" id="pets"> Animaux acceptés</label><label class="smart-option"><input type="checkbox" id="visitors"> Visiteurs autorisés</label><label class="smart-option"><input type="checkbox" id="children"> Vigilance enfants</label><label class="smart-option"><input type="checkbox" id="pool"> Règles piscine</label><label class="smart-option"><input type="checkbox" id="parking"> Stationnement dédié</label></div></div>
+
+<div class="section" id="step4"><div class="section-head"><div><h2>Consignes pratiques</h2><p>Départ, déchets, équipements et sécurité.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
+<div class="smart-options"><label class="smart-option"><input type="checkbox" id="dishes" checked> Ranger la vaisselle</label><label class="smart-option"><input type="checkbox" id="trash" checked> Sortir les poubelles</label><label class="smart-option"><input type="checkbox" id="windows" checked> Fermer les fenêtres</label><label class="smart-option"><input type="checkbox" id="lights" checked> Éteindre les lumières</label><label class="smart-option"><input type="checkbox" id="keys" checked> Restituer les clés</label></div>
+<div class="panel"><h3>Précisions facultatives</h3><textarea class="textarea" id="details" placeholder="Ex. horaires de calme, emplacement des poubelles, règles du parking..."></textarea><button class="btn terracotta" id="generateDoc" type="button">✦ Préparer le règlement</button></div></div>
+
+<div class="section" id="step5"><div class="section-head"><div><h2>Votre document</h2><p>Relisez puis exportez.</p></div><div class="section-badge">Étape 5 sur 5</div></div><div class="preview" id="preview">Complétez les étapes précédentes puis préparez le document.</div><div class="export-grid"><div class="export-card"><h3>Télécharger Word</h3><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Imprimer / PDF</h3><button class="btn primary" id="printPdf">Imprimer / PDF</button></div></div></div>
+<div class="nav-actions"><button class="btn soft" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section>
+<aside class="assistant-card"><div class="assistant-head"><strong>Assistant CleanUp</strong></div><div class="assistant-body"><div class="ai-message" id="assistantText">Renseignez les informations essentielles. CleanUp prépare le document.</div></div></aside></div></main>
+<script>
+const $=id=>document.getElementById(id),v=id=>($(id)?.value||'').trim();let currentStep=1;
+function showStep(n){currentStep=Math.max(1,Math.min(5,n));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));$('step'+currentStep).classList.add('active');document.querySelectorAll('.step').forEach(b=>b.classList.toggle('active',Number(b.dataset.step)===currentStep));$('prevBtn').style.visibility=currentStep===1?'hidden':'visible';$('nextBtn').style.display=currentStep>=4?'none':'inline-flex';}
+document.querySelectorAll('.step').forEach(b=>b.onclick=()=>showStep(Number(b.dataset.step)));$('prevBtn').onclick=()=>showStep(currentStep-1);$('nextBtn').onclick=()=>showStep(currentStep+1);
+
+function buildDocument(){
+ const rules=[];
+ if($('noSmoking').checked)rules.push("Le logement est non-fumeur.");
+ if($('noParty').checked)rules.push("Les fêtes et événements ne sont pas autorisés.");
+ if($('quiet').checked)rules.push("Merci de respecter le voisinage et les horaires de calme.");
+ rules.push($('pets').checked?"Les animaux sont acceptés sous réserve du respect du logement.":"Les animaux ne sont pas autorisés.");
+ if($('visitors').checked)rules.push("Les visiteurs sont admis dans la limite de la capacité du logement.");
+ if($('children').checked)rules.push("Les enfants restent sous la responsabilité constante des adultes.");
+ if($('pool').checked)rules.push("L'accès à la piscine se fait sous la responsabilité des utilisateurs.");
+ if($('parking').checked)rules.push("Merci d'utiliser uniquement l'emplacement de stationnement indiqué.");
+ const departure=[];
+ if($('dishes').checked)departure.push("ranger la vaisselle");
+ if($('trash').checked)departure.push("sortir les poubelles");
+ if($('windows').checked)departure.push("fermer les fenêtres");
+ if($('lights').checked)departure.push("éteindre les lumières");
+ if($('keys').checked)departure.push("restituer les clés");
+ const text=`RÈGLEMENT INTÉRIEUR — ${v('homeName')}
+
+Bienvenue dans notre logement. Ce règlement a pour objectif de préserver le confort de chacun et la qualité des lieux.
+
+ARRIVÉE ET DÉPART
+Arrivée à partir de ${v('checkin')||"l'heure convenue"}. Départ avant ${v('checkout')||"l'heure indiquée"}.
+
+RÈGLES DU LOGEMENT
+${rules.map(x=>"• "+x).join("\n")}
+
+AVANT LE DÉPART
+Merci de ${departure.join(", ")}.
+
+INFORMATIONS COMPLÉMENTAIRES
+${v('details')||"Aucune précision supplémentaire."}
+
+CONTACT
+${v('contactName')} — ${v('contactPhone')}
+${v('address')}
+
+Merci de votre compréhension et de votre coopération.
+Powered by CleanUp`;
+ $('preview').textContent=text;showStep(5);
+}
+
+$('generateDoc').onclick=buildDocument;
+$('downloadWord').onclick=()=>{const content=`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial;margin:36px;line-height:1.5;white-space:pre-wrap}h1{font-family:Georgia}</style></head><body>${$('preview').textContent.replace(/\n/g,'<br>')}</body></html>`;const blob=new Blob(['\ufeff',content],{type:'application/msword'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='reglement-interieur-location.doc';a.click();URL.revokeObjectURL(a.href);};
+$('printPdf').onclick=()=>{const w=window.open('','_blank');w.document.write(`<html><head><title>Règlement intérieur</title><style>@page{size:A4;margin:18mm}body{font-family:Arial;line-height:1.55;white-space:pre-wrap;color:#2F2926}h1{font-family:Georgia}</style></head><body>${$('preview').textContent.replace(/\n/g,'<br>')}</body></html>`);w.document.close();w.print();};
+showStep(1);
+</script></body></html>
