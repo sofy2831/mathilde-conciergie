@@ -157,6 +157,23 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 
 
 .photo-drop{border:2px dashed #D9C6B4;border-radius:22px;padding:24px;text-align:center;background:var(--cream);margin-top:18px}.photo-drop input{display:none}.photo-preview{display:none;margin-top:14px;border-radius:18px;overflow:hidden;aspect-ratio:16/7;background:var(--beige);border:1px solid var(--line)}.photo-preview.show{display:block}.photo-preview img{width:100%;height:100%;object-fit:cover;display:block}.photo-actions{display:flex;justify-content:center;gap:10px;margin-top:12px}.optional-fields{display:none}.optional-fields.show{display:block}.loading-list{display:grid;gap:8px;margin-top:12px}.loading-step{font-size:11px;color:var(--muted)}.loading-step.active{color:var(--brown);font-weight:800}.preview-cover.has-photo{min-height:230px;padding:0}.preview-cover.has-photo img{width:100%;height:230px;object-fit:cover;display:block}
+
+.recommendation-progress{display:none;margin-top:14px;padding:14px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+.recommendation-progress.show{display:block}
+.recommendation-progress .bar{margin-bottom:10px}
+.recommendation-steps{display:grid;gap:6px}
+.recommendation-step{font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.recommendation-step:before{content:"○";font-weight:900;color:var(--taupe)}
+.recommendation-step.active{color:var(--brown);font-weight:800}
+.recommendation-step.active:before{content:"●";color:var(--terracotta)}
+.recommendation-step.done{color:#526650;font-weight:700}
+.recommendation-step.done:before{content:"✓";color:var(--sage)}
+.generated-recommendations{display:none;margin-top:16px}
+.generated-recommendations.show{display:block}
+.generated-recommendations textarea{min-height:125px}
+.custom-addresses textarea{min-height:82px}
+.mini-help{margin:5px 0 0;font-size:10px;line-height:1.45;color:var(--muted)}
+
 </style>
 </head>
 <body>
@@ -250,20 +267,44 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 </div>
 <div class="panel">
 <h3>Préparer les recommandations avec CleanUp</h3>
-<p>CleanUp proposera les lieux connus de la ville, les commerces utiles, les activités et les événements correspondant à la période choisie.</p>
+<p>CleanUp proposera des lieux connus, des commerces utiles, des activités et des événements correspondant à la période choisie.</p>
 <button class="btn accent" id="prepareRecommendations" type="button">✦ CleanUp prépare les recommandations</button>
 <p class="status" id="recommendationStatus">Préparation non lancée.</p>
+<div class="recommendation-progress" id="recommendationProgress">
+  <div class="bar"><span id="recommendationBar"></span></div>
+  <div class="recommendation-steps" id="recommendationSteps">
+    <div class="recommendation-step">Analyse de la destination</div>
+    <div class="recommendation-step">Recherche des lieux incontournables</div>
+    <div class="recommendation-step">Sélection des restaurants et commerces</div>
+    <div class="recommendation-step">Activités, transports et conseils</div>
+    <div class="recommendation-step">Préparation des événements</div>
+  </div>
+</div>
+<div class="generated-recommendations" id="generatedRecommendations">
+  <h3 style="font-size:21px;margin-top:18px">Recommandations préparées par CleanUp</h3>
+  <p class="mini-help">Vous pouvez corriger ou supprimer une proposition avant de créer le livret.</p>
+  <div class="grid">
+    <div class="field full"><label>Restaurants proposés</label><textarea id="restaurants"></textarea></div>
+    <div class="field full"><label>Commerces proposés</label><textarea id="shops"></textarea></div>
+    <div class="field full"><label>Activités proposées</label><textarea id="activities"></textarea></div>
+    <div class="field full"><label>Transports et stationnement proposés</label><textarea id="transport"></textarea></div>
+    <div class="field full"><label>Conseils locaux proposés</label><textarea id="tips"></textarea></div>
+  </div>
+</div>
 </div>
 <div class="panel">
-<h3>Vos adresses personnelles — facultatif</h3><p>CleanUp peut tout préparer. Ouvrez cette partie uniquement si vous souhaitez imposer certaines adresses.</p><button class="btn soft" id="togglePersonalAddresses" type="button">Ajouter mes propres bonnes adresses</button><div class="optional-fields" id="personalAddressFields">
-<p class="status">Elles seront prioritaires. Laissez vide pour que CleanUp complète prudemment.</p>
-<div class="grid">
-<div class="field full"><label>Restaurants connus</label><textarea id="restaurants"></textarea></div>
-<div class="field full"><label>Commerces connus</label><textarea id="shops"></textarea></div>
-<div class="field full"><label>Activités connues</label><textarea id="activities"></textarea></div>
-<div class="field full"><label>Transports et stationnement</label><textarea id="transport"></textarea></div>
-<div class="field full"><label>Conseils personnels</label><textarea id="tips"></textarea></div>
-</div></div>
+<h3>Vos bonnes adresses personnelles — facultatif</h3>
+<p>Ajoutez uniquement les lieux que vous souhaitez absolument voir apparaître. Ces informations seront prioritaires.</p>
+<button class="btn soft" id="togglePersonalAddresses" type="button">Ajouter une adresse ou un lieu précis</button>
+<div class="optional-fields custom-addresses" id="personalAddressFields">
+  <div class="grid" style="margin-top:16px">
+    <div class="field full"><label>Restaurant ou bar à ajouter</label><textarea id="customRestaurants" placeholder="Ex. Le nom du restaurant — adresse ou quartier — pourquoi vous le recommandez"></textarea></div>
+    <div class="field full"><label>Commerce ou service à ajouter</label><textarea id="customShops" placeholder="Ex. Boulangerie, marché, pharmacie, boutique..."></textarea></div>
+    <div class="field full"><label>Activité ou lieu à visiter</label><textarea id="customActivities" placeholder="Ex. musée, balade, parc, monument..."></textarea></div>
+    <div class="field full"><label>Transport, parking ou conseil pratique</label><textarea id="customTransport" placeholder="Ex. parking conseillé, arrêt de tram, loueur de vélos..."></textarea></div>
+    <div class="field full"><label>Événement ou conseil personnel</label><textarea id="customTips" placeholder="Ex. fête locale, marché saisonnier, conseil du propriétaire..."></textarea></div>
+  </div>
+</div>
 </div>
 </div>
 
@@ -401,7 +442,7 @@ showStep(1);
 
 function bindCoverPhoto(){const input=$('coverPhotoInput'),choose=$('chooseCoverPhoto'),replace=$('replaceCoverPhoto'),remove=$('removeCoverPhoto'),preview=$('photoPreview'),img=$('photoPreviewImg'),actions=$('photoActions');const open=()=>input.click();choose.onclick=open;replace.onclick=open;input.onchange=()=>{const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/'))return alert('Choisissez une image.');const reader=new FileReader();reader.onload=()=>{coverPhotoData=reader.result;img.src=coverPhotoData;preview.classList.add('show');actions.style.display='flex';choose.style.display='none'};reader.readAsDataURL(file)};remove.onclick=()=>{coverPhotoData='';input.value='';img.removeAttribute('src');preview.classList.remove('show');actions.style.display='none';choose.style.display='inline-flex'}}
 bindCoverPhoto();
-$('togglePersonalAddresses').onclick=()=>{const box=$('personalAddressFields');box.classList.toggle('show');$('togglePersonalAddresses').textContent=box.classList.contains('show')?'Masquer mes adresses personnelles':'Ajouter mes propres bonnes adresses'};
+$('togglePersonalAddresses').onclick=()=>{const box=$('personalAddressFields');box.classList.toggle('show');$('togglePersonalAddresses').textContent=box.classList.contains('show')?'Masquer les ajouts personnels':'Ajouter une adresse ou un lieu précis'};
 
 
 function lockAfterFirstExport(){if(exportLocked)return;exportLocked=true;document.querySelectorAll('.step').forEach(b=>{if(Number(b.dataset.step)<5)b.classList.add('locked')});$('prevBtn').style.visibility='hidden';$('exportLockNote').classList.add('show')}
@@ -412,9 +453,20 @@ function payload(){
   profiles:{families:$('families').checked,couples:$('couples').checked,business:$('business').checked,accessible:$('accessible').checked},
   preferences:{tone:$('tone').value},
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
-  ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value,knownEvents:''},
+  ownerKnowledge:{restaurants:[$('restaurants').value,$('customRestaurants').value].filter(Boolean).join('\n\nAJOUT PROPRIÉTAIRE :\n'),shops:[$('shops').value,$('customShops').value].filter(Boolean).join('\n\nAJOUT PROPRIÉTAIRE :\n'),activities:[$('activities').value,$('customActivities').value].filter(Boolean).join('\n\nAJOUT PROPRIÉTAIRE :\n'),transport:[$('transport').value,$('customTransport').value].filter(Boolean).join('\n\nAJOUT PROPRIÉTAIRE :\n'),tips:[$('tips').value,$('customTips').value].filter(Boolean).join('\n\nAJOUT PROPRIÉTAIRE :\n'),knownEvents:''},
   events:{season:(document.querySelector('input[name="season"]:checked')||{}).value||'Toute l’année',period:(document.querySelector('input[name="season"]:checked')||{}).value||'Toute l’année',count:6}
  };
+}
+function sanitizeText(value){
+ return String(value||'').normalize('NFC')
+  .replace(/[^\u0009\u000A\u000D\u0020-\u007E\u00A0-\u024F\u1E00-\u1EFF]/g,'')
+  .replace(/[\u00AD\uFFFE\uFFFF]/g,'')
+  .replace(/\s+\n/g,'\n').trim();
+}
+function sanitizeAi(value){
+ if(Array.isArray(value))return value.map(sanitizeAi);
+ if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,sanitizeAi(v)]));
+ return typeof value==='string'?sanitizeText(value):value;
 }
 function listText(items){return (items||[]).map(x=>`${x.title}\n${x.description}`).join('\n\n')}
 function allText(ai){
@@ -423,9 +475,28 @@ function allText(ai){
 function itemCards(items){return (items||[]).map(x=>`<article class="item"><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></article>`).join('')||'<article class="item"><p>Aucune recommandation fournie.</p></article>'}
 function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function footer(){return `<div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>`}
-function buildPrint(ai){const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28"><div style="position:absolute;inset:0;background:rgba(251,248,243,.60)"></div>`:'';const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><p>${escapeHtml(ai.welcome)}</p></div>`;const travelItems=[...(ai.transport||[]).slice(0,5),...(ai.tips||[]).slice(0,3)];const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events)}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;$('printBooklet').innerHTML=`<section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section><section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="items">${itemCards(ai.activities)}</div>${footer()}</section><section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="items">${itemCards(ai.restaurants)}</div>${footer()}</section><section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="items">${itemCards(ai.shops)}</div>${footer()}</section><section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2><div class="items">${itemCards(travelItems)}</div>${footer()}</section>${eventPage}`;}
+function buildPrint(ai){const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28"><div style="position:absolute;inset:0;background:rgba(251,248,243,.60)"></div>`:'';const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;const travelItems=[...(ai.transport||[]).slice(0,5),...(ai.tips||[]).slice(0,3)];const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events)}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;$('printBooklet').innerHTML=`<section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section><section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="items">${itemCards(ai.activities)}</div>${footer()}</section><section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="items">${itemCards(ai.restaurants)}</div>${footer()}</section><section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="items">${itemCards(ai.shops)}</div>${footer()}</section><section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2><div class="items">${itemCards(travelItems)}</div>${footer()}</section>${eventPage}`;}
 
-$('prepareRecommendations').onclick=async()=>{const btn=$('prepareRecommendations'),status=$('recommendationStatus');btn.disabled=true;btn.textContent='Préparation en cours…';status.textContent='CleanUp recherche les lieux connus et les bonnes adresses de la ville.';try{const dataPayload=payload();dataPayload.mode='recommendations';const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dataPayload)});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'Préparation impossible.');const ai=data.ai;$('restaurants').value=listText(ai.restaurants);$('shops').value=listText(ai.shops);$('activities').value=listText(ai.activities);$('transport').value=listText(ai.transport);$('tips').value=listText(ai.tips);recommendationsPrepared=true;status.textContent='✓ Les recommandations ont été préparées. Ouvrez vos adresses personnelles pour les corriger si nécessaire.';btn.textContent='✓ Recommandations préparées';btn.classList.remove('accent');btn.classList.add('primary')}catch(error){status.textContent=error.message;btn.textContent='✦ CleanUp prépare les recommandations'}finally{btn.disabled=false}};
+$('prepareRecommendations').onclick=async()=>{
+ const btn=$('prepareRecommendations'),status=$('recommendationStatus'),box=$('recommendationProgress'),bar=$('recommendationBar');
+ const steps=[...document.querySelectorAll('#recommendationSteps .recommendation-step')];
+ let current=0;
+ const render=(index)=>{steps.forEach((el,i)=>{el.classList.toggle('active',i===index);el.classList.toggle('done',i<index)});bar.style.width=Math.min(95,12+index*21)+'%'};
+ btn.disabled=true;btn.textContent='Préparation en cours…';box.classList.add('show');status.textContent='CleanUp prépare les recommandations locales.';render(0);
+ const timer=setInterval(()=>{current=Math.min(current+1,steps.length-1);render(current)},1300);
+ try{
+   const dataPayload=payload();dataPayload.mode='recommendations';
+   const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dataPayload)});
+   const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'Préparation impossible.');
+   const ai=sanitizeAi(data.ai);
+   $('restaurants').value=listText(ai.restaurants);$('shops').value=listText(ai.shops);$('activities').value=listText(ai.activities);$('transport').value=listText(ai.transport);$('tips').value=listText(ai.tips);
+   recommendationsPrepared=true;clearInterval(timer);steps.forEach(el=>{el.classList.remove('active');el.classList.add('done')});bar.style.width='100%';
+   $('generatedRecommendations').classList.add('show');
+   status.textContent='✓ Recommandations préparées. Vous pouvez les corriger ou ajouter vos propres bonnes adresses.';
+   btn.textContent='✓ Recommandations préparées';btn.classList.remove('accent');btn.classList.add('primary');
+ }catch(error){clearInterval(timer);status.textContent=error.message;btn.textContent='✦ CleanUp prépare les recommandations';bar.style.width='0%'}
+ finally{btn.disabled=false}
+};
 
 $('generateBooklet').onclick=async()=>{const loadingSteps=[...document.querySelectorAll('#loadingList .loading-step')];let loadingIndex=0;const activateLoading=i=>loadingSteps.forEach((el,index)=>el.classList.toggle('active',index===i));activateLoading(0);const loadingTimer=setInterval(()=>{loadingIndex=Math.min(loadingIndex+1,loadingSteps.length-1);activateLoading(loadingIndex)},1800);
  const btn=$('generateBooklet'),box=$('generationProgress'),bar=$('generationBar'),status=$('generationStatus');
@@ -436,7 +507,7 @@ $('generateBooklet').onclick=async()=>{const loadingSteps=[...document.querySele
   const data=await response.json();
   if(!response.ok||!data.ok)throw new Error(data.error||'Génération impossible.');
   bar.style.width='85%';status.textContent='Mise en page du livret…';
-  bookletData=data.ai;
+  bookletData=sanitizeAi(data.ai);
   $('bookletText').value=allText(bookletData);
   $('previewTitle').textContent=$('homeName').value||'Livret Voyageur Premium';const previewCover=document.querySelector('.preview-cover');if(coverPhotoData){previewCover.classList.add('has-photo');previewCover.innerHTML=`<img src="${coverPhotoData}" alt="Photo de couverture">`}else{previewCover.classList.remove('has-photo');previewCover.textContent='✦'};
   $('previewText').textContent=bookletData.welcome||'Votre livret est prêt.';
@@ -449,24 +520,24 @@ $('generateBooklet').onclick=async()=>{const loadingSteps=[...document.querySele
 $('downloadWord').onclick=()=>{
  if(!bookletData)return alert('Générez d’abord le livret.');
  lockAfterFirstExport();
- const section=(title,items)=>`<h2>${title}</h2>${(items||[]).map(x=>`<div class="word-item"><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></div>`).join('')}`;
+ const section=(title,items,pageBreak=true)=>`${pageBreak?'<br clear=all style=\"mso-special-character:line-break;page-break-before:always\">':''}<h2>${title}</h2>${(items||[]).map(x=>`<div class="word-item"><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></div>`).join('')}`;
  const doc=`<!doctype html><html><head><meta charset="utf-8"><style>
  @page{size:A4;margin:18mm}
  body{font-family:Arial,sans-serif;color:#302925;line-height:1.5;margin:0}
  .cover{text-align:center;padding:70px 25px;border:1px solid #D8CCC1}
  h1,h2,h3{font-family:Georgia,serif;color:#3E2D25}
  h1{font-size:34px;margin:0 0 12px}h2{font-size:23px;border-bottom:1px solid #D8CCC1;padding-bottom:7px;margin-top:28px}
- h3{font-size:16px;margin:0 0 5px}.word-item{margin:0 0 14px;padding:12px;border:1px solid #E4D9CF;page-break-inside:avoid}.cover{page-break-after:always}
+ h3{font-size:16px;margin:0 0 5px}.word-item{margin:0 0 14px;padding:12px;border:1px solid #E4D9CF;page-break-inside:avoid}.cover{page-break-after:always;mso-break-after:page}
  p{white-space:pre-line}.footer{text-align:center;margin-top:30px;font-size:10px;color:#766C66}
  </style></head><body>
- <div class="cover">${coverPhotoData?`<img src="${coverPhotoData}" style="width:100%;height:260px;object-fit:cover;margin-bottom:24px">`:''}<h1>${escapeHtml($('homeName').value||'Livret Voyageur Premium')}</h1><h2>${escapeHtml($('city').value)}</h2><p>${escapeHtml(bookletData.welcome)}</p></div>
+ <div class="cover">${coverPhotoData?`<img src="${coverPhotoData}" style="width:100%;height:260px;object-fit:cover;margin-bottom:24px">`:''}<h1>${escapeHtml($('homeName').value||'Livret Voyageur Premium')}</h1><h2>${escapeHtml($('city').value)}</h2><p>${escapeHtml(bookletData.welcome)}</p></div><br clear=all style="mso-special-character:line-break;page-break-before:always">
  <h2>La destination / The destination</h2><p>${escapeHtml(bookletData.destination)}</p>
- ${section('Restaurants / Restaurants',bookletData.restaurants)}
- ${section('Commerces utiles / Useful shops',bookletData.shops)}
- ${section('À voir et à faire / Things to see and do',bookletData.activities)}
- ${section('Se déplacer / Getting around',bookletData.transport)}
- ${section('Conseils locaux / Local tips',bookletData.tips)}
- ${section('Événements / Events',bookletData.events)}
+ ${section('Restaurants / Restaurants',bookletData.restaurants,true)}
+ ${section('Commerces utiles / Useful shops',bookletData.shops,true)}
+ ${section('À voir et à faire / Things to see and do',bookletData.activities,true)}
+ ${section('Se déplacer / Getting around',bookletData.transport,true)}
+ ${section('Conseils locaux / Local tips',bookletData.tips,false)}
+ ${section('Événements / Events',bookletData.events,true)}
  <h2>Pour finir / Before you leave</h2><p>${escapeHtml(bookletData.closing)}</p>
  <div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>
  </body></html>`;
