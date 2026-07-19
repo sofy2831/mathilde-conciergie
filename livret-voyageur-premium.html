@@ -144,6 +144,17 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
  .items{display:grid;grid-template-columns:1fr 1fr;gap:6mm}.item{border:1px solid #DED3CA;border-radius:3mm;padding:5mm;background:#fff}.item h3{font-size:14pt;margin:0 0 2mm}.item p{font-size:9pt;line-height:1.45;margin:0;white-space:pre-line}
  .footer{position:absolute;bottom:10mm;left:16mm;right:16mm;text-align:center;font-size:7pt;color:#8B817A}
 }
+
+.preview-card{border:1px solid var(--line);border-radius:24px;background:white;overflow:hidden;box-shadow:var(--soft)}
+.preview-cover{min-height:155px;background:linear-gradient(135deg,var(--sand),var(--beige));display:grid;place-items:center;font-size:34px;color:var(--terracotta)}
+.preview-content{padding:24px}.preview-content h3{font-family:"DM Serif Display",serif;font-size:31px;font-weight:400;margin:0 0 8px;color:var(--brown)}.preview-content p{font-size:12px;line-height:1.7;color:var(--muted);white-space:pre-line}
+.export p{margin:0 0 14px;font-size:11px;line-height:1.5;color:var(--muted)}
+.export-lock-note{margin-top:16px;padding:14px 16px;border-radius:16px;background:var(--sageSoft);border:1px solid #D3DFD0;color:var(--brown);font-size:11px;line-height:1.55;display:none}
+.export-lock-note.show{display:block}
+.cta{margin-top:18px;padding:22px;border-radius:22px;background:linear-gradient(145deg,var(--brown),#6A4A3A);color:white;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.cta h3{margin:0 0 6px;font-family:"DM Serif Display",serif;font-size:26px;font-weight:400;color:white}.cta p{margin:0;color:rgba(255,255,255,.75);font-size:11px;line-height:1.5}
+.step.locked{opacity:.45;cursor:not-allowed;pointer-events:none}
+
 </style>
 </head>
 <body>
@@ -221,7 +232,7 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 </div>
 
 <div class="section" id="step3">
-<div class="section-head"><div><h2>Contenu du livret</h2><p>Cochez les rubriques utiles. CleanUp rédigera, puis vous pourrez modifier.</p></div><div class="section-badge">Étape 3 sur 5</div></div>
+<div class="section-head"><div><h2>Contenu du livret</h2><p>Cochez les rubriques utiles. CleanUp proposera les lieux connus de la ville, les bonnes adresses et les événements datés, puis vous pourrez tout modifier.</p></div><div class="section-badge">Étape 3 sur 5</div></div>
 <div class="options">
 <label class="option"><input type="checkbox" id="catRestaurants" checked> Restaurants</label>
 <label class="option"><input type="checkbox" id="catBakeries" checked> Boulangeries</label>
@@ -233,6 +244,12 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 <label class="option"><input type="checkbox" id="catNightlife"> Sorties</label>
 <label class="option"><input type="checkbox" id="catTransport" checked> Transports</label>
 <label class="option"><input type="checkbox" id="catParking" checked> Stationnement</label>
+</div>
+<div class="panel">
+<h3>Préparer les recommandations avec CleanUp</h3>
+<p>CleanUp proposera les lieux connus de la ville, les commerces utiles, les activités et les événements correspondant à la période choisie.</p>
+<button class="btn accent" id="prepareRecommendations" type="button">✦ CleanUp prépare les recommandations</button>
+<p class="status" id="recommendationStatus">Préparation non lancée.</p>
 </div>
 <div class="panel">
 <h3>Vos adresses personnelles — facultatif</h3>
@@ -248,24 +265,75 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 </div>
 
 <div class="section" id="step4">
-<div class="section-head"><div><h2>Préparer le livret</h2><p>Les événements ne seront jamais inventés : indiquez ceux que vous connaissez.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
-<div class="grid">
-<div class="field"><label>Période</label><input id="period" placeholder="Ex. été 2026"></div>
-<div class="field"><label>Nombre d’événements</label><select id="eventCount"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></div>
-<div class="field full"><label>Événements connus</label><textarea id="knownEvents" placeholder="Nom — date — lieu"></textarea></div>
+<div class="section-head"><div><h2>Période du livret</h2><p>Choisissez une période large afin que le propriétaire puisse conserver le même livret plus longtemps.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
+<div class="panel" style="margin-top:0">
+<h3>Pour quelle période souhaitez-vous préparer le livret ?</h3>
+<div class="options">
+<label class="option"><input type="radio" name="season" value="Toute l’année" checked> Toute l’année</label>
+<label class="option"><input type="radio" name="season" value="Basse saison"> Basse saison</label>
+<label class="option"><input type="radio" name="season" value="Moyenne saison"> Moyenne saison</label>
+<label class="option"><input type="radio" name="season" value="Haute saison"> Haute saison</label>
+</div>
+<p>CleanUp sélectionnera les événements majeurs et récurrents de la ville avec leurs dates lorsqu’elles sont connues et vérifiables.</p>
 </div>
 <div class="panel">
-<button class="btn accent" id="generateBooklet">✦ Préparer le livret avec CleanUp</button>
-<div class="generation-progress" id="generationProgress"><div class="bar"><span id="generationBar"></span></div><p class="status" id="generationStatus">Lecture de la destination.</p></div>
+<h3>Génération finale</h3>
+<p>Les recommandations personnelles saisies à l’étape précédente seront prioritaires. CleanUp complétera ensuite avec les lieux et événements connus.</p>
+<button class="btn accent" id="generateBooklet">✦ Créer le Livret Voyageur Premium</button>
+<div class="generation-progress" id="generationProgress"><div class="bar"><span id="generationBar"></span></div><p class="status" id="generationStatus">Préparation du livret.</p></div>
 </div>
 </div>
 
 <div class="section" id="step5">
-<div class="section-head"><div><h2>Votre Livret Voyageur Premium</h2><p>Relisez le contenu. Le PDF comporte 6 pages pour ce premier essai.</p></div><div class="section-badge">Étape 5 sur 5</div></div>
-<textarea id="bookletText" style="min-height:420px"></textarea>
+<div class="section-head"><div><h2>Votre Livret Voyageur Premium</h2><p>Relisez le livret puis exportez-le en version bilingue français / anglais.</p></div><div class="section-badge">Étape 5 sur 5</div></div>
+
+<article class="preview-card">
+  <div class="preview-cover">✦</div>
+  <div class="preview-content">
+    <h3 id="previewTitle">Livret Voyageur Premium</h3>
+    <p id="previewText">Complétez les étapes précédentes puis créez le livret.</p>
+  </div>
+</article>
+
+<div class="panel">
+  <h3>Modifier le contenu</h3>
+  <textarea id="bookletText" style="min-height:360px"></textarea>
+</div>
+
 <div class="exports">
-<div class="export"><h3>Word</h3><button class="btn primary" id="downloadWord">Télécharger Word</button></div>
-<div class="export"><h3>PDF</h3><button class="btn primary" id="printPdf">Imprimer / PDF</button></div>
+  <div class="export">
+    <h3>Copier le livret</h3>
+    <p>Copiez tout le texte bilingue.</p>
+    <button class="btn primary" id="copyAll">Copier tout</button>
+  </div>
+  <div class="export">
+    <h3>Télécharger Word</h3>
+    <p>Version bilingue, structurée et modifiable.</p>
+    <button class="btn primary" id="downloadWord">Télécharger Word</button>
+  </div>
+  <div class="export">
+    <h3>Enregistrer en PDF</h3>
+    <p>Livret bilingue prêt à imprimer.</p>
+    <button class="btn primary" id="printPdf">Imprimer / PDF</button>
+  </div>
+  <div class="export">
+    <h3>Créer un nouveau livret</h3>
+    <p>Une nouvelle génération nécessite un nouveau paiement.</p>
+    <button class="btn soft" id="newBooklet">Créer un nouveau livret (9 €)</button>
+  </div>
+</div>
+
+<div class="export-lock-note" id="exportLockNote">
+  <strong>Votre livret voyageur a été généré.</strong><br>
+  Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.
+</div>
+
+<div class="cta">
+  <div>
+    <h3>Découvrez les autres indispensables</h3>
+    <p>Guide d’accueil bilingue, optimisation d’annonce, contrat, règlement intérieur et autres outils sont disponibles séparément, sans abonnement.</p>
+  </div>
+  <a class="btn accent" href="les-indispensables-du-proprietaire.html">Voir les services</a>
 </div>
 </div>
 
@@ -295,9 +363,10 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 <script>
 const FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateTravelBooklet';
 const $=id=>document.getElementById(id);
-let currentStep=1, bookletData=null;
+let currentStep=1, bookletData=null, exportLocked=false, recommendationsPrepared=false;
 
 function showStep(n){
+ if(exportLocked && n<5)return;
  currentStep=Math.max(1,Math.min(5,n));
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
  $('step'+currentStep).classList.add('active');
@@ -305,8 +374,9 @@ function showStep(n){
    const x=Number(b.dataset.step);
    b.classList.toggle('active',x===currentStep);
    b.classList.toggle('done',x<currentStep);
+   b.classList.toggle('locked',exportLocked && x<5);
  });
- $('prevBtn').style.visibility=currentStep===1?'hidden':'visible';
+ $('prevBtn').style.visibility=(currentStep===1||exportLocked)?'hidden':'visible';
  $('nextBtn').style.display=currentStep>=4?'none':'inline-flex';
  const texts=[
   '<strong>Informations exactes</strong>Renseignez le logement et la destination.',
@@ -332,8 +402,8 @@ function payload(){
   profiles:{families:$('families').checked,couples:$('couples').checked,business:$('business').checked,accessible:$('accessible').checked},
   preferences:{tone:$('tone').value},
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
-  ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value,knownEvents:$('knownEvents').value},
-  events:{period:$('period').value,count:Number($('eventCount').value)}
+  ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value,knownEvents:''},
+  events:{season:(document.querySelector('input[name="season"]:checked')||{}).value||'Toute l’année',period:(document.querySelector('input[name="season"]:checked')||{}).value||'Toute l’année',count:6}
  };
 }
 function listText(items){return (items||[]).map(x=>`${x.title}\n${x.description}`).join('\n\n')}
@@ -354,6 +424,15 @@ function buildPrint(ai){
  <section class="print-page"><h2>Se déplacer et profiter</h2><div class="items">${itemCards(ai.transport)}${itemCards(ai.tips)}</div>${footer()}</section>
  <section class="print-page"><h2>Événements et derniers conseils</h2><div class="items">${itemCards(ai.events)}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`;
 }
+
+$('prepareRecommendations').onclick=()=>{
+ recommendationsPrepared=true;
+ $('recommendationStatus').textContent='✓ CleanUp complétera les lieux connus, les bonnes adresses et les événements datés lors de la génération finale.';
+ $('prepareRecommendations').textContent='✓ Recommandations prêtes à être complétées';
+ $('prepareRecommendations').classList.remove('accent');
+ $('prepareRecommendations').classList.add('primary');
+};
+
 $('generateBooklet').onclick=async()=>{
  const btn=$('generateBooklet'),box=$('generationProgress'),bar=$('generationBar'),status=$('generationStatus');
  btn.disabled=true;box.classList.add('show');bar.style.width='20%';status.textContent='Analyse de la destination…';
@@ -365,18 +444,49 @@ $('generateBooklet').onclick=async()=>{
   bar.style.width='85%';status.textContent='Mise en page du livret…';
   bookletData=data.ai;
   $('bookletText').value=allText(bookletData);
+  $('previewTitle').textContent=$('homeName').value||'Livret Voyageur Premium';
+  $('previewText').textContent=bookletData.welcome||'Votre livret est prêt.';
   buildPrint(bookletData);
   bar.style.width='100%';status.textContent='Livret prêt.';
+  exportLocked=true;
+  $('exportLockNote').classList.add('show');
   setTimeout(()=>showStep(5),450);
  }catch(error){alert(error.message);status.textContent=error.message}
  finally{btn.disabled=false}
 };
 $('downloadWord').onclick=()=>{
  if(!bookletData)return alert('Générez d’abord le livret.');
- const html=`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial;margin:36px;line-height:1.5}h1,h2{font-family:Georgia;color:#3E2D25}</style></head><body><h1>${escapeHtml($('homeName').value||'Livret Voyageur')}</h1><p>${escapeHtml($('city').value)}</p>${$('printBooklet').innerHTML}</body></html>`;
- const blob=new Blob(['\ufeff',html],{type:'application/msword'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='livret-voyageur-premium.doc';a.click();URL.revokeObjectURL(a.href);
+ const section=(title,items)=>`<h2>${title}</h2>${(items||[]).map(x=>`<div class="word-item"><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></div>`).join('')}`;
+ const doc=`<!doctype html><html><head><meta charset="utf-8"><style>
+ @page{size:A4;margin:18mm}
+ body{font-family:Arial,sans-serif;color:#302925;line-height:1.5;margin:0}
+ .cover{text-align:center;padding:70px 25px;border:1px solid #D8CCC1}
+ h1,h2,h3{font-family:Georgia,serif;color:#3E2D25}
+ h1{font-size:34px;margin:0 0 12px}h2{font-size:23px;border-bottom:1px solid #D8CCC1;padding-bottom:7px;margin-top:28px}
+ h3{font-size:16px;margin:0 0 5px}.word-item{margin:0 0 14px;padding:12px;border:1px solid #E4D9CF}
+ p{white-space:pre-line}.footer{text-align:center;margin-top:30px;font-size:10px;color:#766C66}
+ </style></head><body>
+ <div class="cover"><h1>${escapeHtml($('homeName').value||'Livret Voyageur Premium')}</h1><h2>${escapeHtml($('city').value)}</h2><p>${escapeHtml(bookletData.welcome)}</p></div>
+ <h2>La destination / The destination</h2><p>${escapeHtml(bookletData.destination)}</p>
+ ${section('Restaurants / Restaurants',bookletData.restaurants)}
+ ${section('Commerces utiles / Useful shops',bookletData.shops)}
+ ${section('À voir et à faire / Things to see and do',bookletData.activities)}
+ ${section('Se déplacer / Getting around',bookletData.transport)}
+ ${section('Conseils locaux / Local tips',bookletData.tips)}
+ ${section('Événements / Events',bookletData.events)}
+ <h2>Pour finir / Before you leave</h2><p>${escapeHtml(bookletData.closing)}</p>
+ <div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>
+ </body></html>`;
+ const blob=new Blob(['\ufeff',doc],{type:'application/msword'}),a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download='livret-voyageur-premium-bilingue.doc';a.click();URL.revokeObjectURL(a.href);
 };
 $('printPdf').onclick=()=>{if(!bookletData)return alert('Générez d’abord le livret.');buildPrint(bookletData);window.print()};
+
+$('copyAll').onclick=()=>navigator.clipboard.writeText($('bookletText').value).then(()=>{
+ const old=$('copyAll').textContent;$('copyAll').textContent='Copié ✓';setTimeout(()=>$('copyAll').textContent=old,1400);
+});
+$('newBooklet').onclick=()=>location.href='livret-voyageur-premium.html';
+
 </script>
 </body>
 </html>
