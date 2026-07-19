@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Les indispensables du propriétaire — CleanUp</title>
-<meta name="description" content="Découvrez les services CleanUp dédiés aux propriétaires de locations saisonnières : annonce, optimisation, guide d'accueil, livret voyageur, rentabilité et investissement.">
+<meta name="description" content="Découvrez les services CleanUp dédiés aux propriétaires de locations saisonnières : annonce, optimisation, guide d'accueil, livret voyageur, contrat, règlement intérieur, rentabilité et investissement.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -129,7 +129,7 @@ h1 span{color:var(--terracotta)}
   color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap
 }
 
-.services-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
 .service-card{
   min-height:360px;
   background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:24px;
@@ -186,7 +186,7 @@ h1 span{color:var(--terracotta)}
 
 footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);font-size:10px;text-align:center}
 
-@media(max-width:1000px){
+@media(max-width:1120px){
   .hero{grid-template-columns:1fr}.hero-card{max-width:560px}
   .services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -202,6 +202,15 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
   .bottom-cta{grid-template-columns:1fr}
   .card-bottom{align-items:center}
 }
+
+.services-grid .service-card{min-width:0}
+.service-card .card-bottom{align-items:center}
+.service-card .btn{max-width:150px;text-align:center;line-height:1.25}
+@media(min-width:1121px){
+  .services-grid{grid-auto-rows:1fr}
+  .service-card{height:100%}
+}
+
 </style>
 </head>
 <body>
@@ -250,7 +259,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         <h2>Choisissez votre service</h2>
         <p>Chaque outil répond à un besoin précis. Vous pouvez en utiliser un seul ou revenir plus tard pour compléter votre parcours.</p>
       </div>
-      <div class="section-badge">6 services indépendants</div>
+      <div class="section-badge">8 services indépendants</div>
     </div>
 
     <div class="services-grid">
@@ -325,6 +334,43 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
           <a class="btn primary" href="livret-voyageur-premium.html">Créer mon livret →</a>
         </div>
       </article> 
+
+
+      <article class="service-card">
+        <div class="card-top">
+          <div class="icon-wrap">📄</div>
+          <span class="tag hot">Nouveau</span>
+        </div>
+        <h3>Contrat de location</h3>
+        <p class="desc">Créez un contrat clair pour encadrer la réservation, le séjour, le paiement et le dépôt de garantie.</p>
+        <ul>
+          <li>Coordonnées du bailleur et du locataire</li>
+          <li>Dates, prix, acompte et caution</li>
+          <li>Document modifiable et prêt à signer</li>
+        </ul>
+        <div class="card-bottom">
+          <div class="price">9 € <small>TTC</small></div>
+          <a class="btn terracotta" href="contrat-location-courte-duree.html">Créer mon contrat →</a>
+        </div>
+      </article>
+
+      <article class="service-card">
+        <div class="card-top">
+          <div class="icon-wrap">📋</div>
+          <span class="tag">Nouveau</span>
+        </div>
+        <h3>Règlement intérieur</h3>
+        <p class="desc">Préparez un règlement accueillant, précis et adapté aux particularités de votre logement.</p>
+        <ul>
+          <li>Règles personnalisées du logement</li>
+          <li>Consignes pratiques et de départ</li>
+          <li>Version claire, imprimable et modifiable</li>
+        </ul>
+        <div class="card-bottom">
+          <div class="price">9 € <small>TTC</small></div>
+          <a class="btn primary" href="reglement-interieur-location.html">Créer mon règlement →</a>
+        </div>
+      </article>
 
       <article class="service-card featured">
         <div class="card-top">
