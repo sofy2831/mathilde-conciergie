@@ -25,7 +25,7 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}.main-card,.assistant-card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.main-card{padding:30px;min-height:720px}.assistant-card{position:sticky;top:94px;overflow:hidden}.assistant-head{padding:22px;background:linear-gradient(145deg,var(--brown),var(--brown2));color:white}.assistant-body{padding:18px}.ai-message{padding:13px 14px;border-radius:16px;background:var(--beige);border:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--brown)}.check-list{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:9px}.check-list li{font-size:11px;color:var(--muted)}.check-list li:before{content:"✓";font-weight:900;color:var(--sage);margin-right:8px}
 .section{display:none}.section.active{display:block}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:25px}.section-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:36px;font-weight:400;color:var(--brown)}.section-head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55;max-width:640px}.section-badge{padding:9px 12px;border-radius:999px;background:var(--terracottaSoft);color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:var(--brown)}.hint{font-size:9px;color:var(--taupe);line-height:1.45}.input,.select,.textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--cream);padding:13px 14px;color:var(--text);outline:none}.input:focus,.select:focus,.textarea:focus{border-color:#C8AD99;box-shadow:0 0 0 3px rgba(185,111,82,.08)}.textarea{min-height:100px;resize:vertical}
-.smart-options{display:flex;flex-wrap:wrap;gap:8px}.smart-option{display:flex;align-items:center;gap:7px;padding:10px 12px;border:1px solid var(--line);border-radius:999px;background:white;font-size:10px;font-weight:700;color:var(--brown);cursor:pointer}.smart-option:has(input:checked){background:var(--sageSoft);border-color:#BFCDBD;color:#526650}.smart-option input{accent-color:var(--sage)}
+.mission-group{margin:0 0 20px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--cream)}.mission-group h3{margin:0 0 7px;font-family:"DM Serif Display",serif;font-size:23px;font-weight:400;color:var(--brown)}.mission-group p{margin:0 0 14px;font-size:10px;line-height:1.5;color:var(--muted)}.smart-options{display:flex;flex-wrap:wrap;gap:8px}.smart-option{display:flex;align-items:center;gap:7px;padding:10px 12px;border:1px solid var(--line);border-radius:999px;background:white;font-size:10px;font-weight:700;color:var(--brown);cursor:pointer}.smart-option:has(input:checked){background:var(--sageSoft);border-color:#BFCDBD;color:#526650}.smart-option input{accent-color:var(--sage)}
 .panel{border:1px solid var(--line);border-radius:20px;background:var(--cream);padding:20px;margin-top:18px}.panel h3{margin:0 0 12px;font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown)}.notice{padding:13px 15px;border-radius:14px;background:var(--goldSoft);border:1px solid #E8D3A8;font-size:10px;line-height:1.55;color:#6F5424;margin-top:16px}
 .btn{border:0;border-radius:999px;padding:13px 18px;font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:linear-gradient(135deg,var(--brown),var(--brown2));color:white}.btn.terracotta{background:linear-gradient(135deg,var(--terracotta),#C9896F);color:white}.btn.soft{background:var(--beige);color:var(--brown);border:1px solid var(--line)}.btn:disabled{opacity:.55;cursor:not-allowed}
 .nav-actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}.loading{display:grid;place-items:center;text-align:center;min-height:420px}.spinner{width:42px;height:42px;border:4px solid var(--sand);border-top-color:var(--terracotta);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px}@keyframes spin{to{transform:rotate(360deg)}}
@@ -71,8 +71,9 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 <div class="field"><label>Nom de la conciergerie *</label><input class="input" id="conciergeName"></div><div class="field"><label>Forme juridique</label><input class="input" id="conciergeLegalForm" placeholder="Ex. SASU, micro-entreprise"></div>
 <div class="field"><label>SIRET *</label><input class="input" id="conciergeSiret"></div><div class="field"><label>Responsable</label><input class="input" id="conciergeRepresentative"></div>
 <div class="field full"><label>Adresse de la conciergerie *</label><input class="input" id="conciergeAddress"></div><div class="field"><label>Email *</label><input class="input" id="conciergeEmail" type="email"></div><div class="field"><label>Téléphone</label><input class="input" id="conciergePhone"></div>
-<div class="field"><label>Assurance RC professionnelle</label><select class="select" id="conciergeInsurance"><option value="">Sélectionner</option><option value="Oui">Oui</option><option value="Non">Non</option></select><span class="hint">Le numéro de police n’est pas demandé. Le contrat reprend uniquement la déclaration « oui » ou « non ».</span></div><div class="field mandate-only"><label>Numéro de carte professionnelle *</label><input class="input" id="professionalCardNumber"></div>
-<div class="field mandate-only"><label>Garantie financière</label><input class="input" id="financialGuarantee"></div>
+<div class="field"><label>Assurance RC professionnelle</label><select class="select" id="conciergeInsurance"><option value="">Sélectionner</option><option value="Oui">Oui</option><option value="Non">Non</option></select><span class="hint">Le numéro de police n’est pas demandé. Le contrat reprend uniquement la déclaration « oui » ou « non ».</span></div><div class="field mandate-only"><label>Numéro de carte professionnelle *</label><input class="input" id="professionalCardNumber" placeholder="Ex. CPI 4501 2026 000 000 000"></div>
+<div class="field mandate-only"><label>Garantie financière *</label><select class="select" id="financialGuaranteeStatus"><option value="">Sélectionner</option><option value="Oui">Oui</option><option value="Non">Non</option><option value="Non applicable">Non applicable</option></select><span class="hint">Indiquez la situation réelle de la structure. CleanUp n’invente aucune garantie.</span></div>
+<div class="field mandate-only" id="financialGuaranteeOrgField"><label>Organisme garant</label><input class="input" id="financialGuarantee" placeholder="Ex. GALIAN, SO.CA.F., CEGC…"><span class="hint">À compléter uniquement si une garantie financière existe.</span></div>
 </div></section>
 
 <section class="section" id="step2"><div class="section-head"><div><h2>Le logement</h2><p>Décrivez le bien concerné par la collaboration.</p></div><div class="section-badge">Étape 2 sur 6</div></div>
@@ -82,7 +83,25 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 <div class="field full"><label>Description et particularités</label><textarea class="textarea" id="propertyDescription" placeholder="Accès, équipements importants, dépendances, piscine, stationnement…"></textarea></div>
 </div></section>
 
-<section class="section" id="step3"><div class="section-head"><div><h2>Les missions confiées</h2><p>Sélectionnez uniquement les prestations réellement prévues.</p></div><div class="section-badge">Étape 3 sur 6</div></div>
+<section class="section" id="step3"><div class="section-head"><div><h2>Les missions confiées</h2><p id="missionsIntro">Sélectionnez uniquement les prestations réellement prévues.</p></div><div class="section-badge">Étape 3 sur 6</div></div>
+<div class="mission-group mandate-only">
+<h3>Pouvoirs de gestion et administration financière</h3>
+<p>Ces missions caractérisent le mandat. Elles doivent correspondre exactement aux pouvoirs que le propriétaire souhaite confier à la conciergerie.</p>
+<div class="smart-options">
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="fundCollection" value="encaissement_fonds">Encaissement des loyers et sommes voyageurs</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="securityDepositManagement" value="gestion_cautions">Gestion des cautions et dépôts de garantie</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="refundManagement" value="remboursements_voyageurs">Remboursements voyageurs dans les limites convenues</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="ownerRemittance" value="reversement_proprietaire">Reversement des fonds au propriétaire</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="financialReporting" value="reddition_comptes">Reddition des comptes et relevé financier</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="authorizedExpenses" value="paiement_depenses_autorisees">Paiement des dépenses expressément autorisées</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="platformRepresentation" value="representation_plateformes">Représentation auprès des plateformes</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="travelerDisputes" value="gestion_litiges_voyageurs">Gestion des réclamations et litiges voyageurs</label>
+<label class="smart-option"><input type="checkbox" data-service data-mandate-power id="pricingAuthority" value="ajustement_tarifaire_mandate">Ajustement des tarifs dans les limites fixées</label>
+</div>
+</div>
+<div class="mission-group">
+<h3 id="operationalTitle">Prestations opérationnelles</h3>
+<p id="operationalText">Sélectionnez les services effectivement réalisés par la conciergerie.</p>
 <div class="smart-options">
 <label class="smart-option"><input type="checkbox" data-service value="creation_annonce">Création des annonces</label>
 <label class="smart-option"><input type="checkbox" data-service value="optimisation_annonce">Optimisation des annonces</label>
@@ -96,22 +115,31 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 <label class="smart-option"><input type="checkbox" data-service value="menage">Ménage</label>
 <label class="smart-option"><input type="checkbox" data-service value="linge">Linge</label>
 <label class="smart-option"><input type="checkbox" data-service value="maintenance">Maintenance et petites interventions</label>
-<label class="smart-option mandate-only"><input type="checkbox" id="fundCollection" value="encaissement_fonds">Encaissement des fonds pour le propriétaire</label>
-<label class="smart-option mandate-only"><input type="checkbox" id="financialReporting" value="reddition_comptes">Reversement et compte rendu financier</label>
 </div>
-<div class="panel"><h3>Précisions utiles</h3><div class="notice" style="margin:0 0 16px"><strong>Rédaction assistée par CleanUp :</strong> l’IA rédigera les modalités pratiques des missions sélectionnées. Vous pouvez laisser le champ ci-dessous vide et signaler uniquement une limite ou une particularité réellement importante.</div><div class="form-grid"><div class="field full"><label>Limites ou particularités à signaler (facultatif)</label><textarea class="textarea" id="otherServices" placeholder="Ex. aucune intervention après 20 h, maintenance limitée aux petites réparations, validation du propriétaire avant publication…"></textarea></div><div class="field"><label>Plateformes concernées</label><input class="input" id="platforms" placeholder="Airbnb, Booking, Abritel…"></div><div class="field"><label>Urgences et disponibilité</label><input class="input" id="emergencyAvailability" placeholder="Ex. 7 j/7 de 8 h à 22 h"></div></div></div>
+</div>
+<div class="panel"><h3>Précisions utiles</h3><div class="notice" style="margin:0 0 16px"><strong>Rédaction assistée par CleanUp :</strong> l’IA rédigera les modalités pratiques des missions sélectionnées. Vous pouvez laisser le champ ci-dessous vide et signaler uniquement une limite ou une particularité réellement importante.</div><div class="form-grid"><div class="field full"><label>Limites ou particularités à signaler (facultatif)</label><textarea class="textarea" id="otherServices" placeholder="Ex. aucune intervention après 20 h, validation du propriétaire au-delà de 100 €, ajustement tarifaire limité à ± 15 %…"></textarea></div><div class="field"><label>Plateformes concernées</label><input class="input" id="platforms" placeholder="Airbnb, Booking, Abritel…"></div><div class="field"><label>Urgences et disponibilité</label><input class="input" id="emergencyAvailability" placeholder="Ex. 7 j/7 de 8 h à 22 h"></div></div></div>
 </section>
 
 <section class="section" id="step4"><div class="section-head"><div><h2>Rémunération et flux financiers</h2><p>Définissez clairement le prix des services et les modalités de paiement.</p></div><div class="section-badge">Étape 4 sur 6</div></div>
 <div class="form-grid">
-<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"><option value="commission">Commission sur les revenus locatifs</option><option value="forfait">Forfait fixe</option><option value="mixte">Commission + forfaits</option><option value="sans_commission">Sans commission — prestations facturées à l'unité</option></select></div><div class="field" id="commissionRateField"><label>Taux de commission (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
+<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"></select></div><div class="field" id="commissionRateField"><label>Taux de commission (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
 <div class="field"><label>Forfait fixe (€)</label><input class="input" id="fixedFee" type="number" min="0" step="0.01"></div><div class="field"><label>TVA</label><select class="select" id="vatStatus"><option>TVA incluse au taux applicable</option><option>TVA non applicable, art. 293 B du CGI</option><option>À préciser</option></select></div>
 <div class="field full"><label>Tarifs des prestations facturées individuellement</label><textarea class="textarea" id="extraFees" placeholder="Ex. Ménage : 35 €
 Check-in : 25 €
 Création d’annonce : 120 €
 Optimisation d’annonce : 49 €"></textarea><span class="hint">Les prestations sont facturées uniquement lorsqu’elles sont commandées ou réalisées. Toute prestation non prévue fera l’objet d’un accord préalable.</span></div>
 <div class="field"><label>Facturation</label><select class="select" id="billingFrequency"><option>Mensuelle</option><option>À chaque séjour</option><option>Trimestrielle</option><option>Autre</option></select></div><div class="field"><label>Délai de paiement</label><input class="input" id="paymentDue" placeholder="Ex. 15 jours à réception"></div>
-<div class="field mandate-only"><label>Fréquence de reversement</label><input class="input" id="remittanceFrequency" placeholder="Ex. mensuelle"></div><div class="field mandate-only"><label>Modalités de compte rendu</label><input class="input" id="reportingTerms" placeholder="Ex. relevé détaillé mensuel"></div>
+<div class="field mandate-only"><label>Fréquence de reversement *</label><select class="select" id="remittanceFrequency"><option value="">Sélectionner</option><option>Après chaque séjour</option><option>Hebdomadaire</option><option>Deux fois par mois</option><option>Mensuelle</option><option>Autre fréquence convenue</option></select><span class="hint">Rythme auquel les fonds encaissés sont reversés au propriétaire.</span></div>
+<div class="field mandate-only"><label>Fréquence du compte rendu *</label><select class="select" id="reportingFrequency"><option value="">Sélectionner</option><option>Après chaque séjour</option><option>Hebdomadaire</option><option>Mensuelle</option><option>Trimestrielle</option></select><span class="hint">Le compte rendu récapitule les réservations, encaissements, dépenses et reversements.</span></div>
+<div class="field full mandate-only"><label>Contenu du compte rendu financier</label><div class="smart-options">
+<label class="smart-option"><input type="checkbox" data-reporting value="reservations" checked>Réservations</label>
+<label class="smart-option"><input type="checkbox" data-reporting value="sommes_encaissees" checked>Sommes encaissées</label>
+<label class="smart-option"><input type="checkbox" data-reporting value="commissions_honoraires" checked>Honoraires et commissions</label>
+<label class="smart-option"><input type="checkbox" data-reporting value="depenses_justificatifs" checked>Dépenses et justificatifs</label>
+<label class="smart-option"><input type="checkbox" data-reporting value="remboursements">Remboursements</label>
+<label class="smart-option"><input type="checkbox" data-reporting value="reversements" checked>Reversements au propriétaire</label>
+<label class="smart-option"><input type="checkbox" data-reporting value="incidents">Incidents et litiges</label>
+</div><span class="hint">L’IA rédigera la clause de reddition des comptes à partir de ces choix.</span></div>
 </div></section>
 
 <section class="section" id="step5"><div class="section-head"><div><h2>Durée et conditions</h2><p>Précisez les règles de la collaboration avant génération.</p></div><div class="section-badge">Étape 5 sur 6</div></div>
@@ -161,6 +189,7 @@ document.querySelectorAll("[data-contract]").forEach(btn=>btn.addEventListener("
  (contractType==="mandat"?$("choiceMandat"):$("choicePrestation")).classList.add("selected");
  document.querySelectorAll(".mandate-only").forEach(el=>el.classList.toggle("hidden",contractType!=="mandat"));
  $("selectedTypeLabel").textContent=contractType==="mandat"?"Contrat de gestion (mandat de gestion)":"Contrat de prestations de services";
+ configureContractForm();
  $("wizard").classList.remove("hidden");
  showStep(1);
  setTimeout(()=>$("wizard").scrollIntoView({behavior:"smooth",block:"start"}),100);
@@ -195,7 +224,13 @@ function validateStep(step){
  if(step===3 && document.querySelectorAll("[data-service]:checked").length===0){alert("Sélectionnez au moins une mission.");return false}
  if(contractType==="mandat"){
   if(step===1 && !val("professionalCardNumber")){alert("Le numéro de carte professionnelle est requis pour le mandat de gestion.");$("professionalCardNumber").focus();return false}
-  if(step===3 && !checked("fundCollection")){alert("Le mandat de gestion proposé ici suppose l'encaissement ou l'administration de fonds pour le compte du propriétaire.");return false}
+  if(step===1 && !val("financialGuaranteeStatus")){alert("Indiquez la situation de la garantie financière.");$("financialGuaranteeStatus").focus();return false}
+  if(step===1 && val("financialGuaranteeStatus")==="Oui" && !val("financialGuarantee")){alert("Indiquez l’organisme garant.");$("financialGuarantee").focus();return false}
+  if(step===3 && !checked("fundCollection")){alert("Sélectionnez l’encaissement des loyers et sommes voyageurs.");return false}
+  if(step===3 && !checked("ownerRemittance")){alert("Sélectionnez le reversement des fonds au propriétaire.");return false}
+  if(step===3 && !checked("financialReporting")){alert("Sélectionnez la reddition des comptes et le relevé financier.");return false}
+  if(step===4 && !val("remittanceFrequency")){alert("Sélectionnez la fréquence de reversement.");$("remittanceFrequency").focus();return false}
+  if(step===4 && !val("reportingFrequency")){alert("Sélectionnez la fréquence du compte rendu.");$("reportingFrequency").focus();return false}
  }
  return true;
 }
@@ -206,11 +241,11 @@ function payload(){
   contractType,
   parties:{
    ownerName:val("ownerName"),ownerStatus:val("ownerStatus"),ownerAddress:val("ownerAddress"),ownerEmail:val("ownerEmail"),ownerPhone:val("ownerPhone"),
-   conciergeName:val("conciergeName"),conciergeLegalForm:val("conciergeLegalForm"),conciergeSiret:val("conciergeSiret"),conciergeRepresentative:val("conciergeRepresentative"),conciergeAddress:val("conciergeAddress"),conciergeEmail:val("conciergeEmail"),conciergePhone:val("conciergePhone"),conciergeInsurance:val("conciergeInsurance"),professionalCardNumber:val("professionalCardNumber"),financialGuarantee:val("financialGuarantee")
+   conciergeName:val("conciergeName"),conciergeLegalForm:val("conciergeLegalForm"),conciergeSiret:val("conciergeSiret"),conciergeRepresentative:val("conciergeRepresentative"),conciergeAddress:val("conciergeAddress"),conciergeEmail:val("conciergeEmail"),conciergePhone:val("conciergePhone"),conciergeInsurance:val("conciergeInsurance"),professionalCardNumber:val("professionalCardNumber"),financialGuaranteeStatus:val("financialGuaranteeStatus"),financialGuarantee:val("financialGuarantee")
   },
   property:{name:val("propertyName"),type:val("propertyType"),address:val("propertyAddress"),capacity:num("capacity"),bedrooms:num("bedrooms"),description:val("propertyDescription")},
-  services:{selected:services,other:val("otherServices"),platforms:val("platforms"),emergencyAvailability:val("emergencyAvailability"),fundCollection:checked("fundCollection"),financialReporting:checked("financialReporting")},
-  remuneration:{feeType:val("feeType"),commissionRate:num("commissionRate"),fixedFee:num("fixedFee"),vatStatus:val("vatStatus"),extraFees:val("extraFees"),billingFrequency:val("billingFrequency"),paymentDue:val("paymentDue"),remittanceFrequency:val("remittanceFrequency"),reportingTerms:val("reportingTerms")},
+  services:{selected:services,other:val("otherServices"),platforms:val("platforms"),emergencyAvailability:val("emergencyAvailability"),fundCollection:checked("fundCollection"),securityDepositManagement:checked("securityDepositManagement"),refundManagement:checked("refundManagement"),ownerRemittance:checked("ownerRemittance"),financialReporting:checked("financialReporting"),authorizedExpenses:checked("authorizedExpenses"),platformRepresentation:checked("platformRepresentation"),travelerDisputes:checked("travelerDisputes"),pricingAuthority:checked("pricingAuthority")},
+  remuneration:{feeType:val("feeType"),commissionRate:num("commissionRate"),fixedFee:num("fixedFee"),vatStatus:val("vatStatus"),extraFees:val("extraFees"),billingFrequency:val("billingFrequency"),paymentDue:val("paymentDue"),remittanceFrequency:val("remittanceFrequency"),reportingFrequency:val("reportingFrequency"),reportingItems:[...document.querySelectorAll("[data-reporting]:checked")].map(x=>x.value)},
   terms:{startDate:val("startDate"),initialDuration:val("initialDuration"),renewal:val("renewal"),noticePeriod:val("noticePeriod"),expenseLimit:num("expenseLimit")},
   signatures:{place:val("signaturePlace"),date:val("signatureDate")}
  };
@@ -284,15 +319,51 @@ $("generateDoc").onclick=async()=>{
 $("printPdf").onclick=()=>{lockContract();setTimeout(()=>window.print(),80)};
 $("resetForm").onclick=()=>{location.href="les-indispensables-du-proprietaire.html"};
 
+const prestationFeeOptions=[
+ ["commission","Commission sur les revenus locatifs"],
+ ["forfait","Forfait fixe"],
+ ["mixte","Commission + forfaits"],
+ ["sans_commission","Sans commission — prestations facturées à l'unité"]
+];
+const mandateFeeOptions=[
+ ["commission","Commission sur les sommes encaissées"],
+ ["mixte","Commission de gestion + forfaits complémentaires"],
+ ["forfait","Forfait de gestion fixe"]
+];
+function setFeeOptions(){
+ const options=contractType==="mandat"?mandateFeeOptions:prestationFeeOptions;
+ const previous=val("feeType");
+ $("feeType").innerHTML=options.map(([value,label])=>`<option value="${value}">${label}</option>`).join("");
+ if(options.some(([value])=>value===previous)) $("feeType").value=previous;
+}
 function updateFeeFields(){
  const type=val("feeType");
  const commissionField=$("commissionRateField");
  if(commissionField) commissionField.classList.toggle("hidden",type==="forfait"||type==="sans_commission");
  if(type==="forfait"||type==="sans_commission") $("commissionRate").value="";
 }
+function updateGuaranteeField(){
+ const show=contractType==="mandat" && val("financialGuaranteeStatus")==="Oui";
+ $("financialGuaranteeOrgField")?.classList.toggle("hidden",!show);
+ if(!show && $("financialGuarantee")) $("financialGuarantee").value="";
+}
+function configureContractForm(){
+ setFeeOptions();
+ updateFeeFields();
+ updateGuaranteeField();
+ if($("missionsIntro")) $("missionsIntro").textContent=contractType==="mandat"
+  ?"Définissez précisément les pouvoirs de gestion, les opérations financières et les prestations confiées."
+  :"Sélectionnez uniquement les prestations réellement prévues.";
+ if($("operationalTitle")) $("operationalTitle").textContent=contractType==="mandat"?"Prestations opérationnelles associées":"Prestations confiées";
+ if($("operationalText")) $("operationalText").textContent=contractType==="mandat"
+  ?"Ces prestations complètent les pouvoirs de gestion et peuvent être réalisées directement ou coordonnées par le mandataire."
+  :"Sélectionnez les services effectivement réalisés par la conciergerie.";
+}
 $("feeType").addEventListener("change",updateFeeFields);
-updateFeeFields();
-
+$("financialGuaranteeStatus")?.addEventListener("change",updateGuaranteeField);
 document.querySelectorAll(".mandate-only").forEach(el=>el.classList.add("hidden"));
+setFeeOptions();
+updateFeeFields();
+updateGuaranteeField();
 </script>
 </body></html>
