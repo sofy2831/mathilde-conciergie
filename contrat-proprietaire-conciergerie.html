@@ -106,7 +106,7 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 
 <section class="section" id="step4"><div class="section-head"><div><h2>Rémunération et flux financiers</h2><p>Définissez clairement le prix des services et les modalités de paiement.</p></div><div class="section-badge">Étape 4 sur 6</div></div>
 <div class="form-grid">
-<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"><option value="commission">Commission sur les revenus locatifs</option><option value="forfait">Forfait fixe</option><option value="mixte">Commission + forfaits</option></select></div><div class="field"><label>Taux de commission (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
+<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"><option value="commission">Commission sur les revenus locatifs</option><option value="forfait">Forfait fixe</option><option value="mixte">Commission + forfaits</option><option value="sans_commission">Sans commission — prestations facturées à l'unité</option></select></div><div class="field" id="commissionRateField"><label>Taux de commission (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
 <div class="field"><label>Forfait fixe (€)</label><input class="input" id="fixedFee" type="number" min="0" step="0.01"></div><div class="field"><label>TVA</label><select class="select" id="vatStatus"><option>TVA incluse au taux applicable</option><option>TVA non applicable, art. 293 B du CGI</option><option>À préciser</option></select></div>
 <div class="field full"><label>Prestations facturées en supplément</label><textarea class="textarea" id="extraFees" placeholder="Ménage, linge, déplacements, maintenance, consommables…"></textarea></div>
 <div class="field"><label>Facturation</label><select class="select" id="billingFrequency"><option>Mensuelle</option><option>À chaque séjour</option><option>Trimestrielle</option><option>Autre</option></select></div><div class="field"><label>Délai de paiement</label><input class="input" id="paymentDue" placeholder="Ex. 15 jours à réception"></div>
@@ -132,14 +132,14 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 <div class="export-grid"><div class="export-card"><h3>PDF</h3><p>Utilisez l’impression du navigateur pour enregistrer le document en PDF.</p><button class="btn primary" id="printPdf" disabled>Imprimer / PDF</button></div><div class="export-card"><h3>Word</h3><p>Téléchargez une version modifiable du contrat.</p><button class="btn terracotta" id="downloadWord" disabled>Télécharger Word</button></div><div class="export-card"><h3>Nouveau contrat</h3><p>Effacez la saisie et recommencez avec un autre dossier.</p><button class="btn soft" id="resetForm">Créer un nouveau contrat</button></div></div>
 </section>
 
-<div class="nav-actions"><button class="btn soft" id="prevBtn" type="button">← Précédent</button><button class="btn primary" id="nextBtn" type="button">Continuer →</button></div>
+<div class="nav-actions"><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn soft" id="prevBtn" type="button">← Précédent</button><a class="btn soft" href="les-indispensables-du-proprietaire.html">← Retour aux indispensables</a></div><button class="btn primary" id="nextBtn" type="button">Continuer →</button></div>
 </section>
 <aside class="assistant-card"><div class="assistant-head"><strong>Assistant CleanUp</strong><div style="font-size:11px;opacity:.75;margin-top:5px" id="selectedTypeLabel"></div></div><div class="assistant-body"><div class="ai-message" id="assistantText">Commencez par choisir votre contrat.</div><ul class="check-list"><li>Informations non conservées après la session</li><li>Document à relire avant signature</li><li>Les champs incomplets seront signalés</li></ul></div></aside>
 </div>
 </div>
 </main>
 <script>
-const API_URL="https://europe-west9-cleanup-manager.cloudfunctions.net/generateRentalContract";
+const API_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateRentalContract";
 const $=id=>document.getElementById(id);
 const val=id=>($(id)?.value||"").trim();
 const num=id=>Number($(id)?.value||0);
@@ -243,6 +243,16 @@ $("downloadWord").onclick=()=>{
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=contractType==="mandat"?"mandat-gestion-proprietaire-conciergerie.doc":"contrat-prestations-proprietaire-conciergerie.doc";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 };
 $("resetForm").onclick=()=>{if(confirm("Créer un nouveau contrat et effacer les informations saisies ?"))location.reload()};
+
+function updateFeeFields(){
+ const type=val("feeType");
+ const commissionField=$("commissionRateField");
+ if(commissionField) commissionField.classList.toggle("hidden",type==="forfait"||type==="sans_commission");
+ if(type==="forfait"||type==="sans_commission") $("commissionRate").value="";
+}
+$("feeType").addEventListener("change",updateFeeFields);
+updateFeeFields();
+
 document.querySelectorAll(".mandate-only").forEach(el=>el.classList.add("hidden"));
 </script>
 </body></html>
