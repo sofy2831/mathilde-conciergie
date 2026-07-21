@@ -122,7 +122,7 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 
 <section class="section" id="step4"><div class="section-head"><div><h2>Rémunération et flux financiers</h2><p>Définissez clairement le prix des services et les modalités de paiement.</p></div><div class="section-badge">Étape 4 sur 6</div></div>
 <div class="form-grid">
-<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"></select></div><div class="field" id="commissionRateField"><label>Taux de commission (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
+<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"></select></div><div class="field" id="commissionRateField"><label>Taux de commission HT (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
 <div class="field"><label>Forfait fixe (€)</label><input class="input" id="fixedFee" type="number" min="0" step="0.01"></div><div class="field"><label>TVA</label><select class="select" id="vatStatus"><option>TVA incluse au taux applicable</option><option>TVA non applicable, art. 293 B du CGI</option><option>À préciser</option></select></div>
 <div class="field full"><label>Tarifs des prestations facturées individuellement</label><textarea class="textarea" id="extraFees" placeholder="Ex. Ménage : 35 €
 Check-in : 25 €
@@ -259,20 +259,52 @@ function formatContractDate(value){
  return new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"long",year:"numeric"}).format(d);
 }
 function cleanContractText(value){
- return String(value||"")
+ let text=String(value||"");
+ const technicalKeys=[
+  "commissionRate","fixedFee","billingFrequency","paymentDue","remittanceFrequency",
+  "reportingFrequency","reportingItems","professionalCardNumber","financialGuaranteeStatus",
+  "financialGuarantee","expenseLimit","startDate","initialDuration","noticePeriod",
+  "renewal","insurance","platforms","selected","fundCollection","ownerRemittance",
+  "financialReporting","securityDepositManagement","refundManagement","authorizedExpenses",
+  "platformRepresentation","travelerDisputes","pricingAuthority"
+ ];
+ technicalKeys.forEach(key=>{
+  text=text.replace(new RegExp("\\s*\\("+key+"\\s*:[^)]*\\)","gi"),"");
+  text=text.replace(new RegExp("\\s*\\("+key+"[^)]*\\)","gi"),"");
+  text=text.replace(new RegExp("\\b"+key+"\\b\\s*:?","gi"),"");
+ });
+ text=text
+  .replace(/\b(?:creation_annonce|optimisation_annonce|valorisation_logement|representation_plateformes|reservations|calendriers|voyageurs|ajustement_tarifaire_mandate|encaissement_fonds|gestion_cautions|remboursements_voyageurs|gestion_litiges_voyageurs|checkin|checkout|menage|linge|maintenance|paiement_depenses_autorisees|sommes_encaissees|commissions_honoraires|depenses_justificatifs|reversements|incidents)\b/gi,"")
+  .replace(/\(\s*(?:,?\s*)+\)/g,"")
+  .replace(/\([^)]*(?:Rate|Fee|Frequency|Items|Number|Status|Limit|Date|Duration|Period)[^)]*\)/gi,"")
   .replace(/liste\s+exhaustive/gi,"liste non exhaustive")
   .replace(/,?\s*exclusivit[ée]\s*:\s*non pr[ée]vue\s*\([^)]*\)\.?/gi,"")
   .replace(/,?\s*exclusivit[ée]\s*:\s*(?:non exclusif|aucune|non pr[ée]vue)\.?/gi,"")
   .replace(/dur[ée]e,\s*renouvellement,\s*exclusivit[ée]\s*et\s*r[ée]siliation/gi,"Durée, renouvellement et résiliation")
   .replace(/dur[ée]e,\s*exclusivit[ée]\s*et\s*r[ée]siliation/gi,"Durée et résiliation")
+  .replace(/commission de\s*(\d+(?:[.,]\d+)?)\s*%(?!\s*HT)/gi,"commission de $1 % HT")
+  .replace(/commission\s*(?:de|:)\s*(\d+(?:[.,]\d+)?)\s*%(?!\s*HT)/gi,"commission de $1 % HT")
+  .replace(/\s+([,.;:])/g,"$1")
+  .replace(/\(\s*\)/g,"")
   .replace(/\s{2,}/g," ")
   .trim();
+ return text;
 }
 function renderContract(data){
  const ai=data.ai;
  const articles=(ai.articles||[]).map(a=>{
   let title=cleanContractText(a.title||"");
   let content=cleanContractText(a.content||"");
+  if(Number(a.number)===12){
+   content=content
+    .replace(/Fait à[\s\S]*$/i,"")
+    .replace(/Signatures?\s*:[\s\S]*$/i,"")
+    .replace(/Pour le Mandant[\s\S]*$/i,"")
+    .trim();
+   if(contractType==="mandat"&&!/élisent domicile|élection de domicile/i.test(content)){
+    content += "\n\nPour l’exécution du présent mandat et de ses suites, les parties élisent domicile à leurs adresses respectives indiquées au présent mandat.";
+   }
+  }
   const isBillingArticle=/r[ée]mun[ée]ration|facturation|honoraires/i.test(title);
   const isMissionsArticle=/missions confi[ée]es|prestations confi[ée]es/i.test(title);
   if(isMissionsArticle){
@@ -287,14 +319,15 @@ function renderContract(data){
   }
   return `<section class="article"><h3>Article ${esc(a.number)} — ${esc(title)}</h3><p>${esc(content)}</p></section>`;
  }).join("");
- const place=val("signaturePlace");
+ const rawPlace=val("signaturePlace");
+ const place=rawPlace?rawPlace.charAt(0).toUpperCase()+rawPlace.slice(1):"";
  const dateLabel=formatContractDate(val("signatureDate"));
  const signatureIntro=(place||dateLabel)?`<div class="signature-intro">Fait ${place?`à ${esc(place)}`:""}${place&&dateLabel?", ":""}${dateLabel?`le ${esc(dateLabel)}`:""}, en deux exemplaires originaux.</div>`:"";
  const annexes=`<div class="special-box annex-box"><strong>Annexes éventuelles</strong><br>Selon les besoins des parties : annexe tarifaire, inventaire, état des lieux, liste des clés et photographies du logement.</div>`;
  const agreement=contractType==="mandat"?`<div class="agreement-box">Le présent mandat exprime l’accord des parties sur les pouvoirs de gestion expressément confiés au Mandataire. Toute extension ou modification de ces pouvoirs devra faire l’objet d’un avenant écrit et signé par les deux parties. Le mandat entre en vigueur à la date de prise d’effet indiquée ou, à défaut, à la date de sa dernière signature.</div>`:`<div class="agreement-box">Le présent contrat exprime l’accord des parties sur les prestations confiées à la conciergerie. Toute modification devra être constatée par écrit et signée par les deux parties. Il entre en vigueur à la date de prise d’effet indiquée par les parties ou, à défaut, à la date de sa dernière signature.</div>`;
  const ownerSig=cleanContractText(ai.signature_placeholders?.owner||val("ownerName"));
  const conciergeSig=cleanContractText(ai.signature_placeholders?.concierge||val("conciergeName"));
- return `<div class="preview-shell"><article class="contract-paper" id="contractPaper"><h1>${esc(ai.title)}</h1><div class="subtitle">${esc(ai.subtitle)}</div><div class="summary">${esc(ai.resume)}</div>${articles}${ai.termination_terms?`<div class="special-box"><strong>Conditions de résiliation particulières</strong><br>${esc(ai.termination_terms)}</div>`:""}${ai.owner_obligations?`<div class="special-box"><strong>Obligations particulières du propriétaire</strong><br>${esc(ai.owner_obligations)}</div>`:""}${ai.special_terms?`<div class="special-box"><strong>Conditions particulières</strong><br>${esc(ai.special_terms)}</div>`:""}${annexes}${agreement}${signatureIntro}<div class="signatures"><div class="signature"><strong>${contractType==="mandat"?"Le Mandant — propriétaire":"Le propriétaire"}</strong><br>${esc(ownerSig)}<span class="signature-space"></span>Mention « Lu et approuvé » :<span class="signature-line"></span>Signature :<span class="signature-line"></span></div><div class="signature"><strong>${contractType==="mandat"?"Le Mandataire — conciergerie":"La conciergerie"}</strong><br>${esc(conciergeSig)}<span class="signature-space"></span>Mention « Lu et approuvé » :<span class="signature-line"></span>Signature :<span class="signature-line"></span></div></div></article></div>`;
+ return `<div class="preview-shell"><article class="contract-paper" id="contractPaper"><h1>${esc(ai.title)}</h1><div class="subtitle">${esc(ai.subtitle)}</div><div class="summary">${esc(ai.resume)}</div>${articles}${ai.termination_terms?`<div class="special-box"><strong>Conditions de résiliation particulières</strong><br>${esc(ai.termination_terms)}</div>`:""}${ai.owner_obligations?`<div class="special-box"><strong>Obligations particulières du propriétaire</strong><br>${esc(ai.owner_obligations)}</div>`:""}${ai.special_terms?`<div class="special-box"><strong>Clauses particulières</strong><br>${esc(ai.special_terms)}</div>`:""}${annexes}${agreement}${signatureIntro}<div class="signatures"><div class="signature"><strong>${contractType==="mandat"?"Le Mandant — propriétaire":"Le propriétaire"}</strong><br>${esc(ownerSig)}<span class="signature-space"></span>Mention « Lu et approuvé » :<span class="signature-line"></span>Signature :<span class="signature-line"></span></div><div class="signature"><strong>${contractType==="mandat"?"Le Mandataire — conciergerie":"La conciergerie"}</strong><br>${esc(conciergeSig)}<span class="signature-space"></span>Mention « Lu et approuvé » :<span class="signature-line"></span>Signature :<span class="signature-line"></span></div></div></article></div>`;
 }
 function lockContract(){
  if(contractLocked) return;
