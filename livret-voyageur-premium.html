@@ -197,7 +197,7 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
     <div class="benefits">
       <div class="benefit"><b>✓</b> Simple et guidé</div>
       <div class="benefit"><b>✓</b> Sans compte client</div>
-      <div class="benefit"><b>✓</b> Export PDF et Word</div>
+      <div class="benefit"><b>✓</b> Export PDF</div>
     </div>
   </div>
   <aside class="hero-card">
@@ -345,11 +345,6 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
     <button class="btn primary" id="copyAll">Copier tout</button>
   </div>
   <div class="export">
-    <h3>Télécharger Word</h3>
-    <p>Version bilingue, structurée et modifiable.</p>
-    <button class="btn primary" id="downloadWord">Télécharger Word</button>
-  </div>
-  <div class="export">
     <h3>Enregistrer en PDF</h3>
     <p>Livret bilingue prêt à imprimer.</p>
     <button class="btn primary" id="printPdf">Imprimer / PDF</button>
@@ -363,7 +358,7 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 
 <div class="export-lock-note" id="exportLockNote">
   <strong>Votre livret voyageur a été généré.</strong><br>
-  Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.
+  Vous pouvez encore le copier ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.
 </div>
 
 <div class="cta">
@@ -546,34 +541,6 @@ $('generateBooklet').onclick=async()=>{const loadingSteps=[...document.querySele
   setTimeout(()=>showStep(5),250);
  }catch(error){alert(error.message);status.textContent=error.message}
  finally{clearInterval(loadingTimer);btn.disabled=false}
-};
-$('downloadWord').onclick=()=>{
- if(!bookletData)return alert('Générez d’abord le livret.');
- bookletData=cleanBookletForExport(bookletData);
- lockAfterFirstExport();
- const section=(title,items,pageBreak=true)=>`${pageBreak?'<br clear=all style=\"mso-special-character:line-break;page-break-before:always\">':''}<h2>${title}</h2>${(items||[]).map(x=>`<div class="word-item"><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></div>`).join('')}`;
- const doc=`<!doctype html><html><head><meta charset="utf-8"><style>
- @page{size:A4;margin:18mm}
- body{font-family:Arial,sans-serif;color:#302925;line-height:1.5;margin:0}
- .cover{text-align:center;padding:70px 25px;border:1px solid #D8CCC1}
- h1,h2,h3{font-family:Georgia,serif;color:#3E2D25}
- h1{font-size:34px;margin:0 0 12px}h2{font-size:23px;border-bottom:1px solid #D8CCC1;padding-bottom:7px;margin-top:28px}
- h3{font-size:16px;margin:0 0 5px}.word-item{margin:0 0 14px;padding:12px;border:1px solid #E4D9CF;page-break-inside:avoid}.cover{page-break-after:always;mso-break-after:page}
- p{white-space:pre-line}.footer{text-align:center;margin-top:30px;font-size:10px;color:#766C66}
- </style></head><body>
- <div class="cover">${coverPhotoData?`<img src="${coverPhotoData}" style="width:100%;height:260px;object-fit:cover;margin-bottom:24px">`:''}<h1>${escapeHtml($('homeName').value||'Livret Voyageur Premium')}</h1><h2>${escapeHtml($('city').value)}</h2><p>${escapeHtml(bookletData.welcome)}</p></div><br clear=all style="mso-special-character:line-break;page-break-before:always">
- <h2>La destination / The destination</h2><p>${escapeHtml(bookletData.destination)}</p>
- ${section('Restaurants / Restaurants',bookletData.restaurants,true)}
- ${section('Commerces utiles / Useful shops',bookletData.shops,true)}
- ${section('À voir et à faire / Things to see and do',bookletData.activities,true)}
- ${section('Se déplacer / Getting around',bookletData.transport,true)}
- ${section('Conseils locaux / Local tips',bookletData.tips,false)}
- ${section('Événements / Events',bookletData.events,true)}
- <h2>Pour finir / Before you leave</h2><p>${escapeHtml(bookletData.closing)}</p>
- <div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>
- </body></html>`;
- const blob=new Blob(['\ufeff',doc],{type:'application/msword'}),a=document.createElement('a');
- a.href=URL.createObjectURL(blob);a.download='livret-voyageur-premium-bilingue.doc';a.click();URL.revokeObjectURL(a.href);
 };
 $('printPdf').onclick=()=>{if(!bookletData)return alert('Générez d’abord le livret.');lockAfterFirstExport();buildPrint(bookletData);window.print()};
 
