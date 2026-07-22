@@ -122,12 +122,14 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 
 <section class="section" id="step4"><div class="section-head"><div><h2>Rémunération et flux financiers</h2><p>Définissez clairement le prix des services et les modalités de paiement.</p></div><div class="section-badge">Étape 4 sur 6</div></div>
 <div class="form-grid">
-<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"></select></div><div class="field" id="commissionRateField"><label>Taux de commission HT (%)</label><input class="input" id="commissionRate" type="number" min="0" max="100" step="0.1"></div>
-<div class="field"><label>Forfait fixe (€)</label><input class="input" id="fixedFee" type="number" min="0" step="0.01"></div><div class="field"><label>TVA</label><select class="select" id="vatStatus"><option>TVA incluse au taux applicable</option><option>TVA non applicable, art. 293 B du CGI</option><option>À préciser</option></select></div>
-<div class="field full"><label>Tarifs des prestations facturées individuellement</label><textarea class="textarea" id="extraFees" placeholder="Ex. Ménage : 35 €
+<div class="field"><label>Mode de rémunération *</label><select class="select" id="feeType"></select><span class="hint" id="feeTypeHint">Choisissez le modèle réellement convenu avec la conciergerie.</span></div>
+<div class="field" id="commissionRateField"><label>Taux de commission HT (%) *</label><input class="input" id="commissionRate" type="number" min="0.1" max="100" step="0.1" placeholder="Ex. 20"></div>
+<div class="field" id="fixedFeeField"><label id="fixedFeeLabel">Forfait mensuel HT (€) *</label><input class="input" id="fixedFee" type="number" min="0.01" step="0.01" placeholder="Ex. 250"></div>
+<div class="field"><label>TVA</label><select class="select" id="vatStatus"><option>TVA incluse au taux applicable</option><option>TVA non applicable, art. 293 B du CGI</option><option>À préciser</option></select></div>
+<div class="field full" id="extraFeesField"><label>Tarifs des prestations à la carte *</label><textarea class="textarea" id="extraFees" placeholder="Ex. Ménage : 35 €
 Check-in : 25 €
 Création d’annonce : 120 €
-Optimisation d’annonce : 49 €"></textarea><span class="hint">Les prestations sont facturées uniquement lorsqu’elles sont commandées ou réalisées. Toute prestation non prévue fera l’objet d’un accord préalable.</span></div>
+Optimisation d’annonce : 49 €"></textarea><span class="hint">Indiquez uniquement les prestations facturées séparément. Elles sont dues lorsqu’elles sont commandées ou réalisées.</span></div>
 <div class="field"><label>Facturation</label><select class="select" id="billingFrequency"><option>Mensuelle</option><option>À chaque séjour</option><option>Trimestrielle</option><option>Autre</option></select></div><div class="field"><label>Délai de paiement</label><input class="input" id="paymentDue" placeholder="Ex. 15 jours à réception"></div>
 <div class="field mandate-only"><label>Fréquence de reversement *</label><select class="select" id="remittanceFrequency"><option value="">Sélectionner</option><option>Après chaque séjour</option><option>Hebdomadaire</option><option>Deux fois par mois</option><option>Mensuelle</option><option>Autre fréquence convenue</option></select><span class="hint">Rythme auquel les fonds encaissés sont reversés au propriétaire.</span></div>
 <div class="field mandate-only"><label>À quelle fréquence souhaitez-vous recevoir le relevé de gestion ? *</label><select class="select" id="reportingFrequency"><option value="">Sélectionner</option><option>Après chaque séjour</option><option>Hebdomadaire</option><option>Mensuelle</option><option>Trimestrielle</option></select><span class="hint">Ce relevé permet au propriétaire de contrôler les réservations, les sommes encaissées, les honoraires, les dépenses justifiées et les reversements.</span></div>
@@ -178,7 +180,7 @@ const messages=[
 "Renseignez les coordonnées du propriétaire et de la conciergerie.",
 "Décrivez le logement concerné.",
 "Sélectionnez les missions réellement confiées.",
-"Précisez la commission, les forfaits et les flux financiers.",
+"Choisissez le mode de rémunération et renseignez uniquement les montants correspondants.",
 "Définissez la durée, le préavis et les conditions particulières.",
 "Relisez le contrat avant de le télécharger et de le faire signer."
 ];
@@ -222,6 +224,18 @@ function validateStep(step){
  }[step]||[];
  for(const [id,label] of required){if(!val(id)){alert("Veuillez renseigner : "+label);$(id).focus();return false}}
  if(step===3 && document.querySelectorAll("[data-service]:checked").length===0){alert("Sélectionnez au moins une mission.");return false}
+ if(step===4){
+  const feeMode=val("feeType");
+  if((feeMode==="commission"||feeMode==="mixte") && num("commissionRate")<=0){
+   alert("Indiquez le taux de commission HT.");$("commissionRate").focus();return false;
+  }
+  if((feeMode==="forfait"||feeMode==="mixte") && num("fixedFee")<=0){
+   alert("Indiquez le montant du forfait mensuel HT.");$("fixedFee").focus();return false;
+  }
+  if(feeMode==="sans_commission" && !val("extraFees")){
+   alert("Indiquez au moins un tarif de prestation à la carte.");$("extraFees").focus();return false;
+  }
+ }
  if(contractType==="mandat"){
   if(step===1 && !val("professionalCardNumber")){alert("Le numéro de carte professionnelle est requis pour le mandat de gestion.");$("professionalCardNumber").focus();return false}
   if(step===1 && val("conciergeInsurance")!=="Oui"){alert("Le mandat avec encaissement nécessite une assurance RC professionnelle déclarée par la conciergerie.");$("conciergeInsurance").focus();return false}
@@ -264,7 +278,7 @@ function cleanContractText(value){
  // Les clés internes ne doivent jamais apparaître dans le contrat.
  // On traduit une clé isolée au lieu de supprimer le mot qui l'entoure.
  const labels={
-  commissionRate:"taux de commission",fixedFee:"forfait fixe",billingFrequency:"fréquence de facturation",
+  feeType:"mode de rémunération",commissionRate:"taux de commission",fixedFee:"forfait mensuel",billingFrequency:"fréquence de facturation",
   paymentDue:"délai de paiement",remittanceFrequency:"fréquence de reversement",
   reportingFrequency:"fréquence de reddition des comptes",reportingItems:"contenu du relevé de gestion",
   professionalCardNumber:"numéro de carte professionnelle",financialGuaranteeStatus:"garantie financière",
@@ -390,28 +404,39 @@ $("generateDoc").onclick=async()=>{
 $("printPdf").onclick=()=>{lockContract();setTimeout(()=>window.print(),80)};
 $("resetForm").onclick=()=>{location.href="les-indispensables-du-proprietaire.html"};
 
-const prestationFeeOptions=[
- ["commission","Commission sur les revenus locatifs"],
- ["forfait","Forfait fixe"],
- ["mixte","Commission + forfaits"],
- ["sans_commission","Sans commission — prestations facturées à l'unité"]
-];
-const mandateFeeOptions=[
- ["commission","Commission sur les sommes encaissées"],
- ["mixte","Commission de gestion + forfaits complémentaires"],
- ["forfait","Forfait de gestion fixe"]
+const feeOptions=[
+ ["commission","Commission uniquement"],
+ ["sans_commission","Prestations à la carte"],
+ ["forfait","Forfait mensuel"],
+ ["mixte","Mixte (commission + forfait)"]
 ];
 function setFeeOptions(){
- const options=contractType==="mandat"?mandateFeeOptions:prestationFeeOptions;
  const previous=val("feeType");
- $("feeType").innerHTML=options.map(([value,label])=>`<option value="${value}">${label}</option>`).join("");
- if(options.some(([value])=>value===previous)) $("feeType").value=previous;
+ $("feeType").innerHTML='<option value="">Sélectionner</option>'+feeOptions.map(([value,label])=>`<option value="${value}">${label}</option>`).join("");
+ if(feeOptions.some(([value])=>value===previous)) $("feeType").value=previous;
 }
 function updateFeeFields(){
  const type=val("feeType");
- const commissionField=$("commissionRateField");
- if(commissionField) commissionField.classList.toggle("hidden",type==="forfait"||type==="sans_commission");
- if(type==="forfait"||type==="sans_commission") $("commissionRate").value="";
+ const showCommission=type==="commission"||type==="mixte";
+ const showFixed=type==="forfait"||type==="mixte";
+ const showExtra=type==="sans_commission";
+
+ $("commissionRateField")?.classList.toggle("hidden",!showCommission);
+ $("fixedFeeField")?.classList.toggle("hidden",!showFixed);
+ $("extraFeesField")?.classList.toggle("hidden",!showExtra);
+
+ if(!showCommission && $("commissionRate")) $("commissionRate").value="";
+ if(!showFixed && $("fixedFee")) $("fixedFee").value="";
+ if(!showExtra && $("extraFees")) $("extraFees").value="";
+
+ const hints={
+  commission:"La rémunération repose uniquement sur un pourcentage de commission.",
+  sans_commission:"Chaque prestation est facturée séparément selon le tarif indiqué.",
+  forfait:"La rémunération repose uniquement sur un forfait mensuel fixe.",
+  mixte:"La rémunération associe une commission et un forfait mensuel."
+ };
+ if($("feeTypeHint")) $("feeTypeHint").textContent=hints[type]||"Choisissez le modèle réellement convenu avec la conciergerie.";
+ if($("fixedFeeLabel")) $("fixedFeeLabel").textContent=type==="mixte"?"Forfait mensuel complémentaire HT (€) *":"Forfait mensuel HT (€) *";
 }
 function updateGuaranteeField(){
  const show=contractType==="mandat" && val("financialGuaranteeStatus")==="Oui";
