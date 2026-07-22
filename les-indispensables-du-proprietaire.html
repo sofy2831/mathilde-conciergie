@@ -253,6 +253,26 @@ body.preview-open{overflow:hidden}
   .preview-title-wrap strong{font-size:20px}
   .preview-bottom{align-items:flex-start}
 }
+
+.preview-main img{
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.preview-main img.changing{opacity:.25;transform:scale(.985)}
+.preview-thumb img{
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+}
+.preview-dialog{animation:previewIn .2s ease both}
+@keyframes previewIn{
+  from{opacity:0;transform:translateY(12px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
 </style></head>
 <body>
 <header class="site-header">
@@ -501,8 +521,10 @@ const start=document.getElementById('previewStart');
 let current=null,index=0;
 function renderPreview(){
   const item=previewData[current];
-  image.src=item.pages[index];
+  image.classList.add('changing');
+  setTimeout(()=>{image.src=item.pages[index];},70);
   image.alt=item.title+' — aperçu page '+(index+1);
+  image.onload=()=>image.classList.remove('changing');
   counter.textContent='Page '+(index+1)+' / '+item.pages.length;
   [...thumbs.children].forEach((b,i)=>b.classList.toggle('active',i===index));
   document.getElementById('previewPrev').style.visibility=item.pages.length>1?'visible':'hidden';
@@ -537,6 +559,16 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape')closePreview();
   if(e.key==='ArrowLeft')document.getElementById('previewPrev').click();
   if(e.key==='ArrowRight')document.getElementById('previewNext').click();
+});
+
+document.querySelectorAll('.preview-main img,.preview-thumb img').forEach(img=>{
+  img.setAttribute('draggable','false');
+});
+document.addEventListener('contextmenu',e=>{
+  if(e.target.closest('.preview-dialog')) e.preventDefault();
+});
+document.addEventListener('dragstart',e=>{
+  if(e.target.closest('.preview-dialog')) e.preventDefault();
 });
 </script></body>
 </html>
