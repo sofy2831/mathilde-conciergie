@@ -406,7 +406,7 @@ h1 span{color:var(--terracotta)}
         <div class="benefit"><b>✓</b> Contrôle du logement</div>
         <div class="benefit"><b>✓</b> Conseils personnalisés</div>
         <div class="benefit"><b>✓</b> Annonce prête à publier</div>
-        <div class="benefit"><b>✓</b> PDF et Word</div>
+        <div class="benefit"><b>✓</b> Export PDF</div>
       </div>
       <div class="time-saver"><strong>2 à 3 heures de rédaction économisées</strong><span>Quelques informations, quelques secondes avec CleanUp, et une annonce structurée sans rien oublier.</span></div>
     </div>
@@ -678,11 +678,6 @@ h1 span{color:var(--terracotta)}
             <div class="icon">📋</div><h3>Copier l’annonce</h3>
             <p>Copiez tous les textes pour les coller directement sur la plateforme de votre choix.</p>
             <button class="btn primary" type="button" id="copyAll">Copier tout</button>
-          </div>
-          <div class="export-card">
-            <div class="icon">📄</div><h3>Télécharger en Word</h3>
-            <p>Récupérez un document modifiable avec le titre, la description et les recommandations.</p>
-            <button class="btn primary" type="button" id="downloadWord">Télécharger Word</button>
           </div>
           <div class="export-card">
             <div class="icon">🖨️</div><h3>Enregistrer en PDF</h3>
@@ -1117,7 +1112,7 @@ function lockGeneratedAnnouncement(){
       btn.title = 'Annonce générée — étape verrouillée';
     }
   });
-  alert('Votre annonce a été générée. Vous pouvez encore la copier, la télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.');
+  alert('Votre annonce a été générée. Vous pouvez encore la copier ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.');
 }
 
 function copyAll(){
@@ -1204,23 +1199,6 @@ function buildPrintableReport(){
   $('reportPrint').innerHTML=pages.join('');
   return {scores,photo,ready,level,statusTitle,statusText};
 }
-function downloadWord(){
-  lockGeneratedAnnouncement();
-  const {scores,photo,ready,statusTitle,statusText}=buildPrintableReport();
-  const issueList=(controlIssues.slice(0,10).map(x=>`<li><strong>${esc(x.title)}</strong> — ${esc(x.text)}</li>`).join('')||'<li>Aucune incohérence majeure détectée.</li>');
-  const adviceList=(adviceItems.slice(0,8).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Relire les informations avant publication.</li>');
-  const content=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Mon Annonce Pro</title><style>@page{size:A4;margin:16mm}body{font-family:Arial;color:#2F2926;font-size:10.5pt;line-height:1.45}h1{color:#3E2D25;font-size:24pt}h2{color:#3E2D25;font-size:17pt;border-bottom:1px solid #E4D9CF;padding-bottom:6pt}h3{color:#B96F52;font-size:11pt}.page{page-break-after:always;max-height:250mm;overflow:hidden}.page:last-child{page-break-after:auto}.score{font-size:28pt;font-weight:bold;color:#3E2D25}.status{padding:12pt;border-radius:8pt}.status.ready{background:#E7EEE5;border:1px solid #D3DFD0;color:#536B52}.status.warning{background:#FAF1DC;border:1px solid #EEDCB4;color:#8A6324}table{width:100%;border-collapse:collapse}td{border:1px solid #E4D9CF;padding:8pt;vertical-align:top}ul{margin-top:5pt}</style></head><body>
-  <section class="page"><h1>Mon Annonce Pro</h1><div class="status ${ready?'ready':'warning'}"><strong>${ready?'🟢':'🟠'} ${esc(statusTitle)}</strong><br>${esc(statusText)}</div><h2>Synthèse</h2><table><tr><td>Cohérence<br><span class="score">${scores.coherence}</span>/100</td><td>Équipements<br><span class="score">${scores.equipment}</span>/100</td><td>Photos<br><span class="score">${scores.photo}</span>/100</td><td>Global<br><span class="score">${scores.global}</span>/100</td></tr></table></section>
-  <section class="page"><h2>Audit du logement</h2><ul>${issueList}</ul></section>
-  <section class="page"><h2>Audit de la galerie photos</h2><p><strong>${photo.total} photo(s) prévue(s)</strong> — Couverture : ${photo.coverSelected?'sélectionnée':'à choisir'}.</p><h3>Points forts</h3><ul>${(photo.strengths.length?photo.strengths:['Galerie à compléter.']).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h3>Points à améliorer</h3><ul>${photo.improvements.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><em>Les photos ne sont pas intégrées au document. Elles doivent être ajoutées directement sur Airbnb, Booking.com ou Abritel.</em></p></section>
-  <section class="page"><h2>Annonce générée</h2><h1>${esc(val('generatedTitle'))}</h1><p><strong>${esc(val('generatedIntro'))}</strong></p><h3>Description</h3><p>${esc(clampText(val('generatedDescription'),1500)).replace(/\n/g,'<br>')}</p><h3>Informations pratiques</h3><p>${esc(clampText(val('generatedRules'),650)).replace(/\n/g,'<br>')}</p></section>
-  <section class="page"><h2>Conseils d’optimisation</h2><ul>${adviceList}</ul></section>
-  <section><h2>Validation finale</h2><div class="status ${ready?'ready':'warning'}"><strong>${ready?'🟢':'🟠'} ${esc(statusTitle)}</strong><br>${esc(statusText)}</div><p>Prochaine étape : copiez les textes, ajoutez vos photos sur la plateforme choisie, complétez les tarifs et les disponibilités, puis relisez l’annonce depuis la vue voyageur.</p></section>
-  </body></html>`;
-  const blob=new Blob(['\ufeff',content],{type:'application/msword'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mon-annonce-pro.doc';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-$('downloadWord').addEventListener('click',downloadWord);
 $('printPdf').addEventListener('click',()=>{
   lockGeneratedAnnouncement();
   buildPrintableReport();
