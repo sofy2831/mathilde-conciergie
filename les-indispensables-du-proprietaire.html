@@ -212,7 +212,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
 }
 
 </style>
-</head>
+<style>.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998}.modal{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1000px,95vw);background:#fff;padding:20px;border-radius:18px;z-index:9999}.preview-box{height:500px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;color:#666}</style></head>
 <body>
 <header class="site-header">
   <div class="header-inner">
@@ -277,7 +277,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">29 € <small>TTC</small></div>
-          <a class="btn terracotta" href="mon-annonce-pro.html">Créer mon annonce →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn terracotta" href="mon-annonce-pro.html">Créer mon annonce →</a>
         </div>
       </article>
 
@@ -295,7 +295,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">9 € <small>TTC</small></div>
-          <a class="btn primary" href="optimisation-annonce.html">Optimiser mon annonce →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="optimisation-annonce.html">Optimiser mon annonce →</a>
         </div>
       </article>
 
@@ -313,7 +313,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">9 € <small>TTC</small></div>
-          <a class="btn primary" href="guide-accueil-personnalise.html">Créer mon guide →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="guide-accueil-personnalise.html">Créer mon guide →</a>
         </div>
       </article>
 
@@ -331,7 +331,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">9 € <small>TTC</small></div>
-          <a class="btn primary" href="livret-voyageur-premium.html">Créer mon livret →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="livret-voyageur-premium.html">Créer mon livret →</a>
         </div>
       </article> 
 
@@ -353,7 +353,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </p>
         <div class="card-bottom">
           <div class="price">19 € <small>TTC</small></div>
-          <a class="btn terracotta" href="contrat-proprietaire-conciergerie.html">Créer mon contrat →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn terracotta" href="contrat-proprietaire-conciergerie.html">Créer mon contrat →</a>
         </div>
       </article>
 
@@ -371,7 +371,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">9 € <small>TTC</small></div>
-          <a class="btn primary" href="reglement-interieur-location.html">Créer mon règlement →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="reglement-interieur-location.html">Créer mon règlement →</a>
         </div>
       </article>
 
@@ -389,7 +389,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">49 € <small>TTC</small></div>
-          <a class="btn terracotta" href="diagnostic-template.html">Lancer le diagnostic →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn terracotta" href="diagnostic-template.html">Lancer le diagnostic →</a>
         </div>
       </article>
 
@@ -407,7 +407,7 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
         </ul>
         <div class="card-bottom">
           <div class="price">129 € <small>TTC</small></div>
-          <a class="btn gold" href="etude-investissement.html">Étudier mon projet →</a>
+          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn gold" href="etude-investissement.html">Étudier mon projet →</a>
         </div>
       </article>
     </div>
@@ -440,5 +440,5 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
 <footer>
   CleanUp Manager — Les indispensables du propriétaire. Services indépendants de toute prestation de conciergerie.
 </footer>
-</body>
+<div id="backdrop" class="modal-backdrop"></div><div id="previewModal" class="modal"><h2>Aperçu Premium</h2><div class="preview-box">Emplacement du futur carrousel PDF.</div><p>La prochaine version affichera les vraies pages des PDF.</p><button class="btn primary" onclick="closePreview()">Fermer</button></div><script>const b=document.getElementById("backdrop"),m=document.getElementById("previewModal");document.querySelectorAll(".preview-btn").forEach(x=>x.onclick=()=>{b.style.display="block";m.style.display="block"});function closePreview(){b.style.display="none";m.style.display="none"};b.onclick=closePreview;</script></body>
 </html>
