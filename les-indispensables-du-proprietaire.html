@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Les indispensables du propriétaire — CleanUp</title>
-<meta name="description" content="Découvrez les services CleanUp dédiés aux propriétaires de locations saisonnières : annonce, optimisation, guide d'accueil, livret voyageur, contrat, règlement intérieur, rentabilité et investissement.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta content="Découvrez les services CleanUp dédiés aux propriétaires de locations saisonnières : annonce, optimisation, guide d'accueil, livret voyageur, contrat, règlement intérieur, rentabilité et investissement." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --brown:#3E2D25;
@@ -212,233 +213,330 @@ footer{max-width:1220px;margin:0 auto;padding:0 24px 36px;color:var(--taupe);fon
 }
 
 </style>
-<style>.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998}.modal{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1000px,95vw);background:#fff;padding:20px;border-radius:18px;z-index:9999}.preview-box{height:500px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;color:#666}</style></head>
+<style>
+.price-line{display:inline-flex;align-items:baseline;gap:5px;white-space:nowrap}
+.price-line small{white-space:nowrap}
+.price-meta{margin-top:5px;font-size:9px;line-height:1.3;color:var(--taupe);font-weight:700}
+.card-bottom{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:center!important;gap:9px 10px!important}
+.card-bottom .price-line,.card-bottom .price-meta{grid-column:1}
+.card-bottom .preview-btn,.card-bottom a.btn{grid-column:2;width:100%;max-width:none!important;padding:10px 12px}
+.bottom-cta{grid-template-columns:1fr!important}
+
+.preview-overlay{display:none;position:fixed;inset:0;z-index:9998;background:rgba(35,25,21,.82);backdrop-filter:blur(7px);padding:22px}
+.preview-overlay.open{display:grid;place-items:center}
+.preview-dialog{width:min(1120px,96vw);height:min(92vh,940px);background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 35px 100px rgba(0,0,0,.4);display:grid;grid-template-rows:auto 1fr auto}
+.preview-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.preview-title-wrap strong{display:block;font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown);font-weight:400}
+.preview-title-wrap span{font-size:11px;color:var(--taupe);font-weight:700}
+.preview-close{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:var(--beige);font-size:20px;color:var(--brown);cursor:pointer}
+.preview-stage{min-height:0;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;background:#EEE9E4;padding:14px}
+.preview-main{height:100%;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto}
+.preview-main img{display:block;max-width:100%;max-height:100%;object-fit:contain;background:white;box-shadow:0 18px 45px rgba(62,45,37,.17);border-radius:5px}
+.preview-arrow{width:44px;height:44px;border:0;border-radius:50%;background:rgba(62,45,37,.92);color:white;font-size:24px;display:grid;place-items:center;cursor:pointer}
+.preview-footer{padding:12px 18px 16px;border-top:1px solid var(--line);background:white}
+.preview-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px}
+.preview-counter{font-size:11px;font-weight:800;color:var(--taupe)}
+.preview-thumbs{display:flex;gap:9px;overflow-x:auto;padding:2px}
+.preview-thumb{width:58px;height:76px;flex:0 0 auto;border:2px solid transparent;border-radius:8px;padding:0;background:white;overflow:hidden;cursor:pointer}
+.preview-thumb.active{border-color:var(--terracotta)}
+.preview-thumb img{width:100%;height:100%;object-fit:cover;object-position:top}
+.preview-start{white-space:nowrap}
+body.preview-open{overflow:hidden}
+@media(max-width:680px){
+  .card-bottom{grid-template-columns:1fr!important}
+  .card-bottom .price-line,.card-bottom .price-meta,.card-bottom .preview-btn,.card-bottom a.btn{grid-column:1}
+  .preview-overlay{padding:7px}
+  .preview-dialog{width:100%;height:96vh;border-radius:16px}
+  .preview-stage{grid-template-columns:38px 1fr 38px;padding:7px}
+  .preview-arrow{width:34px;height:34px;font-size:19px}
+  .preview-header{padding:12px}
+  .preview-title-wrap strong{font-size:20px}
+  .preview-bottom{align-items:flex-start}
+}
+</style></head>
 <body>
 <header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href="#">
-      <div class="brand-mark">⌂</div>
-      <div class="brand-text">
-        <strong>CleanUp</strong>
-        <span>MANAGER</span>
-      </div>
-    </a>
-    <div class="header-pill"><i></i> Services accessibles sans abonnement</div>
-  </div>
+<div class="header-inner">
+<a class="brand" href="#">
+<div class="brand-mark">⌂</div>
+<div class="brand-text">
+<strong>CleanUp</strong>
+<span>MANAGER</span>
+</div>
+</a>
+<div class="header-pill"><i></i> Services accessibles sans abonnement</div>
+</div>
 </header>
-
 <main class="page">
-  <section class="hero">
-    <div class="hero-copy">
-      <div class="eyebrow">Outils pratiques pour la location saisonnière</div>
-      <h1>Les indispensables <span>du propriétaire</span></h1>
-      <p>Créez les documents essentiels de votre location, améliorez votre annonce et obtenez une vision plus claire de votre projet. Chaque service est indépendant, sans abonnement et accessible même si vous ne travaillez pas avec une conciergerie.</p>
-      <div class="hero-benefits">
-        <div class="benefit"><b>✓</b> Achat à l’unité</div>
-        <div class="benefit"><b>✓</b> Aucune inscription</div>
-        <div class="benefit"><b>✓</b> Documents prêts à utiliser</div>
-        <div class="benefit"><b>✓</b> Paiement sécurisé</div>
-      </div>
-    </div>
-
-    <aside class="hero-card">
-      <div class="kicker">By CleanUp</div>
-      <h2>Des outils simples, sans engagement</h2>
-      <p>Vous choisissez uniquement le service dont vous avez besoin. Vos informations servent à générer votre résultat pendant la session et ne sont pas conservées.</p>
-      <div class="mini-list">
-        <span><i>✓</i> Pour les propriétaires autonomes</span>
-        <span><i>✓</i> Pour les conciergeries et leurs clients</span>
-        <span><i>✓</i> Pour préparer ou améliorer un projet</span>
-      </div>
-    </aside>
-  </section>
-
-  <section>
-    <div class="section-head">
-      <div>
-        <h2>Choisissez votre service</h2>
-        <p>Chaque outil répond à un besoin précis. Vous pouvez en utiliser un seul ou revenir plus tard pour compléter votre parcours.</p>
-      </div>
-      <div class="section-badge">8 services indépendants</div>
-    </div>
-
-    <div class="services-grid">
-      <article class="service-card featured">
-        <div class="card-top">
-          <div class="icon-wrap">✍️</div>
-          <span class="tag hot">Création complète</span>
-        </div>
-        <h3>Mon Annonce Pro</h3>
-        <p class="desc">Créez une annonce complète, structurée et adaptée aux principales plateformes de location.</p>
-        <ul>
-          <li>Contrôle des informations du logement</li>
-          <li>Versions Airbnb, Booking et Abritel</li>
-          <li>Prévisualisation et export</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">29 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn terracotta" href="mon-annonce-pro.html">Créer mon annonce →</a>
-        </div>
-      </article>
-
-      <article class="service-card">
-        <div class="card-top">
-          <div class="icon-wrap">🚀</div>
-          <span class="tag">Amélioration</span>
-        </div>
-        <h3>Optimisation de mon annonce</h3>
-        <p class="desc">Collez votre annonce actuelle et obtenez une version plus claire, plus attractive et mieux structurée.</p>
-        <ul>
-          <li>Analyse du titre et de la description</li>
-          <li>Réécriture des passages faibles</li>
-          <li>Conseils concrets d’amélioration</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">9 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="optimisation-annonce.html">Optimiser mon annonce →</a>
-        </div>
-      </article>
-
-      <article class="service-card">
-        <div class="card-top">
-          <div class="icon-wrap">📖</div>
-          <span class="tag">Bilingue FR / EN</span>
-        </div>
-        <h3>Guide d’accueil personnalisé</h3>
-        <p class="desc">Créez une fiche A4 claire à laisser dans le logement avec les informations utiles du séjour.</p>
-        <ul>
-          <li>Consignes d’arrivée et de départ</li>
-          <li>Wi-Fi, équipements et règles</li>
-          <li>Version française et anglaise</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">9 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="guide-accueil-personnalise.html">Créer mon guide →</a>
-        </div>
-      </article>
-
-      <article class="service-card">
-        <div class="card-top">
-          <div class="icon-wrap">🧳</div>
-          <span class="tag">Expérience voyageur</span>
-        </div>
-        <h3>Mon Livret Voyageur</h3>
-        <p class="desc">Préparez un livret pratique avec vos recommandations locales et les informations utiles autour du logement.</p>
-        <ul>
-          <li>Restaurants, commerces et activités</li>
-          <li>Conseils locaux personnalisés</li>
-          <li>Mise à jour libre selon la saison</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">9 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="livret-voyageur-premium.html">Créer mon livret →</a>
-        </div>
-      </article> 
-
-
-      <article class="service-card">
-        <div class="card-top">
-          <div class="icon-wrap">📄</div>
-          <span class="tag hot">Nouveau</span>
-        </div>
-        <h3>Contrat propriétaire / conciergerie</h3>
-        <p class="desc">Choisissez entre un contrat de prestations de services et un contrat de gestion adapté à la relation propriétaire / conciergerie.</p>
-        <ul>
-          <li>Prestations, missions et responsabilités clairement définies</li>
-          <li>Commission, durée, résiliation et assurances</li>
-          <li>Deux contrats proposés selon votre situation</li>
-        </ul>
-        <p style="margin:12px 0 0;font-size:9px;line-height:1.45;color:var(--taupe);font-weight:700;">
+<section class="hero">
+<div class="hero-copy">
+<div class="eyebrow">Outils pratiques pour la location saisonnière</div>
+<h1>Les indispensables <span>du propriétaire</span></h1>
+<p>Créez les documents essentiels de votre location, améliorez votre annonce et obtenez une vision plus claire de votre projet. Chaque service est indépendant, sans abonnement et accessible même si vous ne travaillez pas avec une conciergerie.</p>
+<div class="hero-benefits">
+<div class="benefit"><b>✓</b> Achat à l’unité</div>
+<div class="benefit"><b>✓</b> Aucune inscription</div>
+<div class="benefit"><b>✓</b> Documents prêts à utiliser</div>
+<div class="benefit"><b>✓</b> Paiement sécurisé</div>
+</div>
+</div>
+<aside class="hero-card">
+<div class="kicker">By CleanUp</div>
+<h2>Des outils simples, sans engagement</h2>
+<p>Vous choisissez uniquement le service dont vous avez besoin. Vos informations servent à générer votre résultat pendant la session et ne sont pas conservées.</p>
+<div class="mini-list">
+<span><i>✓</i> Pour les propriétaires autonomes</span>
+<span><i>✓</i> Pour les conciergeries et leurs clients</span>
+<span><i>✓</i> Pour préparer ou améliorer un projet</span>
+</div>
+</aside>
+</section>
+<section>
+<div class="section-head">
+<div>
+<h2>Choisissez votre service</h2>
+<p>Chaque outil répond à un besoin précis. Vous pouvez en utiliser un seul ou revenir plus tard pour compléter votre parcours.</p>
+</div>
+<div class="section-badge">8 services indépendants</div>
+</div>
+<div class="services-grid">
+<article class="service-card featured">
+<div class="card-top">
+<div class="icon-wrap">✍️</div>
+<span class="tag hot">Création complète</span>
+</div>
+<h3>Mon Annonce Pro</h3>
+<p class="desc">Créez une annonce complète, structurée et adaptée aux principales plateformes de location.</p>
+<ul>
+<li>Contrôle des informations du logement</li>
+<li>Versions Airbnb, Booking et Abritel</li>
+<li>Prévisualisation et export</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">29 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<button class="btn primary preview-btn" data-preview="annonce" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="mon-annonce-pro.html">Créer mon annonce →</a>
+</div>
+</article>
+<article class="service-card">
+<div class="card-top">
+<div class="icon-wrap">🚀</div>
+<span class="tag">Amélioration</span>
+</div>
+<h3>Optimisation de mon annonce</h3>
+<p class="desc">Collez votre annonce actuelle et obtenez une version plus claire, plus attractive et mieux structurée.</p>
+<ul>
+<li>Analyse du titre et de la description</li>
+<li>Réécriture des passages faibles</li>
+<li>Conseils concrets d’amélioration</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<button class="btn primary preview-btn" data-preview="optimisation" type="button">👁 Voir un exemple</button> <a class="btn primary" href="optimisation-annonce.html">Optimiser mon annonce →</a>
+</div>
+</article>
+<article class="service-card">
+<div class="card-top">
+<div class="icon-wrap">📖</div>
+<span class="tag">Bilingue FR / EN</span>
+</div>
+<h3>Guide d’accueil personnalisé</h3>
+<p class="desc">Créez une fiche A4 claire à laisser dans le logement avec les informations utiles du séjour.</p>
+<ul>
+<li>Consignes d’arrivée et de départ</li>
+<li>Wi-Fi, équipements et règles</li>
+<li>Version française et anglaise</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · Fiche A4 prête à imprimer</div>
+<button class="btn primary preview-btn" data-preview="guide" type="button">👁 Voir un exemple</button> <a class="btn primary" href="guide-accueil-personnalise.html">Créer mon guide →</a>
+</div>
+</article>
+<article class="service-card">
+<div class="card-top">
+<div class="icon-wrap">🧳</div>
+<span class="tag">Expérience voyageur</span>
+</div>
+<h3>Mon Livret Voyageur</h3>
+<p class="desc">Préparez un livret pratique avec vos recommandations locales et les informations utiles autour du logement.</p>
+<ul>
+<li>Restaurants, commerces et activités</li>
+<li>Conseils locaux personnalisés</li>
+<li>Mise à jour libre selon la saison</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<button class="btn primary preview-btn" data-preview="livret" type="button">👁 Voir un exemple</button> <a class="btn primary" href="livret-voyageur-premium.html">Créer mon livret →</a>
+</div>
+</article>
+<article class="service-card">
+<div class="card-top">
+<div class="icon-wrap">📄</div>
+<span class="tag hot">Nouveau</span>
+</div>
+<h3>Contrat propriétaire / conciergerie</h3>
+<p class="desc">Choisissez entre un contrat de prestations de services et un contrat de gestion adapté à la relation propriétaire / conciergerie.</p>
+<ul>
+<li>Prestations, missions et responsabilités clairement définies</li>
+<li>Commission, durée, résiliation et assurances</li>
+<li>Deux contrats proposés selon votre situation</li>
+</ul>
+<p style="margin:12px 0 0;font-size:9px;line-height:1.45;color:var(--taupe);font-weight:700;">
           Contrat de prestations ou mandat de gestion : le choix est expliqué avant la génération.
         </p>
-        <div class="card-bottom">
-          <div class="price">19 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn terracotta" href="contrat-proprietaire-conciergerie.html">Créer mon contrat →</a>
-        </div>
-      </article>
+<div class="card-bottom">
+<div class="price price-line">19 € <small>TTC</small></div><div class="price-meta">Paiement unique · Contrat de 4 pages</div>
+<button class="btn primary preview-btn" data-preview="contrat" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="contrat-proprietaire-conciergerie.html">Créer mon contrat →</a>
+</div>
+</article>
+<article class="service-card">
+<div class="card-top">
+<div class="icon-wrap">📋</div>
+<span class="tag">Nouveau</span>
+</div>
+<h3>Règlement intérieur</h3>
+<p class="desc">Préparez un règlement accueillant, précis et adapté aux particularités de votre logement.</p>
+<ul>
+<li>Règles personnalisées du logement</li>
+<li>Consignes pratiques et de départ</li>
+<li>Version claire, imprimable et modifiable</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 2 pages</div>
+<button class="btn primary preview-btn" data-preview="reglement" type="button">👁 Voir un exemple</button> <a class="btn primary" href="reglement-interieur-location.html">Créer mon règlement →</a>
+</div>
+</article>
+<article class="service-card featured">
+<div class="card-top">
+<div class="icon-wrap">📊</div>
+<span class="tag hot">Rentabilité</span>
+</div>
+<h3>Diagnostic de rentabilité</h3>
+<p class="desc">Obtenez une vision synthétique du potentiel locatif de votre logement et de son positionnement.</p>
+<ul>
+<li>Estimation du chiffre d’affaires</li>
+<li>Scénarios d’occupation</li>
+<li>Recommandations de positionnement</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">49 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<button class="btn primary preview-btn" data-preview="diagnostic" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="diagnostic-template.html">Lancer le diagnostic →</a>
+</div>
+</article>
+<article class="service-card premium">
+<div class="card-top">
+<div class="icon-wrap">🏡</div>
+<span class="tag gold">Service premium</span>
+</div>
+<h3>Étude d’investissement</h3>
+<p class="desc">Analysez un projet avant achat avec une étude structurée de la rentabilité, des risques et du positionnement.<br/><br/><strong>Projet de plusieurs lots ou d’un immeuble ?</strong><br/>Demandez une étude sur mesure à <strong>contact@cleanup-manager.fr</strong>.</p>
+<ul>
+<li>Analyse du projet et de la zone</li>
+<li>Hypothèses financières détaillées</li>
+<li>Avis argumenté et recommandations</li>
+</ul>
+<div class="card-bottom">
+<div class="price price-line">129 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 10 pages</div>
+<button class="btn primary preview-btn" data-preview="etude" type="button">👁 Voir un exemple</button> <a class="btn gold" href="etude-investissement.html">Étudier mon projet →</a>
+</div>
+</article>
+</div>
+</section>
+<section class="info-strip">
+<div class="info-item">
+<i>🔒</i>
+<div><strong>Paiement sécurisé</strong><span>Chaque service sera accessible après validation du paiement Stripe correspondant.</span></div>
+</div>
+<div class="info-item">
+<i>🧾</i>
+<div><strong>Aucun abonnement</strong><span>Vous payez uniquement le service choisi, sans engagement ni renouvellement automatique.</span></div>
+</div>
+<div class="info-item">
+<i>🗂️</i>
+<div><strong>Aucun stockage permanent</strong><span>Les informations saisies servent uniquement à générer votre document pendant la session.</span></div>
+</div>
+</section>
+<section class="bottom-cta">
+<div>
+<h3>Chaque besoin mérite son outil</h3>
+<p>Choisissez uniquement le service dont vous avez besoin aujourd'hui. Vous pourrez revenir à tout moment pour utiliser un autre outil.</p>
+</div>
 
-      <article class="service-card">
-        <div class="card-top">
-          <div class="icon-wrap">📋</div>
-          <span class="tag">Nouveau</span>
-        </div>
-        <h3>Règlement intérieur</h3>
-        <p class="desc">Préparez un règlement accueillant, précis et adapté aux particularités de votre logement.</p>
-        <ul>
-          <li>Règles personnalisées du logement</li>
-          <li>Consignes pratiques et de départ</li>
-          <li>Version claire, imprimable et modifiable</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">9 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn primary" href="reglement-interieur-location.html">Créer mon règlement →</a>
-        </div>
-      </article>
-
-      <article class="service-card featured">
-        <div class="card-top">
-          <div class="icon-wrap">📊</div>
-          <span class="tag hot">Rentabilité</span>
-        </div>
-        <h3>Diagnostic de rentabilité</h3>
-        <p class="desc">Obtenez une vision synthétique du potentiel locatif de votre logement et de son positionnement.</p>
-        <ul>
-          <li>Estimation du chiffre d’affaires</li>
-          <li>Scénarios d’occupation</li>
-          <li>Recommandations de positionnement</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">49 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn terracotta" href="diagnostic-template.html">Lancer le diagnostic →</a>
-        </div>
-      </article>
-
-      <article class="service-card premium">
-        <div class="card-top">
-          <div class="icon-wrap">🏡</div>
-          <span class="tag gold">Service premium</span>
-        </div>
-        <h3>Étude d’investissement</h3>
-        <p class="desc">Analysez un projet avant achat avec une étude structurée de la rentabilité, des risques et du positionnement.<br><br><strong>Projet de plusieurs lots ou d’un immeuble ?</strong><br>Demandez une étude sur mesure à <strong>contact@cleanup-manager.fr</strong>.</p>
-        <ul>
-          <li>Analyse du projet et de la zone</li>
-          <li>Hypothèses financières détaillées</li>
-          <li>Avis argumenté et recommandations</li>
-        </ul>
-        <div class="card-bottom">
-          <div class="price">129 € <small>TTC</small></div>
-          <button class="btn primary preview-btn">👁 Voir un exemple</button> <a class="btn gold" href="etude-investissement.html">Étudier mon projet →</a>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="info-strip">
-    <div class="info-item">
-      <i>🔒</i>
-      <div><strong>Paiement sécurisé</strong><span>Chaque service sera accessible après validation du paiement Stripe correspondant.</span></div>
-    </div>
-    <div class="info-item">
-      <i>🧾</i>
-      <div><strong>Aucun abonnement</strong><span>Vous payez uniquement le service choisi, sans engagement ni renouvellement automatique.</span></div>
-    </div>
-    <div class="info-item">
-      <i>🗂️</i>
-      <div><strong>Aucun stockage permanent</strong><span>Les informations saisies servent uniquement à générer votre document pendant la session.</span></div>
-    </div>
-  </section>
-
-  <section class="bottom-cta">
-    <div>
-      <h3>Chaque besoin mérite son outil</h3>
-      <p>Choisissez uniquement le service dont vous avez besoin aujourd'hui. Vous pourrez revenir à tout moment pour utiliser un autre outil.</p>
-    </div>
-    <a class="btn terracotta" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Revoir les services</a>
-  </section>
+</section>
 </main>
-
 <footer>
   CleanUp Manager — Les indispensables du propriétaire. Services indépendants de toute prestation de conciergerie.
 </footer>
-<div id="backdrop" class="modal-backdrop"></div><div id="previewModal" class="modal"><h2>Aperçu Premium</h2><div class="preview-box">Emplacement du futur carrousel PDF.</div><p>La prochaine version affichera les vraies pages des PDF.</p><button class="btn primary" onclick="closePreview()">Fermer</button></div><script>const b=document.getElementById("backdrop"),m=document.getElementById("previewModal");document.querySelectorAll(".preview-btn").forEach(x=>x.onclick=()=>{b.style.display="block";m.style.display="block"});function closePreview(){b.style.display="none";m.style.display="none"};b.onclick=closePreview;</script></body>
+
+<div aria-hidden="true" class="preview-overlay" id="previewOverlay">
+<div aria-labelledby="previewTitle" aria-modal="true" class="preview-dialog" role="dialog">
+<div class="preview-header">
+<div class="preview-title-wrap">
+<strong id="previewTitle">Aperçu du document</strong>
+<span>Exemple réel du PDF généré</span>
+</div>
+<button aria-label="Fermer" class="preview-close" id="previewClose" type="button">×</button>
+</div>
+<div class="preview-stage">
+<button aria-label="Page précédente" class="preview-arrow" id="previewPrev" type="button">‹</button>
+<div class="preview-main"><img alt="Aperçu du document" id="previewImage"/></div>
+<button aria-label="Page suivante" class="preview-arrow" id="previewNext" type="button">›</button>
+</div>
+<div class="preview-footer">
+<div class="preview-bottom">
+<span class="preview-counter" id="previewCounter">Page 1 / 3</span>
+<a class="btn terracotta preview-start" href="#" id="previewStart">Commencer →</a>
+</div>
+<div class="preview-thumbs" id="previewThumbs"></div>
+</div>
+</div>
+</div>
+<script>
+const previewData={"annonce": {"title": "Mon Annonce Pro", "href": "mon-annonce-pro.html", "pages": ["assets/apercus/annonce-page-1.png", "assets/apercus/annonce-page-2.png", "assets/apercus/annonce-page-4.png"]}, "optimisation": {"title": "Optimisation de mon annonce", "href": "optimisation-annonce.html", "pages": ["assets/apercus/optimisation-page-1.png", "assets/apercus/optimisation-page-2.png", "assets/apercus/optimisation-page-4.png"]}, "guide": {"title": "Guide d’accueil personnalisé", "href": "guide-accueil-personnalise.html", "pages": ["assets/apercus/guide-page-1.png"]}, "livret": {"title": "Mon Livret Voyageur", "href": "livret-voyageur-premium.html", "pages": ["assets/apercus/livret-page-1.png", "assets/apercus/livret-page-2.png", "assets/apercus/livret-page-4.png"]}, "contrat": {"title": "Contrat propriétaire / conciergerie", "href": "contrat-proprietaire-conciergerie.html", "pages": ["assets/apercus/contrat-page-1.png", "assets/apercus/contrat-page-2.png", "assets/apercus/contrat-page-4.png"]}, "reglement": {"title": "Règlement intérieur", "href": "reglement-interieur-location.html", "pages": ["assets/apercus/reglement-page-1.png", "assets/apercus/reglement-page-2.png"]}, "diagnostic": {"title": "Diagnostic de rentabilité", "href": "diagnostic-template.html", "pages": ["assets/apercus/diagnostic-page-1.png", "assets/apercus/diagnostic-page-2.png", "assets/apercus/diagnostic-page-5.png"]}, "etude": {"title": "Étude d’investissement", "href": "etude-investissement.html", "pages": ["assets/apercus/etude-page-1.png", "assets/apercus/etude-page-3.png", "assets/apercus/etude-page-9.png"]}};
+const overlay=document.getElementById('previewOverlay');
+const image=document.getElementById('previewImage');
+const title=document.getElementById('previewTitle');
+const counter=document.getElementById('previewCounter');
+const thumbs=document.getElementById('previewThumbs');
+const start=document.getElementById('previewStart');
+let current=null,index=0;
+function renderPreview(){
+  const item=previewData[current];
+  image.src=item.pages[index];
+  image.alt=item.title+' — aperçu page '+(index+1);
+  counter.textContent='Page '+(index+1)+' / '+item.pages.length;
+  [...thumbs.children].forEach((b,i)=>b.classList.toggle('active',i===index));
+  document.getElementById('previewPrev').style.visibility=item.pages.length>1?'visible':'hidden';
+  document.getElementById('previewNext').style.visibility=item.pages.length>1?'visible':'hidden';
+}
+function openPreview(key){
+  current=key;index=0;
+  const item=previewData[key];
+  title.textContent=item.title;
+  start.href=item.href;
+  thumbs.innerHTML='';
+  item.pages.forEach((src,i)=>{
+    const b=document.createElement('button'); b.type='button'; b.className='preview-thumb';
+    const im=document.createElement('img'); im.src=src; im.alt='Miniature page '+(i+1);
+    b.appendChild(im); b.addEventListener('click',()=>{index=i;renderPreview();});
+    thumbs.appendChild(b);
+  });
+  overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false');
+  document.body.classList.add('preview-open'); renderPreview();
+}
+function closePreview(){
+  overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true');
+  document.body.classList.remove('preview-open');
+}
+document.querySelectorAll('.preview-btn').forEach(btn=>btn.addEventListener('click',()=>openPreview(btn.dataset.preview)));
+document.getElementById('previewClose').addEventListener('click',closePreview);
+document.getElementById('previewPrev').addEventListener('click',()=>{const n=previewData[current].pages.length;index=(index-1+n)%n;renderPreview();});
+document.getElementById('previewNext').addEventListener('click',()=>{const n=previewData[current].pages.length;index=(index+1)%n;renderPreview();});
+overlay.addEventListener('click',e=>{if(e.target===overlay)closePreview();});
+document.addEventListener('keydown',e=>{
+  if(!overlay.classList.contains('open'))return;
+  if(e.key==='Escape')closePreview();
+  if(e.key==='ArrowLeft')document.getElementById('previewPrev').click();
+  if(e.key==='ArrowRight')document.getElementById('previewNext').click();
+});
+</script></body>
 </html>
