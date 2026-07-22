@@ -288,7 +288,7 @@
   .print-sheet .print-wifi-help{display:block!important;margin-top:1.5mm!important;font-size:6.8pt!important;color:#766C66!important;text-align:center!important}
 }
 
-/* Word-specific layout is embedded by JavaScript. */
+
 
 
 
@@ -310,7 +310,7 @@
   box-shadow:none!important;
 }
 
-</style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF et Word</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Guide pratique pour vos voyageurs</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Guide d’accueil <span>personnalisé</span></h1><p>Préparez une fiche pratique bilingue avec l’arrivée, le Wi-Fi, l’utilisation du logement, le ménage, les règles, le départ et les contacts utiles.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Une fiche pratique bilingue prête à imprimer</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = un guide d’accueil</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Lien Stripe à connecter avant mise en ligne.</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Logement</button><button class="step " data-step="2"><span class="num">2</span>Arrivée</button><button class="step " data-step="3"><span class="num">3</span>Séjour</button><button class="step " data-step="4"><span class="num">4</span>Consignes</button><button class="step " data-step="5"><span class="num">5</span>Export</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Identité du logement</h2><p>Les informations essentielles qui apparaîtront dans le guide.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Nom du logement</label><input class="input" id="homeName" placeholder="Ex. La Maison des Bords de Loire"></div><div class="field full"><label>Adresse</label><input class="input" id="address"></div><div class="field"><label>Nom de la conciergerie ou du contact</label><input class="input" id="contactName" placeholder="Ex. Conciergerie Horizon"></div><div class="field"><label>Téléphone à joindre pendant le séjour</label><input class="input" id="contactPhone" type="tel" placeholder="Ex. 06 00 00 00 00"></div><div class="field full"><label>Email de contact <small>(facultatif)</small></label><input class="input" id="contactEmail" type="email"></div><div class="field full">
   <div class="welcome-tools"><label>Message de bienvenue préparé par CleanUp</label><span class="auto-status" id="welcomeAutoStatus">Génération automatique</span></div>
   <textarea class="textarea generated" id="welcome" maxlength="300">Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour.</textarea>
@@ -470,7 +470,7 @@
   <div class="field full"><label>Urgences et numéros utiles préparés automatiquement</label><textarea class="textarea generated" id="emergency" maxlength="700"></textarea><div class="char-counter" id="emergencyCounter">0 / 700</div></div>
 </div>
 <div class="guide-generation" id="guideGeneration"><strong id="guideGenerationTitle">Préparation du guide…</strong><div class="track"><span id="guideGenerationBar"></span></div><p id="guideGenerationText">Lecture des informations du logement.</p></div><button class="btn terracotta" id="buildGuide" style="margin-top:18px" disabled>Préparez d’abord les consignes</button></div>
-<div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Télécharger Word</h3><p>Version modifiable.</p><button class="btn primary" id="downloadWord">Télécharger Word</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
+<div class="section" id="step5"><div class="section-head"><div><h2>Votre guide d’accueil</h2><p>Relisez le guide puis exportez-le.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Guide d’accueil</h3><p id="previewText">Complétez les étapes précédentes puis créez le guide.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier le guide</h3><p>Copiez le texte complet.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Une page A4 bilingue prête à imprimer.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Créer un nouveau guide</h3><p>Une nouvelle génération nécessite un nouveau paiement.</p><button class="btn soft" id="newGuide">Créer un nouveau guide (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre guide d’accueil a été généré.</strong><br>Vous pouvez encore le copier ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div>
 <div class="cta services-cta">
   <div>
     <h3>Découvrez les autres indispensables</h3>
@@ -584,7 +584,7 @@ function lockAfterExport(){
   $('prevBtn').style.display='none';
   $('nextBtn').style.display='none';
   $('exportLockNote').classList.add('show');
-  alert('Votre guide d’accueil a été généré. Vous pouvez encore le copier, le télécharger en Word ou l’enregistrer en PDF, mais vous ne pouvez plus revenir aux étapes précédentes.');
+  alert('Votre guide d’accueil a été généré. Vous pouvez encore le copier ou l’enregistrer en PDF, mais vous ne pouvez plus revenir aux étapes précédentes.');
 }
 function bindPhotos(){
   const input=$('photoInput'),choose=$('choosePhotos');
@@ -622,7 +622,6 @@ function renderPhotos(){
     refreshExportPreview();
   });
 }
-function downloadDoc(filename,title,html){const content=html.trim().toLowerCase().startsWith('<!doctype')?html:`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title></head><body>${html}</body></html>`;const blob=new Blob(['\ufeff',content],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href)}
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const old=btn.textContent;btn.textContent='Copié ✓';setTimeout(()=>btn.textContent=old,1400)})}
 bindPhotos();showStep(1);setBuildGuideReady(false,'Préparez d’abord les consignes');
 
@@ -985,53 +984,6 @@ function fileToDataUrl(url){
     }));
 }
 
-async function buildWordHtml(){
-  preparePrintSheet();
-  let qrHtml='';
-  const qr=$('wifiQr');
-  try{
-    if(qr&&qr.style.display!=='none'){
-      qrHtml=`<div style="text-align:center;margin:8px 0"><img src="${qr.toDataURL('image/png')}" width="105" height="105"><div style="font-size:7pt;color:#766C66">Scannez pour vous connecter / Scan to connect</div></div>`;
-    }
-  }catch(error){console.warn('QR non intégré au Word :',error)}
-
-  const contact=[val('contactName'),val('contactPhone'),val('contactEmail')].filter(Boolean).join(' — ');
-  const card=(title,content,extra='')=>`
-    <div style="margin:0 0 10px;padding:11px 12px;border:1px solid #DDD2C8;background:#FFFDFC">
-      <div style="font-family:Georgia,serif;font-size:11.5pt;color:#3E2D25;border-bottom:1px solid #E6D4C9;padding-bottom:5px;margin-bottom:7px"><strong>${title}</strong></div>
-      <div style="font-family:Arial,sans-serif;font-size:8.5pt;line-height:1.35;color:#302925">${content}</div>${extra}
-    </div>`;
-
-  return `<!doctype html><html><head><meta charset="utf-8">
-  <style>@page{size:A4;margin:10mm}body{margin:0;background:#fff}</style></head><body>
-  <div style="font-family:Arial,sans-serif;color:#2F2926;padding:18px 20px;border:1px solid #D7CCC2;background:#FBF8F3">
-    <div style="text-align:center;padding:2px 15px 14px">
-      <div style="font-family:Georgia,serif;font-size:22pt;line-height:1.05;color:#3E2D25"><strong>${val('homeName')||'Guide d’accueil'}</strong></div>
-      <div style="margin-top:7px;font-size:8.5pt;line-height:1.35;color:#766C66">${tr(val('welcome'),FIELD_LIMITS.welcome)}</div>
-    </div>
-    <table style="width:100%;border-collapse:separate;border-spacing:8px 0;table-layout:fixed"><tr>
-      <td style="width:50%;vertical-align:top">
-        ${card('Arrivée / Check-in',$('printArrival').textContent.replace(/\n/g,'<br>'))}
-        ${card('Wi-Fi',$('printWifi').textContent.replace(/\n/g,'<br>'),qrHtml)}
-        ${card('Utilisation / How to use',$('printUse').textContent.replace(/\n/g,'<br>'))}
-      </td>
-      <td style="width:50%;vertical-align:top">
-        ${card('Règles / House rules',$('printRules').textContent.replace(/\n/g,'<br>'))}
-        ${card('Ménage / Housekeeping',$('printCleaning').textContent.replace(/\n/g,'<br>'))}
-        ${card('Départ / Check-out',$('printDeparture').textContent.replace(/\n/g,'<br>'))}
-        ${card('Urgences / Emergency',$('printEmergency').textContent.replace(/\n/g,'<br>'))}
-      </td>
-    </tr></table>
-    <div style="text-align:center;margin-top:9px;padding-top:8px;border-top:1px solid #DED3CA">
-      <div style="font-family:Georgia,serif;font-size:10.5pt;color:#3E2D25"><strong>Nous vous souhaitons un excellent séjour<br>We wish you a wonderful stay</strong></div>
-      <div style="margin-top:5px;font-size:7.5pt">${contact}</div>
-      <div style="margin-top:3px;font-size:7pt;color:#766C66">${val('address')}</div>
-      <div style="margin-top:5px;font-size:6pt;letter-spacing:.12em;color:#9A8D83">POWERED BY CLEANUP</div>
-    </div>
-  </div></body></html>`;
-}
-
-
 function updateAssistant(){
   const msgs=[];
   if(currentStep===1)msgs.push('<div class="ai-message"><strong>Informations exactes</strong>Le guide reprend uniquement les informations que vous saisissez.</div>');
@@ -1281,15 +1233,6 @@ $('copyAll').onclick=e=>{
   copyText(guideText,e.currentTarget);
 };
 
-$('downloadWord').onclick=async()=>{
-  lockAfterExport();
-  const wordHtml=await buildWordHtml();
-  downloadDoc(
-    'guide-accueil-personnalise.doc',
-    'Guide d’accueil',
-    wordHtml
-  );
-};
 
 $('printPdf').onclick=()=>{
   lockAfterExport();
