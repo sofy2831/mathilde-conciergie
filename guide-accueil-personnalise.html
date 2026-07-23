@@ -533,8 +533,89 @@
     <div class="powered">Powered by CleanUp</div>
   </div>
 </section>
-</main><script>const STRIPE_PAYMENT_LINK='';const GUIDE_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateGuide';document.querySelectorAll('.stripeBtn').forEach(b=>b.onclick=()=>{const s=b.parentElement.querySelector('.stripeStatus');if(!STRIPE_PAYMENT_LINK){s.textContent='Lien Stripe à connecter avant la mise en ligne.';s.style.color='#FFD8C7';return}location.href=STRIPE_PAYMENT_LINK});
+</main><script src="stripe-checkout.js"></script><script>
+const PRODUCT_KEY='guide';
+let paidSessionId='';
+let cleanupAdminMode=false;
+let pendingStripeAction='';
+const GUIDE_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateGuide';
 const $=id=>document.getElementById(id), qa=s=>[...document.querySelectorAll(s)];
+
+async function waitForAdminAuth(){
+  for(let i=0;i<60;i++){
+    if(window.CleanUpAdminAuth){
+      await window.CleanUpAdminAuth.ready();
+      return window.CleanUpAdminAuth;
+    }
+    await new Promise(resolve=>setTimeout(resolve,50));
+  }
+  return null;
+}
+
+function setStripeStatus(message,success=true){
+  document.querySelectorAll('.stripeStatus').forEach(status=>{
+    status.textContent=message;
+    status.style.color=success?'#DDF2D8':'#FFD8C7';
+  });
+}
+
+function collectFormState(){
+  const state={};
+  document.querySelectorAll('input[id],select[id],textarea[id]').forEach(field=>{
+    if(field.type==='file') return;
+    state[field.id]=(field.type==='checkbox'||field.type==='radio')?field.checked:field.value;
+  });
+  const named={};
+  document.querySelectorAll('input[name]').forEach(field=>{
+    if(!named[field.name]) named[field.name]=[];
+    if(field.type==='checkbox'&&field.checked) named[field.name].push(field.value);
+    if(field.type==='radio'&&field.checked) named[field.name]=field.value;
+  });
+  return {fields:state,named,currentStep};
+}
+
+function restoreFormState(saved){
+  if(!saved) return;
+  const state=saved.fields||saved;
+  Object.entries(state||{}).forEach(([id,value])=>{
+    const field=document.getElementById(id);
+    if(!field) return;
+    if(field.type==='checkbox'||field.type==='radio') field.checked=!!value;
+    else field.value=value??'';
+    field.dispatchEvent(new Event(field.type==='checkbox'?'change':'input',{bubbles:true}));
+  });
+  Object.entries(saved.named||{}).forEach(([name,value])=>{
+    const selected=Array.isArray(value)?value:[value];
+    document.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(field=>{
+      field.checked=selected.includes(field.value);
+    });
+  });
+  buildWelcomeText(false);
+  buildAccessText(false);
+  Object.keys(FIELD_LIMITS||{}).forEach(updateCounter);
+  showStep(Number(saved.currentStep)||1);
+}
+
+async function ensureGuidePayment(action){
+  const api=await waitForAdminAuth();
+  cleanupAdminMode=api?await api.isAdmin():false;
+  if(cleanupAdminMode||paidSessionId) return true;
+
+  pendingStripeAction=action||'';
+  try{
+    setStripeStatus('Redirection vers le paiement sécurisé Stripe…',true);
+    await CleanUpStripe.start({
+      productKey:PRODUCT_KEY,
+      payload:{formState:collectFormState(),pendingAction:pendingStripeAction},
+      successUrl:window.location.href,
+      cancelUrl:window.location.href
+    });
+  }catch(error){
+    console.error('Stripe start error:',error);
+    setStripeStatus(error.message||'Impossible d’ouvrir Stripe.',false);
+  }
+  return false;
+}
 function setBuildGuideReady(ready,label){
   const btn=$('buildGuide');
   if(!btn)return;
@@ -896,6 +977,7 @@ async function animateAiProgress(section){
 }
 
 async function requestGuideAi(section,button,status){
+  if(!await ensureGuidePayment(section)) return;
   const requested={stay:section==='stay',rules:section==='rules'};
   const isUpdate=guideAiState[section].generated;
   if(section==='stay')buildStaySeeds();else buildRuleSeeds();
@@ -906,7 +988,11 @@ async function requestGuideAi(section,button,status){
   status.textContent='CleanUp harmonise les versions française et anglaise.';
   try{
     if(section==='stay')buildStaySeeds();else buildRuleSeeds();
-    const response=await fetch(GUIDE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(guidePayload(requested,section,isUpdate))});
+    const rawPayload=guidePayload(requested,section,isUpdate);
+    const securedPayload=cleanupAdminMode
+      ? rawPayload
+      : CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
+    const response=await fetch(GUIDE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(securedPayload)});
     const data=await response.json();
     if(!response.ok||!data.ok)throw new Error(data.error||'La génération a échoué.');
     fillGuideAi(data.ai,section);
@@ -1165,6 +1251,7 @@ function preparePrintSheet(){
 
 $('buildGuide').onclick=async()=>{
   if($('buildGuide').disabled)return;
+  if(!await ensureGuidePayment('build')) return;
   if(!val('departure')||!val('emergency')||!val('departure').includes(' / '))buildRuleSeeds();
   if(!val('access').includes(' / '))buildAccessText(true);
   buildWelcomeText(false);buildAccessText(false);
@@ -1218,6 +1305,12 @@ Contact : ${[val('contactName'),val('contactPhone'),val('contactEmail')].filter(
   refreshExportPreview();
   preparePrintSheet();
   showStep(5);
+  if(!cleanupAdminMode){
+    CleanUpStripe.complete(PRODUCT_KEY);
+    setStripeStatus('Paiement validé · guide généré',true);
+  }else{
+    setStripeStatus('Guide généré en mode administrateur',true);
+  }
     bar.style.width='100%';title.textContent='Guide terminé';text.textContent='Votre guide est prêt à être relu et exporté.';
     await new Promise(resolve=>setTimeout(resolve,350));
   }catch(error){
@@ -1240,126 +1333,76 @@ $('printPdf').onclick=()=>{
   requestAnimationFrame(()=>window.print());
 };
 
-$('newGuide').onclick=()=>{
-  if(STRIPE_PAYMENT_LINK){
-    location.href=STRIPE_PAYMENT_LINK;
-  }else{
-    alert('Le paiement Stripe sera connecté à cette action avant la mise en ligne.');
+$('newGuide').onclick=async()=>{
+  const api=await waitForAdminAuth();
+  const isAdmin=api?await api.isAdmin():false;
+  if(isAdmin){
+    if(confirm('Réinitialiser ce document en mode administrateur ?')) window.location.reload();
+    return;
   }
+  if(!confirm('Un nouveau guide nécessite un nouveau paiement. Continuer ?')) return;
+  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
+  window.location.reload();
 };
+
+
+document.querySelectorAll('.stripeBtn').forEach(button=>{
+  button.addEventListener('click',async()=>{
+    const api=await waitForAdminAuth();
+    const isAdmin=api?await api.isAdmin():false;
+    if(isAdmin){
+      setStripeStatus('Mode administrateur déjà actif.',true);
+      return;
+    }
+    button.disabled=true;
+    button.textContent='Ouverture du paiement…';
+    const started=await ensureGuidePayment('');
+    if(started){
+      button.disabled=false;
+      button.textContent='Paiement déjà validé';
+    }
+  });
+});
+
+async function resumeStripeCheckout(){
+  try{
+    const payment=await CleanUpStripe.resume(PRODUCT_KEY);
+    if(!payment.returnedFromStripe) return;
+    if(payment.used){
+      setStripeStatus('Ce paiement a déjà été utilisé.',false);
+      return;
+    }
+    if(!payment.paid){
+      setStripeStatus('Le paiement n’a pas été confirmé.',false);
+      return;
+    }
+
+    paidSessionId=payment.sessionId;
+    const saved=payment.payload||{};
+    restoreFormState(saved.formState||saved);
+    pendingStripeAction=saved.pendingAction||'';
+    setStripeStatus('Paiement validé · vous pouvez créer votre guide',true);
+
+    const payButton=document.querySelector('.stripeBtn');
+    if(payButton){
+      payButton.disabled=true;
+      payButton.textContent='Paiement validé';
+    }
+
+    setTimeout(()=>{
+      if(pendingStripeAction==='stay') $('generateStayWithCleanup')?.click();
+      else if(pendingStripeAction==='rules') $('generateRulesWithCleanup')?.click();
+      else if(pendingStripeAction==='build') $('buildGuide')?.click();
+    },250);
+  }catch(error){
+    console.error('Stripe resume error:',error);
+    setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
+  }
+}
+
+resumeStripeCheckout();
 </script>
 <script type="module" src="admin-auth.js"></script>
 
-<script type="module">
-/* CLEANUP_ADMIN_GATE_V1 */
-(() => {
-  const GENERATION_BUTTON_IDS = ["generateStayWithCleanup", "updateStayWithCleanup", "generateRulesWithCleanup", "updateRulesWithCleanup", "buildGuide"];
-  const NEW_DOCUMENT_BUTTON_IDS = ["newGuide"];
-  const PAY_BUTTON_SELECTOR = ".stripeBtn";
-  const STATUS_SELECTOR = ".stripeStatus";
-  const PRICE_LABEL = '9 €';
-  const ADMIN_PRIMARY_LABEL = null;
-
-  let isAdmin = false;
-
-  async function waitForAdminAuth() {
-    for (let i = 0; i < 50; i++) {
-      if (window.CleanUpAdminAuth) {
-        await window.CleanUpAdminAuth.ready();
-        return window.CleanUpAdminAuth;
-      }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    return null;
-  }
-
-  function setStatus(text, success = true) {
-    if (!STATUS_SELECTOR) return;
-    const status = document.querySelector(STATUS_SELECTOR);
-    if (!status) return;
-    status.textContent = text;
-    status.style.color = success ? "#DDE9D9" : "#FFD8C7";
-  }
-
-  function applyAdminInterface() {
-    const payButton = PAY_BUTTON_SELECTOR
-      ? document.querySelector(PAY_BUTTON_SELECTOR)
-      : null;
-
-    if (payButton) {
-      payButton.textContent = "Mode administrateur actif";
-      payButton.disabled = true;
-      payButton.style.opacity = "1";
-    }
-
-    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
-
-    if (ADMIN_PRIMARY_LABEL && GENERATION_BUTTON_IDS[0]) {
-      const mainButton = document.getElementById(GENERATION_BUTTON_IDS[0]);
-      if (mainButton) mainButton.textContent = ADMIN_PRIMARY_LABEL;
-    }
-
-    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-      const button = document.getElementById(id);
-      if (button) {
-        button.textContent = button.textContent
-          .replace(/\s*\([^)]*€[^)]*\)/g, "")
-          .replace(/nouveau paiement/gi, "mode administrateur");
-      }
-    });
-  }
-
-  function blockClientGeneration(event) {
-    if (isAdmin) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    alert(
-      "Le paiement Stripe n’est pas encore connecté. " +
-      "La génération est actuellement réservée au compte administrateur."
-    );
-  }
-
-  GENERATION_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (button) button.addEventListener("click", blockClientGeneration, true);
-  });
-
-  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (!button) return;
-
-    button.addEventListener("click", event => {
-      if (!isAdmin) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
-        window.location.reload();
-      }
-    }, true);
-  });
-
-  if (PAY_BUTTON_SELECTOR) {
-    const payButton = document.querySelector(PAY_BUTTON_SELECTOR);
-    if (payButton) {
-      payButton.addEventListener("click", event => {
-        if (!isAdmin) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setStatus("Mode administrateur déjà actif.", true);
-      }, true);
-    }
-  }
-
-  (async () => {
-    const api = await waitForAdminAuth();
-    isAdmin = api ? await api.isAdmin() : false;
-    if (isAdmin) applyAdminInterface();
-  })();
-})();
-</script>
 
 </body></html>
