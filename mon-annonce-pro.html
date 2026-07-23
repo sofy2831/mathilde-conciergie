@@ -947,7 +947,207 @@ qa('.platform-tab').forEach(btn=>btn.addEventListener('click',()=>{
   qa('.platform-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
   currentPlatform=btn.dataset.platform;
   $('platformTitle').textContent='Version '+(currentPlatform==='airbnb'?'Airbnb':currentPlatform==='booking'?'Booking':'Abritel');
+  if(serverListings[currentPlatform]) renderServerListing(currentPlatform);
 }));
+
+
+const GENERATE_LISTING_URL =
+  'https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateListing';
+
+let serverListings = {};
+let cleanupAdminMode = false;
+
+function collectListingPayload(){
+  const equipmentIds = [
+    'hob','oven','microwave','dishwasher','coffee','coffeeSupplies','kettle','fridge',
+    'pots','servingDishes','jug','kitchenUtensils','cuttingBoard','corkscrew','colander',
+    'teaTowels','bin','bedLinen','duvetProvided','pillowsProvided','blackout','shutters',
+    'bedsideTable','bedsideLight','mirror','iron','ironingBoard','shower','bathtub',
+    'hairdryer','bathTowels','bathMat','toiletPaper','wifi','tv','sofa','sofaBed',
+    'coffeeTable','ac','washer','dryer','workspace','lighting','parking','selfcheckin',
+    'smoke','coDetector','firstaid','extinguisher','outdoorLighting','baby','terrace',
+    'garden','pool','bbq','pets','linen'
+  ];
+
+  const equipment = {};
+  equipmentIds.forEach(id => equipment[id] = checked(id));
+
+  return {
+    property: {
+      address: val('address'),
+      propertyType: val('propertyType'),
+      surface: num('surface'),
+      capacity: num('capacity'),
+      bedrooms: num('bedrooms'),
+      beds: num('beds'),
+      bathrooms: num('bathrooms'),
+      toilets: num('toilets'),
+      tableSeats: num('tableSeats'),
+      chairs: num('chairs'),
+      style: val('style'),
+      target: val('target'),
+      strengths: val('strengths')
+    },
+    inventory: {
+      plates: num('plates'),
+      bowls: num('bowls'),
+      glasses: num('glasses'),
+      wineGlasses: num('wineGlasses'),
+      forks: num('forks'),
+      knives: num('knives'),
+      spoons: num('spoons'),
+      teaspoons: num('teaspoons'),
+      pillows: num('pillows'),
+      duvets: num('duvets'),
+      sheets: num('sheets'),
+      towels: num('towels'),
+      hangers: num('hangers'),
+      keys: num('keys'),
+      coffeeBrand: val('coffeeBrand')
+    },
+    equipment,
+    photos: {
+      uploadedCount: photos.length,
+      plannedCount: num('photoCountPlanned'),
+      coverIndex: Number($('coverChoice').value || 0),
+      dimensions: photos.slice(0, 40).map(photo => ({
+        width: Number(photo.width || 0),
+        height: Number(photo.height || 0)
+      }))
+    }
+  };
+}
+
+function normalizePlatformResult(raw){
+  const item = raw || {};
+  return {
+    title: item.title || item.headline || item.name || '',
+    intro: item.intro || item.shortDescription || item.hook || item.summary || '',
+    description: item.description || item.fullDescription || item.body || '',
+    rules: item.rules || item.practicalInfo || item.houseRules || item.information || ''
+  };
+}
+
+function extractServerListings(ai){
+  const root = ai || {};
+  const platforms = root.platforms || root.listings || root.announcements || root;
+
+  return {
+    airbnb: normalizePlatformResult(
+      platforms.airbnb || root.airbnb || root.airbnbListing || root.airbnb_version
+    ),
+    booking: normalizePlatformResult(
+      platforms.booking || root.booking || root.bookingListing || root.booking_version
+    ),
+    abritel: normalizePlatformResult(
+      platforms.abritel || root.abritel || root.vrbo || root.abritelListing || root.abritel_version
+    )
+  };
+}
+
+function hasUsefulListing(item){
+  return !!(item && (item.title || item.intro || item.description || item.rules));
+}
+
+function renderServerListing(platform){
+  const item = serverListings[platform];
+  if(!hasUsefulListing(item)) return false;
+
+  $('generatedTitle').value = item.title || '';
+  $('generatedIntro').value = item.intro || '';
+  $('generatedDescription').value = item.description || '';
+  $('generatedRules').value = item.rules || '';
+  refreshPreview();
+  return true;
+}
+
+async function waitForAdminAuth(){
+  for(let i = 0; i < 40; i++){
+    if(window.CleanUpAdminAuth){
+      await window.CleanUpAdminAuth.ready();
+      return window.CleanUpAdminAuth;
+    }
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  return null;
+}
+
+async function refreshAdminInterface(){
+  const api = await waitForAdminAuth();
+  cleanupAdminMode = api ? await api.isAdmin() : false;
+
+  if(cleanupAdminMode){
+    $('stripeCheckoutBtn').textContent = 'Mode administrateur actif';
+    $('stripeCheckoutBtn').disabled = true;
+    $('stripeCheckoutBtn').style.opacity = '1';
+    $('stripeStatus').textContent = 'Connexion Firebase vérifiée · aucun paiement demandé';
+    $('stripeStatus').style.color = '#DDE9D9';
+    $('generateListing').textContent = '✦ Générer mon annonce — Admin';
+  }
+}
+
+async function generateListingFromServer(){
+  const button = $('generateListing');
+  const previousText = button.textContent;
+
+  try{
+    const api = await waitForAdminAuth();
+    cleanupAdminMode = api ? await api.isAdmin() : false;
+
+    if(!cleanupAdminMode){
+      if(STRIPE_PAYMENT_LINK){
+        window.location.href = STRIPE_PAYMENT_LINK;
+      }else{
+        alert("Le paiement Stripe n'est pas encore connecté. La génération est actuellement réservée à l'administrateur.");
+      }
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Génération en cours…';
+
+    const response = await fetch(GENERATE_LISTING_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(collectListingPayload())
+    });
+
+    let result = {};
+    try{
+      result = await response.json();
+    }catch{
+      throw new Error(`Réponse serveur illisible (${response.status}).`);
+    }
+
+    if(!response.ok || result.ok === false){
+      throw new Error(result.error || `Erreur serveur (${response.status}).`);
+    }
+
+    serverListings = extractServerListings(result.ai);
+
+    if(!renderServerListing(currentPlatform)){
+      console.warn('Structure IA inattendue, utilisation du générateur local de secours.', result.ai);
+      generateListingLocal();
+    }
+
+    $('stripeStatus').textContent =
+      result.adminMode === true
+        ? 'Annonce générée en mode administrateur'
+        : 'Annonce générée';
+    $('stripeStatus').style.color = '#DDE9D9';
+
+  }catch(error){
+    console.error('generateListingFromServer error:', error);
+    alert(error.message || "La génération de l'annonce a échoué.");
+  }finally{
+    button.disabled = false;
+    button.textContent = cleanupAdminMode
+      ? '✦ Régénérer mon annonce — Admin'
+      : previousText;
+  }
+}
+
+$('generateListing').addEventListener('click', generateListingFromServer);
 
 function propertyLanguage(type){
   const key=String(type||'Logement').toLowerCase();
@@ -1000,7 +1200,7 @@ function cleanStrength(text){
   const clean=String(text||'').replace(/\s+/g,' ').trim().replace(/[.!?]+$/,'');
   return clean || 'des espaces confortables et soigneusement aménagés';
 }
-function generateListing(){
+function generateListingLocal(){
   const type=val('propertyType')||'Logement';
   const lang=propertyLanguage(type);
   const cap=num('capacity')||2, rooms=num('bedrooms')||1;
@@ -1064,7 +1264,7 @@ ${locationText}`;
   $('generatedRules').value=rules;
   refreshPreview();
 }
-$('generateListing').addEventListener('click',generateListing);
+
 ['generatedTitle','generatedIntro','generatedDescription','generatedRules'].forEach(id=>$(id).addEventListener('input',refreshPreview));
 
 function refreshPreview(){
@@ -1205,24 +1405,48 @@ $('printPdf').addEventListener('click',()=>{
   setTimeout(()=>window.print(),80);
 });
 
-$('resetAll').addEventListener('click',()=>{
+const STRIPE_PAYMENT_LINK = ''; // À remplacer plus tard par le lien Stripe du produit Mon Annonce Pro à 29 €.
+
+$('resetAll').addEventListener('click', async ()=>{
+  const api = await waitForAdminAuth();
+  const isAdmin = api ? await api.isAdmin() : false;
+
+  if(isAdmin){
+    if(!confirm('Réinitialiser le formulaire et créer une nouvelle annonce en mode administrateur ?')) return;
+    window.location.reload();
+    return;
+  }
+
   if(!confirm('Créer une nouvelle annonce nécessite un nouveau paiement. Continuer ?')) return;
-  if(typeof STRIPE_PAYMENT_LINK !== 'undefined' && STRIPE_PAYMENT_LINK){
+
+  if(STRIPE_PAYMENT_LINK){
     window.location.href = STRIPE_PAYMENT_LINK;
   }else{
     alert('Le paiement Stripe sera connecté à cette action avant la mise en ligne.');
   }
 });
-const STRIPE_PAYMENT_LINK = ''; // À remplacer par le lien Stripe du produit Mon Annonce Pro à 29 €.
-$('stripeCheckoutBtn').addEventListener('click',()=>{
+
+$('stripeCheckoutBtn').addEventListener('click', async ()=>{
+  const api = await waitForAdminAuth();
+  const isAdmin = api ? await api.isAdmin() : false;
+
+  if(isAdmin){
+    $('stripeStatus').textContent='Mode administrateur déjà actif.';
+    $('stripeStatus').style.color='#DDE9D9';
+    return;
+  }
+
   if(!STRIPE_PAYMENT_LINK){
     $('stripeStatus').textContent='Lien Stripe à connecter avant la mise en ligne.';
     $('stripeStatus').style.color='#FFD8C7';
     return;
   }
-  window.location.href=STRIPE_PAYMENT_LINK;
+
+  window.location.href = STRIPE_PAYMENT_LINK;
 });
+
 showStep(1);
+refreshAdminInterface();
 </script>
  <script type="module" src="admin-auth.js"></script> 
 </body>
