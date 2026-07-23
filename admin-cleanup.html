@@ -1,43 +1,162 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex,nofollow">
-  <title>Administration | CleanUp Manager</title>
+  <title>Administration — CleanUp Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root{--navy:#0b3145;--navy-2:#082536;--gold:#c7a35a;--paper:#f5f1e8;--white:#fff;--text:#18303d;--muted:#6d7d85;--green:#1d7752;--shadow:0 14px 42px rgba(11,49,69,.12)}
-    *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--text);background:#f3f5f4}[hidden]{display:none!important}.loading{min-height:100vh;display:grid;place-items:center;color:var(--navy);font-weight:700}header{background:var(--navy);color:#fff;padding:17px 5vw;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:10}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#fff;color:var(--navy);font-weight:900}.brand strong{display:block;font-size:18px}.brand span{font-size:11px;color:#cbd8de;letter-spacing:.12em;text-transform:uppercase}.logout{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:700}main{width:min(1180px,90vw);margin:36px auto 60px}.hero{background:linear-gradient(135deg,#fff,var(--paper));border:1px solid #dfe6e8;border-radius:22px;padding:30px;box-shadow:var(--shadow);display:flex;align-items:flex-start;justify-content:space-between;gap:25px}h1{margin:0 0 8px;color:var(--navy);font-size:31px}.hero p{margin:0;color:var(--muted);line-height:1.6}.badge{white-space:nowrap;background:#e8f7ef;color:var(--green);border:1px solid #bfe4d0;border-radius:999px;padding:9px 13px;font-size:13px;font-weight:800}.section-title{display:flex;justify-content:space-between;align-items:end;margin:34px 0 16px}.section-title h2{margin:0;color:var(--navy)}.section-title span{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.tool{background:#fff;border:1px solid #dfe6e8;border-radius:17px;padding:21px;box-shadow:0 8px 26px rgba(11,49,69,.07);display:flex;flex-direction:column;min-height:190px}.tool .icon{width:39px;height:39px;border-radius:11px;display:grid;place-items:center;background:var(--paper);color:var(--navy);font-weight:900}.tool h3{margin:16px 0 7px;color:var(--navy)}.tool p{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.5;flex:1}.tool a{display:block;text-align:center;text-decoration:none;background:var(--navy);color:#fff;border-radius:10px;padding:11px;font-weight:800}.notice{margin-top:28px;background:#fff8e9;border:1px solid #ecd6a5;border-radius:14px;padding:15px 17px;color:#6d5725;font-size:14px;line-height:1.5}footer{text-align:center;color:var(--muted);font-size:12px;margin-top:35px}@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){header{padding:14px 18px}.grid{grid-template-columns:1fr}.hero{display:block}.badge{display:inline-block;margin-top:18px}.section-title{display:block}.section-title span{display:block;margin-top:5px}}
+    :root {
+      --brown:#3E2D25;--brown-2:#5A4033;--sand:#E9DDCF;--beige:#F5EFE7;--cream:#FCFAF7;
+      --terracotta:#B96F52;--sage:#7E927C;--sage-soft:#E7EEE5;--gold:#B88635;
+      --text:#2F2926;--muted:#766C66;--line:#E4D9CF;--shadow:0 18px 48px rgba(62,45,37,.10)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--text);background:#F7F3EE}
+    [hidden]{display:none!important}
+    .loading{min-height:100vh;display:grid;place-items:center;color:var(--brown);font-weight:800}
+    header{
+      position:sticky;top:0;z-index:10;background:rgba(252,250,247,.94);backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line)
+    }
+    .header-inner{max-width:1220px;margin:auto;padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--brown),var(--brown-2));color:white;display:grid;place-items:center;font-size:21px}
+    .brand-text strong{display:block;font-size:22px;line-height:.9;color:var(--brown);font-weight:900;letter-spacing:-.04em}
+    .brand-text span{display:block;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--terracotta);margin-top:5px;font-weight:900}
+    .logout{border:1px solid var(--line);background:white;color:var(--brown);border-radius:999px;padding:10px 15px;font:inherit;font-weight:800;cursor:pointer}
+    main{max-width:1220px;margin:auto;padding:38px 24px 70px}
+    .hero{
+      background:linear-gradient(145deg,var(--brown),#6D4F40);color:white;border-radius:28px;padding:30px;
+      box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:24px;align-items:flex-start
+    }
+    .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#E7D9CF;font-weight:800}
+    h1{font-family:"DM Serif Display",serif;font-size:42px;font-weight:400;line-height:1.03;margin:8px 0 10px}
+    .hero p{margin:0;color:rgba(255,255,255,.75);line-height:1.6;font-size:14px}
+    .badge{background:var(--sage-soft);color:#536B52;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;white-space:nowrap}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:30px 0 18px}
+    .section-head h2{font-family:"DM Serif Display",serif;font-size:34px;font-weight:400;color:var(--brown);margin:0}
+    .section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+    .tool{background:white;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(62,45,37,.07);display:flex;flex-direction:column;min-height:245px}
+    .icon{width:48px;height:48px;border-radius:15px;background:var(--beige);display:grid;place-items:center;font-size:22px}
+    .tool h3{font-family:"DM Serif Display",serif;font-size:25px;font-weight:400;line-height:1.05;color:var(--brown);margin:16px 0 8px}
+    .tool p{font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 18px;flex:1}
+    .tool a{text-decoration:none;text-align:center;padding:11px 14px;border-radius:999px;background:linear-gradient(135deg,var(--brown),var(--brown-2));color:white;font-size:12px;font-weight:800}
+    .notice{margin-top:26px;padding:17px 19px;border:1px solid #E5D2AA;background:#FFF8E9;border-radius:16px;color:#715827;font-size:13px;line-height:1.55}
+    footer{margin-top:32px;text-align:center;color:var(--muted);font-size:11px}
+    @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.header-inner{padding:13px 14px}main{padding:26px 14px 55px}.hero{display:block}.badge{display:inline-block;margin-top:18px}.grid{grid-template-columns:1fr}h1{font-size:35px}}
   </style>
 </head>
 <body>
   <div id="loading" class="loading">Vérification de l’accès administrateur…</div>
+
   <div id="app" hidden>
-    <header><div class="brand"><div class="mark">C</div><div><strong>CleanUp Manager</strong><span>Administration</span></div></div><button id="logoutBtn" class="logout" type="button">Se déconnecter</button></header>
+    <header>
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-mark">⌂</div>
+          <div class="brand-text"><strong>CleanUp</strong><span>Manager</span></div>
+        </div>
+        <button id="logoutBtn" class="logout" type="button">Se déconnecter</button>
+      </div>
+    </header>
+
     <main>
-      <section class="hero"><div><h1>Tableau de bord administrateur</h1><p>Bienvenue <strong id="adminEmail"></strong>. Ton identité Firebase et ton rôle administrateur ont été vérifiés.</p></div><div class="badge">● Mode administrateur actif</div></section>
-      <div class="section-title"><h2>Outils CleanUp</h2><span>Les liens pourront être ajustés selon les noms exacts de tes fichiers.</span></div>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Espace privé</div>
+          <h1>Tableau de bord administrateur</h1>
+          <p>Bienvenue <strong id="adminEmail"></strong>. Ton compte Firebase et ton rôle administrateur sont validés.</p>
+        </div>
+        <div class="badge">● Mode administrateur actif</div>
+      </section>
+
+      <div class="section-head">
+        <div>
+          <h2>Outils CleanUp</h2>
+          <p>Accès rapide aux huit services des Indispensables.</p>
+        </div>
+      </div>
+
       <section id="toolsGrid" class="grid"></section>
-      <div class="notice"><strong>Important :</strong> la connexion administrateur est opérationnelle. Le contournement de Stripe sera réellement actif après la prochaine modification de <code>index.js</code> et l’envoi du jeton Firebase par chaque outil.</div>
-      <footer>CleanUp Manager — accès privé administrateur</footer>
+
+      <div class="notice">
+        <strong>À savoir :</strong> la connexion administrateur fonctionne. Le contournement de Stripe sera activé à l’étape suivante dans <code>index.js</code> et dans les pages outils.
+      </div>
+
+      <footer>CleanUp Manager — administration privée</footer>
     </main>
   </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    const TOOLS=[
-      {icon:"DR",title:"Diagnostic de rentabilité",description:"Créer un diagnostic synthétique pour un propriétaire.",href:"diagnostic-rentabilite.html?admin=1"},
-      {icon:"EI",title:"Étude d’investissement",description:"Générer l’étude premium complète d’un projet immobilier.",href:"etude-investissement.html?admin=1"},
-      {icon:"AP",title:"Mon Annonce Pro",description:"Créer une annonce de location courte durée complète.",href:"mon-annonce-pro.html?admin=1"},
-      {icon:"OA",title:"Optimisation d’annonce",description:"Auditer et améliorer une annonce existante.",href:"optimisation-annonce.html?admin=1"},
-      {icon:"GA",title:"Guide d’accueil",description:"Produire le guide pratique du logement.",href:"guide-accueil-personnalise.html?admin=1"},
-      {icon:"LV",title:"Livret voyageur",description:"Créer un livret destination et bonnes adresses.",href:"livret-voyageur.html?admin=1"},
-      {icon:"CP",title:"Contrat propriétaire",description:"Générer le contrat propriétaire / conciergerie.",href:"contrat-proprietaire-conciergerie.html?admin=1"},
-      {icon:"RI",title:"Règlement intérieur",description:"Créer un règlement intérieur personnalisé.",href:"reglement-interieur.html?admin=1"}
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyAhAPxM-RBJOSSXBPwkXiEu6GPKk0S6GfE",
+  authDomain: "cleanup-diagnostic.firebaseapp.com",
+  projectId: "cleanup-diagnostic",
+  storageBucket: "cleanup-diagnostic.firebasestorage.app",
+  messagingSenderId: "6668236990",
+  appId: "1:6668236990:web:d1304e6113d974a04c46ef"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const TOOLS = [
+      {icon:"✍️",title:"Mon Annonce Pro",description:"Créer une annonce complète pour Airbnb, Booking et Abritel.",href:"mon-annonce-pro.html?admin=1"},
+      {icon:"🚀",title:"Optimisation d’annonce",description:"Auditer et améliorer une annonce existante.",href:"optimisation-annonce.html?admin=1"},
+      {icon:"📖",title:"Guide d’accueil",description:"Créer la fiche pratique bilingue du logement.",href:"guide-accueil-personnalise.html?admin=1"},
+      {icon:"🧳",title:"Livret voyageur",description:"Créer un livret destination et bonnes adresses.",href:"livret-voyageur-premium.html?admin=1"},
+      {icon:"📄",title:"Contrat propriétaire",description:"Générer le contrat propriétaire / conciergerie.",href:"contrat-proprietaire-conciergerie.html?admin=1"},
+      {icon:"📋",title:"Règlement intérieur",description:"Créer un règlement intérieur personnalisé.",href:"reglement-interieur-location.html?admin=1"},
+      {icon:"📊",title:"Diagnostic de rentabilité",description:"Obtenir une vision synthétique du potentiel locatif.",href:"diagnostic-template.html?admin=1"},
+      {icon:"🏡",title:"Étude d’investissement",description:"Analyser un projet immobilier avant achat.",href:"etude-investissement.html?admin=1"}
     ];
-    document.getElementById("toolsGrid").innerHTML=TOOLS.map(tool=>`<article class="tool"><div class="icon">${tool.icon}</div><h3>${tool.title}</h3><p>${tool.description}</p><a href="${tool.href}">Ouvrir l’outil</a></article>`).join("");
-    async function loadFirebaseConfig(){const response=await fetch("/__/firebase/init.json",{cache:"no-store"});if(!response.ok)throw new Error("Configuration Firebase Hosting introuvable.");return response.json()}
-    try{const firebaseConfig=await loadFirebaseConfig();const app=initializeApp(firebaseConfig);const auth=getAuth(app);onAuthStateChanged(auth,async user=>{if(!user){window.location.replace("connexion-admin.html");return}try{const token=await user.getIdTokenResult(true);if(token.claims.admin!==true){await signOut(auth);window.location.replace("connexion-admin.html?error=unauthorized");return}document.getElementById("adminEmail").textContent=user.email||"administrateur";document.getElementById("loading").hidden=true;document.getElementById("app").hidden=false}catch{await signOut(auth);window.location.replace("connexion-admin.html")}});document.getElementById("logoutBtn").addEventListener("click",async()=>{await signOut(auth);window.location.replace("connexion-admin.html")})}catch(error){document.getElementById("loading").textContent="Impossible d’initialiser Firebase : "+error.message}
+
+    document.getElementById("toolsGrid").innerHTML = TOOLS.map(tool => `
+      <article class="tool">
+        <div class="icon">${tool.icon}</div>
+        <h3>${tool.title}</h3>
+        <p>${tool.description}</p>
+        <a href="${tool.href}">Ouvrir l’outil</a>
+      </article>
+    `).join("");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("connexion-admin.html");
+        return;
+      }
+
+      try {
+        const token = await user.getIdTokenResult(true);
+        if (token.claims.admin !== true) {
+          await signOut(auth);
+          window.location.replace("connexion-admin.html");
+          return;
+        }
+
+        document.getElementById("adminEmail").textContent = user.email || "administrateur";
+        document.getElementById("loading").hidden = true;
+        document.getElementById("app").hidden = false;
+      } catch (error) {
+        console.error(error);
+        await signOut(auth);
+        window.location.replace("connexion-admin.html");
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.replace("connexion-admin.html");
+    });
   </script>
 </body>
 </html>
