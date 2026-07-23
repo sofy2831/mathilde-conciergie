@@ -237,5 +237,115 @@ $("resetForm").onclick=()=>{window.location.href="les-indispensables-du-propriet
 showStep(1);
 </script>
 <script type="module" src="admin-auth.js"></script>
+
+<script type="module">
+/* CLEANUP_ADMIN_GATE_V2 */
+(() => {
+  const GENERATION_BUTTON_IDS = ["generateDoc"];
+  const NEW_DOCUMENT_BUTTON_IDS = ["resetForm"];
+  const PAY_BUTTON_ID = null;
+  const STATUS_ID = null;
+  const ADMIN_LABELS = {"generateDoc": "Générer mon règlement — Admin →"};
+
+  let isAdmin = false;
+
+  async function waitForAdminAuth() {
+    for (let i = 0; i < 50; i++) {
+      if (window.CleanUpAdminAuth) {
+        await window.CleanUpAdminAuth.ready();
+        return window.CleanUpAdminAuth;
+      }
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    return null;
+  }
+
+  function setStatus(text, ok = true) {
+    if (!STATUS_ID) return;
+    const status = document.getElementById(STATUS_ID);
+    if (!status) return;
+    status.textContent = text;
+    status.style.color = ok ? "#DDE9D9" : "#FFD8C7";
+  }
+
+  function applyAdminInterface() {
+    if (PAY_BUTTON_ID) {
+      const payButton = document.getElementById(PAY_BUTTON_ID);
+      if (payButton) {
+        payButton.textContent = "Mode administrateur actif";
+        payButton.disabled = true;
+        payButton.style.opacity = "1";
+      }
+    }
+
+    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
+
+    Object.entries(ADMIN_LABELS).forEach(([id, label]) => {
+      const button = document.getElementById(id);
+      if (button) button.textContent = label;
+    });
+
+    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
+      const button = document.getElementById(id);
+      if (!button) return;
+      button.textContent = button.textContent
+        .replace(/\s*\([^)]*€[^)]*\)/g, "")
+        .replace(/nouveau paiement/gi, "mode administrateur");
+    });
+  }
+
+  function blockClientGeneration(event) {
+    if (isAdmin) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    alert(
+      "Le paiement Stripe n’est pas encore connecté. " +
+      "La génération est actuellement réservée au compte administrateur."
+    );
+  }
+
+  GENERATION_BUTTON_IDS.forEach(id => {
+    const button = document.getElementById(id);
+    if (button) button.addEventListener("click", blockClientGeneration, true);
+  });
+
+  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
+    const button = document.getElementById(id);
+    if (!button) return;
+
+    button.addEventListener("click", event => {
+      if (!isAdmin) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
+        window.location.reload();
+      }
+    }, true);
+  });
+
+  if (PAY_BUTTON_ID) {
+    const payButton = document.getElementById(PAY_BUTTON_ID);
+    if (payButton) {
+      payButton.addEventListener("click", event => {
+        if (!isAdmin) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        setStatus("Mode administrateur déjà actif.", true);
+      }, true);
+    }
+  }
+
+  (async () => {
+    const api = await waitForAdminAuth();
+    isAdmin = api ? await api.isAdmin() : false;
+    if (isAdmin) applyAdminInterface();
+  })();
+})();
+</script>
+
 </body>
 </html>
