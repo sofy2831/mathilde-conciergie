@@ -154,6 +154,7 @@ Optimisation d’annonce : 49 €"></textarea><span class="hint">Indiquez unique
 </div>
 <div class="notice mandate-only"><strong>Avant génération :</strong> ce mandat ne peut être créé que si la future conciergerie déclare disposer d’une carte professionnelle adaptée, d’une RC professionnelle et d’une garantie financière couvrant les fonds encaissés. Les pouvoirs financiers doivent être expressément sélectionnés.</div>
 <button class="btn terracotta" id="generateDoc" type="button" style="margin-top:20px">Générer mon contrat →</button>
+<div class="stripeStatus" style="margin-top:10px;font-size:11px;color:var(--muted)">Le paiement sécurisé sera demandé uniquement au moment de la génération.</div>
 </section>
 
 <section class="section" id="step6"><div class="section-head"><div><h2>Votre contrat est prêt</h2><p>Relisez le document final, puis enregistrez-le au format PDF. Après l’ouverture du PDF, le dossier sera verrouillé.</p></div><div class="section-badge">Étape 6 sur 6</div></div>
@@ -168,13 +169,94 @@ Optimisation d’annonce : 49 €"></textarea><span class="hint">Indiquez unique
 </div>
 </div>
 </main>
+<script src="stripe-checkout.js"></script>
 <script>
+const PRODUCT_KEY="contrat";
+let paidSessionId="";
+let cleanupAdminMode=false;
+let pendingStripeAction="";
 const API_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateRentalContract";
 const $=id=>document.getElementById(id);
 const val=id=>($(id)?.value||"").trim();
 const num=id=>Number($(id)?.value||0);
 const checked=id=>$(id)?.checked===true;
 let contractType="",currentStep=1,generated=null,contractLocked=false;
+
+
+async function waitForAdminAuth(){
+ for(let i=0;i<60;i++){
+  if(window.CleanUpAdminAuth){
+   await window.CleanUpAdminAuth.ready();
+   return window.CleanUpAdminAuth;
+  }
+  await new Promise(resolve=>setTimeout(resolve,50));
+ }
+ return null;
+}
+
+function setStripeStatus(message,success=true){
+ document.querySelectorAll('.stripeStatus').forEach(status=>{
+  status.textContent=message;
+  status.style.color=success?'#526650':'#8A3929';
+ });
+}
+
+function collectContractState(){
+ const fields={};
+ document.querySelectorAll('input[id],select[id],textarea[id]').forEach(field=>{
+  fields[field.id]=(field.type==='checkbox'||field.type==='radio')?field.checked:field.value;
+ });
+ return {contractType,currentStep,fields};
+}
+
+function restoreContractState(saved){
+ if(!saved)return;
+ const savedType=saved.contractType||'';
+ if(savedType){
+  contractType=savedType;
+  document.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected'));
+  (contractType==='mandat'?$('choiceMandat'):$('choicePrestation'))?.classList.add('selected');
+  document.querySelectorAll('.mandate-only').forEach(el=>el.classList.toggle('hidden',contractType!=='mandat'));
+  $('selectedTypeLabel').textContent=contractType==='mandat'?'Contrat de gestion (mandat de gestion)':'Contrat de prestations de services';
+  configureContractForm();
+  $('wizard').classList.remove('hidden');
+ }
+ const fields=saved.fields||saved;
+ Object.entries(fields||{}).forEach(([id,value])=>{
+  const field=document.getElementById(id);
+  if(!field)return;
+  if(field.type==='checkbox'||field.type==='radio')field.checked=!!value;
+  else field.value=value??'';
+  field.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ configureContractForm();
+ showStep(Number(saved.currentStep)||5);
+}
+
+async function ensureContractPayment(){
+ const api=await waitForAdminAuth();
+ cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode||paidSessionId)return true;
+ pendingStripeAction='generate';
+ try{
+  setStripeStatus('Redirection vers le paiement sécurisé Stripe…',true);
+  await CleanUpStripe.start({
+   productKey:PRODUCT_KEY,
+   payload:{formState:collectContractState(),pendingAction:pendingStripeAction},
+   successUrl:window.location.href,
+   cancelUrl:window.location.href
+  });
+ }catch(error){
+  console.error('Stripe start error:',error);
+  setStripeStatus(error.message||'Impossible d’ouvrir Stripe.',false);
+ }
+ return false;
+}
+
+function securePayload(rawPayload){
+ return cleanupAdminMode?rawPayload:CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
+}
+
 
 const messages=[
 "Renseignez les coordonnées du propriétaire et de la conciergerie.",
@@ -391,18 +473,35 @@ function lockContract(){
 
 $("generateDoc").onclick=async()=>{
  for(let i=1;i<=5;i++){if(!validateStep(i)){showStep(i);return}}
+ if(!await ensureContractPayment())return;
  showStep(6);
  $("resultArea").innerHTML='<div class="loading"><div><div class="spinner"></div><strong>CleanUp prépare votre contrat…</strong><p style="font-size:11px;color:#766C66">Sélection des clauses et mise en forme du document.</p></div></div>';
  $("printPdf").disabled=true;
  try{
-  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload())});
+  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(securePayload(payload()))});
   const data=await r.json();
   if(!r.ok||!data.ok)throw new Error(data.error||"La génération a échoué.");
   generated=data;$("resultArea").innerHTML=renderContract(data);$("printPdf").disabled=false;
+   if(!cleanupAdminMode){
+    CleanUpStripe.complete(PRODUCT_KEY);
+    setStripeStatus("Paiement validé · contrat généré",true);
+   }else{
+    setStripeStatus("Contrat généré en mode administrateur",true);
+   }
  }catch(e){$("resultArea").innerHTML=`<div class="error-box"><strong>Impossible de générer le contrat.</strong><br>${esc(e.message)}</div>`}
 };
 $("printPdf").onclick=()=>{lockContract();setTimeout(()=>window.print(),80)};
-$("resetForm").onclick=()=>{location.href="les-indispensables-du-proprietaire.html"};
+$("resetForm").onclick=async()=>{
+ const api=await waitForAdminAuth();
+ const isAdmin=api?await api.isAdmin():false;
+ if(isAdmin){
+  if(confirm('Réinitialiser ce contrat en mode administrateur ?'))window.location.reload();
+  return;
+ }
+ if(!confirm('Un nouveau contrat nécessite un nouveau paiement. Continuer ?'))return;
+ CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
+ window.location.reload();
+};
 
 const feeOptions=[
  ["commission","Commission uniquement"],
@@ -465,114 +564,29 @@ updateGuaranteeField();
 <script type="module" src="admin-auth.js"></script>
 
 <script type="module">
-/* CLEANUP_ADMIN_GATE_V1 */
-(() => {
-  const GENERATION_BUTTON_IDS = ["generateDoc"];
-  const NEW_DOCUMENT_BUTTON_IDS = ["resetForm"];
-  const PAY_BUTTON_SELECTOR = null;
-  const STATUS_SELECTOR = null;
-  const PRICE_LABEL = '19 €';
-  const ADMIN_PRIMARY_LABEL = 'Générer mon contrat — Admin →';
-
-  let isAdmin = false;
-
-  async function waitForAdminAuth() {
-    for (let i = 0; i < 50; i++) {
-      if (window.CleanUpAdminAuth) {
-        await window.CleanUpAdminAuth.ready();
-        return window.CleanUpAdminAuth;
-      }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    return null;
-  }
-
-  function setStatus(text, success = true) {
-    if (!STATUS_SELECTOR) return;
-    const status = document.querySelector(STATUS_SELECTOR);
-    if (!status) return;
-    status.textContent = text;
-    status.style.color = success ? "#DDE9D9" : "#FFD8C7";
-  }
-
-  function applyAdminInterface() {
-    const payButton = PAY_BUTTON_SELECTOR
-      ? document.querySelector(PAY_BUTTON_SELECTOR)
-      : null;
-
-    if (payButton) {
-      payButton.textContent = "Mode administrateur actif";
-      payButton.disabled = true;
-      payButton.style.opacity = "1";
-    }
-
-    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
-
-    if (ADMIN_PRIMARY_LABEL && GENERATION_BUTTON_IDS[0]) {
-      const mainButton = document.getElementById(GENERATION_BUTTON_IDS[0]);
-      if (mainButton) mainButton.textContent = ADMIN_PRIMARY_LABEL;
-    }
-
-    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-      const button = document.getElementById(id);
-      if (button) {
-        button.textContent = button.textContent
-          .replace(/\s*\([^)]*€[^)]*\)/g, "")
-          .replace(/nouveau paiement/gi, "mode administrateur");
-      }
-    });
-  }
-
-  function blockClientGeneration(event) {
-    if (isAdmin) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    alert(
-      "Le paiement Stripe n’est pas encore connecté. " +
-      "La génération est actuellement réservée au compte administrateur."
-    );
-  }
-
-  GENERATION_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (button) button.addEventListener("click", blockClientGeneration, true);
-  });
-
-  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (!button) return;
-
-    button.addEventListener("click", event => {
-      if (!isAdmin) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
-        window.location.reload();
-      }
-    }, true);
-  });
-
-  if (PAY_BUTTON_SELECTOR) {
-    const payButton = document.querySelector(PAY_BUTTON_SELECTOR);
-    if (payButton) {
-      payButton.addEventListener("click", event => {
-        if (!isAdmin) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setStatus("Mode administrateur déjà actif.", true);
-      }, true);
-    }
-  }
-
-  (async () => {
-    const api = await waitForAdminAuth();
-    isAdmin = api ? await api.isAdmin() : false;
-    if (isAdmin) applyAdminInterface();
-  })();
+(async()=>{
+ const api=await waitForAdminAuth();
+ cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode){
+  $('generateDoc').textContent='Générer mon contrat — Admin →';
+  $('resetForm').textContent='Créer un nouveau contrat';
+  setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé',true);
+ }
+ try{
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);
+  if(!payment.returnedFromStripe)return;
+  if(payment.used){setStripeStatus('Ce paiement a déjà été utilisé.',false);return;}
+  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);return;}
+  paidSessionId=payment.sessionId;
+  const saved=payment.payload||{};
+  restoreContractState(saved.formState||saved);
+  pendingStripeAction=saved.pendingAction||'generate';
+  setStripeStatus('Paiement validé · génération en cours',true);
+  if(pendingStripeAction==='generate')setTimeout(()=>$('generateDoc')?.click(),150);
+ }catch(error){
+  console.error('Stripe resume error:',error);
+  setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
+ }
 })();
 </script>
 
