@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Connexion administrateur | CleanUp Manager</title>
+  <style>
+    :root{--navy:#0b3145;--navy-2:#082536;--gold:#c7a35a;--paper:#f5f1e8;--white:#fff;--text:#18303d;--muted:#6d7d85;--danger:#a93434;--success:#1d7752;--shadow:0 20px 60px rgba(11,49,69,.16)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;font-family:Inter,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 15% 20%,rgba(199,163,90,.18),transparent 30%),linear-gradient(145deg,var(--paper),#edf2f2)}
+    .card{width:min(100%,470px);background:rgba(255,255,255,.96);border:1px solid rgba(11,49,69,.10);border-radius:24px;padding:38px;box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:13px;margin-bottom:28px}.mark{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--navy);color:var(--gold);font-size:23px;font-weight:800}.brand strong{display:block;font-size:20px;color:var(--navy)}.brand span{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+    h1{font-size:29px;line-height:1.15;margin:0 0 10px;color:var(--navy)}.intro{margin:0 0 28px;color:var(--muted);line-height:1.6}label{display:block;margin:17px 0 7px;font-size:14px;font-weight:700;color:var(--navy)}input{width:100%;height:50px;border:1px solid #cfd9dd;border-radius:12px;padding:0 14px;font-size:16px;outline:none;background:#fff}input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,49,69,.10)}button{width:100%;height:52px;margin-top:23px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:800;font-size:16px;cursor:pointer}button:hover{background:var(--navy-2)}button:disabled{opacity:.6;cursor:wait}.message{display:none;margin-top:17px;padding:12px 14px;border-radius:11px;font-size:14px;line-height:1.45}.message.error{display:block;background:#fff0f0;color:var(--danger);border:1px solid #f1c7c7}.message.success{display:block;background:#edf9f3;color:var(--success);border:1px solid #bee4d1}.back{display:block;margin-top:22px;text-align:center;color:var(--navy);font-size:14px;text-decoration:none}.small{margin-top:22px;padding-top:20px;border-top:1px solid #e5eaec;color:var(--muted);font-size:12px;line-height:1.5}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand"><div class="mark">C</div><div><strong>CleanUp Manager</strong><span>Espace sécurisé</span></div></div>
+    <h1>Connexion administrateur</h1>
+    <p class="intro">Accès réservé au compte administrateur CleanUp Manager.</p>
+    <form id="loginForm">
+      <label for="email">Adresse e-mail</label><input id="email" name="email" type="email" autocomplete="username" required>
+      <label for="password">Mot de passe</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button id="submitBtn" type="submit">Se connecter</button><div id="message" class="message" role="alert"></div>
+    </form>
+    <a class="back" href="les-indispensables-du-proprietaire.html">Retour aux Indispensables</a>
+    <div class="small">Cette page n’accorde aucun droit à elle seule. L’accès est autorisé uniquement si Firebase confirme le rôle <strong>admin</strong>.</div>
+  </main>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    const form=document.getElementById("loginForm"),message=document.getElementById("message"),submitBtn=document.getElementById("submitBtn");
+    function showMessage(text,type="error"){message.textContent=text;message.className=`message ${type}`}
+    function friendlyError(error){const code=error?.code||"";if(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found"))return"Adresse e-mail ou mot de passe incorrect.";if(code.includes("too-many-requests"))return"Trop de tentatives. Réessaie dans quelques minutes.";if(code.includes("network-request-failed"))return"Impossible de joindre Firebase. Vérifie ta connexion.";return error?.message||"Connexion impossible."}
+    async function loadFirebaseConfig(){const response=await fetch("/__/firebase/init.json",{cache:"no-store"});if(!response.ok)throw new Error("Configuration Firebase introuvable. Cette page doit être publiée sur Firebase Hosting.");return response.json()}
+    try{const firebaseConfig=await loadFirebaseConfig();const app=initializeApp(firebaseConfig);const auth=getAuth(app);
+      onAuthStateChanged(auth,async user=>{if(!user)return;const token=await user.getIdTokenResult(true);if(token.claims.admin===true){window.location.replace("admin-cleanup.html")}else{await signOut(auth);showMessage("Ce compte ne possède pas l’autorisation administrateur.")}});
+      form.addEventListener("submit",async event=>{event.preventDefault();message.className="message";submitBtn.disabled=true;submitBtn.textContent="Vérification…";try{const credential=await signInWithEmailAndPassword(auth,document.getElementById("email").value.trim(),document.getElementById("password").value);const token=await credential.user.getIdTokenResult(true);if(token.claims.admin!==true){await signOut(auth);throw new Error("Ce compte n’est pas autorisé à accéder à l’administration.")}showMessage("Connexion réussie. Redirection…","success");window.location.replace("admin-cleanup.html")}catch(error){showMessage(friendlyError(error));submitBtn.disabled=false;submitBtn.textContent="Se connecter"}})
+    }catch(error){showMessage(error.message);submitBtn.disabled=true}
+  </script>
+</body>
+</html>
