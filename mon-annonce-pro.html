@@ -731,6 +731,7 @@ h1 span{color:var(--terracotta)}
 
 <div class="report-print" id="reportPrint" aria-hidden="true"></div>
 
+<script src="stripe-checkout.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const qa = sel => [...document.querySelectorAll(sel)];
@@ -740,6 +741,8 @@ let photos = [];
 let controlIssues = [];
 let adviceItems = [];
 let generationLocked = false;
+const PRODUCT_KEY = 'annonce';
+let paidSessionId = '';
 
 const num = id => Number($(id)?.value || 0);
 const val = id => ($(id)?.value || '').trim();
@@ -833,7 +836,8 @@ function addPhotos(files){
         url:objectUrl,
         width:probe.naturalWidth,
         height:probe.naturalHeight,
-        size:file.size
+        size:file.size,
+        file
       });
       renderPhotos();
       updateAssistant();
@@ -1018,6 +1022,122 @@ function collectListingPayload(){
   };
 }
 
+
+function restoreListingPayload(payload){
+  if(!payload) return;
+  const property = payload.property || {};
+  const inventory = payload.inventory || {};
+  const equipment = payload.equipment || {};
+  const photoData = payload.photos || {};
+
+  const values = {
+    address: property.address, propertyType: property.propertyType,
+    surface: property.surface, capacity: property.capacity,
+    bedrooms: property.bedrooms, beds: property.beds,
+    bathrooms: property.bathrooms, toilets: property.toilets,
+    tableSeats: property.tableSeats, chairs: property.chairs,
+    style: property.style, target: property.target,
+    strengths: property.strengths, plates: inventory.plates,
+    bowls: inventory.bowls, glasses: inventory.glasses,
+    wineGlasses: inventory.wineGlasses, forks: inventory.forks,
+    knives: inventory.knives, spoons: inventory.spoons,
+    teaspoons: inventory.teaspoons, pillows: inventory.pillows,
+    duvets: inventory.duvets, sheets: inventory.sheets,
+    towels: inventory.towels, hangers: inventory.hangers,
+    keys: inventory.keys, coffeeBrand: inventory.coffeeBrand,
+    photoCountPlanned: photoData.plannedCount
+  };
+
+  Object.entries(values).forEach(([id,value])=>{
+    const el=$(id);
+    if(el && value !== undefined && value !== null) el.value=value;
+  });
+
+  Object.entries(equipment).forEach(([id,value])=>{
+    const el=$(id);
+    if(el && el.type==='checkbox') el.checked=value===true;
+  });
+
+  updateAssistant();
+}
+
+function openCheckoutMediaDb(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open('cleanupCheckoutMedia',1);
+    request.onupgradeneeded=()=>{
+      const db=request.result;
+      if(!db.objectStoreNames.contains('media')) db.createObjectStore('media');
+    };
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error || new Error('IndexedDB indisponible.'));
+  });
+}
+
+async function savePhotosForCheckout(){
+  const records=photos.filter(p=>p.file instanceof Blob).map(p=>({
+    name:p.name,width:p.width,height:p.height,size:p.size,
+    type:p.file.type,blob:p.file
+  }));
+  if(!records.length) return;
+  const db=await openCheckoutMediaDb();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction('media','readwrite');
+    tx.objectStore('media').put(records,PRODUCT_KEY);
+    tx.oncomplete=resolve;
+    tx.onerror=()=>reject(tx.error);
+  });
+  db.close();
+}
+
+async function restorePhotosAfterCheckout(){
+  const db=await openCheckoutMediaDb();
+  const records=await new Promise((resolve,reject)=>{
+    const tx=db.transaction('media','readonly');
+    const request=tx.objectStore('media').get(PRODUCT_KEY);
+    request.onsuccess=()=>resolve(request.result || []);
+    request.onerror=()=>reject(request.error);
+  });
+  db.close();
+  if(!records.length) return;
+
+  photos.forEach(p=>{
+    if(p?.url?.startsWith('blob:')) URL.revokeObjectURL(p.url);
+  });
+
+  photos=records.map(record=>{
+    const file=new File([record.blob],record.name || 'photo',{
+      type:record.type || record.blob?.type || 'image/jpeg'
+    });
+    return {
+      name:record.name || file.name,
+      url:URL.createObjectURL(file),
+      width:Number(record.width || 0),
+      height:Number(record.height || 0),
+      size:Number(record.size || file.size || 0),
+      file
+    };
+  });
+
+  renderPhotos();
+  refreshPreview();
+  updateAssistant();
+}
+
+async function clearCheckoutPhotos(){
+  try{
+    const db=await openCheckoutMediaDb();
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction('media','readwrite');
+      tx.objectStore('media').delete(PRODUCT_KEY);
+      tx.oncomplete=resolve;
+      tx.onerror=()=>reject(tx.error);
+    });
+    db.close();
+  }catch(error){
+    console.warn('Nettoyage des photos temporaires impossible :',error);
+  }
+}
+
 function normalizePlatformResult(raw){
   const item = raw || {};
   return {
@@ -1086,68 +1206,81 @@ async function refreshAdminInterface(){
   }
 }
 
-async function generateListingFromServer(){
-  const button = $('generateListing');
-  const previousText = button.textContent;
+async function generateListingFromServer(options = {}){
+  const button=$('generateListing');
+  const previousText=button.textContent;
+  const payload=options.payload || collectListingPayload();
 
   try{
-    const api = await waitForAdminAuth();
-    cleanupAdminMode = api ? await api.isAdmin() : false;
+    const api=await waitForAdminAuth();
+    cleanupAdminMode=api ? await api.isAdmin() : false;
 
-    if(!cleanupAdminMode){
-      if(STRIPE_PAYMENT_LINK){
-        window.location.href = STRIPE_PAYMENT_LINK;
-      }else{
-        alert("Le paiement Stripe n'est pas encore connecté. La génération est actuellement réservée à l'administrateur.");
-      }
+    if(!cleanupAdminMode && !paidSessionId){
+      button.disabled=true;
+      button.textContent='Ouverture du paiement…';
+      $('stripeStatus').textContent='Redirection vers le paiement sécurisé Stripe…';
+      $('stripeStatus').style.color='#DDE9D9';
+
+      await savePhotosForCheckout();
+      await CleanUpStripe.start({
+        productKey:PRODUCT_KEY,
+        payload,
+        successUrl:window.location.href,
+        cancelUrl:window.location.href
+      });
       return;
     }
 
-    button.disabled = true;
-    button.textContent = 'Génération en cours…';
+    button.disabled=true;
+    button.textContent='Génération en cours…';
 
-    const response = await fetch(GENERATE_LISTING_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(collectListingPayload())
+    const securedPayload=cleanupAdminMode
+      ? payload
+      : CleanUpStripe.addPaymentSessionToPayload(payload,paidSessionId);
+
+    const response=await fetch(GENERATE_LISTING_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(securedPayload)
     });
 
-    let result = {};
-    try{
-      result = await response.json();
-    }catch{
-      throw new Error(`Réponse serveur illisible (${response.status}).`);
-    }
+    let result={};
+    try{ result=await response.json(); }
+    catch{ throw new Error(`Réponse serveur illisible (${response.status}).`); }
 
-    if(!response.ok || result.ok === false){
+    if(!response.ok || result.ok===false){
       throw new Error(result.error || `Erreur serveur (${response.status}).`);
     }
 
-    serverListings = extractServerListings(result.ai);
+    serverListings=extractServerListings(result.ai);
 
     if(!renderServerListing(currentPlatform)){
-      console.warn('Structure IA inattendue, utilisation du générateur local de secours.', result.ai);
+      console.warn('Structure IA inattendue, utilisation du générateur local de secours.',result.ai);
       generateListingLocal();
     }
 
-    $('stripeStatus').textContent =
-      result.adminMode === true
-        ? 'Annonce générée en mode administrateur'
-        : 'Annonce générée';
-    $('stripeStatus').style.color = '#DDE9D9';
+    $('stripeStatus').textContent=result.adminMode===true
+      ? 'Annonce générée en mode administrateur'
+      : 'Paiement validé · annonce générée';
+    $('stripeStatus').style.color='#DDE9D9';
+
+    if(!cleanupAdminMode){
+      CleanUpStripe.complete(PRODUCT_KEY);
+      await clearCheckoutPhotos();
+    }
 
   }catch(error){
-    console.error('generateListingFromServer error:', error);
+    console.error('generateListingFromServer error:',error);
     alert(error.message || "La génération de l'annonce a échoué.");
   }finally{
-    button.disabled = false;
-    button.textContent = cleanupAdminMode
+    button.disabled=false;
+    button.textContent=cleanupAdminMode
       ? '✦ Régénérer mon annonce — Admin'
       : previousText;
   }
 }
 
-$('generateListing').addEventListener('click', generateListingFromServer);
+$('generateListing').addEventListener('click',()=>generateListingFromServer());
 
 function propertyLanguage(type){
   const key=String(type||'Logement').toLowerCase();
@@ -1405,11 +1538,9 @@ $('printPdf').addEventListener('click',()=>{
   setTimeout(()=>window.print(),80);
 });
 
-const STRIPE_PAYMENT_LINK = ''; // À remplacer plus tard par le lien Stripe du produit Mon Annonce Pro à 29 €.
-
-$('resetAll').addEventListener('click', async ()=>{
-  const api = await waitForAdminAuth();
-  const isAdmin = api ? await api.isAdmin() : false;
+$('resetAll').addEventListener('click',async ()=>{
+  const api=await waitForAdminAuth();
+  const isAdmin=api ? await api.isAdmin() : false;
 
   if(isAdmin){
     if(!confirm('Réinitialiser le formulaire et créer une nouvelle annonce en mode administrateur ?')) return;
@@ -1419,16 +1550,14 @@ $('resetAll').addEventListener('click', async ()=>{
 
   if(!confirm('Créer une nouvelle annonce nécessite un nouveau paiement. Continuer ?')) return;
 
-  if(STRIPE_PAYMENT_LINK){
-    window.location.href = STRIPE_PAYMENT_LINK;
-  }else{
-    alert('Le paiement Stripe sera connecté à cette action avant la mise en ligne.');
-  }
+  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
+  await clearCheckoutPhotos();
+  window.location.reload();
 });
 
-$('stripeCheckoutBtn').addEventListener('click', async ()=>{
-  const api = await waitForAdminAuth();
-  const isAdmin = api ? await api.isAdmin() : false;
+$('stripeCheckoutBtn').addEventListener('click',async ()=>{
+  const api=await waitForAdminAuth();
+  const isAdmin=api ? await api.isAdmin() : false;
 
   if(isAdmin){
     $('stripeStatus').textContent='Mode administrateur déjà actif.';
@@ -1436,17 +1565,67 @@ $('stripeCheckoutBtn').addEventListener('click', async ()=>{
     return;
   }
 
-  if(!STRIPE_PAYMENT_LINK){
-    $('stripeStatus').textContent='Lien Stripe à connecter avant la mise en ligne.';
-    $('stripeStatus').style.color='#FFD8C7';
-    return;
-  }
+  try{
+    $('stripeCheckoutBtn').disabled=true;
+    $('stripeCheckoutBtn').textContent='Ouverture du paiement…';
+    $('stripeStatus').textContent='Redirection vers Stripe…';
+    $('stripeStatus').style.color='#DDE9D9';
 
-  window.location.href = STRIPE_PAYMENT_LINK;
+    await CleanUpStripe.start({
+      productKey:PRODUCT_KEY,
+      payload:collectListingPayload(),
+      successUrl:window.location.href,
+      cancelUrl:window.location.href
+    });
+  }catch(error){
+    console.error('stripeCheckoutBtn error:',error);
+    $('stripeCheckoutBtn').disabled=false;
+    $('stripeCheckoutBtn').textContent='Payer 29 € et commencer';
+    $('stripeStatus').textContent=error.message || 'Impossible d’ouvrir Stripe.';
+    $('stripeStatus').style.color='#FFD8C7';
+  }
 });
+
+async function resumeStripeCheckout(){
+  try{
+    const payment=await CleanUpStripe.resume(PRODUCT_KEY);
+    if(!payment.returnedFromStripe) return;
+
+    if(payment.used){
+      $('stripeStatus').textContent='Ce paiement a déjà été utilisé.';
+      $('stripeStatus').style.color='#FFD8C7';
+      return;
+    }
+
+    if(!payment.paid){
+      $('stripeStatus').textContent='Le paiement n’a pas été confirmé.';
+      $('stripeStatus').style.color='#FFD8C7';
+      return;
+    }
+
+    paidSessionId=payment.sessionId;
+    restoreListingPayload(payment.payload);
+    await restorePhotosAfterCheckout();
+
+    $('stripeCheckoutBtn').textContent='Paiement validé';
+    $('stripeCheckoutBtn').disabled=true;
+    $('stripeStatus').textContent='Paiement confirmé · génération en cours…';
+    $('stripeStatus').style.color='#DDE9D9';
+
+    showStep(5);
+    await generateListingFromServer({
+      payload:payment.payload || collectListingPayload()
+    });
+  }catch(error){
+    console.error('resumeStripeCheckout error:',error);
+    $('stripeStatus').textContent=error.message || 'Impossible de reprendre après le paiement.';
+    $('stripeStatus').style.color='#FFD8C7';
+  }
+}
 
 showStep(1);
 refreshAdminInterface();
+resumeStripeCheckout();
 </script>
  <script type="module" src="admin-auth.js"></script> 
 </body>
