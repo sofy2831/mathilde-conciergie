@@ -210,8 +210,8 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
       <span>✓ Aucun stockage permanent</span>
       <span>✓ Une commande = un livret voyageur</span>
     </div>
-    <button class="btn accent" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button>
-    <p style="margin-top:8px">Lien Stripe à connecter avant mise en ligne.</p>
+    <button class="btn accent stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button>
+    <p class="stripeStatus" style="margin-top:8px">Le paiement sera demandé au moment de la première génération.</p>
   </aside>
 </section>
 
@@ -393,10 +393,140 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 
 <section id="printBooklet"></section>
 
+<script src="stripe-checkout.js"></script>
 <script>
+const PRODUCT_KEY='livret';
+let paidSessionId='';
+let cleanupAdminMode=false;
+let pendingStripeAction='';
 const FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateTravelBooklet';
 const $=id=>document.getElementById(id);
 let currentStep=1, bookletData=null, exportLocked=false, recommendationsPrepared=false, coverPhotoData='';
+
+
+async function waitForAdminAuth(){
+ for(let i=0;i<60;i++){
+  if(window.CleanUpAdminAuth){
+   await window.CleanUpAdminAuth.ready();
+   return window.CleanUpAdminAuth;
+  }
+  await new Promise(resolve=>setTimeout(resolve,50));
+ }
+ return null;
+}
+
+function setStripeStatus(message,success=true){
+ document.querySelectorAll('.stripeStatus').forEach(status=>{
+  status.textContent=message;
+  status.style.color=success?'#DDF2D8':'#FFD8C7';
+ });
+}
+
+function collectFormState(){
+ const fields={};
+ document.querySelectorAll('input[id],select[id],textarea[id]').forEach(field=>{
+  if(field.type==='file')return;
+  fields[field.id]=(field.type==='checkbox'||field.type==='radio')?field.checked:field.value;
+ });
+ return {fields,currentStep,recommendationsPrepared};
+}
+
+function restoreFormState(saved){
+ if(!saved)return;
+ const state=saved.fields||saved;
+ Object.entries(state||{}).forEach(([id,value])=>{
+  const field=document.getElementById(id);
+  if(!field)return;
+  if(field.type==='checkbox'||field.type==='radio')field.checked=!!value;
+  else field.value=value??'';
+  field.dispatchEvent(new Event(field.type==='checkbox'?'change':'input',{bubbles:true}));
+ });
+ recommendationsPrepared=!!saved.recommendationsPrepared;
+ if(recommendationsPrepared)$('generatedRecommendations')?.classList.add('show');
+ showStep(Number(saved.currentStep)||1);
+}
+
+function openCheckoutDb(){
+ return new Promise((resolve,reject)=>{
+  const request=indexedDB.open('cleanupCheckoutMedia',1);
+  request.onupgradeneeded=()=>{
+   const db=request.result;
+   if(!db.objectStoreNames.contains('media'))db.createObjectStore('media');
+  };
+  request.onsuccess=()=>resolve(request.result);
+  request.onerror=()=>reject(request.error);
+ });
+}
+
+async function saveCoverPhotoForCheckout(){
+ if(!coverPhotoData)return;
+ try{
+  const db=await openCheckoutDb();
+  await new Promise((resolve,reject)=>{
+   const tx=db.transaction('media','readwrite');
+   tx.objectStore('media').put(coverPhotoData,PRODUCT_KEY+':cover');
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+  });
+  db.close();
+ }catch(error){console.warn('Photo non sauvegardée avant Stripe',error);}
+}
+
+async function restoreCoverPhotoAfterCheckout(){
+ try{
+  const db=await openCheckoutDb();
+  const data=await new Promise((resolve,reject)=>{
+   const tx=db.transaction('media','readonly');
+   const request=tx.objectStore('media').get(PRODUCT_KEY+':cover');
+   request.onsuccess=()=>resolve(request.result||'');
+   request.onerror=()=>reject(request.error);
+  });
+  db.close();
+  if(!data)return;
+  coverPhotoData=data;
+  const img=$('photoPreviewImg'),preview=$('photoPreview'),actions=$('photoActions'),choose=$('chooseCoverPhoto');
+  if(img)img.src=data;
+  preview?.classList.add('show');
+  if(actions)actions.style.display='flex';
+  if(choose)choose.style.display='none';
+ }catch(error){console.warn('Photo non restaurée après Stripe',error);}
+}
+
+async function clearCheckoutMedia(){
+ try{
+  const db=await openCheckoutDb();
+  await new Promise((resolve,reject)=>{
+   const tx=db.transaction('media','readwrite');
+   tx.objectStore('media').delete(PRODUCT_KEY+':cover');
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+  });
+  db.close();
+ }catch(error){console.warn('Nettoyage photo impossible',error);}
+}
+
+async function ensureLivretPayment(action){
+ const api=await waitForAdminAuth();
+ cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode||paidSessionId)return true;
+ pendingStripeAction=action||'';
+ try{
+  await saveCoverPhotoForCheckout();
+  setStripeStatus('Redirection vers le paiement sécurisé Stripe…',true);
+  await CleanUpStripe.start({
+   productKey:PRODUCT_KEY,
+   payload:{formState:collectFormState(),pendingAction:pendingStripeAction},
+   successUrl:window.location.href,
+   cancelUrl:window.location.href
+  });
+ }catch(error){
+  console.error('Stripe start error:',error);
+  setStripeStatus(error.message||'Impossible d’ouvrir Stripe.',false);
+ }
+ return false;
+}
+
+function securePayload(rawPayload){
+ return cleanupAdminMode?rawPayload:CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
+}
 
 function showStep(n){
  if(exportLocked && n<5)return;
@@ -503,6 +633,7 @@ function footer(){return `<div class="footer">${escapeHtml($('conciergeName').va
 function buildPrint(ai){const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28"><div style="position:absolute;inset:0;background:rgba(251,248,243,.60)"></div>`:'';const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;const travelItems=[...(ai.transport||[]).slice(0,4),...(ai.tips||[]).slice(0,2)].slice(0,6);const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events)}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;$('printBooklet').innerHTML=`<section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section><section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="items">${itemCards(ai.activities)}</div>${footer()}</section><section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="items">${itemCards(ai.restaurants)}</div>${footer()}</section><section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="items">${itemCards(ai.shops)}</div>${footer()}</section><section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2><div class="items">${itemCards(travelItems)}</div>${footer()}</section>${eventPage}`;}
 
 $('prepareRecommendations').onclick=async()=>{
+ if(!await ensureLivretPayment('recommendations'))return;
  const btn=$('prepareRecommendations'),status=$('recommendationStatus'),box=$('recommendationProgress'),bar=$('recommendationBar');
  const steps=[...document.querySelectorAll('#recommendationSteps .recommendation-step')];
  let current=0;
@@ -511,7 +642,7 @@ $('prepareRecommendations').onclick=async()=>{
  const timer=setInterval(()=>{current=Math.min(current+1,steps.length-1);render(current)},1300);
  try{
    const dataPayload=payload();dataPayload.mode='recommendations';
-   const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dataPayload)});
+   const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(securePayload(dataPayload))});
    const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'Préparation impossible.');
    const ai=sanitizeAi(data.ai);
    $('restaurants').value=listText(ai.restaurants);$('shops').value=listText(ai.shops);$('activities').value=listText(ai.activities);$('transport').value=listText(ai.transport);$('tips').value=listText(ai.tips);
@@ -523,12 +654,13 @@ $('prepareRecommendations').onclick=async()=>{
  finally{btn.disabled=false}
 };
 
-$('generateBooklet').onclick=async()=>{const loadingSteps=[...document.querySelectorAll('#loadingList .loading-step')];let loadingIndex=0;const activateLoading=i=>loadingSteps.forEach((el,index)=>el.classList.toggle('active',index===i));activateLoading(0);const loadingTimer=setInterval(()=>{loadingIndex=Math.min(loadingIndex+1,loadingSteps.length-1);activateLoading(loadingIndex)},1800);
+$('generateBooklet').onclick=async()=>{
+ if(!await ensureLivretPayment('booklet'))return;const loadingSteps=[...document.querySelectorAll('#loadingList .loading-step')];let loadingIndex=0;const activateLoading=i=>loadingSteps.forEach((el,index)=>el.classList.toggle('active',index===i));activateLoading(0);const loadingTimer=setInterval(()=>{loadingIndex=Math.min(loadingIndex+1,loadingSteps.length-1);activateLoading(loadingIndex)},1800);
  const btn=$('generateBooklet'),box=$('generationProgress'),bar=$('generationBar'),status=$('generationStatus');
  btn.disabled=true;box.classList.add('show');bar.style.width='20%';status.textContent='Analyse de la destination…';
  try{
   bar.style.width='45%';
-  const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload())});
+  const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(securePayload(payload()))});
   const data=await response.json();
   if(!response.ok||!data.ok)throw new Error(data.error||'Génération impossible.');
   bar.style.width='85%';status.textContent='Mise en page du livret…';
@@ -538,6 +670,13 @@ $('generateBooklet').onclick=async()=>{const loadingSteps=[...document.querySele
   $('previewText').textContent=bookletData.welcome||'Votre livret est prêt.';
   buildPrint(bookletData);
   bar.style.width='100%';status.textContent='Livret prêt.';
+  if(!cleanupAdminMode){
+   CleanUpStripe.complete(PRODUCT_KEY);
+   setStripeStatus('Paiement validé · livret généré',true);
+   await clearCheckoutMedia();
+  }else{
+   setStripeStatus('Livret généré en mode administrateur',true);
+  }
   setTimeout(()=>showStep(5),250);
  }catch(error){alert(error.message);status.textContent=error.message}
  finally{clearInterval(loadingTimer);btn.disabled=false}
@@ -547,120 +686,57 @@ $('printPdf').onclick=()=>{if(!bookletData)return alert('Générez d’abord le 
 $('copyAll').onclick=()=>{lockAfterFirstExport();return navigator.clipboard.writeText($('bookletText').value).then(()=>{
  const old=$('copyAll').textContent;$('copyAll').textContent='Copié ✓';setTimeout(()=>$('copyAll').textContent=old,1400);
 });}
-$('newBooklet').onclick=()=>location.href='livret-voyageur-premium.html';
+$('newBooklet').onclick=async()=>{
+ const api=await waitForAdminAuth();
+ const isAdmin=api?await api.isAdmin():false;
+ if(isAdmin){if(confirm('Réinitialiser ce document en mode administrateur ?'))window.location.reload();return;}
+ if(!confirm('Un nouveau livret nécessite un nouveau paiement. Continuer ?'))return;
+ CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
+ await clearCheckoutMedia();
+ window.location.reload();
+};
 
 </script>
 <script type="module" src="admin-auth.js"></script>
 
+
 <script type="module">
-/* CLEANUP_ADMIN_GATE_V1 */
-(() => {
-  const GENERATION_BUTTON_IDS = ["prepareRecommendations", "generateBooklet"];
-  const NEW_DOCUMENT_BUTTON_IDS = ["newBooklet"];
-  const PAY_BUTTON_SELECTOR = ".hero-card .btn.accent";
-  const STATUS_SELECTOR = ".hero-card p:last-child";
-  const PRICE_LABEL = '9 €';
-  const ADMIN_PRIMARY_LABEL = null;
+(async()=>{
+ const api=await waitForAdminAuth();
+ cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode){
+  const payButton=document.querySelector('.stripeBtn');
+  if(payButton){payButton.textContent='Mode administrateur actif';payButton.disabled=true;payButton.style.opacity='1';}
+  setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé',true);
+  $('newBooklet').textContent='Créer un nouveau livret';
+ }
 
-  let isAdmin = false;
-
-  async function waitForAdminAuth() {
-    for (let i = 0; i < 50; i++) {
-      if (window.CleanUpAdminAuth) {
-        await window.CleanUpAdminAuth.ready();
-        return window.CleanUpAdminAuth;
-      }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    return null;
-  }
-
-  function setStatus(text, success = true) {
-    if (!STATUS_SELECTOR) return;
-    const status = document.querySelector(STATUS_SELECTOR);
-    if (!status) return;
-    status.textContent = text;
-    status.style.color = success ? "#DDE9D9" : "#FFD8C7";
-  }
-
-  function applyAdminInterface() {
-    const payButton = PAY_BUTTON_SELECTOR
-      ? document.querySelector(PAY_BUTTON_SELECTOR)
-      : null;
-
-    if (payButton) {
-      payButton.textContent = "Mode administrateur actif";
-      payButton.disabled = true;
-      payButton.style.opacity = "1";
-    }
-
-    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
-
-    if (ADMIN_PRIMARY_LABEL && GENERATION_BUTTON_IDS[0]) {
-      const mainButton = document.getElementById(GENERATION_BUTTON_IDS[0]);
-      if (mainButton) mainButton.textContent = ADMIN_PRIMARY_LABEL;
-    }
-
-    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-      const button = document.getElementById(id);
-      if (button) {
-        button.textContent = button.textContent
-          .replace(/\s*\([^)]*€[^)]*\)/g, "")
-          .replace(/nouveau paiement/gi, "mode administrateur");
-      }
-    });
-  }
-
-  function blockClientGeneration(event) {
-    if (isAdmin) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    alert(
-      "Le paiement Stripe n’est pas encore connecté. " +
-      "La génération est actuellement réservée au compte administrateur."
-    );
-  }
-
-  GENERATION_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (button) button.addEventListener("click", blockClientGeneration, true);
+ document.querySelectorAll('.stripeBtn').forEach(button=>{
+  button.addEventListener('click',async()=>{
+   if(cleanupAdminMode){setStripeStatus('Mode administrateur déjà actif.',true);return;}
+   button.disabled=true;button.textContent='Ouverture du paiement…';
+   const ready=await ensureLivretPayment('');
+   if(ready){button.disabled=false;button.textContent='Paiement déjà validé';}
   });
+ });
 
-  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (!button) return;
-
-    button.addEventListener("click", event => {
-      if (!isAdmin) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
-        window.location.reload();
-      }
-    }, true);
-  });
-
-  if (PAY_BUTTON_SELECTOR) {
-    const payButton = document.querySelector(PAY_BUTTON_SELECTOR);
-    if (payButton) {
-      payButton.addEventListener("click", event => {
-        if (!isAdmin) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setStatus("Mode administrateur déjà actif.", true);
-      }, true);
-    }
-  }
-
-  (async () => {
-    const api = await waitForAdminAuth();
-    isAdmin = api ? await api.isAdmin() : false;
-    if (isAdmin) applyAdminInterface();
-  })();
+ try{
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);
+  if(!payment.returnedFromStripe)return;
+  if(payment.used){setStripeStatus('Ce paiement a déjà été utilisé.',false);return;}
+  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);return;}
+  paidSessionId=payment.sessionId;
+  const saved=payment.payload||{};
+  restoreFormState(saved.formState||saved);
+  await restoreCoverPhotoAfterCheckout();
+  pendingStripeAction=saved.pendingAction||'';
+  setStripeStatus('Paiement validé · génération en cours',true);
+  if(pendingStripeAction==='recommendations')setTimeout(()=>$('prepareRecommendations')?.click(),150);
+  if(pendingStripeAction==='booklet')setTimeout(()=>$('generateBooklet')?.click(),150);
+ }catch(error){
+  console.error('Stripe resume error:',error);
+  setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
+ }
 })();
 </script>
 
