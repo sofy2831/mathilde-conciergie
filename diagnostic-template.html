@@ -596,6 +596,7 @@ button:disabled{
 <div class="timeline-note"><div class="ico">🎯</div><div><h3>Lecture financière</h3><p id="financialRead">Avant décision définitive, il faudra ensuite intégrer commissions plateformes, ménage, fiscalité et périodes creuses. Ici, le moteur donne volontairement une base brute et lisible.</p></div></div><div class="page-no">5</div></section>
 <section class="a4 page6"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Recommandations</div></div><h2>Recommandations CleanUp</h2><div class="reco-grid"><div class="reco"><div><div class="ico">📷</div><h3>Photos professionnelles</h3><p>Priorité absolue avant publication. Les photos conditionnent le taux de clic et le prix perçu.</p></div></div><div class="reco"><div><div class="ico">🛋️</div><h3>Présentation soignée</h3><p id="recoPresentation">Ambiance claire, homogène et rassurante pour renforcer la valeur du logement.</p></div></div><div class="reco"><div><div class="ico">🔐</div><h3>Serrure connectée</h3><p>Arrivées autonomes, réduction des contraintes et meilleure gestion des horaires.</p></div></div><div class="reco"><div><div class="ico">📲</div><h3>Check-in autonome</h3><p>Guide d’arrivée, codes, accès, stationnement et consignes centralisées.</p></div></div><div class="reco"><div><div class="ico">⚙️</div><h3>Automatisation</h3><p>Messages voyageurs, calendrier, ménage et suivi des interventions sans friction.</p></div></div><div class="reco"><div><div class="ico">⭐</div><h3>Avis voyageurs</h3><p>Objectif : obtenir rapidement des avis solides pour remonter les tarifs.</p></div></div></div><h2 class="section-title">Plan d’action prioritaire</h2><div class="check-list"><div class="check"><span>1</span>Préparer le logement et corriger les points visibles avant shooting.</div><div class="check"><span>2</span>Lancer avec un tarif attractif calculé pour obtenir les premiers avis.</div><div class="check"><span>3</span>Paramétrer week-ends, vacances et événements avec majoration automatique.</div><div class="check"><span>4</span>Suivre le remplissage chaque semaine et ajuster les prix progressivement.</div></div><div class="decision-box"><div class="decision-ico">🚀</div><div><h3>Décision recommandée</h3><p id="decisionText">Décision générée automatiquement selon le score CleanUp.</p></div></div><div class="final"><div><div class="final-label">INDICE CLEANUP</div><div class="big"><span data-value="score">0</span>/100</div></div><div><h3>Conclusion opérationnelle</h3><p id="finalConclusion">Conclusion calculée automatiquement.</p></div></div><div class="certif"><p><b>Certification CleanUp Manager</b><br>Cette étude constitue une aide à la décision. Elle permet de cadrer le potentiel locatif, les priorités de lancement et les points à sécuriser avant la mise en exploitation.</p></div><div class="page-no">6</div></section>
 </main>
+<script src="stripe-checkout.js"></script>
 <script>
 
 const STRIPE_PAYMENT_LINK = "";
@@ -712,10 +713,47 @@ function updateCoverage(value){
   return result;
 }
 
+const PRODUCT_KEY='diagnostic';
+let paidSessionId='',cleanupAdminMode=false;
 const API_URL = 'https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateDiagnostic';
 const $ = (id) => document.getElementById(id);
 const q = (selector) => document.querySelector(selector);
 const qa = (selector) => Array.from(document.querySelectorAll(selector));
+
+async function waitForAdminAuth(){
+ for(let i=0;i<60;i++){
+  if(window.CleanUpAdminAuth){await window.CleanUpAdminAuth.ready();return window.CleanUpAdminAuth;}
+  await new Promise(resolve=>setTimeout(resolve,50));
+ }
+ return null;
+}
+function collectFormState(extra={}){
+ const fields={};
+ document.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
+  if(el.type==='file')return;
+  fields[el.id]=(el.type==='checkbox'||el.type==='radio')?el.checked:el.value;
+ });
+ return {fields,...extra};
+}
+function restoreFormState(saved){
+ if(!saved)return;
+ const fields=saved.fields||saved;
+ Object.entries(fields||{}).forEach(([id,value])=>{
+  const el=document.getElementById(id);if(!el||el.type==='file')return;
+  if(el.type==='checkbox'||el.type==='radio')el.checked=!!value;else el.value=value??'';
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+}
+
+function setStripeStatus(message,ok=true){const el=document.getElementById('stripeStatus');if(el){el.textContent=message;el.style.color=ok?'':'#B42318';}}
+async function ensureDiagnosticPayment(){
+ const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode||paidSessionId)return true;
+ await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{formState:collectFormState(),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});return false;
+}
+function secureDiagnosticPayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+
 
 const onlyNumber = (value, fallback) => {
   const n = Number.parseFloat(String(value).replace(',', '.').replace(/[^0-9.]/g, ''));
@@ -1165,13 +1203,14 @@ function injectDiagnostic(payload) {
 
 async function generateDiagnostic() {
   try {
+    if(!await ensureDiagnosticPayment())return;
     const inputs = validateInputs();
     setLoading(true, 'Analyse du logement et rédaction des 6 pages…');
 
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(inputs),
+      body: JSON.stringify(secureDiagnosticPayload(inputs)),
     });
 
     const payload = await response.json().catch(() => null);
@@ -1181,6 +1220,7 @@ async function generateDiagnostic() {
 
     injectDiagnostic(payload);
     setLoading(false, `Diagnostic généré le ${new Date(payload.generatedAt).toLocaleString('fr-FR')}.`);
+    if(!cleanupAdminMode){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');}else setStripeStatus('Diagnostic généré en mode administrateur');
   } catch (error) {
     console.error(error);
     setLoading(false, `Erreur : ${error.message}`);
@@ -1272,20 +1312,8 @@ document.getElementById("requestCoverageBtn")?.addEventListener("click",()=>{
     `mailto:contact@cleanup-manager.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 });
 
-document.getElementById("stripeCheckoutBtn")?.addEventListener("click",()=>{
-  const status=document.getElementById("stripeStatus");
-  const result=detectCoverage(coverageAddressEl?.value || "");
-
-  if(result.level!=="premium" && result.level!=="standard"){
-    status.textContent="Vérifiez une adresse couverte avant de poursuivre.";
-    return;
-  }
-
-  if(!STRIPE_PAYMENT_LINK){
-    status.textContent="Lien Stripe à connecter avant la mise en ligne.";
-    return;
-  }
-  window.location.href=STRIPE_PAYMENT_LINK;
+document.getElementById("stripeCheckoutBtn")?.addEventListener("click",async()=>{
+ try{await ensureDiagnosticPayment();}catch(e){setStripeStatus(e.message||'Impossible d’ouvrir Stripe.',false);}
 });
 document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
   diagnosticExportLocked=true;
@@ -1314,111 +1342,16 @@ setReportIdentity();
 <script type="module" src="admin-auth.js"></script>
 
 <script type="module">
-/* CLEANUP_ADMIN_GATE_V2 */
-(() => {
-  const GENERATION_BUTTON_IDS = ["generateBtn"];
-  const NEW_DOCUMENT_BUTTON_IDS = [];
-  const PAY_BUTTON_ID = "stripeCheckoutBtn";
-  const STATUS_ID = "stripeStatus";
-  const ADMIN_LABELS = {"generateBtn": "Générer le diagnostic — Admin"};
-
-  let isAdmin = false;
-
-  async function waitForAdminAuth() {
-    for (let i = 0; i < 50; i++) {
-      if (window.CleanUpAdminAuth) {
-        await window.CleanUpAdminAuth.ready();
-        return window.CleanUpAdminAuth;
-      }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    return null;
-  }
-
-  function setStatus(text, ok = true) {
-    if (!STATUS_ID) return;
-    const status = document.getElementById(STATUS_ID);
-    if (!status) return;
-    status.textContent = text;
-    status.style.color = ok ? "#DDE9D9" : "#FFD8C7";
-  }
-
-  function applyAdminInterface() {
-    if (PAY_BUTTON_ID) {
-      const payButton = document.getElementById(PAY_BUTTON_ID);
-      if (payButton) {
-        payButton.textContent = "Mode administrateur actif";
-        payButton.disabled = true;
-        payButton.style.opacity = "1";
-      }
-    }
-
-    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
-
-    Object.entries(ADMIN_LABELS).forEach(([id, label]) => {
-      const button = document.getElementById(id);
-      if (button) button.textContent = label;
-    });
-
-    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-      const button = document.getElementById(id);
-      if (!button) return;
-      button.textContent = button.textContent
-        .replace(/\s*\([^)]*€[^)]*\)/g, "")
-        .replace(/nouveau paiement/gi, "mode administrateur");
-    });
-  }
-
-  function blockClientGeneration(event) {
-    if (isAdmin) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    alert(
-      "Le paiement Stripe n’est pas encore connecté. " +
-      "La génération est actuellement réservée au compte administrateur."
-    );
-  }
-
-  GENERATION_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (button) button.addEventListener("click", blockClientGeneration, true);
-  });
-
-  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (!button) return;
-
-    button.addEventListener("click", event => {
-      if (!isAdmin) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
-        window.location.reload();
-      }
-    }, true);
-  });
-
-  if (PAY_BUTTON_ID) {
-    const payButton = document.getElementById(PAY_BUTTON_ID);
-    if (payButton) {
-      payButton.addEventListener("click", event => {
-        if (!isAdmin) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setStatus("Mode administrateur déjà actif.", true);
-      }, true);
-    }
-  }
-
-  (async () => {
-    const api = await waitForAdminAuth();
-    isAdmin = api ? await api.isAdmin() : false;
-    if (isAdmin) applyAdminInterface();
-  })();
+(async()=>{
+ const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode){document.getElementById('generateBtn').textContent='Générer le diagnostic — Admin';const b=document.getElementById('stripeCheckoutBtn');if(b){b.textContent='Mode administrateur actif';b.disabled=true;}setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
+ try{
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
+  if(payment.used)return setStripeStatus('Ce paiement a déjà été utilisé.',false);
+  if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
+  paidSessionId=payment.sessionId;const saved=payment.payload||{};restoreFormState(saved.formState||saved);
+  setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>document.getElementById('generateBtn')?.click(),150);
+ }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
 
