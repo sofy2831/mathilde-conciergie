@@ -1378,6 +1378,7 @@ body.study-final-locked .step:not(.active){
 </section>
 </main>
 
+<script src="stripe-checkout.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 
@@ -1456,8 +1457,45 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 let generated=false;
+const PRODUCT_KEY='investissement';
+let paidSessionId='',cleanupAdminMode=false;
 const STRIPE_PAYMENT_LINK='';
 const CLEANUP_AI_ENDPOINT='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateInvestmentStudy';
+
+async function waitForAdminAuth(){
+ for(let i=0;i<60;i++){
+  if(window.CleanUpAdminAuth){await window.CleanUpAdminAuth.ready();return window.CleanUpAdminAuth;}
+  await new Promise(resolve=>setTimeout(resolve,50));
+ }
+ return null;
+}
+function collectFormState(extra={}){
+ const fields={};
+ document.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
+  if(el.type==='file')return;
+  fields[el.id]=(el.type==='checkbox'||el.type==='radio')?el.checked:el.value;
+ });
+ return {fields,...extra};
+}
+function restoreFormState(saved){
+ if(!saved)return;
+ const fields=saved.fields||saved;
+ Object.entries(fields||{}).forEach(([id,value])=>{
+  const el=document.getElementById(id);if(!el||el.type==='file')return;
+  if(el.type==='checkbox'||el.type==='radio')el.checked=!!value;else el.value=value??'';
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+}
+
+function setStripeStatus(message,ok=true){const el=document.getElementById('stripeStatus');if(el){el.textContent=message;el.style.color=ok?'':'#B42318';}}
+async function ensureInvestmentPayment(){
+ const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode||paidSessionId)return true;
+ await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{formState:collectFormState({propertyPhotoData:window.propertyPhotoData||'',currentStep}),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});return false;
+}
+function secureInvestmentPayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+
 
 function showStep(step){
   currentStep=Math.max(1,Math.min(10,step));
@@ -2043,6 +2081,7 @@ async function generateInvestmentStudy(){
     alert('Complétez au minimum l’adresse, la surface, la capacité et le prix affiché.');
     return;
   }
+  if(!await ensureInvestmentPayment())return;
   button.disabled=true;
   button.textContent='Analyse en cours…';
   startStudyProgress();
@@ -2050,12 +2089,13 @@ async function generateInvestmentStudy(){
     const response=await fetch(CLEANUP_AI_ENDPOINT,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(investmentPayload())
+      body:JSON.stringify(secureInvestmentPayload(investmentPayload()))
     });
     const data=await response.json().catch(()=>({}));
     if(!response.ok || !data.ok)throw new Error(data.error||`Erreur HTTP ${response.status}`);
     applyBackendStudy(data.engine,data.ai);
     finishStudyProgress(true);
+    if(!cleanupAdminMode){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · étude générée');}else setStripeStatus('Étude générée en mode administrateur');
   }catch(error){
     console.error(error);
     finishStudyProgress(false);
@@ -2194,17 +2234,7 @@ $('checkCoverageBtn').onclick=()=>{
   setTimeout(()=>$('checkCoverageBtn').textContent='Vérifier',1500);
 };
 
-$('stripeCheckoutBtn').onclick=()=>{
-  if($('coveragePricePanel')?.style.display==='none'){
-    alert('Vérifiez d’abord la couverture de l’adresse.');
-    return;
-  }
-  if(!STRIPE_PAYMENT_LINK){
-    $('stripeStatus').textContent='Lien Stripe à connecter avant la mise en ligne.';
-    return;
-  }
-  location.href=STRIPE_PAYMENT_LINK;
-};
+$('stripeCheckoutBtn').onclick=async()=>{try{await ensureInvestmentPayment();}catch(e){setStripeStatus(e.message||'Impossible d’ouvrir Stripe.',false);}};
 
 async function loadExternalScript(src,globalName){
   if(globalName&&window[globalName])return;
@@ -2345,7 +2375,7 @@ function startNewStudy(){
     location.href=STRIPE_PAYMENT_LINK;
     return;
   }
-  alert('Le lien Stripe de l’étude d’investissement doit être renseigné avant la mise en ligne.');
+  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
 }
 $('uxNewStudy')?.addEventListener('click',startNewStudy);
 $('newStudy')?.addEventListener('click',startNewStudy);
@@ -2437,111 +2467,24 @@ setAIUxStep(1);
 <script type="module" src="admin-auth.js"></script>
 
 <script type="module">
-/* CLEANUP_ADMIN_GATE_V2 */
-(() => {
-  const GENERATION_BUTTON_IDS = ["generateAreaAI", "generateMarketAI", "generateFinanceAI", "generateComparisonAI", "generateRisksAI", "generateLeversAI", "generateStudy"];
-  const NEW_DOCUMENT_BUTTON_IDS = ["newStudy", "uxNewStudy"];
-  const PAY_BUTTON_ID = "stripeCheckoutBtn";
-  const STATUS_ID = "stripeStatus";
-  const ADMIN_LABELS = {"generateStudy": "✦ Générer l’étude — Admin"};
-
-  let isAdmin = false;
-
-  async function waitForAdminAuth() {
-    for (let i = 0; i < 50; i++) {
-      if (window.CleanUpAdminAuth) {
-        await window.CleanUpAdminAuth.ready();
-        return window.CleanUpAdminAuth;
-      }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    return null;
-  }
-
-  function setStatus(text, ok = true) {
-    if (!STATUS_ID) return;
-    const status = document.getElementById(STATUS_ID);
-    if (!status) return;
-    status.textContent = text;
-    status.style.color = ok ? "#DDE9D9" : "#FFD8C7";
-  }
-
-  function applyAdminInterface() {
-    if (PAY_BUTTON_ID) {
-      const payButton = document.getElementById(PAY_BUTTON_ID);
-      if (payButton) {
-        payButton.textContent = "Mode administrateur actif";
-        payButton.disabled = true;
-        payButton.style.opacity = "1";
-      }
-    }
-
-    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
-
-    Object.entries(ADMIN_LABELS).forEach(([id, label]) => {
-      const button = document.getElementById(id);
-      if (button) button.textContent = label;
-    });
-
-    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-      const button = document.getElementById(id);
-      if (!button) return;
-      button.textContent = button.textContent
-        .replace(/\s*\([^)]*€[^)]*\)/g, "")
-        .replace(/nouveau paiement/gi, "mode administrateur");
-    });
-  }
-
-  function blockClientGeneration(event) {
-    if (isAdmin) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    alert(
-      "Le paiement Stripe n’est pas encore connecté. " +
-      "La génération est actuellement réservée au compte administrateur."
-    );
-  }
-
-  GENERATION_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (button) button.addEventListener("click", blockClientGeneration, true);
-  });
-
-  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (!button) return;
-
-    button.addEventListener("click", event => {
-      if (!isAdmin) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
-        window.location.reload();
-      }
-    }, true);
-  });
-
-  if (PAY_BUTTON_ID) {
-    const payButton = document.getElementById(PAY_BUTTON_ID);
-    if (payButton) {
-      payButton.addEventListener("click", event => {
-        if (!isAdmin) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setStatus("Mode administrateur déjà actif.", true);
-      }, true);
-    }
-  }
-
-  (async () => {
-    const api = await waitForAdminAuth();
-    isAdmin = api ? await api.isAdmin() : false;
-    if (isAdmin) applyAdminInterface();
-  })();
+(async()=>{
+ const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode){const g=document.getElementById('generateStudy');if(g)g.textContent='✦ Générer l’étude — Admin';const b=document.getElementById('stripeCheckoutBtn');if(b){b.textContent='Mode administrateur actif';b.disabled=true;}setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
+ ['newStudy','uxNewStudy'].forEach(id=>document.getElementById(id)?.addEventListener('click',async event=>{
+  event.preventDefault();event.stopImmediatePropagation();
+  const api2=await waitForAdminAuth();const admin=api2?await api2.isAdmin():false;
+  if(admin){if(confirm('Réinitialiser cette étude en mode administrateur ?'))location.reload();return;}
+  if(!confirm('Une nouvelle étude nécessite un nouveau paiement de 129 €. Continuer ?'))return;
+  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
+ },true));
+ try{
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
+  if(payment.used)return setStripeStatus('Ce paiement a déjà été utilisé.',false);
+  if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
+  paidSessionId=payment.sessionId;const saved=payment.payload||{};restoreFormState(saved.formState||saved);
+  if(saved.formState?.propertyPhotoData){window.propertyPhotoData=saved.formState.propertyPhotoData;}
+  setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>{const btn=document.getElementById('uxGenerateStudy')||document.getElementById('generateStudy');btn?.click();},180);
+ }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
 
