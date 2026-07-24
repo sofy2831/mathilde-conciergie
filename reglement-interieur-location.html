@@ -155,7 +155,10 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 <aside class="assistant-card"><div class="assistant-head"><strong>Assistant CleanUp</strong></div><div class="assistant-body"><div class="ai-message" id="assistantText">Commencez par identifier le logement et le contact utile.</div><ul class="check-list"><li>Seules les règles sélectionnées sont utilisées</li><li>Aucune pénalité inventée</li><li>Document à relire avant diffusion</li></ul></div></aside>
 </div>
 </main>
+<script src="stripe-checkout.js"></script>
 <script>
+const PRODUCT_KEY="reglement";
+let paidSessionId="",cleanupAdminMode=false;
 const API_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateHouseRules";
 const $=id=>document.getElementById(id);
 const val=id=>($(id)?.value||"").trim();
@@ -164,6 +167,45 @@ const yes=id=>$(id)?.checked===true;
 const checkedValues=name=>[...document.querySelectorAll(`[data-choice="${name}"]:checked`)].map(x=>x.value);
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 let currentStep=1,generated=null,documentLocked=false;
+
+async function waitForAdminAuth(){
+ for(let i=0;i<60;i++){
+  if(window.CleanUpAdminAuth){await window.CleanUpAdminAuth.ready();return window.CleanUpAdminAuth;}
+  await new Promise(resolve=>setTimeout(resolve,50));
+ }
+ return null;
+}
+function collectFormState(extra={}){
+ const fields={};
+ document.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
+  if(el.type==='file')return;
+  fields[el.id]=(el.type==='checkbox'||el.type==='radio')?el.checked:el.value;
+ });
+ return {fields,...extra};
+}
+function restoreFormState(saved){
+ if(!saved)return;
+ const fields=saved.fields||saved;
+ Object.entries(fields||{}).forEach(([id,value])=>{
+  const el=document.getElementById(id);if(!el||el.type==='file')return;
+  if(el.type==='checkbox'||el.type==='radio')el.checked=!!value;else el.value=value??'';
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+}
+
+function setStripeStatus(message,ok=true){
+ const box=document.getElementById('assistantText');
+ if(box){box.textContent=message;box.style.color=ok?'':'#8A3929';}
+}
+async function ensurePayment(){
+ const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode||paidSessionId)return true;
+ await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{formState:collectFormState({currentStep}),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});
+ return false;
+}
+function securePayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+
 const messages=["Identifiez le logement et la personne à contacter.","Précisez les horaires et les conditions d'occupation.","Sélectionnez les règles essentielles réellement applicables.","Ajoutez les consignes liées aux équipements présents.","Définissez les consignes de départ et la gestion des incidents.","Relisez le règlement avant de l'enregistrer en PDF."];
 
 function showStep(n){
@@ -213,15 +255,17 @@ function renderDocument(ai){
 
 $("generateDoc").onclick=async()=>{
  if(!validateStep(1)||!validateStep(2)||!validateStep(3))return;
+ if(!await ensurePayment())return;
  $("resultArea").innerHTML='<div class="loading"><div><div class="spinner"></div><strong>CleanUp prépare votre règlement…</strong><p>Les règles sont structurées selon vos réponses.</p></div></div>';
  showStep(6);
  try{
-  const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload())});
+  const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(securePayload(payload()))});
   const data=await response.json().catch(()=>({}));
   if(!response.ok||!data.ok)throw new Error(data.error||"La génération a échoué.");
   generated=data.ai;
   $("resultArea").innerHTML=renderDocument(generated);
   $("printPdf").disabled=false;
+  if(!cleanupAdminMode){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus("Paiement validé · règlement généré");}else setStripeStatus("Règlement généré en mode administrateur");
  }catch(error){
   $("resultArea").innerHTML=`<div class="error-box"><strong>Impossible de générer le règlement.</strong><br>${esc(error.message)}</div>`;
  }
@@ -233,117 +277,28 @@ $("printPdf").onclick=()=>{
  window.print();
 };
 
-$("resetForm").onclick=()=>{window.location.href="les-indispensables-du-proprietaire.html"};
+$("resetForm").onclick=async()=>{
+ const api=await waitForAdminAuth();const admin=api?await api.isAdmin():false;
+ if(admin){if(confirm('Réinitialiser ce règlement en mode administrateur ?'))location.reload();return;}
+ if(!confirm('Un nouveau règlement nécessite un nouveau paiement. Continuer ?'))return;
+ CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
+};
 showStep(1);
 </script>
 <script type="module" src="admin-auth.js"></script>
 
 <script type="module">
-/* CLEANUP_ADMIN_GATE_V2 */
-(() => {
-  const GENERATION_BUTTON_IDS = ["generateDoc"];
-  const NEW_DOCUMENT_BUTTON_IDS = ["resetForm"];
-  const PAY_BUTTON_ID = null;
-  const STATUS_ID = null;
-  const ADMIN_LABELS = {"generateDoc": "Générer mon règlement — Admin →"};
-
-  let isAdmin = false;
-
-  async function waitForAdminAuth() {
-    for (let i = 0; i < 50; i++) {
-      if (window.CleanUpAdminAuth) {
-        await window.CleanUpAdminAuth.ready();
-        return window.CleanUpAdminAuth;
-      }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    return null;
-  }
-
-  function setStatus(text, ok = true) {
-    if (!STATUS_ID) return;
-    const status = document.getElementById(STATUS_ID);
-    if (!status) return;
-    status.textContent = text;
-    status.style.color = ok ? "#DDE9D9" : "#FFD8C7";
-  }
-
-  function applyAdminInterface() {
-    if (PAY_BUTTON_ID) {
-      const payButton = document.getElementById(PAY_BUTTON_ID);
-      if (payButton) {
-        payButton.textContent = "Mode administrateur actif";
-        payButton.disabled = true;
-        payButton.style.opacity = "1";
-      }
-    }
-
-    setStatus("Connexion Firebase vérifiée · aucun paiement demandé", true);
-
-    Object.entries(ADMIN_LABELS).forEach(([id, label]) => {
-      const button = document.getElementById(id);
-      if (button) button.textContent = label;
-    });
-
-    NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-      const button = document.getElementById(id);
-      if (!button) return;
-      button.textContent = button.textContent
-        .replace(/\s*\([^)]*€[^)]*\)/g, "")
-        .replace(/nouveau paiement/gi, "mode administrateur");
-    });
-  }
-
-  function blockClientGeneration(event) {
-    if (isAdmin) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    alert(
-      "Le paiement Stripe n’est pas encore connecté. " +
-      "La génération est actuellement réservée au compte administrateur."
-    );
-  }
-
-  GENERATION_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (button) button.addEventListener("click", blockClientGeneration, true);
-  });
-
-  NEW_DOCUMENT_BUTTON_IDS.forEach(id => {
-    const button = document.getElementById(id);
-    if (!button) return;
-
-    button.addEventListener("click", event => {
-      if (!isAdmin) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (confirm("Réinitialiser ce document en mode administrateur ?")) {
-        window.location.reload();
-      }
-    }, true);
-  });
-
-  if (PAY_BUTTON_ID) {
-    const payButton = document.getElementById(PAY_BUTTON_ID);
-    if (payButton) {
-      payButton.addEventListener("click", event => {
-        if (!isAdmin) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setStatus("Mode administrateur déjà actif.", true);
-      }, true);
-    }
-  }
-
-  (async () => {
-    const api = await waitForAdminAuth();
-    isAdmin = api ? await api.isAdmin() : false;
-    if (isAdmin) applyAdminInterface();
-  })();
+(async()=>{
+ const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+ if(cleanupAdminMode){document.getElementById('generateDoc').textContent='Générer mon règlement — Admin →';setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
+ try{
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
+  if(payment.used)return setStripeStatus('Ce paiement a déjà été utilisé.',false);
+  if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
+  paidSessionId=payment.sessionId;const saved=payment.payload||{};restoreFormState(saved.formState||saved);
+  if(saved.formState?.currentStep)showStep(saved.formState.currentStep);
+  setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>document.getElementById('generateDoc')?.click(),150);
+ }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
 
