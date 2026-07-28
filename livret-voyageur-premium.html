@@ -210,8 +210,8 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
       <span>✓ Aucun stockage permanent</span>
       <span>✓ Une commande = un livret voyageur</span>
     </div>
-    <button class="btn accent stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button>
-    <p class="stripeStatus" style="margin-top:8px">Le paiement sera demandé au moment de la première génération.</p>
+    <button class="btn accent" id="startLivret" type="button" style="margin-top:20px;width:100%">Commencer mon livret</button>
+    <p class="stripeStatus" style="margin-top:8px">Le paiement sera demandé uniquement au moment de créer le livret.</p>
   </aside>
 </section>
 
@@ -557,6 +557,7 @@ function showStep(n){
 document.querySelectorAll('.step').forEach(b=>b.onclick=()=>showStep(Number(b.dataset.step)));
 $('prevBtn').onclick=()=>showStep(currentStep-1);
 $('nextBtn').onclick=()=>showStep(currentStep+1);
+$('startLivret')?.addEventListener('click',()=>showStep(1));
 showStep(1);
 
 function bindCoverPhoto(){const input=$('coverPhotoInput'),choose=$('chooseCoverPhoto'),replace=$('replaceCoverPhoto'),remove=$('removeCoverPhoto'),preview=$('photoPreview'),img=$('photoPreviewImg'),actions=$('photoActions');const open=()=>input.click();choose.onclick=open;replace.onclick=open;input.onchange=()=>{const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/'))return alert('Choisissez une image.');const reader=new FileReader();reader.onload=()=>{coverPhotoData=reader.result;img.src=coverPhotoData;preview.classList.add('show');actions.style.display='flex';choose.style.display='none'};reader.readAsDataURL(file)};remove.onclick=()=>{coverPhotoData='';input.value='';img.removeAttribute('src');preview.classList.remove('show');actions.style.display='none';choose.style.display='inline-flex'}}
@@ -633,7 +634,6 @@ function footer(){return `<div class="footer">${escapeHtml($('conciergeName').va
 function buildPrint(ai){const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28"><div style="position:absolute;inset:0;background:rgba(251,248,243,.60)"></div>`:'';const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;const travelItems=[...(ai.transport||[]).slice(0,4),...(ai.tips||[]).slice(0,2)].slice(0,6);const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events)}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;$('printBooklet').innerHTML=`<section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section><section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="items">${itemCards(ai.activities)}</div>${footer()}</section><section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="items">${itemCards(ai.restaurants)}</div>${footer()}</section><section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="items">${itemCards(ai.shops)}</div>${footer()}</section><section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2><div class="items">${itemCards(travelItems)}</div>${footer()}</section>${eventPage}`;}
 
 $('prepareRecommendations').onclick=async()=>{
- if(!await ensureLivretPayment('recommendations'))return;
  const btn=$('prepareRecommendations'),status=$('recommendationStatus'),box=$('recommendationProgress'),bar=$('recommendationBar');
  const steps=[...document.querySelectorAll('#recommendationSteps .recommendation-step')];
  let current=0;
@@ -731,8 +731,13 @@ $('newBooklet').onclick=async()=>{
   await restoreCoverPhotoAfterCheckout();
   pendingStripeAction=saved.pendingAction||'';
   setStripeStatus('Paiement validé · génération en cours',true);
-  if(pendingStripeAction==='recommendations')setTimeout(()=>$('prepareRecommendations')?.click(),150);
-  if(pendingStripeAction==='booklet')setTimeout(()=>$('generateBooklet')?.click(),150);
+  if(pendingStripeAction==='booklet'){
+   showStep(4);
+   setTimeout(()=>{
+    const button=$('generateBooklet');
+    if(button && !button.disabled) button.click();
+   },300);
+  }
  }catch(error){
   console.error('Stripe resume error:',error);
   setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
