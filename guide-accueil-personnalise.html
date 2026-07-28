@@ -1377,12 +1377,35 @@ async function resumeStripeCheckout(){
     // Les boutons des étapes 3 et 4 ne déclenchent jamais de paiement.
     if(pendingStripeAction==='build'){
       showStep(4);
+
+      // La restauration des champs ne restaure pas les variables internes de préparation.
+      // On reconstruit donc automatiquement les textes et on réactive le bouton final
+      // avant de relancer exactement la même création qu'au clic utilisateur.
+      if(!val('heating') || !val('tv') || !val('kitchen') || !val('waste')) buildStaySeeds();
+      if(!val('departure') || !val('emergency') || !val('departure').includes(' / ')) buildRuleSeeds();
+      cleanupStayRequested=true;
+      cleanupRulesRequested=true;
+      guideAiState.stay.generated=true;
+      guideAiState.rules.generated=true;
+      setAiDirty('stay',false);
+      setAiDirty('rules',false);
+      Object.keys(FIELD_LIMITS||{}).forEach(updateCounter);
+      setBuildGuideReady(true,'Création du guide en cours…');
+
       const box=$('guideGeneration'),bar=$('guideGenerationBar'),text=$('guideGenerationText'),title=$('guideGenerationTitle');
       if(box){box.classList.add('show');}
       if(bar){bar.style.width='8%';}
       if(title){title.textContent='Paiement validé · création du guide…';}
       if(text){text.textContent='Restauration du formulaire et préparation du document final.';}
-      setTimeout(()=>$('buildGuide')?.click(),120);
+
+      // Laisser le navigateur afficher la progression, puis lancer la génération finale.
+      setTimeout(()=>{
+        const buildButton=$('buildGuide');
+        if(buildButton){
+          buildButton.disabled=false;
+          buildButton.click();
+        }
+      },350);
     }else{
       showStep(4);
       setBuildGuideReady(true,'Créer le guide — 9 €');
