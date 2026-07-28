@@ -206,7 +206,9 @@ function collectContractState(){
  document.querySelectorAll('input[id],select[id],textarea[id]').forEach(field=>{
   fields[field.id]=(field.type==='checkbox'||field.type==='radio')?field.checked:field.value;
  });
- return {contractType,currentStep,fields};
+ // Les cases « missions » n'ont pas toutes un id : on les sauvegarde séparément.
+ const selectedServices=[...document.querySelectorAll('[data-service]:checked')].map(field=>field.value);
+ return {contractType,currentStep,fields,selectedServices};
 }
 
 function restoreContractState(saved){
@@ -227,6 +229,12 @@ function restoreContractState(saved){
   if(!field)return;
   if(field.type==='checkbox'||field.type==='radio')field.checked=!!value;
   else field.value=value??'';
+  field.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ // Restaure aussi toutes les missions sélectionnées, y compris celles sans attribut id.
+ const selectedServices=new Set(Array.isArray(saved.selectedServices)?saved.selectedServices:[]);
+ document.querySelectorAll('[data-service]').forEach(field=>{
+  field.checked=selectedServices.has(field.value);
   field.dispatchEvent(new Event('change',{bubbles:true}));
  });
  configureContractForm();
@@ -582,7 +590,13 @@ updateGuaranteeField();
   restoreContractState(saved.formState||saved);
   pendingStripeAction=saved.pendingAction||'generate';
   setStripeStatus('Paiement validé · génération en cours',true);
-  if(pendingStripeAction==='generate')setTimeout(()=>$('generateDoc')?.click(),150);
+  if(pendingStripeAction==='generate'){
+   // Le formulaire est déjà restauré : afficher directement l'étape finale,
+   // puis relancer la génération sans repasser visuellement par les missions.
+   showStep(6);
+   $('resultArea').innerHTML='<div class="loading"><div><div class="spinner"></div><strong>Paiement validé · CleanUp prépare votre contrat…</strong><p style="font-size:11px;color:#766C66">Restauration des données et rédaction du document.</p></div></div>';
+   setTimeout(()=>$('generateDoc')?.click(),100);
+  }
  }catch(error){
   console.error('Stripe resume error:',error);
   setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
