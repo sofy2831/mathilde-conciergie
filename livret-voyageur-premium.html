@@ -266,10 +266,10 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 <label class="option"><input type="checkbox" id="catParking" checked> Stationnement</label>
 </div>
 <div class="panel">
-<h3>Préparer les recommandations avec CleanUp</h3>
-<p>CleanUp proposera des lieux connus, des commerces utiles, des activités et des événements correspondant à la période choisie.</p>
-<button class="btn accent" id="prepareRecommendations" type="button">✦ CleanUp prépare les recommandations</button>
-<p class="status" id="recommendationStatus">Préparation non lancée.</p>
+<h3>Valider le contenu du livret</h3>
+<p>Vérifiez les rubriques choisies et ajoutez, si besoin, vos bonnes adresses personnelles. Les recommandations complètes seront créées après le paiement, à l’étape suivante.</p>
+<button class="btn accent" id="prepareRecommendations" type="button">Continuer vers la génération →</button>
+<p class="status" id="recommendationStatus">Aucun paiement n’est demandé à cette étape.</p>
 <div class="recommendation-progress" id="recommendationProgress">
   <div class="bar"><span id="recommendationBar"></span></div>
   <div class="recommendation-steps" id="recommendationSteps">
@@ -442,7 +442,7 @@ function restoreFormState(saved){
   field.dispatchEvent(new Event(field.type==='checkbox'?'change':'input',{bubbles:true}));
  });
  recommendationsPrepared=!!saved.recommendationsPrepared;
- if(recommendationsPrepared)$('generatedRecommendations')?.classList.add('show');
+ if(recommendationsPrepared)$('generatedRecommendations')?.classList.remove('show');
  showStep(Number(saved.currentStep)||1);
 }
 
@@ -637,36 +637,37 @@ $('prepareRecommendations').onclick=async()=>{
  const btn=$('prepareRecommendations'),status=$('recommendationStatus'),box=$('recommendationProgress'),bar=$('recommendationBar');
  const steps=[...document.querySelectorAll('#recommendationSteps .recommendation-step')];
  btn.disabled=true;
- btn.textContent='Préparation en cours…';
+ btn.textContent='Validation en cours…';
  box.classList.add('show');
- status.textContent='CleanUp prépare la structure du livret avant la génération finale.';
+ status.textContent='Vérification des rubriques sélectionnées.';
  steps.forEach((el,i)=>{el.classList.toggle('active',i===0);el.classList.remove('done')});
- bar.style.width='18%';
+ bar.style.width='20%';
 
  const messages=[
-  'Analyse de la destination',
-  'Sélection des rubriques utiles',
-  'Préparation des recommandations',
-  'Organisation des contenus',
-  'Prêt pour la génération finale'
+  'Destination vérifiée',
+  'Rubriques sélectionnées',
+  'Bonnes adresses personnelles enregistrées',
+  'Contenu prêt pour CleanUp',
+  'Passage à la génération finale'
  ];
  for(let i=0;i<steps.length;i++){
-  await new Promise(resolve=>setTimeout(resolve,320));
+  await new Promise(resolve=>setTimeout(resolve,220));
   steps.forEach((el,index)=>{
    el.classList.toggle('active',index===i+1 && i+1<steps.length);
    el.classList.toggle('done',index<=i);
   });
   bar.style.width=Math.min(100,20+(i+1)*16)+'%';
-  status.textContent=messages[i]||'Préparation en cours…';
+  status.textContent=messages[i]||'Validation en cours…';
  }
 
  recommendationsPrepared=true;
- $('generatedRecommendations').classList.add('show');
- status.textContent='✓ Structure préparée. Vous pouvez ajouter vos bonnes adresses ; CleanUp générera les recommandations complètes après le paiement, à l’étape 4.';
- btn.textContent='✓ Structure préparée';
+ $('generatedRecommendations').classList.remove('show');
+ status.textContent='✓ Contenu validé. Les recommandations seront générées après le paiement.';
+ btn.textContent='✓ Contenu validé';
  btn.classList.remove('accent');
  btn.classList.add('primary');
  btn.disabled=false;
+ setTimeout(()=>showStep(4),350);
 };
 
 $('generateBooklet').onclick=async()=>{
