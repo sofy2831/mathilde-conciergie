@@ -636,22 +636,37 @@ function buildPrint(ai){const home=escapeHtml($('homeName').value||'Livret Voyag
 $('prepareRecommendations').onclick=async()=>{
  const btn=$('prepareRecommendations'),status=$('recommendationStatus'),box=$('recommendationProgress'),bar=$('recommendationBar');
  const steps=[...document.querySelectorAll('#recommendationSteps .recommendation-step')];
- let current=0;
- const render=(index)=>{steps.forEach((el,i)=>{el.classList.toggle('active',i===index);el.classList.toggle('done',i<index)});bar.style.width=Math.min(95,12+index*21)+'%'};
- btn.disabled=true;btn.textContent='Préparation en cours…';box.classList.add('show');status.textContent='CleanUp prépare les recommandations locales.';render(0);
- const timer=setInterval(()=>{current=Math.min(current+1,steps.length-1);render(current)},1300);
- try{
-   const dataPayload=payload();dataPayload.mode='recommendations';
-   const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(securePayload(dataPayload))});
-   const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'Préparation impossible.');
-   const ai=sanitizeAi(data.ai);
-   $('restaurants').value=listText(ai.restaurants);$('shops').value=listText(ai.shops);$('activities').value=listText(ai.activities);$('transport').value=listText(ai.transport);$('tips').value=listText(ai.tips);
-   recommendationsPrepared=true;clearInterval(timer);steps.forEach(el=>{el.classList.remove('active');el.classList.add('done')});bar.style.width='100%';
-   $('generatedRecommendations').classList.add('show');
-   status.textContent='✓ Recommandations préparées. Vous pouvez les corriger ou ajouter vos propres bonnes adresses.';
-   btn.textContent='✓ Recommandations préparées';btn.classList.remove('accent');btn.classList.add('primary');
- }catch(error){clearInterval(timer);status.textContent=error.message;btn.textContent='✦ CleanUp prépare les recommandations';bar.style.width='0%'}
- finally{btn.disabled=false}
+ btn.disabled=true;
+ btn.textContent='Préparation en cours…';
+ box.classList.add('show');
+ status.textContent='CleanUp prépare la structure du livret avant la génération finale.';
+ steps.forEach((el,i)=>{el.classList.toggle('active',i===0);el.classList.remove('done')});
+ bar.style.width='18%';
+
+ const messages=[
+  'Analyse de la destination',
+  'Sélection des rubriques utiles',
+  'Préparation des recommandations',
+  'Organisation des contenus',
+  'Prêt pour la génération finale'
+ ];
+ for(let i=0;i<steps.length;i++){
+  await new Promise(resolve=>setTimeout(resolve,320));
+  steps.forEach((el,index)=>{
+   el.classList.toggle('active',index===i+1 && i+1<steps.length);
+   el.classList.toggle('done',index<=i);
+  });
+  bar.style.width=Math.min(100,20+(i+1)*16)+'%';
+  status.textContent=messages[i]||'Préparation en cours…';
+ }
+
+ recommendationsPrepared=true;
+ $('generatedRecommendations').classList.add('show');
+ status.textContent='✓ Structure préparée. Vous pouvez ajouter vos bonnes adresses ; CleanUp générera les recommandations complètes après le paiement, à l’étape 4.';
+ btn.textContent='✓ Structure préparée';
+ btn.classList.remove('accent');
+ btn.classList.add('primary');
+ btn.disabled=false;
 };
 
 $('generateBooklet').onclick=async()=>{
@@ -712,11 +727,9 @@ $('newBooklet').onclick=async()=>{
  }
 
  document.querySelectorAll('.stripeBtn').forEach(button=>{
-  button.addEventListener('click',async()=>{
-   if(cleanupAdminMode){setStripeStatus('Mode administrateur déjà actif.',true);return;}
-   button.disabled=true;button.textContent='Ouverture du paiement…';
-   const ready=await ensureLivretPayment('');
-   if(ready){button.disabled=false;button.textContent='Paiement déjà validé';}
+  button.addEventListener('click',()=>{
+   showStep(1);
+   document.querySelector('.stepper')?.scrollIntoView({behavior:'smooth',block:'start'});
   });
  });
 
