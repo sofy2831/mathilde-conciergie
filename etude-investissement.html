@@ -1911,10 +1911,10 @@ function updateStudyProgress(value,label){
   if(label)$('studyProgressText').textContent=label;
   updateGenerationStepList(studyProgressValue);
 }
-function startStudyProgress(){
+function startStudyProgress(startValue=20,startLabel='Paiement validé · lancement de l’analyse IA…'){
   clearInterval(studyProgressTimer);
-  studyProgressValue=3;
-  updateStudyProgress(3,'Vérification des informations…');
+  studyProgressValue=Math.max(5,Number(startValue)||20);
+  updateStudyProgress(studyProgressValue,startLabel);
   studyProgressTimer=setInterval(()=>{
     let inc=.4,label='Rédaction du rapport financier…';
     if(studyProgressValue<24){inc=3+Math.random()*3;label='Analyse du quartier et du marché locatif…'}
@@ -2144,24 +2144,23 @@ function applyBackendStudy(engine,ai){
   showStep(10);
 }
 async function generateInvestmentStudy(){
-  if(!preflightValidated){
-    const canContinue=await preflightCheck();
-    if(!canContinue){
-      alert('Corrigez les informations indispensables signalées avant de générer le rapport.');
-      document.getElementById('preflightPanel')?.scrollIntoView({behavior:'smooth',block:'center'});
-      return;
-    }
-  }
-
   const button=$('generateStudy');
-  if(!val('address') || valueOrPlaceholder('surface')<10 || valueOrPlaceholder('capacity')<1 || valueOrPlaceholder('purchasePrice')<=0){
-    alert('Complétez au minimum l’adresse, la surface, la capacité et le prix affiché.');
+  if(!val('address') || valueOrPlaceholder('surface')<10 || valueOrPlaceholder('capacity')<1 || valueOrPlaceholder('purchasePrice')<=0 || valueOrPlaceholder('loanYears')<=0){
+    alert('Complétez au minimum l’adresse, la surface, la capacité, le prix affiché et la durée du financement.');
     return;
   }
-  if(!await ensureInvestmentPayment())return;
+
+  if(!cleanupAdminMode && !paidSessionId){
+    updateStudyProgress(5,'Préparation sécurisée de votre étude…');
+    if($('uxStudyProgressBar'))$('uxStudyProgressBar').style.width='5%';
+    if($('uxStudyProgressPercent'))$('uxStudyProgressPercent').textContent='5 %';
+    if($('uxStudyProgressText'))$('uxStudyProgressText').textContent='Préparation sécurisée de votre étude…';
+    if(!await ensureInvestmentPayment())return;
+  }
+
   button.disabled=true;
   button.textContent='Analyse en cours…';
-  startStudyProgress();
+  startStudyProgress(20,'Paiement validé · lancement de l’analyse IA…');
   try{
     const response=await fetch(CLEANUP_AI_ENDPOINT,{
       method:'POST',
@@ -2530,8 +2529,32 @@ function mirrorProgress(){
 $('uxGenerateStudy')?.addEventListener('click',async()=>{
   if(!validateAIUxStep(1))return;
   syncUxToEngine();
-  const btn=$('uxGenerateStudy');btn.disabled=true;btn.textContent='Analyse en cours…';mirrorProgress();
-  try{await generateInvestmentStudy();if(generated){const ready=$('uxStudyReady');if(ready)ready.style.display='block';btn.style.display='none';document.body.classList.add('study-final-locked'); document.querySelectorAll('.step,[data-step],#prevBtn,.nav-actions button').forEach(el=>{if(el.id!=='uxPrintPdf'&&el.id!=='uxNewStudy')el.disabled=true;})}}finally{btn.disabled=false;btn.textContent='✦ Lancer l’analyse Premium IA'}
+  const btn=$('uxGenerateStudy');
+  btn.disabled=true;
+  btn.textContent=paidSessionId||cleanupAdminMode?'Analyse en cours…':'Ouverture du paiement sécurisé…';
+  const uxBox=$('uxStudyGenerationProgress');
+  if(uxBox)uxBox.classList.add('show');
+  if(!paidSessionId&&!cleanupAdminMode){
+    if($('uxStudyProgressBar'))$('uxStudyProgressBar').style.width='5%';
+    if($('uxStudyProgressPercent'))$('uxStudyProgressPercent').textContent='5 %';
+    if($('uxStudyProgressText'))$('uxStudyProgressText').textContent='Préparation sécurisée de votre étude…';
+  }
+  mirrorProgress();
+  try{
+    await generateInvestmentStudy();
+    if(generated){
+      const ready=$('uxStudyReady');
+      if(ready)ready.style.display='block';
+      btn.style.display='none';
+      document.body.classList.add('study-final-locked');
+      document.querySelectorAll('.step,[data-step],#prevBtn,.nav-actions button').forEach(el=>{
+        if(el.id!=='uxPrintPdf'&&el.id!=='uxNewStudy')el.disabled=true;
+      });
+    }
+  }finally{
+    btn.disabled=false;
+    btn.textContent='✦ Lancer l’analyse Premium IA';
+  }
 });
 setAIUxStep(1);
 
@@ -2567,11 +2590,15 @@ setAIUxStep(1);
   updateAIRecap();
   const progressBox=document.getElementById('uxStudyGenerationProgress');
   if(progressBox)progressBox.classList.add('show');
+  updateStudyProgress(20,'Paiement validé · lancement de l’analyse IA…');
+  if(document.getElementById('uxStudyProgressBar'))document.getElementById('uxStudyProgressBar').style.width='20%';
+  if(document.getElementById('uxStudyProgressPercent'))document.getElementById('uxStudyProgressPercent').textContent='20 %';
+  if(document.getElementById('uxStudyProgressText'))document.getElementById('uxStudyProgressText').textContent='Paiement validé · lancement de l’analyse IA…';
   setStripeStatus('Paiement validé · analyse IA en cours');
   setTimeout(()=>{
    const btn=document.getElementById('uxGenerateStudy')||document.getElementById('generateStudy');
    btn?.click();
-  },350);
+  },120);
  }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
