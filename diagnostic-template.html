@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
@@ -511,6 +510,37 @@ text-overflow:clip!important;
 }
 </style>
 
+
+<style id="cleanup-no-truncation-final">
+.page2 .metric p,
+.page2 .client p,
+.page2 .position p,
+.page2 .access-table td,
+.page3 .market-position p,
+.page4 .timeline-note p,
+.page4 .season b,
+.page4 .season small,
+.page4 .season small.muted,
+.page5 .owner-note p,
+.page5 .timeline-note p,
+.page6 .decision-box p,
+.page6 .certif p {
+  display:block!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-line-clamp:unset!important;
+  -webkit-box-orient:initial!important;
+}
+.page2 .metric p{font-size:9.7px!important;line-height:1.18!important}
+.page2 .client p{font-size:10.2px!important;line-height:1.2!important}
+.page2 .position p{font-size:10.6px!important;line-height:1.25!important}
+.page2 .access-table td:first-child{font-size:10.9px!important}
+.page4 .timeline-note p,
+.page5 .timeline-note p{font-size:9.8px!important;line-height:1.2!important}
+.page4 .season small{font-size:8.5px!important;line-height:1.12!important}
+</style>
+
 </head>
 <body>
 <div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
@@ -581,7 +611,7 @@ text-overflow:clip!important;
   </div>
 </div><div class="cover-kpis"><div class="cover-kpi"><div class="kpi-ico">↗</div><b data-value="caRealiste">0 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><div class="kpi-ico">◕</div><b data-value="occRealiste">0 %</b><span>Occupation cible</span></div><div class="cover-kpi"><div class="kpi-ico">◇</div><b data-value="prixRealiste">0 €</b><span>Prix moyen par nuit</span></div></div></div><aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:83"><div class="donut-in"><div><div class="score-num"><span data-value="score">0</span><small>/100</small></div><div class="score-label" id="scoreLabel">Bon potentiel</div></div></div></div><div class="stars" id="stars">★★★★☆</div></div></aside></div><div class="address"><div class="addr-pin">⌖</div><div><div data-value="adresseFull">Adresse</div><small data-value="adresseZone">Zone</small></div></div><div class="info-grid"><div class="info"><div><div class="icon">⌂</div><b data-value="surface">0 m²</b><span>Surface</span></div></div><div class="info"><div><div class="icon">👥</div><b data-value="capaciteNb">0</b><span>Voyageurs</span></div></div><div class="info"><div><div class="icon">🛏</div><b data-value="chambres">0 chambre</b><span>Configuration</span></div></div><div class="info"><div><div class="icon">▣</div><b>LCD</b><span>Location courte durée</span></div></div></div><div class="notice"><div class="notice-star">★</div><p id="coverNotice">Potentiel calculé automatiquement.</p></div><div class="report-meta"><span id="reportClient">Diagnostic propriétaire</span><span id="reportGeneratedAt">Diagnostic non généré</span></div><div class="page-no">1</div></section>
 <section class="a4 page2"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Potentiel locatif</div></div><h2>Potentiel locatif</h2><div class="metrics"><div class="metric"><div class="bigico">📍</div><b>Emplacement</b><div class="circle" id="circlePlace"><div class="circle-in" data-value="notePlace">0/10</div></div><p id="txtPlace">Score calculé selon la densité urbaine déduite de l’adresse.</p></div><div class="metric"><div class="bigico">🚆</div><b>Accessibilité</b><div class="circle" id="circleAccess"><div class="circle-in" data-value="noteAccess">0/10</div></div><p id="txtAccess">Accessibilité estimée par zone géographique.</p></div><div class="metric"><div class="bigico">📈</div><b>Potentiel locatif</b><div class="circle" id="circlePot"><div class="circle-in" data-value="notePot">0/10</div></div><p id="txtPot">Demande estimée selon ville, surface et capacité.</p></div><div class="metric"><div class="bigico">€</div><b>Rentabilité</b><div class="circle" id="circleRent"><div class="circle-in" data-value="noteRent">0/10</div></div><p id="txtRent">Rentabilité brute calculée sur adresse, surface et capacité.</p></div></div><h2 class="section-title">Clientèle cible</h2><div class="client-grid"><div class="client"><div><div class="ico">👨‍👩‍👧</div><h3>Familles</h3><p id="client1">Hébergement confortable adapté à la capacité renseignée.</p></div></div><div class="client"><div><div class="ico">👥</div><h3>Groupes d’amis</h3><p id="client2">Séjours de courte durée pour visiter la zone.</p></div></div><div class="client"><div><div class="ico">💼</div><h3>Professionnels</h3><p id="client3">Missions et déplacements dans le secteur.</p></div></div><div class="client"><div><div class="ico">🏰</div><h3>Touristes</h3><p id="client4">Attractivité touristique estimée selon l’adresse.</p></div></div></div><h2 class="section-title">Accessibilité</h2><table class="table access-table"><tr><th>Accès</th><th>Temps estimé</th></tr><tr><td><span class="access-ico">🏙️</span><span data-access="centre">Centre-ville</span></td><td data-value="tCentre">-</td></tr><tr><td><span class="access-ico">⛪</span><span data-access="monument">Point d’intérêt principal</span></td><td data-value="tMonument">-</td></tr><tr><td><span class="access-ico">🌊</span><span data-access="loisir">Zone loisirs / promenade</span></td><td data-value="tLoisir">-</td></tr><tr><td><span class="access-ico">🚆</span>Gare SNCF</td><td data-value="tGare">-</td></tr><tr><td><span class="access-ico">🚋</span>Transport urbain</td><td data-value="tTransport">-</td></tr><tr><td><span class="access-ico">🚗</span>Accès routier majeur</td><td data-value="tRoute">-</td></tr></table><div class="position"><div class="medal">🏅</div><div><b id="positionTitle">Positionnement conseillé</b><p id="positionText">Le positionnement est généré selon la capacité, la surface et l’adresse.</p></div></div><div class="page-no">2</div></section>
-<section class="a4 page3"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Marché local</div></div><h2>Concurrence & prix</h2><h3 style="margin-bottom:12px">Analyse IA des logements comparables - prix à la nuitée</h3><div class="comp-grid"><div class="comp"><h3>Standard</h3><small data-comp="standardMeta">-</small><div class="price" data-value="compStandard">0 €</div><small data-comp="standardRate">/ nuit · score simulé</small></div><div class="comp"><h3>Familial</h3><small data-comp="familialMeta">-</small><div class="price" data-value="compFamilial">0 €</div><small data-comp="familialRate">/ nuit · score simulé</small></div><div class="comp"><h3>Confort</h3><small data-comp="confortMeta">-</small><div class="price" data-value="compConfort">0 €</div><small data-comp="confortRate">/ nuit · score simulé</small></div><div class="comp"><h3>Premium</h3><small data-comp="premiumMeta">-</small><div class="price" data-value="compPremium">0 €</div><small data-comp="premiumRate">/ nuit · score simulé</small></div></div><div class="notice"><div class="notice-star">→</div><p>Les prix indiqués sont des prix à la nuitée générés par le moteur CleanUp. Le positionnement recommandé consiste à démarrer légèrement sous le marché, puis à remonter progressivement après les premiers avis.</p></div><div style="height:6mm"></div><h2 class="section-title">Analyse de prix</h2><div class="price-cards"><div class="price-card"><span>Lancement</span><b data-value="prixLancement">0 €</b><span>Obtenir les premiers avis</span></div><div class="price-card"><span>Tarif courant</span><b data-value="prixRealiste">0 €</b><span>Objectif réaliste</span></div><div class="price-card"><span>Week-end</span><b data-value="prixWeekEnd">0 €</b><span>+10 à +15 %</span></div><div class="price-card"><span>Événements</span><b data-value="prixEvent">0 €</b><span>+25 à +40 %</span></div></div>
+<section class="a4 page3"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Marché local</div></div><h2>Concurrence & prix</h2><h3 style="margin-bottom:12px">Analyse IA des logements comparables - prix à la nuitée</h3><div class="comp-grid"><div class="comp"><h3>Standard</h3><small data-comp="standardMeta">-</small><div class="price" data-value="compStandard">0 €</div><small data-comp="standardRate">/ nuit · indice IA</small></div><div class="comp"><h3>Familial</h3><small data-comp="familialMeta">-</small><div class="price" data-value="compFamilial">0 €</div><small data-comp="familialRate">/ nuit · indice IA</small></div><div class="comp"><h3>Confort</h3><small data-comp="confortMeta">-</small><div class="price" data-value="compConfort">0 €</div><small data-comp="confortRate">/ nuit · indice IA</small></div><div class="comp"><h3>Premium</h3><small data-comp="premiumMeta">-</small><div class="price" data-value="compPremium">0 €</div><small data-comp="premiumRate">/ nuit · indice IA</small></div></div><div class="notice"><div class="notice-star">→</div><p>Les prix indiqués sont des prix à la nuitée générés par le moteur CleanUp. Le positionnement recommandé consiste à démarrer légèrement sous le marché, puis à remonter progressivement après les premiers avis.</p></div><div style="height:6mm"></div><h2 class="section-title">Analyse de prix</h2><div class="price-cards"><div class="price-card"><span>Lancement</span><b data-value="prixLancement">0 €</b><span>Obtenir les premiers avis</span></div><div class="price-card"><span>Tarif courant</span><b data-value="prixRealiste">0 €</b><span>Objectif réaliste</span></div><div class="price-card"><span>Week-end</span><b data-value="prixWeekEnd">0 €</b><span>+10 à +15 %</span></div><div class="price-card"><span>Événements</span><b data-value="prixEvent">0 €</b><span>+25 à +40 %</span></div></div>
 <h2 class="section-title">Stratégie de diffusion</h2>
 <div class="platform-grid">
   <div class="platform-card"><b>Airbnb</b><span id="platformAirbnb">Visibilité et premiers avis</span></div>
@@ -847,14 +877,44 @@ const cleanPublicText = (value, max = 320) => {
     .replace(/\s*\(?chiffres? (?:fournis|issus|provenant)[^.!?]*[.!?]?/gi, ' ')
     .replace(/\s*données moteur[^.!?]*[.!?]?/gi, ' ')
     .replace(/\s*sans consultation d['’]annonces en temps réel[.!?]?/gi, ' ')
-    .replace(/\s*simulation CleanUp IA/gi, 'estimation CleanUp')
-    .replace(/\s*CleanUp IA/gi, 'CleanUp')
+    .replace(/\(?\s*simulation\s*\)?/gi, 'Analyse IA')
+    .replace(/\bsimul(?:é|ée|és|ées)\b/gi, 'analysé par IA')
+    .replace(/\s*CleanUp IA/gi, ' CleanUp')
     .replace(/\s*par le moteur CleanUp/gi, 'par CleanUp Manager')
     .replace(/\s*\(inchangées?\)/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
-  if (text.length > max) text = text.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
-  return text;
+
+  if (text.length <= max) return text;
+
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+  let complete = '';
+  for (const sentence of sentences) {
+    const candidate = (complete + ' ' + sentence.trim()).trim();
+    if (candidate.length <= max) complete = candidate;
+    else break;
+  }
+  if (complete) return complete;
+
+  const clauses = text.split(/\s*[;:]\s*|\s+—\s+|\s+-\s+/);
+  let clauseText = '';
+  for (const clause of clauses) {
+    const cleanClause = clause.trim().replace(/[.,;:!?]+$/, '');
+    if (!cleanClause) continue;
+    const candidate = (clauseText + (clauseText ? ' ; ' : '') + cleanClause).trim();
+    if (candidate.length <= max) clauseText = candidate;
+    else break;
+  }
+  if (clauseText) return clauseText.replace(/[;,\s]+$/, '') + '.';
+
+  const words = text.split(/\s+/);
+  let result = '';
+  for (const word of words) {
+    const candidate = result ? `${result} ${word}` : word;
+    if (candidate.length > max) break;
+    result = candidate;
+  }
+  return result.replace(/[;,:\s]+$/, '') + '.';
 };
 
 const setReportIdentity = (generatedAt = null) => {
@@ -1135,7 +1195,7 @@ function injectPage3(ai, engine) {
     const values = items.map((item) => Number(item.prix)).filter(Number.isFinite);
     if (!values.length) return fallback;
     const min = Math.min(...values), max = Math.max(...values);
-    return min === max ? `Repère observé : ${formatEuro(min)}` : `Fourchette simulée : ${formatEuro(min)} à ${formatEuro(max)}`;
+    return min === max ? `Repère observé : ${formatEuro(min)}` : `Fourchette analysée par IA : ${formatEuro(min)} à ${formatEuro(max)}`;
   };
   $('platformAirbnb').textContent = rangeText(byPlatform('Airbnb'), 'Visibilité et premiers avis');
   $('platformBooking').textContent = rangeText(byPlatform('Booking'), 'Clientèle mobile et professionnelle');
