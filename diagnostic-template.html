@@ -546,7 +546,7 @@ button:disabled{
 <section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div>
 <div class="generation-progress" id="generationProgress" aria-hidden="true">
   <div class="generation-progress-head">
-    <span id="generationProgressText">Préparation de l’analyse…</span>
+    <span id="generationProgressText">Préparation de l’analyse</span>
     <strong id="generationProgressPercent">0 %</strong>
   </div>
   <div class="generation-progress-track">
@@ -561,7 +561,7 @@ button:disabled{
 <div class="cover-summary geo-card">
   <div class="geo-map" aria-label="Localisation du logement">
     <iframe id="osmMapFrame" class="osm-map-frame" title="Carte de localisation" loading="eager"></iframe>
-    <div id="mapFallback" class="map-fallback">Localisation en cours…</div>
+    <div id="mapFallback" class="map-fallback">Localisation en cours</div>
   </div>
   <div class="geo-caption">
     <div class="geo-title">Géolocalisation du bien</div>
@@ -733,7 +733,7 @@ function collectFormState(extra={}){
   if(el.type==='file')return;
   fields[el.id]=(el.type==='checkbox'||el.type==='radio')?el.checked:el.value;
  });
- return {fields,...extra};
+ return {fields,extra};
 }
 function restoreFormState(saved){
  if(!saved)return;
@@ -802,7 +802,7 @@ async function updateOSMMap(address){
 
   if(fallback){
     fallback.style.display = 'grid';
-    fallback.textContent = 'Localisation en cours…';
+    fallback.textContent = 'Localisation en cours';
   }
 
   try{
@@ -836,13 +836,13 @@ const cleanPublicText = (value, max = 320) => {
     .replace(/\s*\(?chiffres? (?:fournis|issus|provenant)[^.!?]*[.!?]?/gi, ' ')
     .replace(/\s*données moteur[^.!?]*[.!?]?/gi, ' ')
     .replace(/\s*sans consultation d['’]annonces en temps réel[.!?]?/gi, ' ')
-    .replace(/\s*simulation CleanUp IA/gi, 'estimation CleanUp')
+    .replace(/\s*analyse IA CleanUp IA/gi, 'estimation CleanUp')
     .replace(/\s*CleanUp IA/gi, 'CleanUp')
     .replace(/\s*par le moteur CleanUp/gi, 'par CleanUp Manager')
     .replace(/\s*\(inchangées?\)/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
-  if (text.length > max) text = text.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
+  if (text.length > max) text = text.slice(0, max - 1).replace(/\s+\S*$/, '') + '';
   return text;
 };
 
@@ -884,24 +884,24 @@ function updateGenerationProgress(value, text = '') {
 function startGenerationProgress() {
   clearInterval(generationProgressTimer);
   generationProgressValue = 4;
-  updateGenerationProgress(4, 'Préparation des données du logement…');
+  updateGenerationProgress(4, 'Préparation des données du logement');
 
   generationProgressTimer = setInterval(() => {
     let increment = 0;
-    let label = 'Analyse du potentiel locatif…';
+    let label = 'Analyse du potentiel locatif';
 
     if (generationProgressValue < 25) {
       increment = 3 + Math.random() * 3;
-      label = 'Analyse du logement et du secteur…';
+      label = 'Analyse du logement et du secteur';
     } else if (generationProgressValue < 52) {
       increment = 1.8 + Math.random() * 2.4;
-      label = 'Calcul des prix et des scénarios financiers…';
+      label = 'Calcul des prix et des scénarios financiers';
     } else if (generationProgressValue < 75) {
       increment = 1 + Math.random() * 1.8;
-      label = 'Analyse de la saisonnalité et des événements…';
+      label = 'Analyse de la saisonnalité et des événements';
     } else if (generationProgressValue < 90) {
       increment = .35 + Math.random() * .8;
-      label = 'Rédaction et mise en forme des 6 pages…';
+      label = 'Rédaction et mise en forme des 6 pages';
     }
 
     if (generationProgressValue < 90) {
@@ -930,7 +930,7 @@ function setLoading(isLoading, message = '') {
 
   if (button) {
     button.disabled = isLoading;
-    button.textContent = isLoading ? 'Analyse en cours…' : 'Générer mon diagnostic';
+    button.textContent = isLoading ? 'Analyse en cours' : 'Générer mon diagnostic';
     button.style.opacity = isLoading ? '.72' : '1';
     button.style.cursor = isLoading ? 'wait' : 'pointer';
   }
@@ -981,7 +981,7 @@ function updateBars(engine) {
     engine.scenarios.realiste.caAnnuel,
     engine.scenarios.optimiste.caAnnuel,
   ];
-  const max = Math.max(...values, 1);
+  const max = Math.max(values, 1);
   const miniIds = ['barPrudent', 'barRealiste', 'barOptimiste'];
   const financeIds = ['fbarPrudent', 'fbarRealiste', 'fbarOptimiste'];
 
@@ -1123,7 +1123,7 @@ function injectPage3(ai, engine) {
     if (!items.length) return fallback;
     const values = items.map((item) => Number(item.prix)).filter(Number.isFinite);
     if (!values.length) return fallback;
-    const min = Math.min(...values), max = Math.max(...values);
+    const min = Math.min(values), max = Math.max(values);
     return min === max ? `Repère observé : ${formatEuro(min)}` : `Fourchette simulée : ${formatEuro(min)} à ${formatEuro(max)}`;
   };
   $('platformAirbnb').textContent = rangeText(byPlatform('Airbnb'), 'Visibilité et premiers avis');
@@ -1205,7 +1205,7 @@ async function generateDiagnostic() {
   try {
     if(!await ensureDiagnosticPayment())return;
     const inputs = validateInputs();
-    setLoading(true, 'Analyse du logement et rédaction des 6 pages…');
+    setLoading(true, 'Analyse du logement et rédaction des 6 pages');
 
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -1260,7 +1260,7 @@ checkCoverageBtn?.addEventListener("click",()=>{
     return;
   }
 
-  checkCoverageBtn.textContent="Vérification…";
+  checkCoverageBtn.textContent="Vérification";
   checkCoverageBtn.disabled=true;
 
   setTimeout(()=>{
