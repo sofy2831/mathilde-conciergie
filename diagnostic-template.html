@@ -500,6 +500,16 @@ button:disabled{
 }
 
 </style>
+
+<style id="cleanup-final-fixes">
+.page2 .client p{
+display:block!important;
+overflow:visible!important;
+-webkit-line-clamp:unset!important;
+text-overflow:clip!important;
+}
+</style>
+
 </head>
 <body>
 <div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
@@ -546,7 +556,7 @@ button:disabled{
 <section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div>
 <div class="generation-progress" id="generationProgress" aria-hidden="true">
   <div class="generation-progress-head">
-    <span id="generationProgressText">Préparation de l’analyse</span>
+    <span id="generationProgressText">Préparation de l’analyse…</span>
     <strong id="generationProgressPercent">0 %</strong>
   </div>
   <div class="generation-progress-track">
@@ -561,7 +571,7 @@ button:disabled{
 <div class="cover-summary geo-card">
   <div class="geo-map" aria-label="Localisation du logement">
     <iframe id="osmMapFrame" class="osm-map-frame" title="Carte de localisation" loading="eager"></iframe>
-    <div id="mapFallback" class="map-fallback">Localisation en cours</div>
+    <div id="mapFallback" class="map-fallback">Localisation en cours…</div>
   </div>
   <div class="geo-caption">
     <div class="geo-title">Géolocalisation du bien</div>
@@ -570,7 +580,7 @@ button:disabled{
   </div>
 </div><div class="cover-kpis"><div class="cover-kpi"><div class="kpi-ico">↗</div><b data-value="caRealiste">0 €</b><span>CA annuel réaliste</span></div><div class="cover-kpi"><div class="kpi-ico">◕</div><b data-value="occRealiste">0 %</b><span>Occupation cible</span></div><div class="cover-kpi"><div class="kpi-ico">◇</div><b data-value="prixRealiste">0 €</b><span>Prix moyen par nuit</span></div></div></div><aside class="score-card"><div><div class="score-title">Score CleanUp</div><div class="donut" id="scoreDonut" style="--score:83"><div class="donut-in"><div><div class="score-num"><span data-value="score">0</span><small>/100</small></div><div class="score-label" id="scoreLabel">Bon potentiel</div></div></div></div><div class="stars" id="stars">★★★★☆</div></div></aside></div><div class="address"><div class="addr-pin">⌖</div><div><div data-value="adresseFull">Adresse</div><small data-value="adresseZone">Zone</small></div></div><div class="info-grid"><div class="info"><div><div class="icon">⌂</div><b data-value="surface">0 m²</b><span>Surface</span></div></div><div class="info"><div><div class="icon">👥</div><b data-value="capaciteNb">0</b><span>Voyageurs</span></div></div><div class="info"><div><div class="icon">🛏</div><b data-value="chambres">0 chambre</b><span>Configuration</span></div></div><div class="info"><div><div class="icon">▣</div><b>LCD</b><span>Location courte durée</span></div></div></div><div class="notice"><div class="notice-star">★</div><p id="coverNotice">Potentiel calculé automatiquement.</p></div><div class="report-meta"><span id="reportClient">Diagnostic propriétaire</span><span id="reportGeneratedAt">Diagnostic non généré</span></div><div class="page-no">1</div></section>
 <section class="a4 page2"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Potentiel locatif</div></div><h2>Potentiel locatif</h2><div class="metrics"><div class="metric"><div class="bigico">📍</div><b>Emplacement</b><div class="circle" id="circlePlace"><div class="circle-in" data-value="notePlace">0/10</div></div><p id="txtPlace">Score calculé selon la densité urbaine déduite de l’adresse.</p></div><div class="metric"><div class="bigico">🚆</div><b>Accessibilité</b><div class="circle" id="circleAccess"><div class="circle-in" data-value="noteAccess">0/10</div></div><p id="txtAccess">Accessibilité estimée par zone géographique.</p></div><div class="metric"><div class="bigico">📈</div><b>Potentiel locatif</b><div class="circle" id="circlePot"><div class="circle-in" data-value="notePot">0/10</div></div><p id="txtPot">Demande estimée selon ville, surface et capacité.</p></div><div class="metric"><div class="bigico">€</div><b>Rentabilité</b><div class="circle" id="circleRent"><div class="circle-in" data-value="noteRent">0/10</div></div><p id="txtRent">Rentabilité brute calculée sur adresse, surface et capacité.</p></div></div><h2 class="section-title">Clientèle cible</h2><div class="client-grid"><div class="client"><div><div class="ico">👨‍👩‍👧</div><h3>Familles</h3><p id="client1">Hébergement confortable adapté à la capacité renseignée.</p></div></div><div class="client"><div><div class="ico">👥</div><h3>Groupes d’amis</h3><p id="client2">Séjours de courte durée pour visiter la zone.</p></div></div><div class="client"><div><div class="ico">💼</div><h3>Professionnels</h3><p id="client3">Missions et déplacements dans le secteur.</p></div></div><div class="client"><div><div class="ico">🏰</div><h3>Touristes</h3><p id="client4">Attractivité touristique estimée selon l’adresse.</p></div></div></div><h2 class="section-title">Accessibilité</h2><table class="table access-table"><tr><th>Accès</th><th>Temps estimé</th></tr><tr><td><span class="access-ico">🏙️</span><span data-access="centre">Centre-ville</span></td><td data-value="tCentre">-</td></tr><tr><td><span class="access-ico">⛪</span><span data-access="monument">Point d’intérêt principal</span></td><td data-value="tMonument">-</td></tr><tr><td><span class="access-ico">🌊</span><span data-access="loisir">Zone loisirs / promenade</span></td><td data-value="tLoisir">-</td></tr><tr><td><span class="access-ico">🚆</span>Gare SNCF</td><td data-value="tGare">-</td></tr><tr><td><span class="access-ico">🚋</span>Transport urbain</td><td data-value="tTransport">-</td></tr><tr><td><span class="access-ico">🚗</span>Accès routier majeur</td><td data-value="tRoute">-</td></tr></table><div class="position"><div class="medal">🏅</div><div><b id="positionTitle">Positionnement conseillé</b><p id="positionText">Le positionnement est généré selon la capacité, la surface et l’adresse.</p></div></div><div class="page-no">2</div></section>
-<section class="a4 page3"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Marché local</div></div><h2>Concurrence & prix</h2><h3 style="margin-bottom:12px">Logements comparables simulés - prix à la nuitée</h3><div class="comp-grid"><div class="comp"><h3>Standard</h3><small data-comp="standardMeta">-</small><div class="price" data-value="compStandard">0 €</div><small data-comp="standardRate">/ nuit · score simulé</small></div><div class="comp"><h3>Familial</h3><small data-comp="familialMeta">-</small><div class="price" data-value="compFamilial">0 €</div><small data-comp="familialRate">/ nuit · score simulé</small></div><div class="comp"><h3>Confort</h3><small data-comp="confortMeta">-</small><div class="price" data-value="compConfort">0 €</div><small data-comp="confortRate">/ nuit · score simulé</small></div><div class="comp"><h3>Premium</h3><small data-comp="premiumMeta">-</small><div class="price" data-value="compPremium">0 €</div><small data-comp="premiumRate">/ nuit · score simulé</small></div></div><div class="notice"><div class="notice-star">→</div><p>Les prix indiqués sont des prix à la nuitée générés par le moteur CleanUp. Le positionnement recommandé consiste à démarrer légèrement sous le marché, puis à remonter progressivement après les premiers avis.</p></div><div style="height:6mm"></div><h2 class="section-title">Analyse de prix</h2><div class="price-cards"><div class="price-card"><span>Lancement</span><b data-value="prixLancement">0 €</b><span>Obtenir les premiers avis</span></div><div class="price-card"><span>Tarif courant</span><b data-value="prixRealiste">0 €</b><span>Objectif réaliste</span></div><div class="price-card"><span>Week-end</span><b data-value="prixWeekEnd">0 €</b><span>+10 à +15 %</span></div><div class="price-card"><span>Événements</span><b data-value="prixEvent">0 €</b><span>+25 à +40 %</span></div></div>
+<section class="a4 page3"><div class="header"><div class="logo"><div class="logo-house"></div><div class="logo-text">CleanUp<small>MANAGER</small></div></div><div class="badge">● Marché local</div></div><h2>Concurrence & prix</h2><h3 style="margin-bottom:12px">Analyse IA des logements comparables - prix à la nuitée</h3><div class="comp-grid"><div class="comp"><h3>Standard</h3><small data-comp="standardMeta">-</small><div class="price" data-value="compStandard">0 €</div><small data-comp="standardRate">/ nuit · score simulé</small></div><div class="comp"><h3>Familial</h3><small data-comp="familialMeta">-</small><div class="price" data-value="compFamilial">0 €</div><small data-comp="familialRate">/ nuit · score simulé</small></div><div class="comp"><h3>Confort</h3><small data-comp="confortMeta">-</small><div class="price" data-value="compConfort">0 €</div><small data-comp="confortRate">/ nuit · score simulé</small></div><div class="comp"><h3>Premium</h3><small data-comp="premiumMeta">-</small><div class="price" data-value="compPremium">0 €</div><small data-comp="premiumRate">/ nuit · score simulé</small></div></div><div class="notice"><div class="notice-star">→</div><p>Les prix indiqués sont des prix à la nuitée générés par le moteur CleanUp. Le positionnement recommandé consiste à démarrer légèrement sous le marché, puis à remonter progressivement après les premiers avis.</p></div><div style="height:6mm"></div><h2 class="section-title">Analyse de prix</h2><div class="price-cards"><div class="price-card"><span>Lancement</span><b data-value="prixLancement">0 €</b><span>Obtenir les premiers avis</span></div><div class="price-card"><span>Tarif courant</span><b data-value="prixRealiste">0 €</b><span>Objectif réaliste</span></div><div class="price-card"><span>Week-end</span><b data-value="prixWeekEnd">0 €</b><span>+10 à +15 %</span></div><div class="price-card"><span>Événements</span><b data-value="prixEvent">0 €</b><span>+25 à +40 %</span></div></div>
 <h2 class="section-title">Stratégie de diffusion</h2>
 <div class="platform-grid">
   <div class="platform-card"><b>Airbnb</b><span id="platformAirbnb">Visibilité et premiers avis</span></div>
@@ -733,7 +743,7 @@ function collectFormState(extra={}){
   if(el.type==='file')return;
   fields[el.id]=(el.type==='checkbox'||el.type==='radio')?el.checked:el.value;
  });
- return {fields,extra};
+ return {fields,...extra};
 }
 function restoreFormState(saved){
  if(!saved)return;
@@ -802,7 +812,7 @@ async function updateOSMMap(address){
 
   if(fallback){
     fallback.style.display = 'grid';
-    fallback.textContent = 'Localisation en cours';
+    fallback.textContent = 'Localisation en cours…';
   }
 
   try{
@@ -836,13 +846,13 @@ const cleanPublicText = (value, max = 320) => {
     .replace(/\s*\(?chiffres? (?:fournis|issus|provenant)[^.!?]*[.!?]?/gi, ' ')
     .replace(/\s*données moteur[^.!?]*[.!?]?/gi, ' ')
     .replace(/\s*sans consultation d['’]annonces en temps réel[.!?]?/gi, ' ')
-    .replace(/\s*analyse IA CleanUp IA/gi, 'estimation CleanUp')
+    .replace(/\s*simulation CleanUp IA/gi, 'estimation CleanUp')
     .replace(/\s*CleanUp IA/gi, 'CleanUp')
     .replace(/\s*par le moteur CleanUp/gi, 'par CleanUp Manager')
     .replace(/\s*\(inchangées?\)/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
-  if (text.length > max) text = text.slice(0, max - 1).replace(/\s+\S*$/, '') + '';
+  if (text.length > max) text = text.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
   return text;
 };
 
@@ -884,24 +894,24 @@ function updateGenerationProgress(value, text = '') {
 function startGenerationProgress() {
   clearInterval(generationProgressTimer);
   generationProgressValue = 4;
-  updateGenerationProgress(4, 'Préparation des données du logement');
+  updateGenerationProgress(4, 'Préparation des données du logement…');
 
   generationProgressTimer = setInterval(() => {
     let increment = 0;
-    let label = 'Analyse du potentiel locatif';
+    let label = 'Analyse du potentiel locatif…';
 
     if (generationProgressValue < 25) {
       increment = 3 + Math.random() * 3;
-      label = 'Analyse du logement et du secteur';
+      label = 'Analyse du logement et du secteur…';
     } else if (generationProgressValue < 52) {
       increment = 1.8 + Math.random() * 2.4;
-      label = 'Calcul des prix et des scénarios financiers';
+      label = 'Calcul des prix et des scénarios financiers…';
     } else if (generationProgressValue < 75) {
       increment = 1 + Math.random() * 1.8;
-      label = 'Analyse de la saisonnalité et des événements';
+      label = 'Analyse de la saisonnalité et des événements…';
     } else if (generationProgressValue < 90) {
       increment = .35 + Math.random() * .8;
-      label = 'Rédaction et mise en forme des 6 pages';
+      label = 'Rédaction et mise en forme des 6 pages…';
     }
 
     if (generationProgressValue < 90) {
@@ -930,7 +940,7 @@ function setLoading(isLoading, message = '') {
 
   if (button) {
     button.disabled = isLoading;
-    button.textContent = isLoading ? 'Analyse en cours' : 'Générer mon diagnostic';
+    button.textContent = isLoading ? 'Analyse en cours…' : 'Générer mon diagnostic';
     button.style.opacity = isLoading ? '.72' : '1';
     button.style.cursor = isLoading ? 'wait' : 'pointer';
   }
@@ -981,7 +991,7 @@ function updateBars(engine) {
     engine.scenarios.realiste.caAnnuel,
     engine.scenarios.optimiste.caAnnuel,
   ];
-  const max = Math.max(values, 1);
+  const max = Math.max(...values, 1);
   const miniIds = ['barPrudent', 'barRealiste', 'barOptimiste'];
   const financeIds = ['fbarPrudent', 'fbarRealiste', 'fbarOptimiste'];
 
@@ -1123,7 +1133,7 @@ function injectPage3(ai, engine) {
     if (!items.length) return fallback;
     const values = items.map((item) => Number(item.prix)).filter(Number.isFinite);
     if (!values.length) return fallback;
-    const min = Math.min(values), max = Math.max(values);
+    const min = Math.min(...values), max = Math.max(...values);
     return min === max ? `Repère observé : ${formatEuro(min)}` : `Fourchette simulée : ${formatEuro(min)} à ${formatEuro(max)}`;
   };
   $('platformAirbnb').textContent = rangeText(byPlatform('Airbnb'), 'Visibilité et premiers avis');
@@ -1205,7 +1215,7 @@ async function generateDiagnostic() {
   try {
     if(!await ensureDiagnosticPayment())return;
     const inputs = validateInputs();
-    setLoading(true, 'Analyse du logement et rédaction des 6 pages');
+    setLoading(true, 'Analyse du logement et rédaction des 6 pages…');
 
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -1260,7 +1270,7 @@ checkCoverageBtn?.addEventListener("click",()=>{
     return;
   }
 
-  checkCoverageBtn.textContent="Vérification";
+  checkCoverageBtn.textContent="Vérification…";
   checkCoverageBtn.disabled=true;
 
   setTimeout(()=>{
