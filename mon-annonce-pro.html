@@ -982,6 +982,93 @@ const GENERATE_LISTING_URL =
 let serverListings = {};
 let cleanupAdminMode = false;
 
+
+const MAX_VISION_PHOTOS = 15;
+const MAX_VISION_EDGE = 1280;
+const VISION_JPEG_QUALITY = 0.72;
+const MAX_VISION_DATA_URL_LENGTH = 1_900_000;
+const MAX_VISION_TOTAL_LENGTH = 18_000_000;
+
+function loadImageFromFile(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);
+    const image=new Image();
+    image.onload=()=>{
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror=()=>{
+      URL.revokeObjectURL(url);
+      reject(new Error(`Impossible de lire l’image ${file?.name || ''}.`));
+    };
+    image.src=url;
+  });
+}
+
+async function compressPhotoForVision(photo,index,coverIndex){
+  if(!(photo?.file instanceof Blob)){
+    throw new Error(`La photo ${index+1} n’est plus disponible dans le navigateur.`);
+  }
+
+  const image=await loadImageFromFile(photo.file);
+  const ratio=Math.min(1,MAX_VISION_EDGE/Math.max(image.naturalWidth,image.naturalHeight));
+  const width=Math.max(1,Math.round(image.naturalWidth*ratio));
+  const height=Math.max(1,Math.round(image.naturalHeight*ratio));
+  const canvas=document.createElement('canvas');
+  canvas.width=width;
+  canvas.height=height;
+
+  const ctx=canvas.getContext('2d',{alpha:false});
+  if(!ctx) throw new Error(`Compression impossible pour la photo ${index+1}.`);
+  ctx.fillStyle='#FFFFFF';
+  ctx.fillRect(0,0,width,height);
+  ctx.drawImage(image,0,0,width,height);
+
+  let quality=VISION_JPEG_QUALITY;
+  let dataUrl=canvas.toDataURL('image/jpeg',quality);
+  while(dataUrl.length>MAX_VISION_DATA_URL_LENGTH && quality>0.42){
+    quality-=0.08;
+    dataUrl=canvas.toDataURL('image/jpeg',quality);
+  }
+
+  if(dataUrl.length>MAX_VISION_DATA_URL_LENGTH){
+    throw new Error(`La photo ${index+1} reste trop lourde après compression.`);
+  }
+
+  return {
+    index,
+    name:String(photo.name || `Photo ${index+1}`).slice(0,160),
+    width,
+    height,
+    originalWidth:Number(photo.width || image.naturalWidth || 0),
+    originalHeight:Number(photo.height || image.naturalHeight || 0),
+    originalSize:Number(photo.size || photo.file.size || 0),
+    mimeType:'image/jpeg',
+    isCover:index===coverIndex,
+    dataUrl
+  };
+}
+
+async function buildVisionImages(){
+  const selected=photos.slice(0,MAX_VISION_PHOTOS);
+  if(!selected.length) return [];
+
+  const coverIndex=$('coverChoice').value==='' ? 0 : Number($('coverChoice').value);
+  const results=[];
+  let totalLength=0;
+
+  for(let index=0;index<selected.length;index+=1){
+    const item=await compressPhotoForVision(selected[index],index,coverIndex);
+    totalLength+=item.dataUrl.length;
+    if(totalLength>MAX_VISION_TOTAL_LENGTH){
+      throw new Error('Les photos restent trop volumineuses pour l’analyse. Réduisez leur nombre ou leur résolution.');
+    }
+    results.push(item);
+  }
+
+  return results;
+}
+
 function collectListingPayload(){
   const equipmentIds = [
     'hob','oven','microwave','dishwasher','coffee','coffeeSupplies','kettle','fridge',
@@ -1035,9 +1122,14 @@ function collectListingPayload(){
       uploadedCount: photos.length,
       plannedCount: num('photoCountPlanned'),
       coverIndex: Number($('coverChoice').value || 0),
-      dimensions: photos.slice(0, 40).map(photo => ({
+      items: photos.slice(0, 15).map((photo,index) => ({
+        index,
+        name: String(photo.name || `Photo ${index+1}`).slice(0,160),
         width: Number(photo.width || 0),
-        height: Number(photo.height || 0)
+        height: Number(photo.height || 0),
+        size: Number(photo.size || photo.file?.size || 0),
+        type: String(photo.file?.type || '').slice(0,80),
+        isCover: index === Number($('coverChoice').value || 0)
       }))
     }
   };
@@ -1255,9 +1347,25 @@ async function generateListingFromServer(options = {}){
     button.disabled=true;
     button.textContent='Génération en cours…';
 
+    button.textContent='Préparation des photos…';
+    const visionImages=await buildVisionImages();
+    const freshPayload=collectListingPayload();
+    const payloadWithImages={
+      ...payload,
+      ...freshPayload,
+      photos:{
+        ...freshPayload.photos,
+        images:visionImages
+      }
+    };
+
+    button.textContent=visionImages.length
+      ? `Analyse IA de ${visionImages.length} photo(s)…`
+      : 'Génération en cours…';
+
     const securedPayload=cleanupAdminMode
-      ? payload
-      : CleanUpStripe.addPaymentSessionToPayload(payload,paidSessionId);
+      ? payloadWithImages
+      : CleanUpStripe.addPaymentSessionToPayload(payloadWithImages,paidSessionId);
 
     const response=await fetch(GENERATE_LISTING_URL,{
       method:'POST',
@@ -1635,7 +1743,7 @@ async function resumeStripeCheckout(){
 
     showStep(5);
     await generateListingFromServer({
-      payload:payment.payload || collectListingPayload()
+      payload:collectListingPayload()
     });
   }catch(error){
     console.error('resumeStripeCheckout error:',error);
