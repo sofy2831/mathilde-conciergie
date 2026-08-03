@@ -560,7 +560,7 @@ h1 span{color:var(--terracotta)}
         <div class="section-head">
           <div>
             <h2>Ajoutez vos photos</h2>
-            <p>Les images restent dans votre navigateur. Elles servent uniquement à la prévisualisation de cette session.</p>
+            <p>Les photos servent à analyser la qualité de votre annonce, vérifier la cohérence du logement et générer des recommandations personnalisées. Seule la photo de couverture est intégrée au document PDF final.</p>
           </div>
           <div class="section-badge">Étape 3 sur 6</div>
         </div>
@@ -574,9 +574,14 @@ h1 span{color:var(--terracotta)}
         </div>
         <div class="photo-grid" id="photoGrid"></div>
 
-        <div class="form-grid" style="margin-top:18px">
-          <div class="field"><label>Photo de couverture choisie</label><select class="select" id="coverChoice"><option value="">Première photo ajoutée</option></select></div>
-          <div class="field"><label>Nombre total de photos prévu</label><input class="input" id="photoCountPlanned" type="number" min="0" max="100" placeholder="15"></div>
+        <div style="margin-top:16px;padding:12px 14px;border:1px solid #E4D9CF;border-radius:14px;background:#FCFAF7;color:#766C66;font-size:11px;line-height:1.55">
+<strong style="color:#3E2D25">Information</strong><br>
+CleanUp Manager peut analyser jusqu'à 15 photos pour améliorer la qualité de votre annonce. Les autres photos ne sont pas intégrées au PDF : elles servent uniquement à l'analyse et aux recommandations IA.
+</div>
+
+<div class="form-grid" style="margin-top:18px">
+          <div class="field"><label>Photo de couverture du rapport</label><select class="select" id="coverChoice"><option value="">Première photo ajoutée</option></select></div>
+          <div class="field"><label>Nombre de photos analysées <small>— maximum 15</small></label><input class="input" id="photoCountPlanned" type="number" min="0" max="100" placeholder="15"></div>
         </div>
       </div>
 
