@@ -231,6 +231,10 @@ h1 span{color:var(--terracotta)}
 .photo-card img{width:100%;height:100%;object-fit:cover}
 .photo-card button{position:absolute;right:7px;top:7px;width:27px;height:27px;border:0;border-radius:50%;background:rgba(62,45,37,.84);color:white}
 .photo-card span{position:absolute;left:7px;bottom:7px;padding:5px 7px;border-radius:999px;background:rgba(255,255,255,.90);font-size:9px;font-weight:800;color:var(--brown)}
+.photo-card.cover-selected{outline:3px solid var(--terracotta);outline-offset:2px}
+.photo-cover-badge{position:absolute;left:7px;top:7px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.94);font-size:9px;font-weight:900;color:var(--terracotta);box-shadow:0 4px 10px rgba(62,45,37,.12)}
+.photo-analysis-note{margin-top:10px;color:var(--taupe);font-size:10.5px;line-height:1.45}
+
 
 .control-hero{
   border-radius:22px;padding:24px;background:linear-gradient(145deg,#F6EEE7,#EFE2D7);border:1px solid var(--sand-2);
@@ -581,8 +585,9 @@ CleanUp Manager peut analyser jusqu'à 15 photos pour améliorer la qualité de 
 
 <div class="form-grid" style="margin-top:18px">
           <div class="field"><label>Photo de couverture du rapport</label><select class="select" id="coverChoice"><option value="">Première photo ajoutée</option></select></div>
-          <div class="field"><label>Nombre de photos analysées <small>— maximum 15</small></label><input class="input" id="photoCountPlanned" type="number" min="0" max="100" placeholder="15"></div>
+          <div class="field"><label>Photos à analyser <small>— maximum 15</small></label><input class="input" id="photoCountPlanned" type="number" min="0" max="15" value="0" readonly></div>
         </div>
+        <div class="photo-analysis-note">Les photos seront analysées à l’étape suivante. La photo marquée d’une étoile sera utilisée comme couverture du rapport.</div>
       </div>
 
       <div class="section" id="step4">
@@ -766,7 +771,7 @@ function showStep(step){
   $('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
   $('prevBtn').textContent = currentStep === 6 ? '← Modifier mon annonce' : '← Précédent';
   $('nextBtn').style.display = currentStep === 6 ? 'none' : 'inline-flex';
-  $('nextBtn').textContent = 'Continuer →';
+  $('nextBtn').textContent = currentStep === 3 ? 'Analyser mes photos →' : 'Continuer →';
   const pct = Math.round((currentStep - 1) / 5 * 100);
   $('progressBar').style.width = pct + '%';
   $('progressLabel').textContent = pct + ' %';
@@ -805,9 +810,9 @@ function updateAssistant(){
     if(capacity && num('plates') < capacity) messages.push({t:'Vaisselle à compléter',m:`Prévoyez au moins ${capacity} grandes assiettes.`,c:'warn'});
     if(!checked('smoke')) messages.push({t:'Sécurité',m:'Le détecteur de fumée doit être vérifié avant publication.',c:'warn'});
   } else if(currentStep === 3){
-    messages.push({t:'Photos',m:'La première photo doit montrer le principal atout du logement, pas simplement une pièce vide.'});
+    messages.push({t:'Analyse photo',m:'Choisissez une couverture claire et ajoutez jusqu’à 15 photos variées. Elles seront analysées à l’étape suivante.'});
     if(photos.length < 5) messages.push({t:'Galerie encore courte',m:'Une annonce rassurante présente généralement les pièces principales, l’entrée et les extérieurs.',c:'warn'});
-    else messages.push({t:'Galerie en bonne voie',m:`${photos.length} photos ont été ajoutées.`,c:'good'});
+    else messages.push({t:'Prêtes pour l’analyse',m:`${photos.length} photos seront analysées. La couverture sélectionnée est la photo ${(($('coverChoice').value===''?0:Number($('coverChoice').value))+1)}.`,c:'good'});
   } else if(currentStep === 4){
     messages.push({t:'Contrôle objectif',m:'Cette étape signale uniquement les incohérences et les informations manquantes.'});
     if(controlIssues.length) messages.push({t:'Résultat',m:`${controlIssues.length} point(s) nécessitent votre attention.`,c:'warn'});
@@ -820,6 +825,7 @@ function updateAssistant(){
   $('assistantMessages').innerHTML = messages.map(x=>`<div class="ai-message ${x.c||''}"><strong>${x.t}</strong>${x.m}</div>`).join('');
 }
 qa('input,select,textarea').forEach(el=>el.addEventListener('input',updateAssistant));
+$('coverChoice').addEventListener('change',()=>{ renderPhotos(); refreshPreview(); updateAssistant(); });
 
 qa('.choice').forEach(c=>c.addEventListener('click',()=>{qa('.choice').forEach(x=>x.classList.remove('active'));c.classList.add('active')}));
 
@@ -831,8 +837,12 @@ $('photoInput').addEventListener('change',e=>addPhotos([...e.target.files]));
 drop.addEventListener('drop',e=>addPhotos([...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'))));
 
 function addPhotos(files){
-  files.forEach(file=>{
-    if(!file || !file.type.startsWith('image/')) return;
+  const remaining = Math.max(0, 15 - photos.length);
+  const accepted = files.filter(file=>file && file.type.startsWith('image/')).slice(0, remaining);
+  if(files.length > remaining){
+    alert('Vous pouvez analyser jusqu’à 15 photos maximum.');
+  }
+  accepted.forEach(file=>{
     const objectUrl = URL.createObjectURL(file);
     const probe = new Image();
     probe.onload = () => {
@@ -852,15 +862,21 @@ function addPhotos(files){
   });
 }
 function renderPhotos(){
-  $('photoGrid').innerHTML = photos.map((p,i)=>`<div class="photo-card"><img src="${p.url}" alt=""><button type="button" data-rm="${i}">×</button><span>Photo ${i+1}</span></div>`).join('');
+  const selected = $('coverChoice').value === '' ? 0 : Number($('coverChoice').value);
+  $('photoGrid').innerHTML = photos.map((p,i)=>`<div class="photo-card ${i===selected?'cover-selected':''}"><img src="${p.url}" alt="Photo ${i+1}"><button type="button" data-rm="${i}">×</button>${i===selected?'<div class="photo-cover-badge">★ Couverture</div>':''}<span>Photo ${i+1}</span></div>`).join('');
+  const previous = $('coverChoice').value;
   $('coverChoice').innerHTML = '<option value="">Première photo ajoutée</option>'+photos.map((p,i)=>`<option value="${i}">Photo ${i+1}</option>`).join('');
+  if(previous !== '' && Number(previous) < photos.length) $('coverChoice').value = previous;
+  $('photoCountPlanned').value = photos.length;
   qa('[data-rm]').forEach(b=>b.addEventListener('click',()=>{
     const index = Number(b.dataset.rm);
     const removed = photos[index];
     if(removed?.url?.startsWith('blob:')) URL.revokeObjectURL(removed.url);
     photos.splice(index,1);
+    if(Number($('coverChoice').value) >= photos.length) $('coverChoice').value = '';
     renderPhotos();
     refreshPreview();
+    updateAssistant();
   }));
 }
 
