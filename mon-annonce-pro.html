@@ -383,6 +383,106 @@ h1 span{color:var(--terracotta)}
   @page{size:A4;margin:0}
 }
 </style>
+
+<style id="cleanup-photo-ai-report">
+.report-photo-kpis{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:3mm;
+  margin-bottom:4mm;
+}
+.report-photo-kpi{
+  border:1px solid var(--line);
+  border-radius:4mm;
+  padding:3.5mm;
+  background:var(--cream);
+  text-align:center;
+}
+.report-photo-kpi strong{
+  display:block;
+  font-size:18px;
+  line-height:1;
+  color:var(--brown);
+}
+.report-photo-kpi span{
+  display:block;
+  margin-top:1.5mm;
+  font-size:7.5px;
+  font-weight:800;
+  color:var(--terracotta);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.report-photo-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:2mm;
+}
+.report-photo-tag{
+  padding:2mm 2.5mm;
+  border-radius:999px;
+  background:var(--sage-soft);
+  color:#536B52;
+  font-size:7.5px;
+  font-weight:800;
+}
+.report-photo-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  margin-top:2mm;
+}
+.report-photo-table th{
+  padding:2.2mm 2mm;
+  background:#F0E6DC;
+  color:var(--brown);
+  font-size:7.2px;
+  text-align:left;
+}
+.report-photo-table td{
+  padding:2.1mm 2mm;
+  border-bottom:1px solid var(--line);
+  color:var(--muted);
+  font-size:7.1px;
+  line-height:1.25;
+  vertical-align:top;
+}
+.report-photo-table th:nth-child(1),
+.report-photo-table td:nth-child(1){width:10%}
+.report-photo-table th:nth-child(2),
+.report-photo-table td:nth-child(2){width:22%}
+.report-photo-table th:nth-child(3),
+.report-photo-table td:nth-child(3){width:12%;text-align:center}
+.report-photo-table th:nth-child(4),
+.report-photo-table td:nth-child(4){width:56%}
+.report-photo-score{
+  display:inline-grid;
+  place-items:center;
+  min-width:8mm;
+  height:6mm;
+  border-radius:999px;
+  background:var(--sage-soft);
+  color:#536B52;
+  font-weight:900;
+}
+.report-photo-score.warn{background:var(--amber-soft);color:#8A6324}
+.report-photo-score.bad{background:var(--red-soft);color:#8D3E35}
+.report-photo-summary{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:4mm;
+  margin-top:4mm;
+}
+.report-photo-cover{
+  padding:3mm 3.5mm;
+  border-radius:4mm;
+  background:linear-gradient(145deg,#F6EEE7,#EFE2D7);
+  border:1px solid var(--sand-2);
+}
+.report-photo-cover strong{display:block;font-size:9px;color:var(--brown);margin-bottom:1.5mm}
+.report-photo-cover p{font-size:7.8px;line-height:1.4;color:var(--muted);margin:0}
+</style>
+
 </head>
 <body>
 
@@ -980,6 +1080,7 @@ const GENERATE_LISTING_URL =
   'https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateListing';
 
 let serverListings = {};
+let serverPhotoAnalysis = null;
 let cleanupAdminMode = false;
 
 
@@ -1382,6 +1483,7 @@ async function generateListingFromServer(options = {}){
     }
 
     serverListings=extractServerListings(result.ai);
+    serverPhotoAnalysis=result.ai?.photoAnalysis || null;
 
     if(!renderServerListing(currentPlatform)){
       console.warn('Structure IA inattendue, utilisation du générateur local de secours.',result.ai);
@@ -1611,6 +1713,33 @@ function photoAuditData(){
   improvements.push('Présenter les images dans un ordre logique : séjour, extérieur, chambres, cuisine, salle de bain, détails et équipements.');
   return {total,coverSelected,score,strengths:strengths.slice(0,3),improvements:improvements.slice(0,4)};
 }
+
+function averagePhotoMetric(items,key,positiveValue){
+  if(!Array.isArray(items) || !items.length) return 0;
+  if(key==='qualityScore'){
+    const values=items.map(x=>Number(x?.qualityScore)).filter(Number.isFinite);
+    return values.length ? Math.round(values.reduce((a,b)=>a+b,0)/values.length) : 0;
+  }
+  const good=items.filter(x=>String(x?.[key]||'').toLowerCase()===String(positiveValue).toLowerCase()).length;
+  return Math.round(good/items.length*100);
+}
+function photoDiversityScore(items){
+  if(!Array.isArray(items) || !items.length) return 0;
+  const rooms=new Set(items.map(x=>String(x?.room||'').trim()).filter(x=>x && x!=='indéterminé'));
+  return Math.min(100,Math.round((rooms.size/Math.max(1,Math.min(items.length,8)))*100));
+}
+function photoVerdict(item){
+  const issues=Array.isArray(item?.issues)?item.issues.filter(Boolean):[];
+  const recommendations=Array.isArray(item?.recommendations)?item.recommendations.filter(Boolean):[];
+  if(issues.length) return issues[0];
+  if(recommendations.length) return recommendations[0];
+  const suitability=String(item?.coverSuitability||'').trim();
+  return suitability ? `Couverture : ${suitability}` : 'Photo exploitable après vérification.';
+}
+function scoreClass(score){
+  return score>=85?'':score>=70?'warn':'bad';
+}
+
 function reportScores(){
   const cap=num('capacity');
   const errors=controlIssues.filter(x=>x.type==='error').length;
@@ -1618,7 +1747,8 @@ function reportScores(){
   const coherence=Math.max(30,100-errors*12-warnings*3);
   const equipmentChecks=qa('#step2 input[type="checkbox"]');
   const equipment=equipmentChecks.length?Math.round(equipmentChecks.filter(x=>x.checked).length/equipmentChecks.length*100):50;
-  const photo=photoAuditData().score;
+  const visionScores=Array.isArray(serverPhotoAnalysis?.photos)?serverPhotoAnalysis.photos.map(x=>Number(x?.qualityScore)).filter(Number.isFinite):[];
+  const photo=visionScores.length?Math.round(visionScores.reduce((a,b)=>a+b,0)/visionScores.length):photoAuditData().score;
   let description=55;
   if(val('generatedTitle')) description+=12;
   if(val('generatedIntro').length>80) description+=10;
@@ -1654,7 +1784,74 @@ function buildPrintableReport(){
   const pages=[];
   pages.push(`<section class="report-page">${reportHeader(1,'Synthèse de votre annonce','Vue d’ensemble du niveau de préparation avant publication.',scores.global)}<div class="report-status ${level==='ready'?'':level==='improve'?'warning':'error'}"><div class="dot">${level==='ready'?'✓':level==='improve'?'~':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div><div class="report-grid three"><div class="report-card"><h3>Cohérence</h3><div class="report-stat">${scores.coherence}<small>/100</small></div></div><div class="report-card"><h3>Équipements</h3><div class="report-stat">${scores.equipment}<small>/100</small></div></div><div class="report-card"><h3>Photos</h3><div class="report-stat">${scores.photo}<small>/100</small></div></div></div><div class="report-grid" style="margin-top:4mm"><div class="report-card"><h3>Logement</h3><p>${esc(val('propertyType')||'Logement')} · ${num('capacity')||0} voyageurs · ${num('bedrooms')||0} chambre(s) · ${num('bathrooms')||0} salle(s) de bain</p></div><div class="report-card"><h3>Localisation déclarée</h3><p class="report-clamp-2">${esc(val('address')||'Adresse non renseignée')}</p></div></div><div class="report-card" style="margin-top:4mm"><h3>Verdict CleanUp</h3><p>${esc(statusText)} Le rapport ci-après reprend les contrôles du logement, l’audit photo, les textes générés et les dernières recommandations.</p></div>${footer(1)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(2,'Audit du logement','Contrôle de la capacité, du confort, des équipements et des informations indispensables.',scores.coherence)}<div class="report-grid"><div class="report-card"><h3>Données principales</h3><ul><li>Capacité : ${num('capacity')||0} voyageurs</li><li>Couchages : ${num('beds')||0}</li><li>Places à table : ${num('tableSeats')||0}</li><li>Chaises : ${num('chairs')||0}</li><li>Jeux de clés : ${num('keys')||0}</li></ul></div><div class="report-card"><h3>Contrôles prioritaires</h3><div class="report-list">${topIssues.length?topIssues.map(x=>`<div class="report-row ${x.type}"><i>${x.type==='error'?'!':'?'}</i><div><strong>${esc(x.title)}</strong><br>${esc(clampText(x.text,115))}</div></div>`).join(''):'<div class="report-row ok"><i>✓</i><div>Aucune incohérence majeure détectée.</div></div>'}</div></div></div><div class="report-card" style="margin-top:4mm"><h3>Points forts déclarés</h3><p class="report-clamp-4">${esc(val('strengths')||'Aucun point fort particulier n’a été indiqué. L’annonce met donc principalement en avant le confort, la capacité d’accueil et les équipements déclarés.')}</p></div>${footer(2)}</section>`);
-  pages.push(`<section class="report-page">${reportHeader(3,'Audit de la galerie photos','Les photos ne sont pas reproduites dans ce rapport : seules leur préparation et leur organisation sont auditées.',scores.photo)}<div class="report-grid three"><div class="report-card"><h3>Photos ajoutées</h3><div class="report-stat">${photos.length}</div></div><div class="report-card"><h3>Total prévu</h3><div class="report-stat">${photo.total}</div></div><div class="report-card"><h3>Couverture</h3><div class="report-stat" style="font-size:15px">${photo.coverSelected?'Choisie':'À choisir'}</div></div></div><div class="report-grid" style="margin-top:4mm"><div class="report-card"><h3>Points forts</h3><ul>${(photo.strengths.length?photo.strengths:['Galerie à compléter avant publication.']).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="report-card"><h3>Points à améliorer</h3><ul>${photo.improvements.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div><div class="report-card" style="margin-top:4mm"><h3>Ordre recommandé</h3><ol>${order.map(x=>`<li>${esc(x.replace(/^\d+\.\s*/,''))}</li>`).join('')}</ol></div><div class="report-card" style="margin-top:4mm"><h3>Conseil CleanUp</h3><p>La première image doit montrer le principal atout du logement. Privilégiez une photo horizontale, lumineuse, nette et sans élément personnel visible.</p></div>${footer(3)}</section>`);
+  {
+    const analysis=serverPhotoAnalysis;
+    const analyzed=Array.isArray(analysis?.photos)?analysis.photos:[];
+    const visionUsed=analysis?.visionUsed===true && analyzed.length>0;
+    const averageQuality=visionUsed?averagePhotoMetric(analyzed,'qualityScore'):scores.photo;
+    const brightness=visionUsed?averagePhotoMetric(analyzed,'brightness','bonne'):0;
+    const sharpness=visionUsed?averagePhotoMetric(analyzed,'sharpness','bonne'):0;
+    const framing=visionUsed?averagePhotoMetric(analyzed,'framing','adapté'):0;
+    const diversity=visionUsed?photoDiversityScore(analyzed):0;
+    const detectedRooms=[...new Set(analyzed.map(x=>String(x?.room||'').trim()).filter(x=>x && x!=='indéterminé'))];
+    const selectedIndex=analysis?.coverAssessment?.selectedIndex;
+    const recommendedIndex=analysis?.coverAssessment?.recommendedIndex;
+    const coverReason=analysis?.coverAssessment?.reason || 'La photo de couverture doit montrer immédiatement le principal atout du logement.';
+    const coverVerdict=analysis?.coverAssessment?.verdict || 'impossible à évaluer';
+    const visibleRows=analyzed.slice(0,8);
+    const missingViews=Array.isArray(analysis?.missingViews)?analysis.missingViews.slice(0,6):[];
+    const consistency=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks.slice(0,4):[];
+    const fallbackSummary='L’analyse visuelle n’a pas été disponible pour cette génération. La page reprend uniquement les contrôles techniques de la galerie.';
+    pages.push(`<section class="report-page">${reportHeader(3,'Analyse IA des photographies','Évaluation visuelle de la qualité, de la diversité et de la cohérence de votre galerie.',averageQuality)}
+      <div class="report-photo-kpis">
+        <div class="report-photo-kpi"><strong>${visionUsed?analyzed.length:photos.length}</strong><span>Photos analysées</span></div>
+        <div class="report-photo-kpi"><strong>${visionUsed?brightness:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Luminosité</span></div>
+        <div class="report-photo-kpi"><strong>${visionUsed?sharpness:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Netteté</span></div>
+        <div class="report-photo-kpi"><strong>${visionUsed?framing:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Cadrage</span></div>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <h3>Pièces et zones détectées</h3>
+          <div class="report-photo-tags">${detectedRooms.length?detectedRooms.map(x=>`<span class="report-photo-tag">✓ ${esc(x)}</span>`).join(''):'<p>Aucune détection visuelle exploitable.</p>'}</div>
+        </div>
+        <div class="report-card">
+          <h3>Diversité de la galerie</h3>
+          <div class="report-stat">${visionUsed?diversity:'—'}${visionUsed?'<small>/100</small>':''}</div>
+          <p style="margin-top:2mm">${visionUsed?`${detectedRooms.length} type(s) d’espace distinct(s) ont été identifiés.`:'Analyse visuelle indisponible.'}</p>
+        </div>
+      </div>
+
+      <div class="report-card" style="margin-top:4mm">
+        <h3>Lecture photo par photo</h3>
+        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(clampText(photoVerdict(item),150))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
+        ${analyzed.length>8?`<p style="margin-top:2mm">${analyzed.length-8} autre(s) photo(s) ont également été analysées et intégrées au score global.</p>`:''}
+      </div>
+
+      <div class="report-photo-summary">
+        <div class="report-photo-cover">
+          <strong>Couverture du rapport — ${esc(coverVerdict)}</strong>
+          <p>${selectedIndex!==null&&selectedIndex!==undefined?`Photo sélectionnée : ${Number(selectedIndex)+1}. `:''}${recommendedIndex!==null&&recommendedIndex!==undefined?`Photo recommandée par l’IA : ${Number(recommendedIndex)+1}. `:''}${esc(clampText(coverReason,390))}</p>
+        </div>
+        <div class="report-card">
+          <h3>Vues manquantes ou à renforcer</h3>
+          <ul>${missingViews.length?missingViews.map(x=>`<li>${esc(x)}</li>`).join(''):'<li>Aucune vue essentielle manquante signalée.</li>'}</ul>
+        </div>
+      </div>
+
+      <div class="report-grid" style="margin-top:4mm">
+        <div class="report-card">
+          <h3>Conclusion de l’analyse IA</h3>
+          <p>${esc(clampText(analysis?.summary||fallbackSummary,650))}</p>
+        </div>
+        <div class="report-card">
+          <h3>Cohérence photos / déclaration</h3>
+          <ul>${consistency.length?consistency.map(x=>`<li><strong>${esc(x.subject)}</strong> — ${esc(x.status)} : ${esc(clampText(x.detail,150))}</li>`).join(''):'<li>Aucune contradiction visuelle majeure signalée.</li>'}</ul>
+        </div>
+      </div>
+      ${footer(3)}
+    </section>`);
+  }
   pages.push(`<section class="report-page">${reportHeader(4,'Annonce générée','Version de travail prête à être copiée et adaptée sur chaque plateforme.',scores.description)}<div class="report-platform"><h3>${esc(val('generatedTitle')||'Titre à générer')}</h3><h4>Accroche</h4><p class="report-clamp-4">${esc(clampText(val('generatedIntro'),420))}</p><h4>Description</h4><p class="report-clamp-7">${esc(clampText(val('generatedDescription'),1250))}</p><h4>Informations pratiques</h4><p class="report-clamp-4">${esc(clampText(val('generatedRules'),500))}</p></div><div class="report-card"><h3>Utilisation</h3><p>Copiez ce contenu dans Airbnb, Booking.com ou Abritel, puis vérifiez les limites de caractères et les champs propres à chaque plateforme avant publication.</p></div>${footer(4)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(5,'Conseils d’optimisation','Actions simples pour rendre l’annonce plus claire, plus rassurante et plus attractive.')}<div class="report-grid"><div class="report-card"><h3>Priorités</h3><div class="report-list">${topAdvice.map((x,i)=>`<div class="report-row"><i>${i+1}</i><div>${esc(clampText(x,145))}</div></div>`).join('')}</div></div><div class="report-card"><h3>Rappels de publication</h3><ul><li>Ne promettez aucun équipement non vérifié.</li><li>Précisez les limites du logement et les éventuelles nuisances.</li><li>Vérifiez l’orthographe, les horaires et les règles.</li><li>Adaptez le titre à la longueur autorisée par la plateforme.</li><li>Ajoutez vos photos directement sur chaque plateforme.</li></ul></div></div><div class="report-card" style="margin-top:4mm"><h3>Positionnement conseillé</h3><p>Décrivez des bénéfices concrets plutôt que des superlatifs. Le voyageur doit comprendre rapidement pour qui le logement est adapté, combien de personnes peuvent réellement y séjourner et quels sont ses principaux atouts.</p></div>${footer(5)}</section>`);
   pages.push(`<section class="report-page">${reportHeader(6,'Validation finale','Dernière checklist avant la mise en ligne.',scores.global)}<div class="report-status ${level==='ready'?'':level==='improve'?'warning':'error'}"><div class="dot">${level==='ready'?'✓':level==='improve'?'~':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div><div class="report-grid"><div class="report-card"><h3>Checklist</h3><ul><li>${val('generatedTitle')?'✓':'○'} Titre final relu</li><li>${val('generatedDescription')?'✓':'○'} Description complète</li><li>${val('generatedRules')?'✓':'○'} Règles précisées</li><li>${photo.coverSelected?'✓':'○'} Photo de couverture choisie</li><li>${photo.total>=8?'✓':'○'} Galerie suffisamment complète</li><li>${controlIssues.some(x=>x.type==='error')?'○':'✓'} Aucun contrôle bloquant</li></ul></div><div class="report-card"><h3>Prochaine étape</h3><p>Copiez les textes générés, ajoutez les photos directement sur la plateforme choisie, complétez les tarifs et les disponibilités, puis effectuez une dernière vérification depuis la vue voyageur.</p></div></div><div class="report-card" style="margin-top:4mm"><h3>Indice CleanUp</h3><p><strong>${scores.global}/100 — ${statusTitle}</strong></p><p style="margin-top:2mm">Cette note reflète la cohérence des informations fournies, la préparation des équipements, la galerie prévue et la qualité du contenu généré.</p></div>${footer(6)}</section>`);
