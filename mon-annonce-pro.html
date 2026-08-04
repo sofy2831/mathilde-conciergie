@@ -483,6 +483,101 @@ h1 span{color:var(--terracotta)}
 .report-photo-cover p{font-size:7.8px;line-height:1.4;color:var(--muted);margin:0}
 </style>
 
+
+<style id="cleanup-photo-ai-report-fit-a4">
+/* Page 3 : tenir strictement dans l'A4 sans toucher aux autres pages */
+.report-page:nth-child(3) .report-header{
+  padding-bottom:3mm!important;
+  margin-bottom:3.5mm!important;
+}
+.report-page:nth-child(3) .report-title{
+  font-size:24px!important;
+  margin-bottom:2mm!important;
+}
+.report-page:nth-child(3) .report-subtitle{
+  font-size:8.8px!important;
+  margin-bottom:0!important;
+}
+.report-page:nth-child(3) .report-score{
+  width:31mm!important;
+  height:31mm!important;
+}
+.report-page:nth-child(3) .report-photo-kpis{
+  gap:2.3mm!important;
+  margin-bottom:3mm!important;
+}
+.report-page:nth-child(3) .report-photo-kpi{
+  padding:2.6mm!important;
+}
+.report-page:nth-child(3) .report-photo-kpi strong{
+  font-size:16px!important;
+}
+.report-page:nth-child(3) .report-photo-kpi span{
+  margin-top:1mm!important;
+  font-size:6.7px!important;
+}
+.report-page:nth-child(3) .report-grid{
+  gap:3mm!important;
+}
+.report-page:nth-child(3) .report-card{
+  padding:3mm!important;
+}
+.report-page:nth-child(3) .report-card h3{
+  margin-bottom:1.3mm!important;
+  font-size:9.8px!important;
+}
+.report-page:nth-child(3) .report-card p,
+.report-page:nth-child(3) .report-card li{
+  font-size:7.2px!important;
+  line-height:1.28!important;
+}
+.report-page:nth-child(3) .report-photo-tags{
+  gap:1.4mm!important;
+}
+.report-page:nth-child(3) .report-photo-tag{
+  padding:1.5mm 2mm!important;
+  font-size:6.7px!important;
+}
+.report-page:nth-child(3) .report-photo-table{
+  margin-top:1mm!important;
+}
+.report-page:nth-child(3) .report-photo-table th{
+  padding:1.5mm 1.6mm!important;
+  font-size:6.4px!important;
+}
+.report-page:nth-child(3) .report-photo-table td{
+  padding:1.45mm 1.6mm!important;
+  font-size:6.2px!important;
+  line-height:1.18!important;
+}
+.report-page:nth-child(3) .report-photo-score{
+  min-width:7mm!important;
+  height:5mm!important;
+  font-size:6.4px!important;
+}
+.report-page:nth-child(3) .report-photo-summary{
+  gap:3mm!important;
+  margin-top:3mm!important;
+}
+.report-page:nth-child(3) .report-photo-cover{
+  padding:2.5mm 3mm!important;
+}
+.report-page:nth-child(3) .report-photo-cover strong{
+  font-size:8.4px!important;
+  margin-bottom:1mm!important;
+}
+.report-page:nth-child(3) .report-photo-cover p{
+  font-size:6.8px!important;
+  line-height:1.25!important;
+}
+.report-page:nth-child(3) .report-grid[style*="margin-top:4mm"]{
+  margin-top:3mm!important;
+}
+.report-page:nth-child(3) .report-footer{
+  bottom:6mm!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1798,9 +1893,9 @@ function buildPrintableReport(){
     const recommendedIndex=analysis?.coverAssessment?.recommendedIndex;
     const coverReason=analysis?.coverAssessment?.reason || 'La photo de couverture doit montrer immédiatement le principal atout du logement.';
     const coverVerdict=analysis?.coverAssessment?.verdict || 'impossible à évaluer';
-    const visibleRows=analyzed.slice(0,8);
-    const missingViews=Array.isArray(analysis?.missingViews)?analysis.missingViews.slice(0,6):[];
-    const consistency=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks.slice(0,4):[];
+    const visibleRows=analyzed.slice(0,6);
+    const missingViews=Array.isArray(analysis?.missingViews)?analysis.missingViews.slice(0,4):[];
+    const consistency=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks.slice(0,3):[];
     const fallbackSummary='L’analyse visuelle n’a pas été disponible pour cette génération. La page reprend uniquement les contrôles techniques de la galerie.';
     pages.push(`<section class="report-page">${reportHeader(3,'Analyse IA des photographies','Évaluation visuelle de la qualité, de la diversité et de la cohérence de votre galerie.',averageQuality)}
       <div class="report-photo-kpis">
@@ -1824,14 +1919,14 @@ function buildPrintableReport(){
 
       <div class="report-card" style="margin-top:4mm">
         <h3>Lecture photo par photo</h3>
-        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(clampText(photoVerdict(item),150))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
+        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(clampText(photoVerdict(item),105))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
         ${analyzed.length>8?`<p style="margin-top:2mm">${analyzed.length-8} autre(s) photo(s) ont également été analysées et intégrées au score global.</p>`:''}
       </div>
 
       <div class="report-photo-summary">
         <div class="report-photo-cover">
           <strong>Couverture du rapport — ${esc(coverVerdict)}</strong>
-          <p>${selectedIndex!==null&&selectedIndex!==undefined?`Photo sélectionnée : ${Number(selectedIndex)+1}. `:''}${recommendedIndex!==null&&recommendedIndex!==undefined?`Photo recommandée par l’IA : ${Number(recommendedIndex)+1}. `:''}${esc(clampText(coverReason,390))}</p>
+          <p>${selectedIndex!==null&&selectedIndex!==undefined?`Photo sélectionnée : ${Number(selectedIndex)+1}. `:''}${recommendedIndex!==null&&recommendedIndex!==undefined?`Photo recommandée par l’IA : ${Number(recommendedIndex)+1}. `:''}${esc(clampText(coverReason,260))}</p>
         </div>
         <div class="report-card">
           <h3>Vues manquantes ou à renforcer</h3>
@@ -1842,11 +1937,11 @@ function buildPrintableReport(){
       <div class="report-grid" style="margin-top:4mm">
         <div class="report-card">
           <h3>Conclusion de l’analyse IA</h3>
-          <p>${esc(clampText(analysis?.summary||fallbackSummary,650))}</p>
+          <p>${esc(clampText(analysis?.summary||fallbackSummary,420))}</p>
         </div>
         <div class="report-card">
           <h3>Cohérence photos / déclaration</h3>
-          <ul>${consistency.length?consistency.map(x=>`<li><strong>${esc(x.subject)}</strong> — ${esc(x.status)} : ${esc(clampText(x.detail,150))}</li>`).join(''):'<li>Aucune contradiction visuelle majeure signalée.</li>'}</ul>
+          <ul>${consistency.length?consistency.map(x=>`<li><strong>${esc(x.subject)}</strong> — ${esc(x.status)} : ${esc(clampText(x.detail,95))}</li>`).join(''):'<li>Aucune contradiction visuelle majeure signalée.</li>'}</ul>
         </div>
       </div>
       ${footer(3)}
