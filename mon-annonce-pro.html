@@ -668,6 +668,63 @@ h1 span{color:var(--terracotta)}
 .report-page:nth-child(6) .report-card li{font-size:7.6px;line-height:1.35}
 </style>
 
+
+<style id="cleanup-page6-export-ready">
+.report-page:nth-child(6) .report-export-block{
+  border:1px solid var(--line);
+  border-radius:4mm;
+  background:var(--cream);
+  padding:3.2mm 3.6mm;
+}
+.report-page:nth-child(6) .report-export-block h3{
+  margin:0 0 1.3mm;
+  font-size:9.6px;
+  color:var(--brown);
+}
+.report-page:nth-child(6) .report-export-block h4{
+  margin:2mm 0 .8mm;
+  font-size:6.8px;
+  color:var(--terracotta);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.report-page:nth-child(6) .report-export-block p{
+  margin:0;
+  font-size:6.8px;
+  line-height:1.28;
+  color:var(--muted);
+  white-space:pre-line;
+}
+.report-page:nth-child(6) .report-export-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3mm;
+}
+.report-page:nth-child(6) .report-export-checklist{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1.4mm 3mm;
+}
+.report-page:nth-child(6) .report-export-checklist div{
+  font-size:7px;
+  line-height:1.25;
+  color:var(--muted);
+}
+.report-page:nth-child(6) .report-header{
+  margin-bottom:3.5mm!important;
+}
+.report-page:nth-child(6) .report-status{
+  margin:3.5mm 0!important;
+  padding:3mm 4mm!important;
+}
+.report-page:nth-child(6) .report-projection{
+  padding:3mm!important;
+}
+.report-page:nth-child(6) .report-projection .scorebox strong{
+  font-size:21px!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -2431,50 +2488,58 @@ function buildPrintableReport(){
   }
   {
     const projection=projectedScore(scores);
-    const remaining=reportPriorities().slice(0,4);
-    const done=[
-      val('generatedTitle')?'Titre finalisé':'Titre à finaliser',
-      val('generatedDescription')?'Description complète':'Description à compléter',
-      photo.coverSelected?'Couverture choisie':'Couverture à choisir',
-      !controlIssues.some(x=>x.type==='error')?'Aucun contrôle bloquant':'Contrôles bloquants présents'
-    ];
-    pages.push(`<section class="report-page">${reportHeader(6,'Conclusion et validation','Synthèse finale, niveau atteint et dernières vérifications avant mise en ligne.',scores.global)}
-      <div class="report-status ${level==='ready'?'':level==='improve'?'warning':'error'}"><div class="dot">${level==='ready'?'✓':level==='improve'?'~':'!'}</div><div><strong>${statusTitle}</strong><span>${statusText}</span></div></div>
+    const title=val('generatedTitle');
+    const intro=val('generatedIntro');
+    const description=val('generatedDescription');
+    const rules=val('generatedRules');
+    const remaining=reportPriorities().slice(0,3);
+
+    pages.push(`<section class="report-page">${reportHeader(6,'Validation finale & export','Votre annonce prête à l’emploi, accompagnée des dernières vérifications avant publication.',scores.global)}
+      <div class="report-status ${level==='ready'?'':level==='improve'?'warning':'error'}">
+        <div class="dot">${level==='ready'?'✓':level==='improve'?'~':'!'}</div>
+        <div><strong>${statusTitle}</strong><span>${statusText}</span></div>
+      </div>
+
       <div class="report-projection">
         <div class="scorebox"><strong>${scores.global}</strong><span>Indice actuel</span></div>
         <div class="arrow">→</div>
         <div class="scorebox"><strong>${projection}</strong><span>Potentiel estimé</span></div>
       </div>
-      <div class="report-grid" style="margin-top:4mm">
-        <div class="report-card">
-          <h3>Éléments validés</h3>
-          <div class="report-check-grid">${done.map((x,i)=>`<div class="report-check-item ${/à|présents/.test(x)?'warn':''}"><i>${/à|présents/.test(x)?'⚠':'✓'}</i><span>${esc(x)}</span></div>`).join('')}</div>
-        </div>
+
+      <div class="report-export-block" style="margin-top:3.5mm">
+        <h3>Annonce générée — prête à copier</h3>
+        <h4>Titre</h4>
+        <p>${esc(compactCompleteText(title,130,'Titre à compléter.'))}</p>
+        <h4>Accroche</h4>
+        <p>${esc(compactCompleteText(intro,220,'Accroche à compléter.'))}</p>
+        <h4>Description complète</h4>
+        <p>${esc(compactCompleteText(description,760,'Description à compléter.'))}</p>
+        <h4>Informations pratiques</h4>
+        <p>${esc(compactCompleteText(rules,300,'Informations pratiques à compléter.'))}</p>
+      </div>
+
+      <div class="report-export-grid" style="margin-top:3.5mm">
         <div class="report-card">
           <h3>Dernières améliorations</h3>
-          <div class="report-list">${remaining.length?remaining.map((x,i)=>`<div class="report-row warn"><i>${i+1}</i><div>${esc(compactCompleteText(x,66))}</div></div>`).join(''):'<div class="report-row ok"><i>✓</i><div>Aucune correction majeure restante.</div></div>'}</div>
+          <div class="report-list">${remaining.length?remaining.map((x,i)=>`<div class="report-row warn"><i>${i+1}</i><div>${esc(compactCompleteText(x,62))}</div></div>`).join(''):'<div class="report-row ok"><i>✓</i><div>Aucune correction majeure restante.</div></div>'}</div>
         </div>
-      </div>
-      <div class="report-grid" style="margin-top:4mm">
-        <div class="report-card">
-          <h3>Checklist finale</h3>
-          <ul>
-            <li>${val('generatedTitle')?'✓':'○'} Titre final relu.</li>
-            <li>${val('generatedDescription')?'✓':'○'} Description complète.</li>
-            <li>${val('generatedRules')?'✓':'○'} Règles précisées.</li>
-            <li>${photo.coverSelected?'✓':'○'} Photo de couverture choisie.</li>
-            <li>${photo.total>=8?'✓':'○'} Galerie suffisamment complète.</li>
-            <li>${controlIssues.some(x=>x.type==='error')?'○':'✓'} Aucun contrôle bloquant.</li>
-          </ul>
-        </div>
+
         <div class="report-card">
           <h3>Prochaine étape</h3>
-          <p class="report-no-cut">${esc(compactCompleteText('Copiez les textes générés, ajoutez les photos sur la plateforme choisie, complétez les tarifs et disponibilités, puis effectuez une dernière vérification depuis la vue voyageur.',210))}</p>
+          <div class="report-export-checklist">
+            <div>□ Copier le titre.</div>
+            <div>□ Copier l’accroche.</div>
+            <div>□ Copier la description.</div>
+            <div>□ Ajouter les photos.</div>
+            <div>□ Vérifier les tarifs.</div>
+            <div>□ Publier l’annonce.</div>
+          </div>
         </div>
       </div>
-      <div class="report-card" style="margin-top:4mm">
+
+      <div class="report-card" style="margin-top:3.5mm">
         <h3>Avis final CleanUp</h3>
-        <p class="report-no-cut">${esc(compactCompleteText(`Votre annonce dispose d’une base ${scores.global>=85?'très solide':scores.global>=75?'solide':'perfectible'}. Les recommandations de ce rapport visent à renforcer la confiance des voyageurs, améliorer la lisibilité et augmenter la qualité perçue avant publication.`,260))}</p>
+        <p class="report-no-cut">${esc(compactCompleteText(`Votre annonce dispose d’une base ${scores.global>=85?'très solide':scores.global>=75?'solide':'perfectible'}. Les recommandations de ce rapport visent à renforcer la confiance des voyageurs, améliorer la lisibilité et augmenter la qualité perçue avant publication.`,235))}</p>
       </div>
       ${footer(6)}
     </section>`);
