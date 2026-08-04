@@ -728,7 +728,7 @@ h1 span{color:var(--terracotta)}
 
 <style id="cleanup-page6-final-readability">
 .report-page:nth-child(6) .report-export-block{
-  min-height:92mm;
+  min-height:80mm;
   padding:4mm 4.5mm!important;
 }
 .report-page:nth-child(6) .report-export-block h3{
@@ -2102,11 +2102,45 @@ function buildPhotoObservationRows(items,analysis,max=6){
     }
   }
 
-  const repeats=Object.entries(grouped)
-    .filter(([label,count])=>count>1 && label!=='Photo exploitable.')
-    .map(([label,count])=>`${count} photos : ${label.toLowerCase()}`);
+  const repeatEntries=Object.entries(grouped)
+    .filter(([label,count])=>count>1 && label!=='Photo exploitable.');
 
-  return {rows:rows.slice(0,max),repeats};
+  const naturalLabel=(label,count)=>{
+    const normalized=String(label||'').toLowerCase();
+
+    if(normalized.includes('résolution')) {
+      return `${count} photo${count>1?'s':''} présente${count>1?'nt':'n'} une résolution insuffisante`;
+    }
+    if(normalized.includes('perspective')) {
+      return `${count} photo${count>1?'s':''} gagnerai${count>1?'ent':'t'} à être prise${count>1?'s':''} sous un angle plus valorisant`;
+    }
+    if(normalized.includes('cadrage')) {
+      return `${count} photo${count>1?'s':''} présente${count>1?'nt':'n'} un cadrage trop serré`;
+    }
+    if(normalized.includes('luminosité')) {
+      return `${count} photo${count>1?'s':''} manque${count>1?'nt':'n'} de luminosité`;
+    }
+    if(normalized.includes('netteté')) {
+      return `${count} photo${count>1?'s':''} manque${count>1?'nt':'n'} de netteté`;
+    }
+    if(normalized.includes('redondante')) {
+      return `${count} photo${count>1?'s sont':''} redondante${count>1?'s':''}`;
+    }
+
+    return `${count} photo${count>1?'s':''} nécessite${count>1?'nt':'n'} la même amélioration`;
+  };
+
+  const repeatDetails=repeatEntries.map(([label,count])=>naturalLabel(label,count));
+  let repeatSummary='';
+
+  if(repeatDetails.length===1){
+    repeatSummary=`Défaut récurrent détecté : ${repeatDetails[0]}.`;
+  }else if(repeatDetails.length>1){
+    const last=repeatDetails.pop();
+    repeatSummary=`Défauts récurrents détectés : ${repeatDetails.join(', ')} et ${last}.`;
+  }
+
+  return {rows:rows.slice(0,max),repeatSummary};
 }
 
 function selectReportPhotos(items,analysis,max=6){
@@ -2407,7 +2441,7 @@ function buildPrintableReport(){
     const coverVerdict=analysis?.coverAssessment?.verdict || 'impossible à évaluer';
     const photoRowsData=buildPhotoObservationRows(analyzed,analysis,6);
     const visibleRows=photoRowsData.rows;
-    const repeatedObservations=photoRowsData.repeats;
+    const repeatedObservationSummary=photoRowsData.repeatSummary;
     const missingViews=Array.isArray(analysis?.missingViews)?analysis.missingViews.slice(0,4):[];
     const consistencyRaw=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks:[];
     const consistency=consistencyRaw.map(compactConsistency).slice(0,3);
@@ -2436,7 +2470,7 @@ function buildPrintableReport(){
         <h3>Lecture photo par photo</h3>
         ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(item._reportObservation||compactPhotoObservation(item))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
         ${analyzed.length>visibleRows.length?`<p class="report-photo-more">${analyzed.length-visibleRows.length} autre(s) photo(s) analysée(s) et intégrée(s) au score global.</p>`:''}
-        ${repeatedObservations.length?`<p class="report-photo-more">${esc(compactCompleteText(repeatedObservations.join(' · '),150))}</p>`:''}
+        ${repeatedObservationSummary?`<p class="report-photo-more">${esc(compactCompleteText(repeatedObservationSummary,190))}</p>`:''}
       </div>
 
       <div class="report-photo-summary">
