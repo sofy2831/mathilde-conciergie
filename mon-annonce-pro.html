@@ -578,6 +578,35 @@ h1 span{color:var(--terracotta)}
 }
 </style>
 
+
+<style id="cleanup-photo-report-compact-text">
+.report-page:nth-child(3) .report-photo-table td:last-child{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+.report-page:nth-child(3) .report-photo-more{
+  margin:1.6mm 0 0!important;
+  font-size:6.4px!important;
+  font-weight:700;
+  color:var(--terracotta)!important;
+}
+.report-page:nth-child(3) .report-compact-checks{
+  gap:1.2mm!important;
+}
+.report-page:nth-child(3) .report-compact-checks li{
+  font-size:7px!important;
+  line-height:1.22!important;
+}
+.report-page:nth-child(3) .report-photo-cover p,
+.report-page:nth-child(3) .report-card p,
+.report-page:nth-child(3) .report-card li{
+  overflow:visible!important;
+  text-overflow:clip!important;
+  -webkit-line-clamp:unset!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1823,14 +1852,126 @@ function photoDiversityScore(items){
   const rooms=new Set(items.map(x=>String(x?.room||'').trim()).filter(x=>x && x!=='indéterminé'));
   return Math.min(100,Math.round((rooms.size/Math.max(1,Math.min(items.length,8)))*100));
 }
-function photoVerdict(item){
-  const issues=Array.isArray(item?.issues)?item.issues.filter(Boolean):[];
-  const recommendations=Array.isArray(item?.recommendations)?item.recommendations.filter(Boolean):[];
-  if(issues.length) return issues[0];
-  if(recommendations.length) return recommendations[0];
-  const suitability=String(item?.coverSuitability||'').trim();
-  return suitability ? `Couverture : ${suitability}` : 'Photo exploitable après vérification.';
+function compactCompleteText(value,max=70,fallback='À vérifier.'){
+  let text=String(value||'')
+    .replace(/\s+/g,' ')
+    .replace(/\s*(?:\.{3}|…)+\s*$/g,'')
+    .trim();
+
+  if(!text) return fallback;
+  if(text.length<=max){
+    return /[.!?]$/.test(text) ? text : `${text}.`;
+  }
+
+  const sentences=text.match(/[^.!?]+[.!?]+/g)||[];
+  let complete='';
+  for(const sentence of sentences){
+    const candidate=(complete+' '+sentence.trim()).trim();
+    if(candidate.length<=max) complete=candidate;
+    else break;
+  }
+  if(complete) return complete;
+
+  const clauses=text
+    .split(/\s*[;:]\s*|\s+—\s+|\s+-\s+|\s*,\s*/)
+    .map(x=>x.trim())
+    .filter(Boolean);
+
+  let clauseText='';
+  for(const clause of clauses){
+    const clean=clause.replace(/[.!?;:,]+$/,'').trim();
+    const candidate=(clauseText ? `${clauseText}, ${clean}` : clean);
+    if(candidate.length<=max) clauseText=candidate;
+    else break;
+  }
+  if(clauseText) return `${clauseText.replace(/[,\s]+$/,'')}.`;
+
+  const words=text.split(/\s+/);
+  let result='';
+  for(const word of words){
+    const candidate=result ? `${result} ${word}` : word;
+    if(candidate.length>max-1) break;
+    result=candidate;
+  }
+  return result ? `${result.replace(/[,:;\s]+$/,'')}.` : fallback;
 }
+
+function compactPhotoObservation(item){
+  const raw=[
+    ...(Array.isArray(item?.issues)?item.issues:[]),
+    ...(Array.isArray(item?.recommendations)?item.recommendations:[])
+  ].filter(Boolean).join(' ');
+
+  const normalized=String(raw||'').toLowerCase();
+
+  if(/contre[- ]plongée|déform/.test(normalized)) return 'Perspective peu valorisante.';
+  if(/cadrage.*serré|trop serré/.test(normalized)) return 'Cadrage trop serré.';
+  if(/résolution|définition/.test(normalized)) return 'Résolution à améliorer.';
+  if(/flou|netteté/.test(normalized)) return 'Netteté à améliorer.';
+  if(/sombre|luminosité|contre-jour/.test(normalized)) return 'Luminosité à améliorer.';
+  if(/doublon|redond/.test(normalized)) return 'Photo redondante.';
+  if(/chambre.*non photograph|autres couchages/.test(normalized)) return 'Une seule chambre visible.';
+  if(/wc.*non visible/.test(normalized)) return 'WC non identifiable.';
+  if(/stationnement.*non visible/.test(normalized)) return 'Stationnement non visible.';
+  if(/balcon|terrasse/.test(normalized) && /pas|peu|non/.test(normalized)) return 'Extérieur peu mis en valeur.';
+  if(/accès|entrée|boîte aux lettres|sonnette/.test(normalized)) return 'Accès insuffisamment visible.';
+  if(/table|coin repas|places/.test(normalized)) return 'Coin repas partiellement visible.';
+
+  const suitability=String(item?.coverSuitability||'').trim();
+  if(!raw && suitability) return compactCompleteText(`Couverture ${suitability}`,55);
+  return compactCompleteText(raw,62,'Photo exploitable.');
+}
+
+function selectReportPhotos(items,analysis,max=6){
+  if(!Array.isArray(items)||!items.length) return [];
+
+  const selected=[];
+  const used=new Set();
+  const add=item=>{
+    if(!item) return;
+    const key=Number(item.index);
+    if(used.has(key)||selected.length>=max) return;
+    used.add(key);
+    selected.push(item);
+  };
+
+  const selectedIndex=Number(analysis?.coverAssessment?.selectedIndex);
+  const recommendedIndex=Number(analysis?.coverAssessment?.recommendedIndex);
+  if(Number.isFinite(selectedIndex)) add(items.find(x=>Number(x.index)===selectedIndex));
+  if(Number.isFinite(recommendedIndex)) add(items.find(x=>Number(x.index)===recommendedIndex));
+
+  const rooms=new Set();
+  [...items]
+    .sort((a,b)=>(Number(a.qualityScore)||0)-(Number(b.qualityScore)||0))
+    .forEach(item=>{
+      const room=String(item?.room||'').trim();
+      if(room && room!=='indéterminé' && !rooms.has(room)){
+        rooms.add(room);
+        add(item);
+      }
+    });
+
+  [...items]
+    .sort((a,b)=>(Number(a.qualityScore)||0)-(Number(b.qualityScore)||0))
+    .forEach(add);
+
+  return selected.slice(0,max);
+}
+
+function compactConsistency(item){
+  const subject=String(item?.subject||'Point à vérifier').trim();
+  const status=String(item?.status||'à vérifier').trim().toLowerCase();
+  const detail=String(item?.detail||'').toLowerCase();
+
+  if(/couchage|chambre/.test(`${subject} ${detail}`)) return {icon:'⚠',text:'Deux chambres restent à montrer.'};
+  if(/stationnement|parking/.test(`${subject} ${detail}`)) return {icon:'⚠',text:'Stationnement non visible.'};
+  if(/balcon|terrasse/.test(`${subject} ${detail}`)) return {icon:status==='cohérent'?'✓':'⚠',text:status==='cohérent'?'Balcon cohérent.':'Balcon à mieux montrer.'};
+  if(/table|repas|chaise/.test(`${subject} ${detail}`)) return {icon:'⚠',text:'Capacité du coin repas à confirmer.'};
+  if(status==='cohérent') return {icon:'✓',text:compactCompleteText(subject,48,'Élément cohérent.')};
+  if(status==='contradictoire') return {icon:'!',text:compactCompleteText(subject,48,'Contradiction détectée.')};
+  return {icon:'⚠',text:compactCompleteText(subject,48,'Point à vérifier.')};
+}
+
 function scoreClass(score){
   return score>=85?'':score>=70?'warn':'bad';
 }
@@ -1893,9 +2034,10 @@ function buildPrintableReport(){
     const recommendedIndex=analysis?.coverAssessment?.recommendedIndex;
     const coverReason=analysis?.coverAssessment?.reason || 'La photo de couverture doit montrer immédiatement le principal atout du logement.';
     const coverVerdict=analysis?.coverAssessment?.verdict || 'impossible à évaluer';
-    const visibleRows=analyzed.slice(0,6);
+    const visibleRows=selectReportPhotos(analyzed,analysis,6);
     const missingViews=Array.isArray(analysis?.missingViews)?analysis.missingViews.slice(0,4):[];
-    const consistency=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks.slice(0,3):[];
+    const consistencyRaw=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks:[];
+    const consistency=consistencyRaw.map(compactConsistency).slice(0,3);
     const fallbackSummary='L’analyse visuelle n’a pas été disponible pour cette génération. La page reprend uniquement les contrôles techniques de la galerie.';
     pages.push(`<section class="report-page">${reportHeader(3,'Analyse IA des photographies','Évaluation visuelle de la qualité, de la diversité et de la cohérence de votre galerie.',averageQuality)}
       <div class="report-photo-kpis">
@@ -1919,29 +2061,29 @@ function buildPrintableReport(){
 
       <div class="report-card" style="margin-top:4mm">
         <h3>Lecture photo par photo</h3>
-        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(clampText(photoVerdict(item),105))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
-        ${analyzed.length>8?`<p style="margin-top:2mm">${analyzed.length-8} autre(s) photo(s) ont également été analysées et intégrées au score global.</p>`:''}
+        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(compactPhotoObservation(item))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
+        ${analyzed.length>visibleRows.length?`<p class="report-photo-more">${analyzed.length-visibleRows.length} autre(s) photo(s) analysée(s) et intégrée(s) au score global.</p>`:''}
       </div>
 
       <div class="report-photo-summary">
         <div class="report-photo-cover">
           <strong>Couverture du rapport — ${esc(coverVerdict)}</strong>
-          <p>${selectedIndex!==null&&selectedIndex!==undefined?`Photo sélectionnée : ${Number(selectedIndex)+1}. `:''}${recommendedIndex!==null&&recommendedIndex!==undefined?`Photo recommandée par l’IA : ${Number(recommendedIndex)+1}. `:''}${esc(clampText(coverReason,260))}</p>
+          <p>${selectedIndex!==null&&selectedIndex!==undefined?`Photo sélectionnée : ${Number(selectedIndex)+1}. `:''}${recommendedIndex!==null&&recommendedIndex!==undefined?`Photo recommandée par l’IA : ${Number(recommendedIndex)+1}. `:''}${esc(compactCompleteText(coverReason,145,'Couverture à vérifier.'))}</p>
         </div>
         <div class="report-card">
           <h3>Vues manquantes ou à renforcer</h3>
-          <ul>${missingViews.length?missingViews.map(x=>`<li>${esc(x)}</li>`).join(''):'<li>Aucune vue essentielle manquante signalée.</li>'}</ul>
+          <ul>${missingViews.length?missingViews.map(x=>`<li>${esc(compactCompleteText(x,62,'Vue à compléter.'))}</li>`).join(''):'<li>Aucune vue essentielle manquante.</li>'}</ul>
         </div>
       </div>
 
       <div class="report-grid" style="margin-top:4mm">
         <div class="report-card">
           <h3>Conclusion de l’analyse IA</h3>
-          <p>${esc(clampText(analysis?.summary||fallbackSummary,420))}</p>
+          <p>${esc(compactCompleteText(analysis?.summary||fallbackSummary,175,fallbackSummary))}</p>
         </div>
         <div class="report-card">
           <h3>Cohérence photos / déclaration</h3>
-          <ul>${consistency.length?consistency.map(x=>`<li><strong>${esc(x.subject)}</strong> — ${esc(x.status)} : ${esc(clampText(x.detail,95))}</li>`).join(''):'<li>Aucune contradiction visuelle majeure signalée.</li>'}</ul>
+          <ul class="report-compact-checks">${consistency.length?consistency.map(x=>`<li><strong>${esc(x.icon)}</strong> ${esc(x.text)}</li>`).join(''):'<li><strong>✓</strong> Aucune contradiction majeure.</li>'}</ul>
         </div>
       </div>
       ${footer(3)}
