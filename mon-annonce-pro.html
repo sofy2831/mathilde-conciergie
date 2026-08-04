@@ -725,6 +725,39 @@ h1 span{color:var(--terracotta)}
 }
 </style>
 
+
+<style id="cleanup-page6-final-readability">
+.report-page:nth-child(6) .report-export-block{
+  min-height:92mm;
+  padding:4mm 4.5mm!important;
+}
+.report-page:nth-child(6) .report-export-block h3{
+  font-size:10.5px!important;
+  margin-bottom:1.8mm!important;
+}
+.report-page:nth-child(6) .report-export-block h4{
+  font-size:7.2px!important;
+  margin:2.3mm 0 1mm!important;
+}
+.report-page:nth-child(6) .report-export-block p{
+  font-size:7.4px!important;
+  line-height:1.34!important;
+}
+.report-page:nth-child(6) .report-export-grid{
+  gap:3.5mm!important;
+}
+.report-page:nth-child(6) .report-export-grid .report-card{
+  min-height:30mm;
+}
+.report-page:nth-child(6) .report-export-checklist div{
+  font-size:7.4px!important;
+  line-height:1.3!important;
+}
+.report-page:nth-child(6) .report-card:last-of-type p{
+  font-size:7.5px!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -2015,29 +2048,65 @@ function compactCompleteText(value,max=70,fallback='À vérifier.'){
 }
 
 function compactPhotoObservation(item){
-  const raw=[
-    ...(Array.isArray(item?.issues)?item.issues:[]),
-    ...(Array.isArray(item?.recommendations)?item.recommendations:[])
-  ].filter(Boolean).join(' ');
-
+  const issues=Array.isArray(item?.issues)?item.issues.filter(Boolean):[];
+  const recommendations=Array.isArray(item?.recommendations)?item.recommendations.filter(Boolean):[];
+  const raw=[...issues,...recommendations].join(' ');
   const normalized=String(raw||'').toLowerCase();
 
-  if(/contre[- ]plongée|déform/.test(normalized)) return 'Perspective peu valorisante.';
-  if(/cadrage.*serré|trop serré/.test(normalized)) return 'Cadrage trop serré.';
-  if(/résolution|définition/.test(normalized)) return 'Résolution à améliorer.';
-  if(/flou|netteté/.test(normalized)) return 'Netteté à améliorer.';
-  if(/sombre|luminosité|contre-jour/.test(normalized)) return 'Luminosité à améliorer.';
-  if(/doublon|redond/.test(normalized)) return 'Photo redondante.';
-  if(/chambre.*non photograph|autres couchages/.test(normalized)) return 'Une seule chambre visible.';
-  if(/wc.*non visible/.test(normalized)) return 'WC non identifiable.';
-  if(/stationnement.*non visible/.test(normalized)) return 'Stationnement non visible.';
-  if(/balcon|terrasse/.test(normalized) && /pas|peu|non/.test(normalized)) return 'Extérieur peu mis en valeur.';
-  if(/accès|entrée|boîte aux lettres|sonnette/.test(normalized)) return 'Accès insuffisamment visible.';
-  if(/table|coin repas|places/.test(normalized)) return 'Coin repas partiellement visible.';
+  const rules=[
+    [/contre[- ]plongée|déform|perspective/, 'Perspective peu valorisante.'],
+    [/cadrage.*serré|trop serré/, 'Cadrage trop serré.'],
+    [/accès|entrée|boîte aux lettres|sonnette/, 'Accès insuffisamment visible.'],
+    [/chambre.*non photograph|autres couchages/, 'Une seule chambre visible.'],
+    [/wc.*non visible/, 'WC non identifiable.'],
+    [/stationnement.*non visible|parking.*non visible/, 'Stationnement non visible.'],
+    [/balcon|terrasse/, 'Extérieur peu mis en valeur.'],
+    [/table|coin repas|places/, 'Coin repas partiellement visible.'],
+    [/flou|netteté/, 'Netteté à améliorer.'],
+    [/sombre|luminosité|contre-jour/, 'Luminosité à améliorer.'],
+    [/doublon|redond/, 'Photo redondante.'],
+    [/résolution|définition/, 'Résolution à améliorer.']
+  ];
+
+  for(const [regex,label] of rules){
+    if(regex.test(normalized)) return label;
+  }
 
   const suitability=String(item?.coverSuitability||'').trim();
   if(!raw && suitability) return compactCompleteText(`Couverture ${suitability}`,55);
   return compactCompleteText(raw,62,'Photo exploitable.');
+}
+
+function buildPhotoObservationRows(items,analysis,max=6){
+  const selected=selectReportPhotos(items,analysis,Math.max(max,items.length));
+  const rows=[];
+  const seenLabels=new Set();
+  const grouped={};
+
+  for(const item of selected){
+    const label=compactPhotoObservation(item);
+    grouped[label]=(grouped[label]||0)+1;
+
+    if(!seenLabels.has(label) || label==='Photo exploitable.'){
+      rows.push({...item,_reportObservation:label});
+      seenLabels.add(label);
+    }
+    if(rows.length>=max) break;
+  }
+
+  if(rows.length<max){
+    for(const item of selected){
+      if(rows.some(x=>Number(x.index)===Number(item.index))) continue;
+      rows.push({...item,_reportObservation:compactPhotoObservation(item)});
+      if(rows.length>=max) break;
+    }
+  }
+
+  const repeats=Object.entries(grouped)
+    .filter(([label,count])=>count>1 && label!=='Photo exploitable.')
+    .map(([label,count])=>`${count} photos : ${label.toLowerCase()}`);
+
+  return {rows:rows.slice(0,max),repeats};
 }
 
 function selectReportPhotos(items,analysis,max=6){
@@ -2336,7 +2405,9 @@ function buildPrintableReport(){
     const recommendedIndex=analysis?.coverAssessment?.recommendedIndex;
     const coverReason=analysis?.coverAssessment?.reason || 'La photo de couverture doit montrer immédiatement le principal atout du logement.';
     const coverVerdict=analysis?.coverAssessment?.verdict || 'impossible à évaluer';
-    const visibleRows=selectReportPhotos(analyzed,analysis,6);
+    const photoRowsData=buildPhotoObservationRows(analyzed,analysis,6);
+    const visibleRows=photoRowsData.rows;
+    const repeatedObservations=photoRowsData.repeats;
     const missingViews=Array.isArray(analysis?.missingViews)?analysis.missingViews.slice(0,4):[];
     const consistencyRaw=Array.isArray(analysis?.consistencyChecks)?analysis.consistencyChecks:[];
     const consistency=consistencyRaw.map(compactConsistency).slice(0,3);
@@ -2363,8 +2434,9 @@ function buildPrintableReport(){
 
       <div class="report-card" style="margin-top:4mm">
         <h3>Lecture photo par photo</h3>
-        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(compactPhotoObservation(item))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
+        ${visibleRows.length?`<table class="report-photo-table"><thead><tr><th>Photo</th><th>Pièce</th><th>Note</th><th>Observation IA</th></tr></thead><tbody>${visibleRows.map(item=>`<tr><td>${Number(item.index)+1}</td><td>${esc(item.room||item.label||'Indéterminé')}</td><td><span class="report-photo-score ${scoreClass(Number(item.qualityScore)||0)}">${Number(item.qualityScore)||0}</span></td><td>${esc(item._reportObservation||compactPhotoObservation(item))}</td></tr>`).join('')}</tbody></table>`:`<p>${esc(fallbackSummary)}</p>`}
         ${analyzed.length>visibleRows.length?`<p class="report-photo-more">${analyzed.length-visibleRows.length} autre(s) photo(s) analysée(s) et intégrée(s) au score global.</p>`:''}
+        ${repeatedObservations.length?`<p class="report-photo-more">${esc(compactCompleteText(repeatedObservations.join(' · '),150))}</p>`:''}
       </div>
 
       <div class="report-photo-summary">
@@ -2403,6 +2475,19 @@ function buildPrintableReport(){
       structure:scores.description
     };
     const keywords=keywordList();
+    const editorialStrengths=[
+      title?'Titre descriptif et exploitable.':'Titre à compléter.',
+      intro?'Accroche claire et orientée voyageur.':'Accroche à compléter.',
+      description?'Description structurée et cohérente.':'Description à compléter.',
+      rules?'Informations pratiques présentes.':'Informations pratiques à compléter.'
+    ];
+    const editorialImprovements=[
+      metrics.seo<75?'Renforcer les mots-clés réellement utiles.':'Mots-clés correctement exploités.',
+      metrics.readability<80?'Raccourcir certaines phrases.':'Lecture fluide.',
+      title.length>55?'Raccourcir légèrement le titre.':'Longueur du titre adaptée.',
+      rules?'Conserver des règles simples et précises.':'Ajouter les règles essentielles.'
+    ];
+
     pages.push(`<section class="report-page">${reportHeader(4,'Analyse de l’annonce générée','Évaluation du texte produit, de sa lisibilité et de son adaptation aux plateformes.',scores.description)}
       <div class="report-mini-kpis">
         <div class="report-mini-kpi"><strong>${metrics.title}</strong><span>Titre</span></div>
@@ -2410,6 +2495,7 @@ function buildPrintableReport(){
         <div class="report-mini-kpi"><strong>${metrics.readability}</strong><span>Lisibilité</span></div>
         <div class="report-mini-kpi"><strong>${metrics.seo}</strong><span>Mots-clés</span></div>
       </div>
+
       <div class="report-grid">
         <div class="report-card">
           <h3>Scores éditoriaux</h3>
@@ -2426,25 +2512,31 @@ function buildPrintableReport(){
           </div>
         </div>
       </div>
-      <div class="report-platform" style="margin-top:4mm">
-        <h3>${esc(title||'Titre à générer')}</h3>
-        <h4>Accroche</h4><p>${esc(compactCompleteText(intro,220,'Accroche à compléter.'))}</p>
-        <h4>Description</h4><p>${esc(compactCompleteText(description,620,'Description à compléter.'))}</p>
-        <h4>Informations pratiques</h4><p>${esc(compactCompleteText(rules,260,'Informations pratiques à compléter.'))}</p>
+
+      <div class="report-grid" style="margin-top:4mm">
+        <div class="report-card">
+          <h3>Extrait analysé</h3>
+          <p><strong>${esc(compactCompleteText(title,120,'Titre à compléter.'))}</strong></p>
+          <p style="margin-top:2mm">${esc(compactCompleteText(intro,180,'Accroche à compléter.'))}</p>
+          <p style="margin-top:2mm">${esc(compactCompleteText(description,220,'Description à compléter.'))}</p>
+        </div>
+        <div class="report-card">
+          <h3>Lecture IA du texte</h3>
+          <div class="report-check-grid">
+            ${editorialStrengths.map(x=>`<div class="report-check-item"><i>✓</i><span>${esc(x)}</span></div>`).join('')}
+            ${editorialImprovements.map(x=>`<div class="report-check-item ${/Renforcer|Raccourcir|Ajouter/.test(x)?'warn':''}"><i>${/Renforcer|Raccourcir|Ajouter/.test(x)?'⚠':'✓'}</i><span>${esc(x)}</span></div>`).join('')}
+          </div>
+        </div>
       </div>
+
       <div class="report-grid" style="margin-top:4mm">
         <div class="report-card">
           <h3>Mots-clés exploités</h3>
           <div class="report-badges">${keywords.map(x=>`<span class="report-badge">${esc(x)}</span>`).join('')}</div>
         </div>
         <div class="report-card">
-          <h3>Lecture IA du texte</h3>
-          <div class="report-check-grid">
-            <div class="report-check-item"><i>✓</i><span>Titre lisible et descriptif.</span></div>
-            <div class="report-check-item"><i>✓</i><span>Capacité clairement annoncée.</span></div>
-            <div class="report-check-item ${rules?'':'warn'}"><i>${rules?'✓':'⚠'}</i><span>Règles ${rules?'présentes':'à compléter'}.</span></div>
-            <div class="report-check-item"><i>✓</i><span>Texte prêt à relire.</span></div>
-          </div>
+          <h3>Diagnostic éditorial</h3>
+          <p class="report-no-cut">${esc(compactCompleteText(`Le texte est ${metrics.readability>=85?'fluide':metrics.readability>=70?'correctement lisible':'à simplifier'} et sa structure est ${metrics.structure>=85?'solide':'perfectible'}. L’annonce complète figure sur la page d’export finale.`,220))}</p>
         </div>
       </div>
       ${footer(4)}
@@ -2513,9 +2605,9 @@ function buildPrintableReport(){
         <h4>Accroche</h4>
         <p>${esc(compactCompleteText(intro,220,'Accroche à compléter.'))}</p>
         <h4>Description complète</h4>
-        <p>${esc(compactCompleteText(description,760,'Description à compléter.'))}</p>
+        <p>${esc(compactCompleteText(description,980,'Description à compléter.'))}</p>
         <h4>Informations pratiques</h4>
-        <p>${esc(compactCompleteText(rules,300,'Informations pratiques à compléter.'))}</p>
+        <p>${esc(compactCompleteText(rules,380,'Informations pratiques à compléter.'))}</p>
       </div>
 
       <div class="report-export-grid" style="margin-top:3.5mm">
