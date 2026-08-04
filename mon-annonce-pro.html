@@ -758,6 +758,164 @@ h1 span{color:var(--terracotta)}
 }
 </style>
 
+
+<style id="cleanup-listing-generation-progress">
+.listing-generation-zone{
+  display:grid;
+  justify-items:end;
+  gap:11px;
+  margin-bottom:14px;
+}
+.listing-generation-progress{
+  width:min(100%,520px);
+  padding:13px 15px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:linear-gradient(145deg,#FCFAF7,#F5EFE7);
+  box-shadow:var(--shadow-soft);
+}
+.listing-generation-progress[hidden]{display:none!important}
+.listing-generation-progress-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-bottom:8px;
+}
+.listing-generation-progress-head strong{
+  color:var(--brown);
+  font-size:12px;
+}
+.listing-generation-progress-head span{
+  color:var(--terracotta);
+  font-size:11px;
+  font-weight:900;
+  min-width:36px;
+  text-align:right;
+}
+.listing-generation-progress-track{
+  height:10px;
+  border-radius:999px;
+  background:#EDE3D9;
+  overflow:hidden;
+  position:relative;
+}
+.listing-generation-progress-track span{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--terracotta),#D79A80);
+  transition:width .55s ease;
+}
+.listing-generation-progress p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:10.5px;
+  line-height:1.4;
+}
+@media(max-width:680px){
+  .listing-generation-zone{justify-items:stretch}
+  .listing-generation-zone .btn{width:100%}
+  .listing-generation-progress{width:100%}
+}
+</style>
+
+
+<style id="cleanup-report-final-premium-adjustments">
+/* Page 3 : cinq indicateurs sans débordement */
+.report-page:nth-child(3) .report-photo-kpis{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+}
+.report-page:nth-child(3) .report-photo-kpi{
+  padding:2.25mm 1.3mm!important;
+}
+.report-page:nth-child(3) .report-photo-kpi strong{
+  font-size:14.5px!important;
+}
+.report-page:nth-child(3) .report-photo-kpi span{
+  font-size:5.9px!important;
+  letter-spacing:.035em!important;
+}
+
+/* Page 4 : pourcentages de compatibilité plus visuels */
+.report-platform-score{
+  display:block;
+  margin-bottom:1.3mm;
+  font-size:15px;
+  line-height:1;
+  color:var(--terracotta);
+  font-weight:900;
+}
+.report-platform-meter{
+  height:2.5mm;
+  margin:1.4mm 0 1.6mm;
+  border-radius:999px;
+  overflow:hidden;
+  background:#EDE3D9;
+}
+.report-platform-meter i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--terracotta),#D79A80);
+}
+
+/* Page 5 : positionnement de gamme */
+.report-positioning-scale{
+  margin-top:2.5mm;
+}
+.report-positioning-track{
+  position:relative;
+  height:4mm;
+  border-radius:999px;
+  background:linear-gradient(90deg,#E8EEDF 0 33%,#F4E6D7 33% 67%,#E8D4C9 67% 100%);
+}
+.report-positioning-marker{
+  position:absolute;
+  top:50%;
+  width:6mm;
+  height:6mm;
+  border-radius:50%;
+  border:1.2mm solid #fff;
+  background:var(--terracotta);
+  transform:translate(-50%,-50%);
+  box-shadow:0 1mm 2mm rgba(62,45,37,.18);
+}
+.report-positioning-labels{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  margin-top:1.7mm;
+  font-size:6.5px;
+  font-weight:800;
+  color:var(--muted);
+}
+.report-positioning-labels span:nth-child(2){text-align:center}
+.report-positioning-labels span:last-child{text-align:right}
+.report-positioning-verdict{
+  margin-top:2.2mm!important;
+  font-size:7.1px!important;
+  line-height:1.3!important;
+}
+
+/* Page 6 : rubriques mieux séparées */
+.report-export-section{
+  padding:2.2mm 2.6mm;
+  border-radius:2.4mm;
+  border:1px solid #E9DDD2;
+  background:#fff;
+}
+.report-export-section + .report-export-section{
+  margin-top:2mm;
+}
+.report-page:nth-child(6) .report-export-section h4{
+  margin:0 0 .8mm!important;
+}
+.report-page:nth-child(6) .report-export-section p{
+  margin:0!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1007,8 +1165,18 @@ CleanUp Manager peut analyser jusqu'à 15 photos pour améliorer la qualité de 
           <button class="platform-tab" data-platform="abritel">Abritel</button>
         </div>
 
-        <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <div class="listing-generation-zone">
           <button class="btn terracotta" type="button" id="generateListing">✦ Générer mon annonce</button>
+          <div class="listing-generation-progress" id="listingGenerationProgress" hidden aria-live="polite">
+            <div class="listing-generation-progress-head">
+              <strong id="listingGenerationLabel">Préparation de l’analyse IA</strong>
+              <span id="listingGenerationPercent">0 %</span>
+            </div>
+            <div class="listing-generation-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="listingGenerationBar"></span>
+            </div>
+            <p id="listingGenerationMessage">Préparation des données du logement et des photographies.</p>
+          </div>
         </div>
 
         <div class="generated-card">
@@ -1695,6 +1863,80 @@ async function refreshAdminInterface(){
   }
 }
 
+
+let listingProgressTimer=null;
+let listingProgressValue=0;
+
+function setListingGenerationProgress(value,label,message){
+  const box=$('listingGenerationProgress');
+  const bar=$('listingGenerationBar');
+  const percent=$('listingGenerationPercent');
+  const title=$('listingGenerationLabel');
+  const text=$('listingGenerationMessage');
+  const track=box?.querySelector('[role="progressbar"]');
+  const safe=Math.max(0,Math.min(100,Math.round(Number(value)||0)));
+
+  if(box) box.hidden=false;
+  if(bar) bar.style.width=`${safe}%`;
+  if(percent) percent.textContent=`${safe} %`;
+  if(title && label) title.textContent=label;
+  if(text && message) text.textContent=message;
+  if(track) track.setAttribute('aria-valuenow',String(safe));
+  listingProgressValue=safe;
+}
+
+function startListingGenerationProgress(photoCount=0){
+  clearInterval(listingProgressTimer);
+  setListingGenerationProgress(
+    6,
+    'Préparation de l’analyse IA',
+    photoCount
+      ? `Préparation des ${photoCount} photographies et des informations du logement.`
+      : 'Préparation des informations du logement.'
+  );
+
+  const milestones=[
+    {max:22,label:'Préparation des données',message:'Contrôle des informations et des équipements déclarés.'},
+    {max:48,label:'Analyse des photographies',message:'L’IA examine la qualité, les pièces visibles et la cohérence de la galerie.'},
+    {max:72,label:'Rédaction de l’annonce',message:'Création des versions adaptées à Airbnb, Booking et Abritel.'},
+    {max:90,label:'Construction du rapport',message:'Calcul des scores, recommandations et préparation du PDF.'},
+    {max:96,label:'Finalisation',message:'Dernières vérifications avant affichage du résultat.'}
+  ];
+
+  listingProgressTimer=setInterval(()=>{
+    const current=milestones.find(item=>listingProgressValue<item.max) || milestones[milestones.length-1];
+    if(listingProgressValue>=96) return;
+    const step=listingProgressValue<48?2:listingProgressValue<80?1.4:.6;
+    setListingGenerationProgress(
+      Math.min(current.max,listingProgressValue+step),
+      current.label,
+      current.message
+    );
+  },900);
+}
+
+function completeListingGenerationProgress(){
+  clearInterval(listingProgressTimer);
+  setListingGenerationProgress(
+    100,
+    'Annonce générée',
+    'L’annonce et le rapport sont prêts. Vous pouvez poursuivre vers l’export.'
+  );
+  setTimeout(()=>{
+    const box=$('listingGenerationProgress');
+    if(box) box.hidden=true;
+  },2200);
+}
+
+function stopListingGenerationProgress(message){
+  clearInterval(listingProgressTimer);
+  setListingGenerationProgress(
+    Math.max(8,listingProgressValue),
+    'Génération interrompue',
+    message || 'La génération n’a pas pu être terminée.'
+  );
+}
+
 async function generateListingFromServer(options = {}){
   const button=$('generateListing');
   const previousText=button.textContent;
@@ -1722,6 +1964,7 @@ async function generateListingFromServer(options = {}){
 
     button.disabled=true;
     button.textContent='Génération en cours…';
+    startListingGenerationProgress(photos.length);
 
     button.textContent='Préparation des photos…';
     const visionImages=await buildVisionImages();
@@ -1738,10 +1981,23 @@ async function generateListingFromServer(options = {}){
     button.textContent=visionImages.length
       ? `Analyse IA de ${visionImages.length} photo(s)…`
       : 'Génération en cours…';
+    setListingGenerationProgress(
+      visionImages.length ? 28 : 38,
+      visionImages.length ? 'Analyse des photographies' : 'Rédaction de l’annonce',
+      visionImages.length
+        ? `Analyse IA des ${visionImages.length} photographies en cours.`
+        : 'Création des textes adaptés aux plateformes.'
+    );
 
     const securedPayload=cleanupAdminMode
       ? payloadWithImages
       : CleanUpStripe.addPaymentSessionToPayload(payloadWithImages,paidSessionId);
+
+    setListingGenerationProgress(
+      56,
+      'Rédaction de l’annonce',
+      'Création du titre, de l’accroche, de la description et des informations pratiques.'
+    );
 
     const response=await fetch(GENERATE_LISTING_URL,{
       method:'POST',
@@ -1756,6 +2012,12 @@ async function generateListingFromServer(options = {}){
     if(!response.ok || result.ok===false){
       throw new Error(result.error || `Erreur serveur (${response.status}).`);
     }
+
+    setListingGenerationProgress(
+      88,
+      'Construction du rapport',
+      'Calcul des scores et mise en forme des recommandations.'
+    );
 
     serverListings=extractServerListings(result.ai);
     serverPhotoAnalysis=result.ai?.photoAnalysis || null;
@@ -1775,8 +2037,11 @@ async function generateListingFromServer(options = {}){
       await clearCheckoutPhotos();
     }
 
+    completeListingGenerationProgress();
+
   }catch(error){
     console.error('generateListingFromServer error:',error);
+    stopListingGenerationProgress(error.message || "La génération de l'annonce a échoué.");
     alert(error.message || "La génération de l'annonce a échoué.");
   }finally{
     button.disabled=false;
@@ -2452,6 +2717,7 @@ function buildPrintableReport(){
         <div class="report-photo-kpi"><strong>${visionUsed?brightness:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Luminosité</span></div>
         <div class="report-photo-kpi"><strong>${visionUsed?sharpness:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Netteté</span></div>
         <div class="report-photo-kpi"><strong>${visionUsed?framing:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Cadrage</span></div>
+        <div class="report-photo-kpi"><strong>${visionUsed?diversity:'—'}${visionUsed?'<small>/100</small>':''}</strong><span>Diversité</span></div>
       </div>
 
       <div class="report-grid">
@@ -2540,9 +2806,11 @@ function buildPrintableReport(){
         <div class="report-card">
           <h3>Compatibilité plateformes</h3>
           <div class="report-platform-grid">
-            <div class="report-platform-card"><strong>Airbnb</strong><p>Titre direct, bénéfices concrets et ton chaleureux.</p></div>
-            <div class="report-platform-card"><strong>Booking</strong><p>Informations pratiques et structure lisible.</p></div>
-            <div class="report-platform-card"><strong>Abritel</strong><p>Description familiale et détails rassurants.</p></div>
+            ${[
+              {name:'Airbnb',score:Math.min(99,Math.round(metrics.title*.35+metrics.readability*.35+metrics.seo*.30)),text:'Titre direct et bénéfices concrets.'},
+              {name:'Booking',score:Math.min(99,Math.round(metrics.structure*.45+metrics.readability*.35+metrics.seo*.20)),text:'Informations pratiques et structure lisible.'},
+              {name:'Abritel',score:Math.min(99,Math.round(metrics.structure*.40+metrics.readability*.30+metrics.title*.30)),text:'Description détaillée et rassurante.'}
+            ].map(item=>`<div class="report-platform-card"><strong>${item.name}</strong><span class="report-platform-score">${item.score}%</span><div class="report-platform-meter"><i style="width:${item.score}%"></i></div><p>${item.text}</p></div>`).join('')}
           </div>
         </div>
       </div>
@@ -2608,7 +2876,16 @@ function buildPrintableReport(){
         <div class="report-platform-card"><strong>Booking</strong><p>Renseigner précisément les équipements, les horaires et les règles.</p></div>
         <div class="report-platform-card"><strong>Abritel</strong><p>Développer les espaces, les couchages et les bénéfices pour les familles.</p></div>
       </div>
-      <div class="report-card" style="margin-top:4mm"><h3>Positionnement conseillé</h3><p class="report-no-cut">${esc(compactCompleteText('Présentez des bénéfices concrets plutôt que des superlatifs. Le voyageur doit comprendre rapidement à qui s’adresse le logement, combien de personnes peuvent réellement y séjourner et quels sont ses principaux atouts.',230))}</p></div>
+      <div class="report-card" style="margin-top:4mm">
+        <h3>Positionnement conseillé</h3>
+        <div class="report-positioning-scale">
+          <div class="report-positioning-track">
+            <span class="report-positioning-marker" style="left:${scores.global>=90?84:scores.global>=78?54:20}%"></span>
+          </div>
+          <div class="report-positioning-labels"><span>Économique</span><span>Standard</span><span>Premium</span></div>
+        </div>
+        <p class="report-positioning-verdict">${esc(compactCompleteText(scores.global>=90?'Positionnement premium envisageable après correction des derniers points de détail.':scores.global>=78?'Positionnement standard supérieur conseillé, avec une présentation soignée et des bénéfices concrets.':'Positionnement standard recommandé avant toute montée en gamme.',190))}</p>
+      </div>
       ${footer(5)}
     </section>`);
   }
@@ -2634,14 +2911,22 @@ function buildPrintableReport(){
 
       <div class="report-export-block" style="margin-top:3.5mm">
         <h3>Annonce générée — prête à copier</h3>
-        <h4>Titre</h4>
-        <p>${esc(compactCompleteText(title,130,'Titre à compléter.'))}</p>
-        <h4>Accroche</h4>
-        <p>${esc(compactCompleteText(intro,220,'Accroche à compléter.'))}</p>
-        <h4>Description complète</h4>
-        <p>${esc(compactCompleteText(description,980,'Description à compléter.'))}</p>
-        <h4>Informations pratiques</h4>
-        <p>${esc(compactCompleteText(rules,380,'Informations pratiques à compléter.'))}</p>
+        <div class="report-export-section">
+          <h4>Titre</h4>
+          <p>${esc(compactCompleteText(title,130,'Titre à compléter.'))}</p>
+        </div>
+        <div class="report-export-section">
+          <h4>Accroche</h4>
+          <p>${esc(compactCompleteText(intro,220,'Accroche à compléter.'))}</p>
+        </div>
+        <div class="report-export-section">
+          <h4>Description complète</h4>
+          <p>${esc(compactCompleteText(description,980,'Description à compléter.'))}</p>
+        </div>
+        <div class="report-export-section">
+          <h4>Informations pratiques</h4>
+          <p>${esc(compactCompleteText(rules,380,'Informations pratiques à compléter.'))}</p>
+        </div>
       </div>
 
       <div class="report-export-grid" style="margin-top:3.5mm">
