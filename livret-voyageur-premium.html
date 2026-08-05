@@ -245,10 +245,8 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 <div class="grid">
 <div class="field full"><label>Nom du logement</label><input id="homeName"></div>
 <div class="field full"><label>Adresse complète</label><input id="address"></div>
-<div class="field"><label>Ville</label><input id="city"></div>
-<div class="field"><label>Durée moyenne du séjour</label><select id="stay"><option>1 à 2 nuits</option><option>3 à 4 nuits</option><option>Une semaine</option><option>Plus d’une semaine</option></select></div>
-<div class="field"><label>Conciergerie ou contact</label><input id="conciergeName"></div>
-<div class="field"><label>Téléphone</label><input id="conciergePhone"></div>
+<div class="field full"><label>Conciergerie ou contact</label><input id="conciergeName"></div>
+<div class="field full"><label>Téléphone</label><input id="conciergePhone"></div>
 <div class="field full"><label>Email</label><input id="conciergeEmail"></div>
 </div>
 <div class="photo-drop"><h3 style="margin:0 0 8px;font-family:'DM Serif Display',serif;color:var(--brown);font-size:24px">Photo de couverture — facultatif</h3><p style="margin:0;color:var(--muted);font-size:11px">Optez de préférence pour une jolie photo de votre ville plutôt que de votre logement.</p><input id="coverPhotoInput" type="file" accept="image/*"><button class="btn soft" id="chooseCoverPhoto" type="button" style="margin-top:14px">Choisir une photo</button><div class="photo-preview" id="photoPreview"><img id="photoPreviewImg" alt="Aperçu de la photo"></div><div class="photo-actions" id="photoActions" style="display:none"><button class="btn soft" id="replaceCoverPhoto" type="button">Remplacer</button><button class="btn soft" id="removeCoverPhoto" type="button">Supprimer</button></div></div>
@@ -581,10 +579,35 @@ $('togglePersonalAddresses').onclick=()=>{const box=$('personalAddressFields');b
 
 
 function lockAfterFirstExport(){if(exportLocked)return;exportLocked=true;document.querySelectorAll('.step').forEach(b=>{if(Number(b.dataset.step)<5)b.classList.add('locked')});$('prevBtn').style.visibility='hidden';$('exportLockNote').classList.add('show')}
+function cityFromAddress(){
+ const address=sanitizeText($('address')?.value||'');
+ if(!address)return 'votre destination';
+
+ const parts=address.split(',').map(part=>part.trim()).filter(Boolean);
+ let candidate=parts.length>1?parts[parts.length-1]:address;
+
+ if(/^(france|belgique|suisse|luxembourg|espagne|italie|portugal|germany|allemagne)$/i.test(candidate) && parts.length>1){
+  candidate=parts[parts.length-2];
+ }
+
+ candidate=candidate
+  .replace(/\b\d{5}\b/g,'')
+  .replace(/\b\d{4,6}\b/g,'')
+  .replace(/\s{2,}/g,' ')
+  .trim();
+
+ if(!candidate || candidate===address){
+  const postalMatch=address.match(/\b\d{5}\s+([A-Za-zÀ-ÖØ-öø-ÿ'’\-\s]+?)(?:\s*,\s*[^,]+)?$/);
+  if(postalMatch)candidate=postalMatch[1].trim();
+ }
+
+ return candidate||'votre destination';
+}
+
 function payload(){
  return {
   mode:'booklet',
-  property:{homeName:$('homeName').value,address:$('address').value,city:$('city').value,conciergeName:$('conciergeName').value,conciergePhone:$('conciergePhone').value,conciergeEmail:$('conciergeEmail').value,stay:$('stay').value},
+  property:{homeName:$('homeName').value,address:$('address').value,city:cityFromAddress(),conciergeName:$('conciergeName').value,conciergePhone:$('conciergePhone').value,conciergeEmail:$('conciergeEmail').value},
   profiles:{families:$('families').checked,couples:$('couples').checked,business:$('business').checked,accessible:$('accessible').checked},
   preferences:{tone:$('tone').value},
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
@@ -705,7 +728,7 @@ function diversifyUsefulServices(items){
 }
 
 function safeClosingText(){
- const city=sanitizeText($('city').value||'votre destination');
+ const city=sanitizeText(cityFromAddress());
  const concierge=sanitizeText($('conciergeName').value||'la conciergerie');
 
  return `Excellent séjour à ${city} ! Profitez pleinement de la destination, de ses découvertes locales et de son atmosphère. ${concierge} reste disponible pendant votre séjour pour répondre à vos questions et vous accompagner si besoin. / Have a wonderful stay in ${city}! Enjoy the destination, its local discoveries and its atmosphere. The ${concierge} team remains available throughout your stay should you need any assistance.`;
@@ -715,7 +738,7 @@ function itemCards(items,section='generic'){return (items||[]).map(x=>`<article 
 function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function footer(){return `<div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>`}
 function localTip(ai){
- const city=$('city').value||'la destination';
+ const city=cityFromAddress();
  const tip=(ai.tips||[])[0]?.description;
  return tip||`Commencez par une promenade à pied pour découvrir ${city} à votre rythme : les plus beaux détails se trouvent souvent entre deux adresses incontournables.`;
 }
@@ -752,7 +775,7 @@ function walkingTimes(ai){
 }
 
 function buildPrint(ai){
- const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);
+ const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml(cityFromAddress());
  const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34"><div style="position:absolute;inset:0;background:rgba(251,248,243,.54)"></div>`:'';
  const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;
  const travelItems=[...(ai.transport||[]).slice(0,4),...(ai.tips||[]).slice(0,2)].slice(0,6);
