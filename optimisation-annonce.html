@@ -467,6 +467,39 @@
 .optim-signature span{font-size:7.2px}
 </style>
 
+
+<style id="cleanup-report-fonts-final">
+/* Dernier ajustement de lisibilité du rapport PDF */
+.r-sub{font-size:9.2px}
+.r-card p,.r-card li{font-size:8.7px;line-height:1.45}
+.r-status span{font-size:9px;line-height:1.45}
+.r-text{font-size:8.6px;line-height:1.45}
+.metric-head{font-size:8.9px}
+.priority-item p{font-size:8.4px;line-height:1.43}
+.compare-table th{font-size:7.9px}
+.compare-table td{font-size:8.7px}
+.performance-note p{font-size:8.6px;line-height:1.44}
+.premium-section p{font-size:8.3px;line-height:1.45}
+.premium-practical p{font-size:8.2px;line-height:1.43}
+.optim-summary-row strong{font-size:8.4px}
+.optim-summary-highlight span{font-size:8px}
+.optim-priority-stat span{font-size:7.7px}
+.optim-priority-card p{font-size:8.2px;line-height:1.42}
+.optim-impact-card strong{font-size:8.9px}
+.optim-gain-row strong{font-size:8.9px}
+.optim-gain-value{font-size:8.9px}
+.optim-gain-legend{font-size:7.4px}
+.optim-conversion-item{font-size:8.4px}
+.optim-final-result-row strong{font-size:8.3px}
+.optim-final-result-row span{font-size:7.9px}
+.check-row{font-size:8.4px;line-height:1.38}
+.optim-signature span{font-size:7.6px}
+
+/* Les scores deviennent légèrement plus présents */
+.r-score strong{font-size:24px}
+.r-score span{font-size:7.5px}
+</style>
+
 </head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Améliorer la visibilité de l’annonce</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
