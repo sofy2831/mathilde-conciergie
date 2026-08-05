@@ -295,7 +295,7 @@
 /* V5 finale — ajustements PDF */
 @media print{
   .print-sheet .print-body{font-size:8pt!important;line-height:1.3!important}
-  #wifiQr{width:27mm!important;height:27mm!important}
+  #wifiQr{width:31mm!important;height:31mm!important;padding:1mm!important}
   .print-sheet .print-section:last-child{background:#FFF8F4!important;border-color:#E7C8BA!important}
   .print-sheet .print-col{gap:3.2mm!important}
 }
@@ -488,11 +488,11 @@
   <div class="print-grid">
     <div class="print-col">
       <section class="print-section">
-        <h2>Arrivée / Check-in</h2>
+        <h2>🏠 Arrivée / Check-in</h2>
         <p class="print-body" id="printArrival"></p>
       </section>
       <section class="print-section">
-        <h2>Wi-Fi</h2>
+        <h2>📶 Wi-Fi</h2>
         <div class="wifi-print">
           <div>
             <p class="print-body" id="printWifi"></p>
@@ -501,36 +501,39 @@
         </div>
       </section>
       <section class="print-section">
-        <h2>Utilisation / How to use</h2>
+        <h2>🏡 Utilisation / How to use</h2>
         <p class="print-body" id="printUse"></p>
       </section>
     </div>
 
     <div class="print-col">
       <section class="print-section">
-        <h2>Règles / House rules</h2>
+        <h2>📋 Règles / House rules</h2>
         <p class="print-body" id="printRules"></p>
       </section>
       <section class="print-section">
-        <h2>Ménage / Housekeeping</h2>
+        <h2>🧹 Ménage / Housekeeping</h2>
         <p class="print-body" id="printCleaning"></p>
       </section>
       <section class="print-section">
-        <h2>Départ / Check-out</h2>
+        <h2>🚪 Départ / Check-out</h2>
         <p class="print-body" id="printDeparture"></p>
       </section>
       <section class="print-section">
-        <h2>Urgences / Emergency</h2>
+        <h2>☎ Urgences / Emergency</h2>
         <p class="print-body" id="printEmergency"></p>
       </section>
     </div>
   </div>
 
   <div class="print-footer">
-    Nous vous souhaitons un excellent séjour<br>We wish you a wonderful stay
+    Nous vous souhaitons un excellent séjour<br><em>We wish you a wonderful stay</em>
     <small id="printContact"></small>
     <small id="printAddress"></small>
-    <div class="powered">Powered by CleanUp</div>
+    <div style="margin-top:8px;border-top:1px solid rgba(62,45,37,.15);padding-top:8px">
+      <strong>Guide généré automatiquement par CleanUp Manager</strong><br>
+      <span style="font-size:9px;color:#8C7B70">Version 1.0</span>
+    </div>
   </div>
 </section>
 </main><script src="stripe-checkout.js"></script><script>
