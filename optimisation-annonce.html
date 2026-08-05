@@ -500,6 +500,25 @@
 .r-score span{font-size:7.5px}
 </style>
 
+
+<style id="cleanup-final-summary-service-fix">
+.report-summary-card{
+  min-height:29mm;
+}
+.report-summary-card p{
+  overflow:visible!important;
+  text-overflow:clip!important;
+  display:block!important;
+  max-height:none!important;
+}
+.report-page:nth-child(5) .premium-section{
+  min-height:31mm;
+}
+.report-page:nth-child(5) .premium-section p:empty:after{
+  content:"Les informations utiles au séjour sont précisées dans le bloc Informations pratiques.";
+}
+</style>
+
 </head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Améliorer la visibilité de l’annonce</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
@@ -997,6 +1016,69 @@ function splitPremiumDescription(text){
   };
 }
 
+
+function finalizeReportSummary(text){
+  let clean=String(text||'')
+    .replace(/\s+/g,' ')
+    .replace(/\.{2,}/g,'.')
+    .trim();
+
+  if(!clean){
+    return "L’annonce présente une base exploitable, mais sa structure et la présentation de certaines informations doivent être clarifiées. Une réorganisation du texte permettra d’améliorer sa lisibilité et de mieux rassurer les voyageurs.";
+  }
+
+  // Si la réponse se termine déjà proprement, on la conserve.
+  if(/[.!?…»”)]$/.test(clean)) return clean;
+
+  // La réponse a été coupée : on retire le fragment incomplet après la dernière phrase.
+  const boundaries=[...clean.matchAll(/[.!?](?=\s|$)/g)];
+  if(boundaries.length){
+    const lastEnd=boundaries[boundaries.length-1].index+1;
+    if(lastEnd>=Math.min(220,clean.length*.55)){
+      clean=clean.slice(0,lastEnd).trim();
+    }
+  }else{
+    clean=clean.replace(/[,;:–—-]?\s+\S+(?:\s+\S+){0,5}$/,'').trim();
+  }
+
+  const conclusion=" Une restructuration plus claire et plus transparente permettra de mieux valoriser l’annonce.";
+  if(!clean) return conclusion.trim();
+  if(!/[.!?]$/.test(clean)) clean+='.';
+  return clean+conclusion;
+}
+
+function buildServiceAndKnowText(parts,rules,description){
+  const existing=String(parts?.service||'').trim();
+  if(existing) return existing;
+
+  const source=`${rules||''} ${description||''}`.replace(/\s+/g,' ').trim();
+  const selected=[];
+
+  const patterns=[
+    /[^.!?]*(?:arrivée|check-in|boîte à clés|boite à cles|accès autonome)[^.!?]*[.!?]?/i,
+    /[^.!?]*(?:départ|check-out)[^.!?]*[.!?]?/i,
+    /[^.!?]*(?:règlement|non-fumeur|animaux|fêtes|voisinage|silence)[^.!?]*[.!?]?/i,
+    /[^.!?]*(?:disponible|contact|question|séjour)[^.!?]*[.!?]?/i
+  ];
+
+  for(const rx of patterns){
+    const match=source.match(rx);
+    const sentence=match?.[0]?.trim();
+    if(sentence && !selected.some(x=>x.toLowerCase()===sentence.toLowerCase())){
+      selected.push(sentence);
+    }
+    if(selected.length===2) break;
+  }
+
+  if(selected.length){
+    return selected
+      .map(sentence=>/[.!?]$/.test(sentence)?sentence:sentence+'.')
+      .join(' ');
+  }
+
+  return "Les horaires d’arrivée et de départ, les règles du logement et les informations utiles sont regroupés ci-dessous afin de préparer le séjour clairement et d’éviter les mauvaises surprises.";
+}
+
 function buildReport(){
   if(!optimizationResult) return;
 
@@ -1018,6 +1100,7 @@ function buildReport(){
   const strengths=(a.strengths||[]).slice(0,6);
   const weaknesses=(a.weaknesses||[]).slice(0,5);
   const actions=(a.actionPlan||[]).slice(0,6);
+  const reportSummary=finalizeReportSummary(a.summary);
 
   const radarValues=[
     {label:'Clarté',value:before.clarity},
@@ -1065,7 +1148,7 @@ function buildReport(){
         ['Conversion',before.conversion]
       ].map(([label,value])=>`<div class="metric-card"><div class="metric-head"><span>${label}</span><strong class="metric-value">${value}/100</strong></div><div class="metric-track"><span style="width:${value}%"></span></div></div>`).join('')}
     </div>
-    <div class="r-card"><h3>Synthèse CleanUp</h3><p>${escapeHtml(a.summary)}</p></div>`);
+    <div class="r-card report-summary-card"><h3>Synthèse CleanUp</h3><p>${escapeHtml(reportSummary)}</p></div>`);
 
   const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver et à mieux valoriser.',globalBefore,`
     <div class="r-card"><h3>Points forts de l’annonce</h3><ul>${strengths.map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('')}</ul></div>
@@ -1140,6 +1223,7 @@ function buildReport(){
     <div class="performance-note"><h3>Pourquoi cette version est plus performante</h3><p>${escapeHtml(a.performanceWhy||'Le texte devient plus lisible, plus rassurant et plus facile à parcourir sur mobile. Les bénéfices voyageurs sont mieux identifiés et les informations utiles sont présentées plus clairement.')}</p></div>`);
 
   const parts=splitPremiumDescription(o.description);
+  const serviceAndKnow=buildServiceAndKnowText(parts,o.rules,o.description);
 
   const page5=reportPage(5,'Annonce optimisée','Une présentation claire, premium et prête à publier.',globalAfter,`
     <div class="premium-annonce">
@@ -1148,7 +1232,7 @@ function buildReport(){
         <div class="premium-section"><h4><span>1</span>Présentation</h4><p>${escapeHtml(parts.presentation||o.description)}</p></div>
         <div class="premium-section"><h4><span>2</span>Hébergement et équipements</h4><p>${escapeHtml(parts.equipment)}</p></div>
         <div class="premium-section"><h4><span>3</span>Localisation</h4><p>${escapeHtml(parts.location)}</p></div>
-        <div class="premium-section"><h4><span>4</span>Service et points à savoir</h4><p>${escapeHtml(parts.service)}</p></div>
+        <div class="premium-section"><h4><span>4</span>Service et points à savoir</h4><p>${escapeHtml(serviceAndKnow)}</p></div>
       </div>
       <div class="premium-practical"><h4>Informations pratiques</h4><p>${escapeHtml(o.rules)}</p></div>
     </div>
