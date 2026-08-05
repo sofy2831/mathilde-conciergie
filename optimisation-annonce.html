@@ -92,9 +92,345 @@
 .premium-practical h4{margin:0 0 1.8mm;font-size:9.2px;color:#3E2D25}
 .premium-practical p{font-size:7.3px;line-height:1.38;color:#556254;margin:0;white-space:pre-line}
 
-</style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
+</style>
+<style id="cleanup-optimisation-final-premium">
+/* Page 2 — radar éditorial et lecture synthétique */
+.optim-radar-layout{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:4mm;
+  margin-top:4mm;
+}
+.optim-radar-card,
+.optim-summary-card{
+  border:1px solid #E4D9CF;
+  border-radius:4mm;
+  padding:4mm;
+  background:#FCFAF7;
+}
+.optim-radar-card h3,
+.optim-summary-card h3{
+  margin:0 0 2.5mm;
+  font-size:10px;
+  color:#3E2D25;
+}
+.optim-radar{
+  width:100%;
+  height:56mm;
+}
+.optim-summary-list{
+  display:grid;
+  gap:2.4mm;
+}
+.optim-summary-row{
+  display:grid;
+  grid-template-columns:1fr 28mm;
+  gap:3mm;
+  align-items:center;
+}
+.optim-summary-row strong{
+  font-size:7.4px;
+  color:#3E2D25;
+}
+.optim-summary-meter{
+  height:3mm;
+  border-radius:999px;
+  overflow:hidden;
+  background:#F5EFE7;
+}
+.optim-summary-meter i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#B96F52,#D7A08A);
+}
+.optim-summary-highlight{
+  margin-top:3mm;
+  padding:3mm;
+  border-radius:3mm;
+  background:#E7EEE5;
+  border:1px solid #D3DFD0;
+  text-align:center;
+}
+.optim-summary-highlight strong{
+  display:block;
+  font-size:17px;
+  color:#3E2D25;
+}
+.optim-summary-highlight span{
+  display:block;
+  margin-top:1mm;
+  font-size:7px;
+  color:#556254;
+}
+
+/* Page 3 — priorités visuelles */
+.optim-priority-dashboard{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3mm;
+  margin-bottom:4mm;
+}
+.optim-priority-stat{
+  border:1px solid #E4D9CF;
+  border-radius:4mm;
+  padding:3.5mm;
+  background:#fff;
+  text-align:center;
+}
+.optim-priority-stat strong{
+  display:block;
+  font-size:19px;
+  color:#3E2D25;
+}
+.optim-priority-stat span{
+  display:block;
+  font-size:6.8px;
+  margin-top:1mm;
+  color:#766C66;
+}
+.optim-priority-cards{
+  display:grid;
+  gap:2.8mm;
+}
+.optim-priority-card{
+  display:grid;
+  grid-template-columns:24mm 1fr 29mm;
+  gap:3mm;
+  align-items:center;
+  padding:3.5mm;
+  border:1px solid #E4D9CF;
+  border-radius:4mm;
+  background:#FCFAF7;
+}
+.optim-priority-level{
+  display:grid;
+  place-items:center;
+  min-height:13mm;
+  border-radius:999px;
+  font-size:6.5px;
+  font-weight:900;
+  text-align:center;
+  padding:1.5mm;
+}
+.optim-priority-level.high{background:#F5E4DC;color:#8A4530}
+.optim-priority-level.medium{background:#F7EFD9;color:#7C631A}
+.optim-priority-level.low{background:#E7EEE5;color:#4F684F}
+.optim-priority-card h3{
+  margin:0 0 1mm;
+  font-size:9.2px;
+  color:#3E2D25;
+}
+.optim-priority-card p{
+  margin:0;
+  font-size:7.2px;
+  line-height:1.35;
+  color:#655C57;
+}
+.optim-stars{
+  text-align:right;
+  font-size:9px;
+  letter-spacing:.5mm;
+  color:#B96F52;
+  white-space:nowrap;
+}
+.optim-impact-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:3mm;
+  margin-top:4mm;
+}
+.optim-impact-card{
+  border:1px solid #E4D9CF;
+  border-radius:4mm;
+  padding:3mm;
+  background:#fff;
+}
+.optim-impact-card strong{
+  display:block;
+  font-size:8px;
+  color:#3E2D25;
+}
+.optim-impact-card span{
+  display:block;
+  margin-top:1mm;
+  font-size:10px;
+  color:#B96F52;
+  font-weight:900;
+}
+
+/* Page 4 — gains Avant / Après */
+.optim-gain-chart{
+  display:grid;
+  gap:3mm;
+  margin-top:4mm;
+}
+.optim-gain-row{
+  display:grid;
+  grid-template-columns:30mm 1fr 1fr 16mm;
+  gap:3mm;
+  align-items:center;
+}
+.optim-gain-row strong{
+  font-size:8px;
+  color:#3E2D25;
+}
+.optim-gain-bar{
+  height:4mm;
+  border-radius:999px;
+  overflow:hidden;
+  background:#F5EFE7;
+  position:relative;
+}
+.optim-gain-bar i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+}
+.optim-gain-bar.before i{background:#E7B9A7}
+.optim-gain-bar.after i{background:#91A98E}
+.optim-gain-value{
+  text-align:right;
+  font-size:8px;
+  font-weight:900;
+  color:#536B52;
+}
+.optim-gain-legend{
+  display:flex;
+  justify-content:flex-end;
+  gap:4mm;
+  margin-top:2mm;
+  font-size:6.8px;
+  color:#766C66;
+}
+.optim-gain-legend span:before{
+  content:"";
+  display:inline-block;
+  width:4mm;
+  height:2mm;
+  border-radius:999px;
+  margin-right:1.2mm;
+}
+.optim-gain-legend .before:before{background:#E7B9A7}
+.optim-gain-legend .after:before{background:#91A98E}
+
+/* Page 5 — carte de conversion */
+.optim-conversion-card{
+  margin-top:4mm;
+  padding:4mm;
+  border-radius:4mm;
+  background:#E7EEE5;
+  border:1px solid #D3DFD0;
+}
+.optim-conversion-card h3{
+  margin:0 0 2.5mm;
+  font-size:10px;
+  color:#3E2D25;
+}
+.optim-conversion-list{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2mm 4mm;
+}
+.optim-conversion-item{
+  font-size:7.4px;
+  color:#556254;
+}
+.optim-conversion-item:before{
+  content:"✓";
+  font-weight:900;
+  color:#6F876D;
+  margin-right:1.6mm;
+}
+
+/* Page 6 — résultat final */
+.optim-final-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4mm;
+  margin-top:4mm;
+}
+.optim-final-card{
+  border:1px solid #E4D9CF;
+  border-radius:4mm;
+  padding:4mm;
+  background:#FCFAF7;
+}
+.optim-final-card h3{
+  margin:0 0 2.5mm;
+  font-size:10px;
+  color:#3E2D25;
+}
+.optim-final-result{
+  display:grid;
+  gap:2.5mm;
+}
+.optim-final-result-row{
+  display:grid;
+  grid-template-columns:36mm 1fr 12mm;
+  gap:2mm;
+  align-items:center;
+}
+.optim-final-result-row strong{
+  font-size:7.3px;
+  color:#3E2D25;
+}
+.optim-final-result-row span{
+  font-size:7px;
+  text-align:right;
+  font-weight:900;
+  color:#536B52;
+}
+.optim-final-result-row .bar{
+  height:3mm;
+  border-radius:999px;
+  overflow:hidden;
+  background:#F5EFE7;
+}
+.optim-final-result-row .bar i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#7E927C,#AFC0AC);
+}
+.optim-signature{
+  margin-top:4mm;
+  padding:3.5mm 4mm;
+  border-top:1px solid #E4D9CF;
+  text-align:center;
+  color:#766C66;
+}
+.optim-signature strong{
+  display:block;
+  font-size:9px;
+  color:#3E2D25;
+}
+.optim-signature span{
+  display:block;
+  margin-top:1mm;
+  font-size:6.8px;
+}
+
+/* Ajustements A4 */
+.report-page:nth-child(2) .r-head,
+.report-page:nth-child(3) .r-head,
+.report-page:nth-child(4) .r-head,
+.report-page:nth-child(5) .r-head,
+.report-page:nth-child(6) .r-head{
+  margin-bottom:4mm;
+}
+.report-page:nth-child(2) .r-card,
+.report-page:nth-child(3) .r-card,
+.report-page:nth-child(4) .r-card,
+.report-page:nth-child(5) .r-card,
+.report-page:nth-child(6) .r-card{
+  padding:3.5mm;
+}
+</style>
+
+</head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
-<div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Mieux ressortir dans les recherches</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
+<div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Améliorer la visibilité de l’annonce</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
 <div class="section" id="step3"><div class="section-head"><div><h2>Audit de votre annonce</h2><p>CleanUp mesure la clarté, la confiance, la structure et le potentiel de conversion avant toute réécriture.</p></div><div class="section-badge">Étape 3 sur 5</div></div><button class="btn terracotta" id="analyzeBtn">✦ Lancer l’audit</button><div class="panel" id="analysisBox"><h3>Résultat</h3><p>Ajoutez votre annonce puis lancez l’analyse.</p></div></div>
 <div class="section" id="step4"><div class="section-head"><div><h2>Avant / Après</h2><p>Comparez l’annonce actuelle avec la version optimisée. Le texte reste modifiable avant export.</p></div><div class="section-badge">Étape 4 sur 5</div></div><div class="compare-grid">
 <div class="compare-card"><span class="compare-label">AVANT</span><h3 id="beforeTitle">Titre actuel</h3><p id="beforeDescription">Votre annonce actuelle apparaîtra ici.</p></div>
@@ -343,35 +679,58 @@ $('analysisBox').insertAdjacentHTML('beforebegin',`<div class="audit-loading" id
 </div>`);
 
 let auditProgressTimer=null;
+let auditProgressValue=0;
+let auditProgressIndex=0;
+
+const auditProgressSteps=[
+  {value:5, message:'Lecture du titre et de la description…'},
+  {value:12, message:'Analyse de la structure générale…'},
+  {value:21, message:'Mesure de la clarté et de la lisibilité…'},
+  {value:33, message:'Détection des incohérences…'},
+  {value:45, message:'Évaluation de la visibilité de l’annonce…'},
+  {value:57, message:'Analyse des éléments qui rassurent les voyageurs…'},
+  {value:68, message:'Identification des points forts et des freins…'},
+  {value:76, message:'Réécriture de l’annonce…'},
+  {value:83, message:'Optimisation des bénéfices voyageurs…'},
+  {value:89, message:'Préparation du comparatif Avant / Après…'},
+  {value:92, message:'Calcul des gains éditoriaux…'},
+  {value:95, message:'Construction du rapport professionnel…'},
+  {value:97, message:'Mise en page du document…'},
+  {value:99, message:'Finalisation de l’analyse…'}
+];
+
+function renderAuditProgress(value,message){
+  auditProgressValue=Math.max(0,Math.min(100,Math.round(value)));
+  $('auditProgressBar').style.width=auditProgressValue+'%';
+  $('auditProgressLabel').textContent=auditProgressValue+' %';
+  if(message) $('auditProgressMessage').textContent=message;
+}
+
 function startAuditProgress(){
   clearInterval(auditProgressTimer);
-  let progress=4;
-  const steps=[
-    [18,'Analyse de la structure et de la lisibilité…'],
-    [38,'Évaluation du titre, du SEO et de la confiance…'],
-    [58,'Identification des points forts et des freins…'],
-    [76,'Réécriture de l’annonce…'],
-    [90,'Préparation du comparatif Avant / Après…']
-  ];
-  let index=0;
-  $('auditProgressBar').style.width=progress+'%';
-  $('auditProgressLabel').textContent=progress+' %';
-  $('auditProgressMessage').textContent='Lecture du titre et de la description…';
+  auditProgressIndex=0;
+  renderAuditProgress(auditProgressSteps[0].value,auditProgressSteps[0].message);
+
   auditProgressTimer=setInterval(()=>{
-    if(index<steps.length){
-      progress=steps[index][0];
-      $('auditProgressBar').style.width=progress+'%';
-      $('auditProgressLabel').textContent=progress+' %';
-      $('auditProgressMessage').textContent=steps[index][1];
-      index++;
+    if(auditProgressIndex<auditProgressSteps.length-1){
+      auditProgressIndex++;
+      const step=auditProgressSteps[auditProgressIndex];
+      renderAuditProgress(step.value,step.message);
+      return;
     }
-  },850);
+
+    if(auditProgressValue<99){
+      renderAuditProgress(
+        Math.min(99,auditProgressValue+1),
+        'Finalisation de l’analyse…'
+      );
+    }
+  },2400);
 }
+
 function finishAuditProgress(){
   clearInterval(auditProgressTimer);
-  $('auditProgressBar').style.width='100%';
-  $('auditProgressLabel').textContent='100 %';
-  $('auditProgressMessage').textContent='Analyse terminée. Affichage de la version optimisée…';
+  renderAuditProgress(100,'Analyse terminée. Affichage de la version optimisée…');
 }
 
 async function runOptimization(options={}){
@@ -577,62 +936,203 @@ function buildReport(){
     description:val('newDescription')||a.optimized.description,
     rules:val('newRules')||a.optimized.rules
   };
-  const after=a.scoresAfter;
+  const d=displayedScores();
+  const before=d.before;
+  const after=d.afterDetail;
+  const globalBefore=d.current;
+  const globalAfter=d.after;
+  const gain=Math.max(0,globalAfter-globalBefore);
 
-  const strengths=(a.strengths||[]).slice(0,7).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
-  const weaknesses=(a.weaknesses||[]).slice(0,7).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
-  const actions=(a.actionPlan||[]).slice(0,7).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
-  const comparison=(a.comparison||[]).slice(0,6).map(x=>`
-    <div class="r-card">
-      <h3>${escapeHtml(x.element)}</h3>
-      <p><strong>Avant :</strong> ${escapeHtml(x.before)}</p>
-      <p style="margin-top:2mm"><strong>Après :</strong> ${escapeHtml(x.after)}</p>
-      <p style="margin-top:2mm">${escapeHtml(x.benefit)}</p>
-    </div>`).join('');
+  const strengths=(a.strengths||[]).slice(0,6);
+  const weaknesses=(a.weaknesses||[]).slice(0,5);
+  const actions=(a.actionPlan||[]).slice(0,6);
 
-  const page1=reportPage(1,'Audit de votre annonce','Vue d’ensemble avant optimisation.',e.scores.current,`
+  const radarValues=[
+    {label:'Clarté',value:before.clarity},
+    {label:'Visibilité',value:before.seo},
+    {label:'Confiance',value:before.trust},
+    {label:'Attractivité',value:before.title},
+    {label:'Réservations',value:before.conversion}
+  ];
+
+  const radarPoints=radarValues.map((item,index)=>{
+    const angle=(-90+index*72)*Math.PI/180;
+    const radius=42*(item.value/100);
+    return `${50+Math.cos(angle)*radius},${50+Math.sin(angle)*radius}`;
+  }).join(' ');
+
+  const radarAxes=radarValues.map((item,index)=>{
+    const angle=(-90+index*72)*Math.PI/180;
+    const x=50+Math.cos(angle)*46;
+    const y=50+Math.sin(angle)*46;
+    const tx=50+Math.cos(angle)*58;
+    const ty=50+Math.sin(angle)*58;
+    return `<line x1="50" y1="50" x2="${x}" y2="${y}" stroke="#E4D9CF" stroke-width=".8"/>
+            <text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-size="4.2" fill="#766C66">${escapeHtml(item.label)}</text>`;
+  }).join('');
+
+  const radarSvg=`<svg class="optim-radar" viewBox="-12 -12 124 124" aria-label="Profil éditorial">
+    <polygon points="50,8 89.9,37 74.7,84 25.3,84 10.1,37" fill="none" stroke="#E4D9CF" stroke-width="1"/>
+    <polygon points="50,18 80.4,40.1 68.8,75.9 31.2,75.9 19.6,40.1" fill="none" stroke="#EFE6DE" stroke-width="1"/>
+    ${radarAxes}
+    <polygon points="${radarPoints}" fill="rgba(185,111,82,.22)" stroke="#B96F52" stroke-width="1.7"/>
+  </svg>`;
+
+  const page1=reportPage(1,'Audit de votre annonce','Vue d’ensemble avant optimisation.',globalBefore,`
     <div class="r-status"><strong>${escapeHtml(a.verdict.title)}</strong><span>${escapeHtml(a.verdict.text)}</span></div>
     <div class="r-grid three">
-      <div class="r-card"><h3>Potentiel actuel</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${e.scores.current}/100</p></div>
-      <div class="r-card"><h3>Après optimisation</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${after.global}/100</p></div>
-      <div class="r-card"><h3>Gain estimé</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">+${Math.max(0,after.global-e.scores.current)}</p></div>
+      <div class="r-card"><h3>Potentiel actuel</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${globalBefore}/100</p></div>
+      <div class="r-card"><h3>Après optimisation</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${globalAfter}/100</p></div>
+      <div class="r-card"><h3>Gain éditorial</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">+${gain}</p></div>
     </div>
-    <div class="r-card" style="margin-top:5mm"><h3>Synthèse CleanUp</h3><p>${escapeHtml(a.summary)}</p></div>`);
+    <div class="metric-grid">
+      ${[
+        ['Titre',before.title],
+        ['Clarté',before.clarity],
+        ['Confiance',before.trust],
+        ['Conversion',before.conversion]
+      ].map(([label,value])=>`<div class="metric-card"><div class="metric-head"><span>${label}</span><strong class="metric-value">${value}/100</strong></div><div class="metric-track"><span style="width:${value}%"></span></div></div>`).join('')}
+    </div>
+    <div class="r-card"><h3>Synthèse CleanUp</h3><p>${escapeHtml(a.summary)}</p></div>`);
 
-  const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver.',e.scores.current,`
-    <div class="r-card"><h3>Points forts</h3><ul>${strengths}</ul></div>
-    <div class="r-grid" style="margin-top:5mm">
-      <div class="r-card"><h3>Lecture éditoriale</h3><p>${escapeHtml(guidedEditorialTitle(a))}</p></div>
-      <div class="r-card"><h3>Clarté</h3><p>${escapeHtml(a.audit.clarity)}</p></div>
-      <div class="r-card"><h3>Confiance</h3><p>${escapeHtml(a.audit.trust)}</p></div>
-      <div class="r-card"><h3>Conversion</h3><p>${escapeHtml(a.audit.conversion)}</p></div>
+  const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver et à mieux valoriser.',globalBefore,`
+    <div class="r-card"><h3>Points forts de l’annonce</h3><ul>${strengths.map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('')}</ul></div>
+    <div class="optim-radar-layout">
+      <div class="optim-radar-card"><h3>Profil éditorial actuel</h3>${radarSvg}</div>
+      <div class="optim-summary-card">
+        <h3>Lecture synthétique</h3>
+        <div class="optim-summary-list">
+          ${radarValues.map(item=>`<div class="optim-summary-row"><strong>${item.label}</strong><div class="optim-summary-meter"><i style="width:${item.value}%"></i></div></div>`).join('')}
+        </div>
+        <div class="optim-summary-highlight"><strong>+${gain} points</strong><span>Potentiel d’amélioration estimé</span></div>
+      </div>
     </div>`);
 
-  const page3=reportPage(3,'Freins et opportunités','Les corrections prioritaires.',e.scores.current,`
-    <div class="r-card"><h3>Freins détectés</h3><ul>${weaknesses}</ul></div>
-    <div class="r-grid" style="margin-top:5mm">
-      <div class="r-card"><h3>SEO éditorial</h3><p>${escapeHtml(a.audit.seo)}</p></div>
-      <div class="r-card"><h3>Règlement</h3><p>${escapeHtml(a.audit.rules)}</p></div>
+  const priorityStats={
+    high:weaknesses.filter((_,i)=>i<2).length,
+    medium:weaknesses.filter((_,i)=>i>=2&&i<4).length,
+    low:Math.max(0,weaknesses.length-4)
+  };
+
+  const priorityCards=weaknesses.map((x,index)=>{
+    const level=index<2?'high':index<4?'medium':'low';
+    const label=level==='high'?'Priorité élevée':level==='medium'?'Priorité moyenne':'À surveiller';
+    const stars=level==='high'?'★★★★★':level==='medium'?'★★★★☆':'★★★☆☆';
+    return `<div class="optim-priority-card">
+      <div class="optim-priority-level ${level}">${label}</div>
+      <div><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.detail)}</p></div>
+      <div class="optim-stars">${stars}</div>
+    </div>`;
+  }).join('');
+
+  const page3=reportPage(3,'Freins et priorités','Les corrections classées selon leur impact.',globalBefore,`
+    <div class="optim-priority-dashboard">
+      <div class="optim-priority-stat"><strong>${priorityStats.high}</strong><span>Corrections majeures</span></div>
+      <div class="optim-priority-stat"><strong>${priorityStats.medium}</strong><span>Améliorations importantes</span></div>
+      <div class="optim-priority-stat"><strong>${priorityStats.low}</strong><span>Points à surveiller</span></div>
+    </div>
+    <div class="optim-priority-cards">${priorityCards}</div>
+    <div class="optim-impact-grid">
+      ${[
+        ['Lisibilité',after.clarity],
+        ['Confiance',after.trust],
+        ['Visibilité',after.seo],
+        ['Conversion',after.conversion]
+      ].map(([label,value])=>`<div class="optim-impact-card"><strong>${label}</strong><span>${value}/100</span></div>`).join('')}
     </div>`);
 
-  const page4=reportPage(4,'Avant / Après','Les changements les plus importants.',after.global,`
-    <div class="r-grid">${comparison}</div>`);
+  const comparisonMetrics=[
+    ['Titre',before.title,after.title],
+    ['Clarté',before.clarity,after.clarity],
+    ['Confiance',before.trust,after.trust],
+    ['Conversion',before.conversion,after.conversion],
+    ['Visibilité',before.seo,after.seo]
+  ];
 
-  const page5=reportPage(5,'Annonce optimisée','Version complète prête à relire.',after.global,`
-    <div class="r-card">
-      <h3>${escapeHtml(o.title)}</h3>
-      <p><strong>Accroche</strong></p>
-      <p class="r-text">${escapeHtml(o.intro)}</p>
-      <p style="margin-top:3mm"><strong>Description optimisée</strong></p>
-      <p class="r-text">${escapeHtml(o.description)}</p>
-      <p style="margin-top:3mm"><strong>Informations pratiques</strong></p>
-      <p class="r-text">${escapeHtml(o.rules)}</p>
+  const page4=reportPage(4,'Avant / Après','Les progrès mesurés sur les principaux critères.',globalAfter,`
+    <table class="compare-table">
+      <thead><tr><th>Critère</th><th>Avant</th><th>Après</th><th>Gain</th></tr></thead>
+      <tbody>
+        ${comparisonMetrics.map(([label,b,aft])=>`<tr><td><strong>${label}</strong></td><td><span class="score-chip before">${b}</span></td><td><span class="score-chip after">${aft}</span></td><td><span class="gain-chip">+${Math.max(0,aft-b)}</span></td></tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="optim-gain-chart">
+      ${comparisonMetrics.map(([label,b,aft])=>`<div class="optim-gain-row">
+        <strong>${label}</strong>
+        <div class="optim-gain-bar before"><i style="width:${b}%"></i></div>
+        <div class="optim-gain-bar after"><i style="width:${aft}%"></i></div>
+        <span class="optim-gain-value">+${Math.max(0,aft-b)}</span>
+      </div>`).join('')}
+    </div>
+    <div class="optim-gain-legend"><span class="before">Avant</span><span class="after">Après</span></div>
+    <div class="performance-note"><h3>Pourquoi cette version est plus performante</h3><p>${escapeHtml(a.performanceWhy||'Le texte devient plus lisible, plus rassurant et plus facile à parcourir sur mobile. Les bénéfices voyageurs sont mieux identifiés et les informations utiles sont présentées plus clairement.')}</p></div>`);
+
+  const parts=splitPremiumDescription(o.description);
+
+  const page5=reportPage(5,'Annonce optimisée','Une présentation claire, premium et prête à publier.',globalAfter,`
+    <div class="premium-annonce">
+      <div class="premium-hero"><div class="premium-kicker">Nouvelle annonce optimisée</div><h3>${escapeHtml(o.title)}</h3><p class="r-text"><strong>Accroche</strong><br>${escapeHtml(o.intro)}</p></div>
+      <div class="premium-blocks">
+        <div class="premium-section"><h4><span>1</span>Présentation</h4><p>${escapeHtml(parts.presentation||o.description)}</p></div>
+        <div class="premium-section"><h4><span>2</span>Hébergement et équipements</h4><p>${escapeHtml(parts.equipment)}</p></div>
+        <div class="premium-section"><h4><span>3</span>Localisation</h4><p>${escapeHtml(parts.location)}</p></div>
+        <div class="premium-section"><h4><span>4</span>Service et points à savoir</h4><p>${escapeHtml(parts.service)}</p></div>
+      </div>
+      <div class="premium-practical"><h4>Informations pratiques</h4><p>${escapeHtml(o.rules)}</p></div>
+    </div>
+    <div class="optim-conversion-card">
+      <h3>Pourquoi cette annonce convertira mieux</h3>
+      <div class="optim-conversion-list">
+        <div class="optim-conversion-item">Lecture plus rapide</div>
+        <div class="optim-conversion-item">Bénéfices voyageurs plus visibles</div>
+        <div class="optim-conversion-item">Informations plus rassurantes</div>
+        <div class="optim-conversion-item">Message commercial plus clair</div>
+      </div>
     </div>`);
 
-  const page6=reportPage(6,'Plan d’action final','Dernières vérifications avant publication.',after.global,`
-    <div class="r-status"><strong>Potentiel après optimisation : ${after.global}/100</strong><span>Estimation éditoriale, sans garantie de classement ni de réservation.</span></div>
-    <div class="r-card"><h3>Actions recommandées</h3><ol>${actions}</ol></div>
-    <div class="r-card" style="margin-top:5mm"><h3>À vérifier avant publication</h3><p>Contrôlez les équipements, les distances, les règles, les horaires, les tarifs et les disponibilités directement sur la plateforme.</p></div>`);
+  const finalResults=[
+    ['Clarté',after.clarity],
+    ['Confiance',after.trust],
+    ['Attractivité',after.title],
+    ['Visibilité',after.seo],
+    ['Conversion',after.conversion]
+  ];
+
+  const page6=reportPage(6,'Plan d’action final','Publication et dernières vérifications.',globalAfter,`
+    <div class="r-grid three">
+      <div class="r-card"><h3>Potentiel éditorial</h3><p style="font-size:19px;font-weight:800;color:#3E2D25">${globalAfter}/100</p></div>
+      <div class="r-card"><h3>Niveau de confiance</h3><p style="font-size:15px;font-weight:800;color:#3E2D25">${globalAfter>=90?'Excellent':globalAfter>=80?'Très bon':'Bon'}</p></div>
+      <div class="r-card"><h3>Gain obtenu</h3><p style="font-size:19px;font-weight:800;color:#3E2D25">+${gain}</p></div>
+    </div>
+
+    <div class="optim-final-grid">
+      <div class="optim-final-card">
+        <h3>À faire avant publication</h3>
+        <div class="checklist">
+          ${[
+            'Vérifier les équipements annoncés',
+            'Confirmer les distances et accès',
+            'Relire les couchages et la capacité',
+            'Contrôler les horaires d’arrivée et de départ',
+            'Mettre à jour les tarifs et disponibilités',
+            'Choisir les photos les plus convaincantes'
+          ].map(x=>`<div class="check-row">${escapeHtml(x)}</div>`).join('')}
+        </div>
+      </div>
+      <div class="optim-final-card">
+        <h3>Résultat attendu</h3>
+        <div class="optim-final-result">
+          ${finalResults.map(([label,value])=>`<div class="optim-final-result-row"><strong>${label}</strong><div class="bar"><i style="width:${value}%"></i></div><span>${value}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="r-card" style="margin-top:4mm"><h3>Actions recommandées</h3><ol>${actions.map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('')}</ol></div>
+
+    <div class="optim-signature">
+      <strong>Rapport généré par CleanUp Manager</strong>
+      <span>Optimisation éditoriale personnalisée · Document généré le ${new Date().toLocaleDateString('fr-FR')}</span>
+    </div>`);
 
   $('reportPrint').innerHTML=page1+page2+page3+page4+page5+page6;
 }
@@ -715,10 +1215,10 @@ buildReport=function(){
   const strengths=(a.strengths||[]).slice(0,6).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
   const actions=(a.actionPlan||[]).slice(0,6).map(x=>`<li><strong>${escapeHtml(x.title)}</strong> — ${escapeHtml(x.detail)}</li>`).join('');
   const targets=targetAudiences().map(x=>`<div class="target-card"><strong>${escapeHtml(x[0])}</strong><span>${escapeHtml(x[1])}</span></div>`).join('');
-  const comparisonRows=[['Titre',s.before.title,s.afterDetail.title],['Clarté',s.before.clarity,s.afterDetail.clarity],['Confiance',s.before.trust,s.afterDetail.trust],['Conversion',s.before.conversion,s.afterDetail.conversion],['SEO éditorial',s.before.seo,s.afterDetail.seo]].map(r=>`<tr><td><strong>${r[0]}</strong></td><td><span class="score-chip before">${r[1]}</span></td><td><span class="score-chip after">${r[2]}</span></td><td><span class="gain-chip">+${r[2]-r[1]}</span></td></tr>`).join('');
+  const comparisonRows=[['Titre',s.before.title,s.afterDetail.title],['Clarté',s.before.clarity,s.afterDetail.clarity],['Confiance',s.before.trust,s.afterDetail.trust],['Conversion',s.before.conversion,s.afterDetail.conversion],['Visibilité de l’annonce',s.before.seo,s.afterDetail.seo]].map(r=>`<tr><td><strong>${r[0]}</strong></td><td><span class="score-chip before">${r[1]}</span></td><td><span class="score-chip after">${r[2]}</span></td><td><span class="gain-chip">+${r[2]-r[1]}</span></td></tr>`).join('');
   const page1=reportPage(1,'Audit de votre annonce','Vue d’ensemble avant optimisation.',s.current,`<div class="r-status"><strong>${escapeHtml(a.verdict.title)}</strong><span>${escapeHtml(a.verdict.text)}</span></div><div class="r-grid three"><div class="r-card"><h3>Potentiel actuel</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${s.current}/100</p></div><div class="r-card"><h3>Après optimisation</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">${s.after}/100</p></div><div class="r-card"><h3>Gain éditorial</h3><p style="font-size:20px;font-weight:800;color:#3E2D25">+${s.gain}</p></div></div><div class="metric-grid">${scoreMetric('Titre',s.before.title)}${scoreMetric('Clarté',s.before.clarity)}${scoreMetric('Confiance',s.before.trust)}${scoreMetric('Conversion',s.before.conversion)}</div><div class="r-card"><h3>Synthèse CleanUp</h3><p>${escapeHtml(a.summary)}</p></div>`);
   const page2=reportPage(2,'Ce qui fonctionne','Les qualités à conserver et à mieux valoriser.',s.current,`<div class="r-card"><h3>Points forts de l’annonce</h3><ul>${strengths}</ul></div><div class="metric-grid">${scoreMetric('Titre',s.before.title)}${scoreMetric('Clarté',s.before.clarity)}${scoreMetric('Confiance',s.before.trust)}${scoreMetric('Conversion',s.before.conversion)}</div><div class="r-grid"><div class="r-card"><h3>Lecture éditoriale</h3><p>${escapeHtml(guidedEditorialTitle(a))}</p></div><div class="r-card"><h3>Capacité à rassurer</h3><p>${escapeHtml(a.audit.trust)}</p></div></div>`);
-  const page3=reportPage(3,'Freins et priorités','Les corrections classées par importance.',s.current,`${priorityMarkup(a.weaknesses)}<div class="r-grid" style="margin-top:5mm"><div class="r-card"><h3>SEO éditorial</h3><p>${escapeHtml(a.audit.seo)}</p></div><div class="r-card"><h3>Règlement et transparence</h3><p>${escapeHtml(a.audit.rules)}</p></div></div>`);
+  const page3=reportPage(3,'Freins et priorités','Les corrections classées par importance.',s.current,`${priorityMarkup(a.weaknesses)}<div class="r-grid" style="margin-top:5mm"><div class="r-card"><h3>Visibilité de l’annonce</h3><p>${escapeHtml(a.audit.seo)}</p></div><div class="r-card"><h3>Règlement et transparence</h3><p>${escapeHtml(a.audit.rules)}</p></div></div>`);
   const page4=reportPage(4,'Avant / Après','Les progrès mesurés sur les principaux critères.',s.after,`<table class="compare-table"><thead><tr><th>Critère</th><th>Avant</th><th>Après</th><th>Gain</th></tr></thead><tbody>${comparisonRows}</tbody></table><div class="performance-note"><h3>Pourquoi cette version est plus performante</h3><p>Le titre devient plus précis, la lecture est plus rapide sur mobile, les bénéfices concrets sont visibles dès les premières lignes et les limites utiles sont présentées avec transparence. L’annonce aide ainsi le voyageur à se projeter et à décider plus facilement.</p></div>`);
   const premium=splitPremiumDescription(o.description);
   const page5=reportPage(5,'Annonce optimisée','Une présentation claire, premium et prête à publier.',s.after,`
