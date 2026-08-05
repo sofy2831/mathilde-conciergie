@@ -590,7 +590,7 @@ function payload(){
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
   ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value},
   ownerAdditions:{restaurants:$('customRestaurants').value,shops:$('customShops').value,activities:$('customActivities').value,transport:$('customTransport').value,events:$('customTips').value},
-  events:{season:'Toute l’année — proposer 4 à 6 événements majeurs et récurrents répartis sur l’année, en conservant en premier tout événement ajouté par le propriétaire',period:'Toute l’année',count:6},generationRules:{specificPlacesOnly:true,avoidGenericRecommendations:true,requireRealKnownPlaces:true,localWarmTone:true,includeWalkingTimes:true,includeLocalTip:true,neverInventTravelTimes:true,useAppropriateTransportMode:true}
+  events:{season:'Toute l’année — proposer 4 à 6 événements majeurs et récurrents répartis sur l’année, en conservant en premier tout événement ajouté par le propriétaire',period:'Toute l’année',count:6},generationRules:{specificPlacesOnly:true,avoidGenericRecommendations:true,requireRealKnownPlaces:true,localWarmTone:true,includeWalkingTimes:true,includeLocalTip:true,neverInventTravelTimes:true,useAppropriateTransportMode:true,diversifyUsefulServices:true,requiredUsefulServices:['market-or-halles','bakery','supermarket','pharmacy','atm-or-post-office','laundry-or-gas-station']}
  };
 }
 function sanitizeText(value){
@@ -673,6 +673,63 @@ function iconForItem(title,section){
  }
  return '✦';
 }
+
+function diversifyUsefulServices(items){
+ const result=[...(items||[])];
+ const keys=result.map(x=>normalizePlaceKey(x.title));
+
+ const has=(rx)=>keys.some(k=>rx.test(k));
+ const add=(title,description)=>{
+  const key=normalizePlaceKey(title);
+  if(!keys.includes(key) && result.length<6){
+   result.push({title,description});
+   keys.push(key);
+  }
+ };
+
+ if(!has(/distributeur|dab|atm|banque/) && !has(/poste|postal|courrier/)){
+  add(
+   'Distributeurs et services bancaires du centre-ville / City-centre ATMs and banking services',
+   'Plusieurs distributeurs sont disponibles dans le centre-ville ; vérifiez l’itinéraire le plus pratique depuis le logement. / Several ATMs are available in the city centre; check the most convenient route from the accommodation.'
+  );
+ }
+
+ if(!has(/laverie|laundry|lavomatic/) && !has(/station service|station-service|essence|carburant|petrol|gas station/)){
+  add(
+   'Laveries et stations-service à proximité / Nearby laundries and petrol stations',
+   'Ces services sont disponibles dans l’agglomération ; choisissez l’adresse la plus adaptée selon votre itinéraire. / These services are available around the city; choose the most convenient location for your route.'
+  );
+ }
+
+ return result.slice(0,6);
+}
+
+function safeClosingText(value){
+ let text=sanitizeText(value).replace(/\s+/g,' ').trim();
+
+ // Le pied de page contient déjà les coordonnées : on les retire de la conclusion.
+ text=text
+  .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,'')
+  .replace(/(?:\+33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/g,'')
+  .replace(/\s{2,}/g,' ')
+  .trim();
+
+ if(!text){
+  return "Nous vous souhaitons un excellent séjour et de belles découvertes à Orléans. / We wish you a wonderful stay and many enjoyable discoveries in Orléans.";
+ }
+
+ const maxChars=430;
+ if(text.length>maxChars){
+  const cut=text.slice(0,maxChars);
+  const ends=[cut.lastIndexOf('.'),cut.lastIndexOf('!'),cut.lastIndexOf('?')];
+  const last=Math.max(...ends);
+  text=last>180?cut.slice(0,last+1):cut.trim();
+ }
+
+ if(!/[.!?]$/.test(text)) text+='.';
+ return text;
+}
+
 function itemCards(items,section='generic'){return (items||[]).map(x=>`<article class="item"><h3><span class="item-icon">${iconForItem(x.title,section)}</span>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></article>`).join('')||'<article class="item"><p>Aucune recommandation fournie.</p></article>'}
 function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function footer(){return `<div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>`}
@@ -718,12 +775,12 @@ function buildPrint(ai){
  const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34"><div style="position:absolute;inset:0;background:rgba(251,248,243,.54)"></div>`:'';
  const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;
  const travelItems=[...(ai.transport||[]).slice(0,4),...(ai.tips||[]).slice(0,2)].slice(0,6);
- const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events,'events')}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;
+ const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events,'events')}</div><p class="intro" style="margin-top:8mm">${escapeHtml(safeClosingText(ai.closing))}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(safeClosingText(ai.closing))}</p>${footer()}</section>`;
  $('printBooklet').innerHTML=`
  <section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section>
  <section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="page-intro-note"><strong>Le conseil CleanUp</strong>${escapeHtml(localTip(ai))}</div><div class="items">${itemCards(ai.activities,'activities')}</div>${footer()}</section>
  <section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="page-intro-note"><strong>Nos bonnes adresses</strong>Des tables et pauses gourmandes choisies pour profiter pleinement de votre séjour.</div><div class="items">${itemCards(ai.restaurants,'restaurants')}</div>${footer()}</section>
- <section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="page-intro-note"><strong>Pratique pendant le séjour</strong>Les commerces et services utiles sont regroupés ici pour vous faire gagner du temps.</div><div class="items">${itemCards(ai.shops,'shops')}</div>${footer()}</section>
+ <section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="page-intro-note"><strong>Pratique pendant le séjour</strong>Les commerces et services utiles sont regroupés ici pour vous faire gagner du temps.</div><div class="items">${itemCards(diversifyUsefulServices(ai.shops),'shops')}</div>${footer()}</section>
  <section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2>${walkingTimes(ai)}<div class="items">${itemCards(travelItems,'transport')}</div><div class="cleanup-tip"><strong>Le conseil CleanUp</strong>Découvrez la ville à pied lorsque c’est possible : c’est souvent la meilleure façon d’en apprécier l’ambiance, les commerces et le patrimoine.</div>${footer()}</section>
  ${eventPage}`;
 }
