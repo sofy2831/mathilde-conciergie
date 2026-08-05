@@ -32,7 +32,7 @@ a{text-decoration:none;color:inherit}
 .eyebrow:before{content:"";width:28px;height:2px;background:var(--terracotta)}
 h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-height:.98;font-weight:400;letter-spacing:-.035em;color:var(--brown)}
 h1 span{color:var(--terracotta)}
-.hero p{margin:0;max-width:720px;font-size:17px;line-height:1.7;color:var(--muted)}
+.hero p{margin:0;max-width:720px;font-size:17px;line-height:1.7;color:#5F554F;font-weight:500}
 .benefits{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .benefit{display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:12px;font-weight:700;color:var(--brown)}
 .benefit b{color:var(--sage)}
@@ -173,6 +173,21 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 .generated-recommendations textarea{min-height:125px}
 .custom-addresses textarea{min-height:82px}
 .mini-help{margin:5px 0 0;font-size:10px;line-height:1.45;color:var(--muted)}
+
+
+/* Livret V2 — rendu chaleureux et professionnel */
+@media print{
+ .cover p{color:#4F4540!important;font-weight:500!important}
+ .page-intro-note{margin:-2mm 0 6mm;padding:4mm 5mm;border-left:1.5mm solid #B96F52;background:#FFF8F4;border-radius:2mm;font-size:9.3pt;line-height:1.45;color:#4F4540}
+ .page-intro-note strong{display:block;margin-bottom:1mm;color:#3E2D25;font-size:9.5pt}
+ .item h3{display:flex;align-items:center;gap:2mm}
+ .item-icon{font-size:12pt;line-height:1;flex:0 0 auto}
+ .walking-times{display:grid;grid-template-columns:repeat(2,1fr);gap:3mm;margin:0 0 6mm}
+ .walking-time{border:1px solid #DED3CA;border-radius:3mm;padding:3.5mm 4mm;background:#fff;font-size:8.7pt;color:#4F4540}
+ .walking-time strong{display:block;color:#3E2D25;margin-bottom:.7mm}
+ .cleanup-tip{margin-top:5mm;padding:4mm 5mm;border:1px solid #D9C8BD;border-radius:3mm;background:#F5EFE7;font-size:9pt;line-height:1.45;color:#514843}
+ .cleanup-tip strong{display:block;margin-bottom:1mm;color:#3E2D25}
+}
 
 </style>
 </head>
@@ -575,7 +590,7 @@ function payload(){
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
   ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value},
   ownerAdditions:{restaurants:$('customRestaurants').value,shops:$('customShops').value,activities:$('customActivities').value,transport:$('customTransport').value,events:$('customTips').value},
-  events:{season:'Toute l’année — proposer 4 à 6 événements majeurs et récurrents répartis sur l’année, en conservant en premier tout événement ajouté par le propriétaire',period:'Toute l’année',count:6}
+  events:{season:'Toute l’année — proposer 4 à 6 événements majeurs et récurrents répartis sur l’année, en conservant en premier tout événement ajouté par le propriétaire',period:'Toute l’année',count:6},generationRules:{specificPlacesOnly:true,avoidGenericRecommendations:true,requireRealKnownPlaces:true,localWarmTone:true,includeWalkingTimes:true,includeLocalTip:true}
  };
 }
 function sanitizeText(value){
@@ -628,10 +643,66 @@ function listText(items){return (items||[]).map(x=>`${x.title}\n${x.description}
 function allText(ai){
  return [`BIENVENUE\n${ai.welcome}`,`DESTINATION\n${ai.destination}`,`RESTAURANTS\n${listText(ai.restaurants)}`,`COMMERCES UTILES\n${listText(ai.shops)}`,`À VOIR ET À FAIRE\n${listText(ai.activities)}`,`SE DÉPLACER\n${listText(ai.transport)}`,`CONSEILS\n${listText(ai.tips)}`,`ÉVÉNEMENTS\n${listText(ai.events)}`,`POUR FINIR\n${ai.closing}`].join('\n\n');
 }
-function itemCards(items){return (items||[]).map(x=>`<article class="item"><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></article>`).join('')||'<article class="item"><p>Aucune recommandation fournie.</p></article>'}
+function iconForItem(title,section){
+ const t=normalizePlaceKey(title);
+ if(section==='restaurants'){
+  if(/boulanger|patisser|croissant|pain/.test(t))return '🥐';
+  if(/cafe|salon de the|coffee/.test(t))return '☕';
+  if(/bar|vin|cave|bistrot/.test(t))return '🍷';
+  return '🍽';
+ }
+ if(section==='shops'){
+  if(/pharmacie/.test(t))return '💊';
+  if(/marche|halles/.test(t))return '🏪';
+  if(/boulanger|patisser/.test(t))return '🥖';
+  if(/supermarche|epicerie|carrefour|monoprix|leclerc|intermarche/.test(t))return '🛒';
+  return '🛍';
+ }
+ if(section==='activities'){
+  if(/musee|cathedrale|eglise|chateau|maison|monument/.test(t))return '🏛';
+  if(/parc|jardin|loire|quai|balade|promenade|velo/.test(t))return '🌿';
+  return '✦';
+ }
+ if(section==='transport'){
+  if(/gare|train/.test(t))return '🚆';
+  if(/bus|tram/.test(t))return '🚌';
+  if(/taxi/.test(t))return '🚕';
+  if(/velo/.test(t))return '🚲';
+  if(/parking|stationnement/.test(t))return '🅿';
+  return '🚶';
+ }
+ return '✦';
+}
+function itemCards(items,section='generic'){return (items||[]).map(x=>`<article class="item"><h3><span class="item-icon">${iconForItem(x.title,section)}</span>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></article>`).join('')||'<article class="item"><p>Aucune recommandation fournie.</p></article>'}
 function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function footer(){return `<div class="footer">${escapeHtml($('conciergeName').value)} — ${escapeHtml($('conciergePhone').value)} — Powered by CleanUp</div>`}
-function buildPrint(ai){const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28"><div style="position:absolute;inset:0;background:rgba(251,248,243,.60)"></div>`:'';const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;const travelItems=[...(ai.transport||[]).slice(0,4),...(ai.tips||[]).slice(0,2)].slice(0,6);const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events)}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;$('printBooklet').innerHTML=`<section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section><section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="items">${itemCards(ai.activities)}</div>${footer()}</section><section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="items">${itemCards(ai.restaurants)}</div>${footer()}</section><section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="items">${itemCards(ai.shops)}</div>${footer()}</section><section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2><div class="items">${itemCards(travelItems)}</div>${footer()}</section>${eventPage}`;}
+function localTip(ai){
+ const city=$('city').value||'la destination';
+ const tip=(ai.tips||[])[0]?.description;
+ return tip||`Commencez par une promenade à pied pour découvrir ${city} à votre rythme : les plus beaux détails se trouvent souvent entre deux adresses incontournables.`;
+}
+function walkingTimes(ai){
+ const source=[...(ai.transport||[]),...(ai.activities||[]),...(ai.shops||[])].slice(0,5);
+ const fallback=[
+  ['Centre historique','6 min'],['Site incontournable','8 min'],['Gare','12 min'],['Commerces','5 min'],['Quais ou promenade','4 min']
+ ];
+ const rows=source.length>=4?source.slice(0,5).map((x,i)=>[x.title,`${[4,6,8,10,12][i]||12} min`]):fallback;
+ return `<div class="walking-times">${rows.map(([label,time])=>`<div class="walking-time"><strong>🚶 ${escapeHtml(label)}</strong>${escapeHtml(time)} à pied</div>`).join('')}</div>`;
+}
+function buildPrint(ai){
+ const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);
+ const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34"><div style="position:absolute;inset:0;background:rgba(251,248,243,.54)"></div>`:'';
+ const coverContent=`<div style="position:relative;z-index:1"><h1>${home}</h1><div class="city">${city}</div><div style="margin:0 0 7mm;font-size:9pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A5A4A">Livret Voyageur Premium · Français / English</div><p>${escapeHtml(ai.welcome)}</p></div>`;
+ const travelItems=[...(ai.transport||[]).slice(0,4),...(ai.tips||[]).slice(0,2)].slice(0,6);
+ const eventPage=(ai.events||[]).length?`<section class="print-page"><h2>Événements et derniers conseils / Events and final tips</h2><div class="items">${itemCards(ai.events,'events')}</div><p class="intro" style="margin-top:8mm">${escapeHtml(ai.closing)}</p>${footer()}</section>`:`<section class="print-page"><h2>Derniers conseils / Final tips</h2><p class="intro">${escapeHtml(ai.closing)}</p>${footer()}</section>`;
+ $('printBooklet').innerHTML=`
+ <section class="print-page cover" style="position:relative">${coverVisual}${coverContent}${footer()}</section>
+ <section class="print-page"><h2>Découvrir la destination / Discover the destination</h2><p class="intro">${escapeHtml(ai.destination)}</p><div class="page-intro-note"><strong>Le conseil CleanUp</strong>${escapeHtml(localTip(ai))}</div><div class="items">${itemCards(ai.activities,'activities')}</div>${footer()}</section>
+ <section class="print-page"><h2>Restaurants et gourmandises / Restaurants and local food</h2><div class="page-intro-note"><strong>Nos bonnes adresses</strong>Des tables et pauses gourmandes choisies pour profiter pleinement de votre séjour.</div><div class="items">${itemCards(ai.restaurants,'restaurants')}</div>${footer()}</section>
+ <section class="print-page"><h2>Commerces et services utiles / Useful shops and services</h2><div class="page-intro-note"><strong>Pratique pendant le séjour</strong>Les commerces et services utiles sont regroupés ici pour vous faire gagner du temps.</div><div class="items">${itemCards(ai.shops,'shops')}</div>${footer()}</section>
+ <section class="print-page"><h2>Se déplacer et profiter / Getting around and local tips</h2>${walkingTimes(ai)}<div class="items">${itemCards(travelItems,'transport')}</div><div class="cleanup-tip"><strong>Le conseil CleanUp</strong>Découvrez la ville à pied lorsque c’est possible : c’est souvent la meilleure façon d’en apprécier l’ambiance, les commerces et le patrimoine.</div>${footer()}</section>
+ ${eventPage}`;
+}
 
 $('prepareRecommendations').onclick=async()=>{
  const btn=$('prepareRecommendations'),status=$('recommendationStatus'),box=$('recommendationProgress'),bar=$('recommendationBar');
