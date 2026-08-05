@@ -590,7 +590,7 @@ function payload(){
   categories:{restaurants:$('catRestaurants').checked,bakeries:$('catBakeries').checked,supermarkets:$('catSupermarkets').checked,pharmacy:$('catPharmacy').checked,activities:$('catActivities').checked,walks:$('catWalks').checked,culture:$('catCulture').checked,nightlife:$('catNightlife').checked,transport:$('catTransport').checked,parking:$('catParking').checked},
   ownerKnowledge:{restaurants:$('restaurants').value,shops:$('shops').value,activities:$('activities').value,transport:$('transport').value,tips:$('tips').value},
   ownerAdditions:{restaurants:$('customRestaurants').value,shops:$('customShops').value,activities:$('customActivities').value,transport:$('customTransport').value,events:$('customTips').value},
-  events:{season:'Toute l’année — proposer 4 à 6 événements majeurs et récurrents répartis sur l’année, en conservant en premier tout événement ajouté par le propriétaire',period:'Toute l’année',count:6},generationRules:{specificPlacesOnly:true,avoidGenericRecommendations:true,requireRealKnownPlaces:true,localWarmTone:true,includeWalkingTimes:true,includeLocalTip:true}
+  events:{season:'Toute l’année — proposer 4 à 6 événements majeurs et récurrents répartis sur l’année, en conservant en premier tout événement ajouté par le propriétaire',period:'Toute l’année',count:6},generationRules:{specificPlacesOnly:true,avoidGenericRecommendations:true,requireRealKnownPlaces:true,localWarmTone:true,includeWalkingTimes:true,includeLocalTip:true,neverInventTravelTimes:true,useAppropriateTransportMode:true}
  };
 }
 function sanitizeText(value){
@@ -684,11 +684,35 @@ function localTip(ai){
 function walkingTimes(ai){
  const source=[...(ai.transport||[]),...(ai.activities||[]),...(ai.shops||[])].slice(0,5);
  const fallback=[
-  ['Centre historique','6 min'],['Site incontournable','8 min'],['Gare','12 min'],['Commerces','5 min'],['Quais ou promenade','4 min']
+  {title:'Centre historique',mode:'walk'},
+  {title:'Site incontournable',mode:'walk'},
+  {title:'Gare',mode:'transit'},
+  {title:'Commerces',mode:'walk'},
+  {title:'Quais ou promenade',mode:'walk'}
  ];
- const rows=source.length>=4?source.slice(0,5).map((x,i)=>[x.title,`${[4,6,8,10,12][i]||12} min`]):fallback;
- return `<div class="walking-times">${rows.map(([label,time])=>`<div class="walking-time"><strong>🚶 ${escapeHtml(label)}</strong>${escapeHtml(time)} à pied</div>`).join('')}</div>`;
+
+ const classify=(title)=>{
+  const t=normalizePlaceKey(title);
+  if(/autoroute|a10|a71|rocade|aeroport|airport/.test(t)) return 'drive';
+  if(/parking|stationnement/.test(t)) return 'drive';
+  if(/gare|train|tram|bus/.test(t)) return 'transit';
+  if(/velo|bike/.test(t)) return 'bike';
+  return 'walk';
+ };
+
+ const rows=(source.length>=4?source.slice(0,5):fallback).map(item=>{
+  const title=item.title||item[0]||'À proximité';
+  const mode=item.mode||classify(title);
+
+  if(mode==='drive') return {title,icon:'🚗',detail:'Accès en voiture — durée variable selon la circulation'};
+  if(mode==='transit') return {title,icon:'🚉',detail:'Accès à pied ou en transport selon l’itinéraire'};
+  if(mode==='bike') return {title,icon:'🚲',detail:'Accessible à vélo selon votre itinéraire'};
+  return {title,icon:'🚶',detail:'À proximité — durée à vérifier selon l’itinéraire choisi'};
+ });
+
+ return `<div class="walking-times">${rows.map(row=>`<div class="walking-time"><strong>${row.icon} ${escapeHtml(row.title)}</strong>${escapeHtml(row.detail)}</div>`).join('')}</div>`;
 }
+
 function buildPrint(ai){
  const home=escapeHtml($('homeName').value||'Livret Voyageur'),city=escapeHtml($('city').value);
  const coverVisual=coverPhotoData?`<img src="${coverPhotoData}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34"><div style="position:absolute;inset:0;background:rgba(251,248,243,.54)"></div>`:'';
