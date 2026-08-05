@@ -704,30 +704,11 @@ function diversifyUsefulServices(items){
  return result.slice(0,6);
 }
 
-function safeClosingText(value){
- let text=sanitizeText(value).replace(/\s+/g,' ').trim();
+function safeClosingText(){
+ const city=sanitizeText($('city').value||'votre destination');
+ const concierge=sanitizeText($('conciergeName').value||'la conciergerie');
 
- // Le pied de page contient déjà les coordonnées : on les retire de la conclusion.
- text=text
-  .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,'')
-  .replace(/(?:\+33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/g,'')
-  .replace(/\s{2,}/g,' ')
-  .trim();
-
- if(!text){
-  return "Nous vous souhaitons un excellent séjour et de belles découvertes à Orléans. / We wish you a wonderful stay and many enjoyable discoveries in Orléans.";
- }
-
- const maxChars=430;
- if(text.length>maxChars){
-  const cut=text.slice(0,maxChars);
-  const ends=[cut.lastIndexOf('.'),cut.lastIndexOf('!'),cut.lastIndexOf('?')];
-  const last=Math.max(...ends);
-  text=last>180?cut.slice(0,last+1):cut.trim();
- }
-
- if(!/[.!?]$/.test(text)) text+='.';
- return text;
+ return `Excellent séjour à ${city} ! Profitez pleinement de la destination, de ses découvertes locales et de son atmosphère. ${concierge} reste disponible pendant votre séjour pour répondre à vos questions et vous accompagner si besoin. / Have a wonderful stay in ${city}! Enjoy the destination, its local discoveries and its atmosphere. The ${concierge} team remains available throughout your stay should you need any assistance.`;
 }
 
 function itemCards(items,section='generic'){return (items||[]).map(x=>`<article class="item"><h3><span class="item-icon">${iconForItem(x.title,section)}</span>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p></article>`).join('')||'<article class="item"><p>Aucune recommandation fournie.</p></article>'}
