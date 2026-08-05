@@ -247,10 +247,26 @@ function payload(){
  };
 }
 
+
+function documentLabels(){
+ const language=val("documentLanguage")||"fr";
+ const labels={
+  fr:{emergency:"Urgence liée au logement",acknowledgement:"Prise de connaissance"},
+  en:{emergency:"Property-related emergency",acknowledgement:"Acknowledgement"},
+  es:{emergency:"Urgencia relacionada con el alojamiento",acknowledgement:"Toma de conocimiento"},
+  de:{emergency:"Notfall in der Unterkunft",acknowledgement:"Kenntnisnahme"},
+  it:{emergency:"Emergenza relativa all'alloggio",acknowledgement:"Presa visione"},
+  nl:{emergency:"Noodgeval in de accommodatie",acknowledgement:"Kennisneming"}
+ };
+ return labels[language]||labels.fr;
+}
+
 function renderDocument(ai){
+ const labels=documentLabels();
  const info=(ai.essential_info||[]).map(x=>`<div class="info-card"><span>${esc(x.label)}</span><strong>${esc(x.value)}</strong></div>`).join("");
  const sections=(ai.sections||[]).map((s,i)=>`<section class="rule-section"><h3>${i+1}. ${esc(String(s.title||"").replace(/^\s*\d+[.)-]?\s*/, ""))}</h3>${s.intro?`<p class="intro">${esc(s.intro)}</p>`:""}<ul>${(s.rules||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ul></section>`).join("");
- return `<div class="preview-shell"><article class="rules-paper"><h1>${esc(ai.title)}</h1><div class="subtitle">${esc(ai.subtitle)}</div><div class="welcome">${esc(ai.welcome)}</div><div class="info-grid">${info}</div>${sections}<div class="emergency-box"><strong>🏠 ${esc(ai.emergency?.title||"Urgence liée au logement")}</strong><br>${esc(ai.emergency?.text||"")}</div><div class="ack-box"><strong>⚠️ Danger immédiat</strong><br>${esc(ai.acknowledgement)}</div><p class="closing">${esc(ai.closing)}</p></article></div>`;
+ const emergencyTitle=ai.emergency?.title||labels.emergency;
+ return `<div class="preview-shell"><article class="rules-paper"><h1>${esc(ai.title)}</h1><div class="subtitle">${esc(ai.subtitle)}</div><div class="welcome">${esc(ai.welcome)}</div><div class="info-grid">${info}</div>${sections}<div class="emergency-box"><strong>🏠 ${esc(emergencyTitle)}</strong><br>${esc(ai.emergency?.text||"")}</div><div class="ack-box"><strong>✓ ${esc(labels.acknowledgement)}</strong><br>${esc(ai.acknowledgement||"")}</div><p class="closing">${esc(ai.closing)}</p></article></div>`;
 }
 
 $("generateDoc").onclick=async()=>{
