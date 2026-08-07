@@ -1869,7 +1869,13 @@ function populatePremiumExtras(s){
   const shortScore=Math.round(Math.max(20,Math.min(95,45+(s.revMid>20000?20:8)+(checked('business')?8:0)-(checked('riskRegulation')?12:0))));const longScore=Math.round(Math.max(25,Math.min(95,58+(s.furnishedNet>7000?15:5)+(checked('riskVacancy')?-8:5))));const accessScore=val('parking')==='Pas de stationnement'?48:/gare|tram|bus/i.test(val('areaStrengths'))?86:68;const valueScore=Math.round(Math.max(25,Math.min(95,55+num('appreciation')*8-(checked('riskResale')?12:0))));[['Short',shortScore],['Long',longScore],['Access',accessScore],['Value',valueScore]].forEach(([k,v])=>{setPremiumText('rSector'+k+'Score',v);setScoreGauge('rSector'+k+'Bar',v)});
   setPremiumText('rLoanToCost',(loan/Math.max(1,s.total)*100).toFixed(0)+' %');setPremiumText('rDebtCoverageRatio',(s.netOperating/Math.max(1,s.debt)*100).toFixed(0)+' %');setPremiumText('rNotaryWeight',(notary/Math.max(1,s.total)*100).toFixed(1).replace('.',',')+' %');setPremiumText('rWorksWeight',((works+furniture)/Math.max(1,s.total)*100).toFixed(1).replace('.',',')+' %');
   const autoRisks=window.studyEngine?.risks?.automatic||[];
-  setPremiumText('rMainRisk',window.studyEngine?.risks?.mainRisk||autoRisks[0]||'Aucun risque critique identifié par les données disponibles.'); setPremiumText('rRiskCritical',window.studyEngine?.risks?.mainRisk||autoRisks[0]||'Aucun risque critique identifié par les données disponibles.'); const regulationItems=window.studyEngine?.risks?.regulationChecklist||['Obtenir le règlement de copropriété','Interroger la mairie sur les règles locales','Vérifier le changement d’usage','Confirmer l’enregistrement éventuel']; const regBox=$('rRegulationChecklist'); if(regBox) regBox.innerHTML=regulationItems.map(x=>`<div><span>${escapeHtml(x)}</span><b>À contrôler</b></div>`).join('');setPremiumText('rRiskWatch',[checked('riskWorks')?'Travaux':'',checked('riskVacancy')?'Vacance':'',checked('riskRate')?'Taux':'',checked('riskCompetition')?'Concurrence':''].filter(Boolean).join(', ')||'Sensibilité du revenu aux hypothèses de marché.');setPremiumText('rRiskControlled',s.cashflow>=0?'La trésorerie positive absorbe une partie des aléas.':'Une réserve et une baisse de prix peuvent réduire l’exposition.');setPremiumText('rRiskResponse',checked('leverPrice')?'Négocier au prix cible, puis confirmer financement et marché.':checked('leverMixed')?'Prévoir une stratégie mixte pour stabiliser les revenus.':'Conserver une marge de sécurité et valider les données locales.');
+  setPremiumText('rMainRisk',window.studyEngine?.risks?.mainRisk||autoRisks[0]||'Aucun risque critique identifié par les données disponibles.'); setPremiumText('rRiskCritical',window.studyEngine?.risks?.mainRisk||autoRisks[0]||'Aucun risque critique identifié par les données disponibles.'); const regulationItems=window.studyEngine?.risks?.regulationChecklist||['Obtenir le règlement de copropriété','Interroger la mairie sur les règles locales','Vérifier le changement d’usage','Confirmer l’enregistrement éventuel']; const regBox=$('rRegulationChecklist'); if(regBox) regBox.innerHTML=regulationItems.map(x=>`<div><span>${escapeHtml(x)}</span><b>À contrôler</b></div>`).join('');setPremiumText('rRiskWatch',[checked('riskWorks')?'Travaux':'',checked('riskVacancy')?'Vacance':'',checked('riskRate')?'Taux':'',checked('riskCompetition')?'Concurrence':''].filter(Boolean).join(', ')||'Sensibilité du revenu aux hypothèses de marché.');setPremiumText('rRiskControlled',
+    s.cashflow>=1200
+      ? 'La trésorerie offre une marge pour absorber certains aléas.'
+      : s.cashflow>=0
+        ? 'Le quasi-équilibre ne permet pas d’absorber un aléa significatif.'
+        : 'Une réserve et une baisse de prix sont nécessaires pour réduire l’exposition.'
+  );setPremiumText('rRiskResponse',checked('leverPrice')?'Négocier au prix cible, puis confirmer financement et marché.':checked('leverMixed')?'Prévoir une stratégie mixte pour stabiliser les revenus.':'Conserver une marge de sécurité et valider les données locales.');
   markChecklist('check-regulation',!checked('riskRegulation'));markChecklist('check-urbanism',!checked('riskCondo'));markChecklist('check-works',!checked('riskWorks'));markChecklist('check-market',!checked('riskCompetition')&&!checked('riskVacancy'));markChecklist('check-bank',s.netOperating>=s.debt);markChecklist('check-tax',false); setPremiumText('rFiscalAdvice','La fiscalité n’est pas intégrée au calcul. Comparer notamment Micro-BIC, LMNP réel, LMP ou structure sociétaire avec un professionnel avant signature.'); setPremiumText('rStudyConfidence',(window.studyEngine?.dataQuality?.confidence||75)+' %');
   setPremiumText('rStudyConfirmed',window.studyEngine?.dataQuality?.confirmedData||0);
   setPremiumText('rStudyRemaining',window.studyEngine?.dataQuality?.missingData||0);
@@ -2058,6 +2064,38 @@ function applyAIToReport(ai,engine){
   const html=(id,value)=>{const el=$(id);if(el&&value!==undefined&&value!==null){el.innerHTML=value;el.classList.add('expert-reading')}};
   const verdict=clientVerdict(engine);
 
+  // Garde-fous moteur : les valeurs financières affichées dans les commentaires
+  // doivent rester strictement identiques aux calculs de l'étude.
+  const exactMonthly=Math.round(Number(engine?.financing?.monthlyPayment||0));
+  const exactMonthlyRatePlus05=Math.round(Number(engine?.financing?.monthlyPaymentRatePlus05||0));
+  const exactAnnualCashflow=Math.round(Number(engine?.profitability?.cashflowAnnual||0));
+  const exactMonthlyCashflow=Number(engine?.profitability?.cashflowMonthly||0);
+
+  const secureBaseMonthly=(value)=>{
+    if(!value || !exactMonthly) return value||'';
+    return String(value).replace(
+      /(mensualit(?:é|e)(?:\s+(?:indicative|estim(?:é|e)e?))?\s*(?:de|:|est|atteint|reste|à)?\s*)\d[\d\s.,]*(?=\s*€)/gi,
+      (_,prefix)=>prefix+String(exactMonthly)
+    );
+  };
+
+  const secureRatePlus05=(value)=>{
+    if(!value || !exactMonthlyRatePlus05) return value||'';
+    return String(value).replace(
+      /((?:taux|hausse)[^.!?]{0,90}(?:\+\s*0[,.]5|0[,.]5\s*point)[^.!?]{0,90}mensualit(?:é|e)[^\d]{0,20})\d[\d\s.,]*(?=\s*€)/gi,
+      (_,prefix)=>prefix+String(exactMonthlyRatePlus05)
+    );
+  };
+
+  const secureFinanceText=(value)=>secureRatePlus05(secureBaseMonthly(value));
+
+  const fragileCashflow = exactAnnualCashflow > 0 && (exactAnnualCashflow < 1200 || exactMonthlyCashflow < 100);
+  const cashflowReading = fragileCashflow
+    ? `Le projet est en quasi-équilibre avec seulement ${exactAnnualCashflow} € de cash-flow annuel avant fiscalité. La marge de sécurité reste insuffisante.`
+    : exactAnnualCashflow <= 0
+      ? `Le scénario central génère un cash-flow annuel négatif de ${Math.abs(exactAnnualCashflow)} €. Le projet nécessite une correction du prix, du financement ou du niveau de revenu.`
+      : null;
+
   txt('rVerdictTitle',verdict);
   txt('rVerdictIntro',ai.page1?.summary || ai.page1?.headline);
   html('rPage1Advice',expertHtml(ai.page1, ai.page1?.riskComment?`<span class="expert-block"><strong>Vigilance :</strong> ${ai.page1.riskComment}</span>`:''));
@@ -2075,9 +2113,12 @@ function applyAIToReport(ai,engine){
 
   html('rBestStrategy',expertHtml(ai.page4,`<span class="expert-block"><strong>Comparaison :</strong> ${ai.page4?.comparisonAnalysis||''}</span><span class="expert-block"><strong>Stratégie retenue :</strong> ${ai.page4?.bestStrategyReason||''}</span>`));
 
-  html('rFinancingAdvice',[`<span class="expert-block"><strong>Mon analyse :</strong> ${ai.page5?.financingAnalysis||''}</span>`,`<span class="expert-block"><strong>Sensibilité :</strong> ${ai.page5?.rateSensitivity||''}</span>`,`<span class="expert-block"><strong>Levier recommandé :</strong> ${ai.page5?.depositLeverage||ai.page5?.advice||''}</span>`,(ai.page5?.warnings||[]).length?`<span class="expert-block"><strong>À sécuriser :</strong> ${ai.page5.warnings.join(' • ')}</span>`:'',ai.page5?.decisionImpact?`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${ai.page5.decisionImpact}</span>`:''].join(''));
+  html('rFinancingAdvice',[`<span class="expert-block"><strong>Mon analyse :</strong> ${secureFinanceText(ai.page5?.financingAnalysis||'')}</span>`,`<span class="expert-block"><strong>Sensibilité :</strong> ${secureFinanceText(ai.page5?.rateSensitivity||'')}</span>`,`<span class="expert-block"><strong>Levier recommandé :</strong> ${secureFinanceText(ai.page5?.depositLeverage||ai.page5?.advice||'')}</span>`,(ai.page5?.warnings||[]).length?`<span class="expert-block"><strong>À sécuriser :</strong> ${ai.page5.warnings.map(secureFinanceText).join(' • ')}</span>`:'',ai.page5?.decisionImpact?`<span class="expert-block"><strong>Impact sur votre décision :</strong> ${secureFinanceText(ai.page5.decisionImpact)}</span>`:''].join(''));
 
-  html('rProfitReadingPremium',expertHtml(ai.page6,`<span class="expert-block"><strong>Lecture de la rentabilité :</strong> ${ai.page6?.profitabilityReading||''}</span><span class="expert-block"><strong>Stress-test :</strong> ${ai.page6?.stressTest||''}</span>`));
+  html('rProfitReadingPremium',expertHtml(
+    fragileCashflow ? {...ai.page6,meaning:cashflowReading} : ai.page6,
+    `<span class="expert-block"><strong>Lecture de la rentabilité :</strong> ${cashflowReading||ai.page6?.profitabilityReading||''}</span><span class="expert-block"><strong>Stress-test :</strong> ${ai.page6?.stressTest||''}</span>`
+  ));
   html('rSafetyMargin',`<strong>Marge de sécurité :</strong> ${ai.page6?.safetyMargin||''}<br><br>${expertHtml({meaning:ai.page6?.meaning,advice:ai.page6?.advice,decisionImpact:ai.page6?.decisionImpact})}`);
 
   txt('rScenarioLowText',ai.page7?.prudentReading); txt('rScenarioMidText',ai.page7?.realisticReading); txt('rScenarioHighText',ai.page7?.optimisticReading);
