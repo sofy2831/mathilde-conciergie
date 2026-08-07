@@ -1859,7 +1859,7 @@ function populatePremiumExtras(s){
   const p1=Math.min(100,price/Math.max(1,s.total)*100),p2=Math.min(100,p1+notary/Math.max(1,s.total)*100),p3=Math.min(100,p2+works/Math.max(1,s.total)*100);const donut=$('rCostDonut');if(donut){donut.style.setProperty('--p1',p1+'%');donut.style.setProperty('--p2',p2+'%');donut.style.setProperty('--p3',p3+'%')}
   setPremiumText('rSavingsEffortPremium',s.cashflow>=0?`Le projet dégage environ ${money(s.cashflow/12)} par mois avant fiscalité.`:`L'effort d'épargne est d'environ ${money(Math.abs(s.cashflow)/12)} par mois avant fiscalité.`);setPremiumText('rDebtCoveragePremium',s.netOperating>=s.debt?'Le revenu net d’exploitation couvre l’annuité bancaire.':'Le revenu net d’exploitation ne couvre pas totalement l’annuité bancaire.');
   setPremiumText('rGrossYieldPremium',s.grossYield.toFixed(1).replace('.',',')+' %');setPremiumText('rNetYieldPremium',s.netYield.toFixed(1).replace('.',',')+' %');setPremiumText('rCashflowPremium',money(s.cashflow));setPremiumText('rProfitRevenue',money(s.revMid));setPremiumText('rProfitOperating',money(s.netOperating));setPremiumText('rProfitDebt',money(s.debt));setPremiumText('rProfitCash',money(s.cashflow));const pm=Math.max(s.revMid,s.netOperating,s.debt,Math.max(0,s.cashflow),1);setPremiumBar('rProfitBarRevenue',s.revMid,pm);setPremiumBar('rProfitBarOperating',s.netOperating,pm);setPremiumBar('rProfitBarDebt',s.debt,pm);setPremiumBar('rProfitBarCash',Math.max(0,s.cashflow),pm);
-  const variableRate=(num('managementRate')+num('platformRate'))/100;function cashAt(rev){return rev-(s.fixed||annualFixedCosts())-annualVariableCosts(rev)-s.debt}[-10,-5,0,5,10].forEach((pct,i)=>setPremiumText(['rSensMinus10','rSensMinus5','rSensBase','rSensPlus5','rSensPlus10'][i],money(cashAt(s.revMid*(1+pct/100)))));setPremiumText('rProfitReadingPremium',s.cashflow>=0?'Le scénario central produit une trésorerie positive avant fiscalité. La priorité est de confirmer les hypothèses locales.':'Le scénario central reste déficitaire avant fiscalité. Le prix, le financement ou le revenu doit être corrigé.');
+  const variableRate=(num('managementRate')+num('platformRate'))/100;function cashAt(rev){return rev-(s.fixed||annualFixedCosts())-annualVariableCosts(rev)-s.debt}[-10,-5,0,5,10].forEach((pct,i)=>setPremiumText(['rSensMinus10','rSensMinus5','rSensBase','rSensPlus5','rSensPlus10'][i],money(cashAt(s.revMid*(1+pct/100)))));setPremiumText('rProfitReadingPremium',s.cashflow>0 && s.cashflow<1200?`Le projet est en quasi-équilibre avec seulement ${Math.round(s.cashflow)} € de cash-flow annuel avant fiscalité. La marge de sécurité reste insuffisante.`:s.cashflow>=1200?'Le scénario central dégage une trésorerie positive avant fiscalité. La priorité est de confirmer les hypothèses locales.':`Le scénario central génère un cash-flow annuel négatif de ${Math.abs(Math.round(s.cashflow))} €. Le projet nécessite une correction du prix, du financement ou du niveau de revenu.`);
   const rates=[num('rateLow')||num('nightRate')*.82,num('rateMid')||num('nightRate'),num('rateHigh')||num('nightRate')*1.18],occs=[num('occLow')||42,num('occMid')||num('occupancy')||58,num('occHigh')||70],revs=[s.revLow,s.revMid,s.revHigh],cashs=revs.map(cashAt);['Low','Mid','High'].forEach((k,i)=>{setPremiumText('rScenario'+k+'Revenue',money(revs[i]));setPremiumText('rScenario'+k+'Rate',money(rates[i]));setPremiumText('rScenario'+k+'Occ',occs[i]+' %');setPremiumText('rScenario'+k+'CA',money(revs[i]));setPremiumText('rScenario'+k+'Cash',money(cashs[i]));setPremiumText('rScenarioBar'+k+'V',money(revs[i]))});const sm=Math.max(...revs,1);setPremiumBar('rScenarioBarLow',revs[0],sm);setPremiumBar('rScenarioBarMid',revs[1],sm);setPremiumBar('rScenarioBarHigh',revs[2],sm);
   setPremiumText('rVacancyRiskPremium',checked('riskVacancy')?'Élevée':'Modérée');setPremiumText('rRegulatoryRiskPremium',window.studyEngine?.risks?.regulationStatus||'Conformité à confirmer');setPremiumText('rOfferPricePremium',money(window.studyEngine?.decision?.recommendedOfferPrice ?? Math.min(price,s.maxPurchase||price)));setPremiumText('rReservePremium',money(Math.max(3000,works*.1+furniture*.05)));setPremiumText('rDecisionPremium',s.title);setPremiumText('rNextStepPremium',price>s.maxPurchase?`Négocier vers ${money(s.maxPurchase)} puis sécuriser financement et travaux.`:'Confirmer le marché local, les contraintes juridiques et le financement avant compromis.');
   const shortCash=s.netOperating-s.debt,furnishedCash=s.furnishedNet-s.debt,emptyCash=s.emptyNet-s.debt,midCash=midNet-s.debt;
@@ -2066,28 +2066,30 @@ function applyAIToReport(ai,engine){
 
   // Garde-fous moteur : les valeurs financières affichées dans les commentaires
   // doivent rester strictement identiques aux calculs de l'étude.
-  const exactMonthly=Math.round(Number(engine?.financing?.monthlyPayment||0));
-  const exactMonthlyRatePlus05=Math.round(Number(engine?.financing?.monthlyPaymentRatePlus05||0));
+  // Source unique : même formule que les KPI du moteur, recalculée ici au moment de l'export.
+  const exactLoan=Math.max(0,num('purchasePrice')+num('notary')+num('works')+num('furniture')-num('deposit'));
+  const exactYears=num('loanYears')||20;
+  const exactRate=(num('loanRate')||3.8)+(num('insuranceRate')||0.35);
+  const exactMonthly=Math.round(monthlyLoanPayment(exactLoan,exactRate,exactYears));
+  const exactMonthlyRatePlus05=Math.round(monthlyLoanPayment(exactLoan,exactRate+0.5,exactYears));
   const exactAnnualCashflow=Math.round(Number(engine?.profitability?.cashflowAnnual||0));
   const exactMonthlyCashflow=Number(engine?.profitability?.cashflowMonthly||0);
 
-  const secureBaseMonthly=(value)=>{
-    if(!value || !exactMonthly) return value||'';
-    return String(value).replace(
-      /(mensualit(?:é|e)(?:\s+(?:indicative|estim(?:é|e)e?))?\s*(?:de|:|est|atteint|reste|à)?\s*)\d[\d\s.,]*(?=\s*€)/gi,
-      (_,prefix)=>prefix+String(exactMonthly)
-    );
+  const secureFinanceText=(value)=>{
+    if(!value) return '';
+    // On traite phrase par phrase : une phrase de sensibilité +0,5 pt reçoit la
+    // mensualité stressée ; les autres mentions de mensualité reçoivent la valeur centrale.
+    return String(value).split(/(?<=[.!?])\s+/).map(sentence=>{
+      const isRatePlus05=/(?:\+\s*0[,.]5|0[,.]5\s*point|hausse[^.!?]{0,40}0[,.]5)/i.test(sentence);
+      const target=isRatePlus05?exactMonthlyRatePlus05:exactMonthly;
+      if(!target || !/mensualit(?:é|e)/i.test(sentence)) return sentence;
+      return sentence.replace(/\d[\d\s.,]*(?=\s*€)/g,match=>{
+        // Ne remplace que le montant lié à la mensualité ; les autres montants restent intacts.
+        const before=sentence.slice(0,sentence.indexOf(match));
+        return /mensualit(?:é|e)[^€]{0,45}$/i.test(before)?String(target):match;
+      });
+    }).join(' ');
   };
-
-  const secureRatePlus05=(value)=>{
-    if(!value || !exactMonthlyRatePlus05) return value||'';
-    return String(value).replace(
-      /((?:taux|hausse)[^.!?]{0,90}(?:\+\s*0[,.]5|0[,.]5\s*point)[^.!?]{0,90}mensualit(?:é|e)[^\d]{0,20})\d[\d\s.,]*(?=\s*€)/gi,
-      (_,prefix)=>prefix+String(exactMonthlyRatePlus05)
-    );
-  };
-
-  const secureFinanceText=(value)=>secureRatePlus05(secureBaseMonthly(value));
 
   const fragileCashflow = exactAnnualCashflow > 0 && (exactAnnualCashflow < 1200 || exactMonthlyCashflow < 100);
   const cashflowReading = fragileCashflow
