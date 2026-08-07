@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget de lancement LCD — CleanUp Manager</title>
+<meta name="description" content="Estimez le budget de lancement de votre location courte durée : travaux, mobilier, équipements, linge, décoration, frais de lancement et marge de sécurité.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brown:#3E2D25;--brown-2:#5A4033;--sand:#E9DDCF;--sand-2:#D9C6B4;
+  --beige:#F5EFE7;--cream:#FCFAF7;--white:#FFFFFF;--taupe:#8C7B70;
+  --terracotta:#B96F52;--terracotta-soft:#F5E4DC;--sage:#7E927C;--sage-soft:#E7EEE5;
+  --amber:#B88635;--amber-soft:#FAF1DC;--red:#A94E42;--red-soft:#F8E6E2;
+  --text:#2F2926;--muted:#766C66;--line:#E4D9CF;
+  --shadow:0 22px 60px rgba(62,45,37,.10);--shadow-soft:0 10px 28px rgba(62,45,37,.07);
+  --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--text);
+  background:radial-gradient(circle at 5% 0%,rgba(233,221,207,.8),transparent 28%),
+             radial-gradient(circle at 100% 10%,rgba(245,228,220,.8),transparent 30%),#F7F3EE;
+}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.site-header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:rgba(252,250,247,.9);border-bottom:1px solid rgba(228,217,207,.85)}
+.header-inner{max-width:1220px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--brown),var(--brown-2));color:white;display:grid;place-items:center;font-size:22px;box-shadow:0 10px 20px rgba(62,45,37,.18)}
+.brand-text strong{display:block;font-size:23px;line-height:.9;color:var(--brown);font-weight:900;letter-spacing:-.05em}
+.brand-text span{display:block;font-size:7.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--terracotta);margin-top:5px;font-weight:900}
+.header-note{font-size:12px;color:var(--taupe);font-weight:600}
+.header-pill{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;background:var(--sage-soft);color:#536B52;font-size:12px;font-weight:800}
+.header-pill i{width:8px;height:8px;border-radius:50%;background:var(--sage)}
+.page{max-width:1220px;margin:0 auto;padding:34px 24px 80px}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:38px;align-items:center;margin:12px 0 28px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--terracotta);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.eyebrow:before{content:"";width:28px;height:2px;background:var(--terracotta)}
+h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-height:.98;font-weight:400;letter-spacing:-.035em;color:var(--brown)}
+h1 span{color:var(--terracotta)}
+.hero p{margin:0;max-width:720px;font-size:17px;line-height:1.7;color:var(--muted)}
+.hero-benefits{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.benefit{display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:12px;font-weight:700;color:var(--brown)}
+.benefit b{color:var(--sage)}
+.hero-card{background:linear-gradient(145deg,var(--brown),#6D4F40);color:white;border-radius:30px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero-card:before{content:"";position:absolute;right:-65px;top:-80px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hero-card .price{font-family:"DM Serif Display",serif;font-size:58px;line-height:1}.hero-card .price small{font-family:Inter;font-size:14px;font-weight:700}
+.hero-card h3{font-size:18px;margin:8px 0 12px}.hero-card p{color:rgba(255,255,255,.78);font-size:13px;line-height:1.55}
+.hero-card .mini-list{display:grid;gap:9px;margin-top:18px}.hero-card .mini-list span{display:flex;gap:9px;align-items:center;font-size:12px;font-weight:700}.hero-card .mini-list i{color:#DDE9D9}
+.price-note{margin-top:10px!important;font-size:10px!important;color:rgba(255,255,255,.58)!important}
+.stepper{background:rgba(255,255,255,.74);border:1px solid var(--line);border-radius:22px;padding:13px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 20px;box-shadow:var(--shadow-soft)}
+.step{border:0;background:transparent;border-radius:16px;padding:12px 8px;display:flex;gap:9px;align-items:center;justify-content:center;color:var(--taupe);font-size:11px;font-weight:800;transition:.2s}
+.step .num{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:var(--beige);color:var(--brown)}
+.step.active{background:var(--brown);color:white}.step.active .num{background:white;color:var(--brown)}.step.done{color:var(--sage)}.step.done .num{background:var(--sage-soft);color:var(--sage)}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
+.main-card,.assistant-card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.main-card{padding:30px;min-height:690px}.assistant-card{position:sticky;top:98px;overflow:hidden}
+.assistant-head{padding:22px;background:linear-gradient(145deg,var(--brown),var(--brown-2));color:white}.assistant-title{display:flex;align-items:center;gap:12px}
+.ai-icon{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-size:22px}
+.assistant-title strong{display:block;font-size:16px}.assistant-title span{display:block;font-size:11px;color:rgba(255,255,255,.68);margin-top:4px}
+.assistant-body{padding:18px}.ai-message{padding:13px 14px;border-radius:16px;background:var(--beige);border:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--brown);margin-bottom:10px}
+.ai-message.good{background:var(--sage-soft);border-color:#D3DFD0}.ai-message.warn{background:var(--amber-soft);border-color:#EEDCB4}.ai-message strong{display:block;margin-bottom:4px}
+.assistant-progress{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.assistant-progress .row{display:flex;justify-content:space-between;font-size:11px;color:var(--taupe);font-weight:700;margin-bottom:8px}
+.progress{height:8px;border-radius:999px;background:var(--beige);overflow:hidden}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--terracotta),#D39980);border-radius:inherit;transition:.35s}
+.section{display:none}.section.active{display:block}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:25px}
+.section-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:36px;font-weight:400;color:var(--brown);letter-spacing:-.02em}
+.section-head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55;max-width:640px}
+.section-badge{padding:9px 12px;border-radius:999px;background:var(--terracotta-soft);color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:var(--brown);letter-spacing:.02em}.field label small{color:var(--taupe);font-weight:500}
+.input,.select,.textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--cream);padding:13px 14px;color:var(--text);outline:none;transition:.2s}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--terracotta);box-shadow:0 0 0 4px rgba(185,111,82,.10);background:white}.textarea{min-height:96px;resize:vertical}
+.choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.choice{border:1px solid var(--line);background:var(--cream);border-radius:18px;padding:15px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:.18s}
+.choice:hover{transform:translateY(-2px);box-shadow:var(--shadow-soft)}.choice.active{border-color:var(--terracotta);background:var(--terracotta-soft)}.choice input{display:none}
+.choice-icon{width:38px;height:38px;border-radius:12px;background:white;display:grid;place-items:center;font-size:19px}.choice strong{display:block;font-size:12px}.choice span{display:block;font-size:10px;color:var(--taupe);margin-top:3px}
+.category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.category-card{border:1px solid var(--line);border-radius:19px;background:var(--cream);padding:16px}
+.category-card h3{margin:0 0 12px;font-size:14px;color:var(--brown)}.category-card p{margin:0 0 12px;font-size:10px;line-height:1.45;color:var(--muted)}
+.status-row{display:grid;grid-template-columns:1fr 150px;gap:12px;align-items:center;margin-top:10px}.status-row label{font-size:11px;font-weight:750;color:var(--brown)}
+.mini-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.check-pill{display:flex;align-items:center;gap:8px;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:white;font-size:10.5px;font-weight:700;color:var(--brown)}.check-pill input{accent-color:var(--terracotta)}
+.summary-hero{border-radius:22px;padding:24px;background:linear-gradient(145deg,#F6EEE7,#EFE2D7);border:1px solid var(--sand-2);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;margin-bottom:18px}
+.summary-hero h3{margin:0 0 7px;font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown)}.summary-hero p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.summary-total{text-align:right}.summary-total b{display:block;font-family:"DM Serif Display",serif;font-size:45px;color:var(--brown);line-height:1}.summary-total span{font-size:10px;color:var(--taupe);font-weight:800}
+.breakdown{display:grid;gap:10px}.budget-row{display:grid;grid-template-columns:150px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:15px;background:white;padding:12px 14px}
+.budget-row strong{font-size:11px}.bar-track{height:9px;border-radius:999px;background:var(--beige);overflow:hidden}.bar-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--terracotta),#D49A82)}
+.budget-row b{font-size:12px;color:var(--brown);white-space:nowrap}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.kpi{border:1px solid var(--line);border-radius:17px;background:var(--cream);padding:15px;text-align:center}.kpi b{display:block;font-family:"DM Serif Display",serif;font-size:28px;color:var(--brown);font-weight:400}.kpi span{display:block;font-size:9px;text-transform:uppercase;color:var(--terracotta);font-weight:900;letter-spacing:.05em}
+.callout{padding:16px;border-radius:17px;background:var(--sage-soft);border:1px solid #D3DFD0;color:#536B52;font-size:11px;line-height:1.5}.callout.warn{background:var(--amber-soft);border-color:#EEDCB4;color:#7B6643}
+.btn{border:0;border-radius:999px;padding:13px 18px;font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:linear-gradient(135deg,var(--brown),var(--brown-2));color:white;box-shadow:0 12px 22px rgba(62,45,37,.16)}.btn.terracotta{background:linear-gradient(135deg,var(--terracotta),#C9896F);color:white}.btn.soft{background:var(--beige);color:var(--brown);border:1px solid var(--line)}.btn.ghost{background:white;color:var(--brown);border:1px solid var(--line)}
+.nav-actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}.nav-actions .right{display:flex;gap:10px}
+.cta-services{margin-top:18px;padding:22px;border-radius:22px;background:linear-gradient(145deg,var(--brown),#6A4A3A);color:white;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.cta-services h3{margin:0 0 6px;font-family:"DM Serif Display",serif;font-size:26px;font-weight:400}.cta-services p{margin:0;color:rgba(255,255,255,.75);font-size:11px;line-height:1.5}
+.dev-note{margin-top:18px;padding:12px 14px;border:1px dashed var(--sand-2);border-radius:14px;background:#fff;color:var(--taupe);font-size:10px;line-height:1.5}
+.report-print{display:none}.report-page{width:210mm;height:297mm;padding:14mm 15mm 13mm;background:#fff;color:var(--text);position:relative;overflow:hidden;page-break-after:always;break-after:page;font-family:Inter,Arial,sans-serif}.report-page:last-child{page-break-after:auto;break-after:auto}
+.report-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:4mm;margin-bottom:5mm}.report-brand{font-weight:900;color:var(--brown);font-size:15px}.report-brand small{display:block;font-size:6px;letter-spacing:.28em;color:var(--terracotta);margin-top:1mm}.report-page h1{font-size:30px;margin:0 0 4mm}.report-page h2{font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown);font-weight:400;margin:0 0 5mm}.report-total{font-family:"DM Serif Display",serif;font-size:44px;color:var(--brown)}.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4mm}.report-card{border:1px solid var(--line);border-radius:4mm;padding:4mm;background:var(--cream)}.report-card h3{margin:0 0 2mm;font-size:11px;color:var(--brown)}.report-card p{margin:0;font-size:8.3px;line-height:1.45;color:var(--muted)}.report-footer{position:absolute;left:15mm;right:15mm;bottom:7mm;display:flex;justify-content:space-between;font-size:6.8px;color:var(--taupe);border-top:1px solid var(--line);padding-top:2mm}
+@media(max-width:980px){.hero{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.assistant-card{position:static}.stepper{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.page{padding:22px 14px 60px}.header-inner{padding:13px 14px}.header-note{display:none}.hero{grid-template-columns:1fr}h1{font-size:42px}.hero p{font-size:15px}.stepper{grid-template-columns:repeat(2,1fr)}.main-card{padding:20px;min-height:auto}.section-head{display:block}.section-badge{display:inline-block;margin-top:12px}.form-grid,.form-grid.three,.choice-grid,.category-grid,.kpi-grid{grid-template-columns:1fr}.status-row{grid-template-columns:1fr}.summary-hero,.cta-services{grid-template-columns:1fr}.summary-total{text-align:left}.budget-row{grid-template-columns:1fr auto}.bar-track{grid-column:1/-1}.nav-actions{flex-direction:column}.nav-actions .right{width:100%}.nav-actions .btn{flex:1}}
+@media print{html,body{width:210mm;background:#fff!important}body *{visibility:hidden!important}.report-print,.report-print *{visibility:visible!important}.report-print{display:block!important;position:absolute;left:0;top:0;width:210mm}.report-page{display:block!important;margin:0!important;box-shadow:none!important}@page{size:A4;margin:0}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="les-indispensables-du-proprietaire.html"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a>
+    <div class="header-note">Assistant budget de lancement LCD</div>
+    <div class="header-pill"><i></i> Aucune inscription</div>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Préparer sa location courte durée</div>
+      <h1>Budget de lancement <span>LCD</span></h1>
+      <p>Estimez ce qu’il faut réellement prévoir avant la première réservation : travaux, mobilier, équipements, linge, décoration, frais de lancement et marge de sécurité.</p>
+      <div class="hero-benefits">
+        <div class="benefit"><b>✓</b> Budget par poste</div>
+        <div class="benefit"><b>✓</b> 3 niveaux de gamme</div>
+        <div class="benefit"><b>✓</b> Écart avec votre budget</div>
+        <div class="benefit"><b>✓</b> Plan de lancement</div>
+      </div>
+    </div>
+    <aside class="hero-card">
+      <div class="price">39 € <small>TTC</small></div>
+      <h3>Votre enveloppe de lancement, poste par poste</h3>
+      <p>Un outil pour éviter les oublis et savoir où investir d’abord avant de mettre le logement en ligne.</p>
+      <div class="mini-list">
+        <span><i>✓</i> Travaux et remise en état</span>
+        <span><i>✓</i> Mobilier, équipements et linge</span>
+        <span><i>✓</i> Budget cible et marge de sécurité</span>
+      </div>
+      <p class="price-note">Tarif de travail provisoire — à valider après le premier rendu.</p>
+    </aside>
+  </section>
+
+  <nav class="stepper" aria-label="Étapes">
+    <button class="step active" data-step="1"><span class="num">1</span>Logement</button>
+    <button class="step" data-step="2"><span class="num">2</span>Travaux</button>
+    <button class="step" data-step="3"><span class="num">3</span>Mobilier</button>
+    <button class="step" data-step="4"><span class="num">4</span>Lancement</button>
+    <button class="step" data-step="5"><span class="num">5</span>Budget</button>
+  </nav>
+
+  <div class="workspace">
+    <section class="main-card">
+      <div class="section active" id="step1">
+        <div class="section-head"><div><h2>Votre projet</h2><p>Quelques données suffisent pour dimensionner les postes de lancement.</p></div><div class="section-badge">Étape 1 sur 5</div></div>
+        <div class="form-grid">
+          <div class="field full"><label>Adresse ou ville du logement</label><input class="input" id="address" placeholder="Ex. Orléans, 45000"></div>
+          <div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option><option>Chalet</option></select></div>
+          <div class="field"><label>Surface</label><input class="input" id="surface" type="number" min="10" value="54"><small></small></div>
+          <div class="field"><label>Nombre de chambres</label><input class="input" id="bedrooms" type="number" min="0" value="2"></div>
+          <div class="field"><label>Capacité voyageurs</label><input class="input" id="capacity" type="number" min="1" value="4"></div>
+          <div class="field"><label>État actuel</label><select class="select" id="furnished"><option value="empty">Vide / à équiper</option><option value="partial">Partiellement meublé</option><option value="furnished">Déjà meublé</option></select></div>
+          <div class="field"><label>Budget disponible <small>— facultatif</small></label><input class="input" id="availableBudget" type="number" min="0" placeholder="10000"></div>
+        </div>
+        <h3 style="margin:24px 0 12px">Niveau de gamme souhaité</h3>
+        <div class="choice-grid" data-choice-group="level">
+          <label class="choice"><input type="radio" name="level" value="essential"><div class="choice-icon">○</div><div><strong>Essentiel</strong><span>Fonctionnel, propre, sans suréquipement</span></div></label>
+          <label class="choice active"><input type="radio" name="level" value="comfort" checked><div class="choice-icon">◇</div><div><strong>Confort</strong><span>Bon standard voyageurs et présentation soignée</span></div></label>
+          <label class="choice"><input type="radio" name="level" value="premium"><div class="choice-icon">✦</div><div><strong>Premium</strong><span>Mobilier, literie et décoration plus valorisants</span></div></label>
+        </div>
+      </div>
+
+      <div class="section" id="step2">
+        <div class="section-head"><div><h2>Travaux et remise en état</h2><p>Indiquez l’ampleur des travaux à prévoir. Le moteur final utilisera des fourchettes adaptées au logement.</p></div><div class="section-badge">Étape 2 sur 5</div></div>
+        <div class="category-grid">
+          <div class="category-card"><h3>🎨 Peinture & murs</h3><p>Rafraîchissement, reprises, peinture complète.</p><select class="select work" data-key="paint"><option value="0">Aucun</option><option value="1" selected>Léger</option><option value="2">Moyen</option><option value="3">Important</option></select></div>
+          <div class="category-card"><h3>🪵 Sols</h3><p>Nettoyage, petites reprises ou remplacement.</p><select class="select work" data-key="floor"><option value="0" selected>Aucun</option><option value="1">Léger</option><option value="2">Moyen</option><option value="3">Important</option></select></div>
+          <div class="category-card"><h3>🍳 Cuisine</h3><p>Façades, plan de travail, évier ou rénovation.</p><select class="select work" data-key="kitchen"><option value="0" selected>Aucun</option><option value="1">Léger</option><option value="2">Moyen</option><option value="3">Important</option></select></div>
+          <div class="category-card"><h3>🚿 Salle de bain</h3><p>Joints, robinetterie, meuble vasque ou réfection.</p><select class="select work" data-key="bath"><option value="0" selected>Aucun</option><option value="1">Léger</option><option value="2">Moyen</option><option value="3">Important</option></select></div>
+          <div class="category-card"><h3>⚡ Électricité & plomberie</h3><p>Petites reprises, sécurité, prises et interventions techniques.</p><select class="select work" data-key="technical"><option value="0" selected>Aucun</option><option value="1">Léger</option><option value="2">Moyen</option><option value="3">Important</option></select></div>
+          <div class="category-card"><h3>🛠️ Finitions</h3><p>Joints, poignées, stores, tringles, petites réparations.</p><select class="select work" data-key="finish"><option value="0">Aucun</option><option value="1" selected>Léger</option><option value="2">Moyen</option><option value="3">Important</option></select></div>
+        </div>
+      </div>
+
+      <div class="section" id="step3">
+        <div class="section-head"><div><h2>Mobilier & équipements</h2><p>Le nombre de chambres, la capacité et le niveau de gamme déterminent l’enveloppe de base.</p></div><div class="section-badge">Étape 3 sur 5</div></div>
+        <div class="category-grid">
+          <div class="category-card"><h3>🛏️ Literie & chambres</h3><p>Lits, matelas, chevets, rangements et occultation.</p><div class="mini-checks"><label class="check-pill"><input type="checkbox" class="equip" data-cost="1" checked> Literie complète</label><label class="check-pill"><input type="checkbox" class="equip" data-cost=".5" checked> Rangements</label></div></div>
+          <div class="category-card"><h3>🛋️ Séjour</h3><p>Canapé, table, chaises, meuble TV et assises.</p><div class="mini-checks"><label class="check-pill"><input type="checkbox" class="equip" data-cost="1" checked> Mobilier séjour</label><label class="check-pill"><input type="checkbox" class="equip" data-cost=".6" checked> Canapé convertible</label></div></div>
+          <div class="category-card"><h3>🍽️ Cuisine & vaisselle</h3><p>Vaisselle, batterie de cuisine, ustensiles et petit électroménager.</p><div class="mini-checks"><label class="check-pill"><input type="checkbox" class="equip" data-cost=".8" checked> Kit cuisine complet</label><label class="check-pill"><input type="checkbox" class="equip" data-cost=".5" checked> Petit électroménager</label></div></div>
+          <div class="category-card"><h3>📺 Électroménager & confort</h3><p>TV, lave-linge, gros électroménager et confort voyageurs.</p><div class="mini-checks"><label class="check-pill"><input type="checkbox" class="equip" data-cost=".9" checked> Électroménager</label><label class="check-pill"><input type="checkbox" class="equip" data-cost=".4" checked> TV / connectivité</label></div></div>
+        </div>
+        <div class="field full" style="margin-top:18px"><label>Éléments déjà possédés ou récupérés <small>— facultatif</small></label><textarea class="textarea" id="owned" placeholder="Ex. canapé, TV, table, 2 lits..."></textarea></div>
+      </div>
+
+      <div class="section" id="step4">
+        <div class="section-head"><div><h2>Linge, décoration & lancement</h2><p>Les derniers postes sont souvent sous-estimés alors qu’ils pèsent vite dans l’enveloppe finale.</p></div><div class="section-badge">Étape 4 sur 5</div></div>
+        <div class="category-grid">
+          <div class="category-card"><h3>🧺 Linge</h3><p>Draps, protections, couettes, oreillers, serviettes et tapis de bain.</p><select class="select extra" data-key="linen"><option value="0">Déjà équipé</option><option value="1" selected>À compléter</option><option value="2">À acheter entièrement</option></select></div>
+          <div class="category-card"><h3>🪴 Décoration & éclairage</h3><p>Luminaires, rideaux, miroirs, cadres, plantes et accessoires.</p><select class="select extra" data-key="decor"><option value="0">Minimal</option><option value="1" selected>Soigné</option><option value="2">Renforcé / premium</option></select></div>
+          <div class="category-card"><h3>🔐 Accès & sécurité</h3><p>Boîte à clés ou serrure, détecteurs, petite trousse de secours.</p><select class="select extra" data-key="security"><option value="0">Déjà équipé</option><option value="1" selected>Standard</option><option value="2">Connecté / renforcé</option></select></div>
+          <div class="category-card"><h3>📷 Mise en ligne</h3><p>Photos, consommables de départ et frais administratifs éventuels.</p><select class="select extra" data-key="launch"><option value="0">Je fais tout moi-même</option><option value="1" selected>Standard</option><option value="2">Lancement premium</option></select></div>
+        </div>
+        <div class="form-grid" style="margin-top:18px">
+          <div class="field"><label>Part réalisée vous-même</label><select class="select" id="diy"><option value="0">Aucune</option><option value=".05">Quelques petits travaux</option><option value=".10">Une partie importante</option></select></div>
+          <div class="field"><label>Marge imprévus souhaitée</label><select class="select" id="contingency"><option value=".05">5 %</option><option value=".08" selected>8 %</option><option value=".10">10 %</option><option value=".15">15 %</option></select></div>
+        </div>
+      </div>
+
+      <div class="section" id="step5">
+        <div class="section-head"><div><h2>Votre budget de lancement</h2><p>Première restitution visuelle. Les montants seront ensuite pilotés par <strong>engine.js</strong>, puis commentés par l’IA.</p></div><div class="section-badge">Étape 5 sur 5</div></div>
+        <div class="summary-hero">
+          <div><h3>Budget cible CleanUp</h3><p id="summarySentence">Estimation de travail basée sur les informations saisies.</p></div>
+          <div class="summary-total"><b id="totalBudget">—</b><span>budget de lancement estimé</span></div>
+        </div>
+        <div class="breakdown" id="breakdown"></div>
+        <div class="kpi-grid">
+          <div class="kpi"><b id="minBudget">—</b><span>Budget minimum</span></div>
+          <div class="kpi"><b id="safeBudget">—</b><span>Budget avec sécurité</span></div>
+          <div class="kpi"><b id="gapBudget">—</b><span>Écart avec votre enveloppe</span></div>
+        </div>
+        <div class="callout" id="budgetAdvice"><strong>Lecture CleanUp :</strong> complétez le formulaire pour obtenir la première simulation.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+          <button class="btn terracotta" type="button" id="refreshBudget">↻ Recalculer</button>
+          <button class="btn primary" type="button" id="printPdf">Imprimer / PDF de démonstration</button>
+        </div>
+        <div class="dev-note"><strong>Version HTML de travail.</strong> Les chiffres de cette maquette servent uniquement à tester l’UX et le rendu. Le prochain branchement remplacera cette simulation locale par <code>engine.js</code>, puis ajoutera <code>prompt.js</code>, <code>schema.js</code>, Firestore/Functions et Stripe.</div>
+        <div class="cta-services"><div><h3>Retour aux indispensables</h3><p>Retrouvez tous les outils propriétaires CleanUp au même endroit.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn ghost" type="button" id="prevBtn">← Précédent</button>
+        <div class="right"><button class="btn primary" type="button" id="nextBtn">Continuer →</button></div>
+      </div>
+    </section>
+
+    <aside class="assistant-card">
+      <div class="assistant-head"><div class="assistant-title"><div class="ai-icon">€</div><div><strong>Assistant Budget</strong><span>Votre enveloppe se construit étape par étape</span></div></div></div>
+      <div class="assistant-body">
+        <div id="assistantMessages">
+          <div class="ai-message"><strong>Commencez par le logement.</strong>Surface, chambres, capacité et niveau de gamme donnent la base du budget.</div>
+          <div class="ai-message good"><strong>Objectif : éviter les oublis.</strong>Le résultat distinguera les postes indispensables, différables et la marge de sécurité.</div>
+        </div>
+        <div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel">0 %</span></div><div class="progress"><span id="progressBar"></span></div></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="report-print" id="reportPrint" aria-hidden="true"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const qa=s=>[...document.querySelectorAll(s)];
+let currentStep=1;
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n||0));
+const num=id=>Number($(id)?.value||0);
+const val=id=>($(id)?.value||'').trim();
+const radio=name=>document.querySelector(`input[name="${name}"]:checked`)?.value||'comfort';
+
+function showStep(step){
+  currentStep=Math.max(1,Math.min(5,step));
+  qa('.section').forEach(s=>s.classList.remove('active'));
+  $('step'+currentStep).classList.add('active');
+  qa('.step').forEach(btn=>{const n=Number(btn.dataset.step);btn.classList.toggle('active',n===currentStep);btn.classList.toggle('done',n<currentStep)});
+  $('prevBtn').style.visibility=currentStep===1?'hidden':'visible';
+  $('nextBtn').style.display=currentStep===5?'none':'inline-flex';
+  const pct=Math.round((currentStep-1)/4*100);
+  $('progressLabel').textContent=pct+' %';$('progressBar').style.width=pct+'%';
+  if(currentStep===5) calculateBudget();
+}
+qa('.step').forEach(b=>b.addEventListener('click',()=>showStep(Number(b.dataset.step))));
+$('nextBtn').addEventListener('click',()=>showStep(currentStep+1));
+$('prevBtn').addEventListener('click',()=>showStep(currentStep-1));
+qa('.choice').forEach(c=>c.addEventListener('click',()=>{c.closest('.choice-grid').querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));c.classList.add('active');c.querySelector('input').checked=true}));
+
+function calculateBudget(){
+  // MAQUETTE LOCALE — à remplacer ensuite par engine.js.
+  const surface=Math.max(20,num('surface')||50), bedrooms=Math.max(0,num('bedrooms')), capacity=Math.max(1,num('capacity')||2);
+  const level=radio('level'), levelFactor={essential:.82,comfort:1,premium:1.32}[level]||1;
+  const furnished=val('furnished'), furnishingFactor={empty:1,partial:.58,furnished:.28}[furnished]??1;
+
+  const workValues={paint:[0,8,18,32],floor:[0,10,28,55],kitchen:[0,400,1800,5500],bath:[0,350,1500,4800],technical:[0,250,1000,3500],finish:[0,180,550,1200]};
+  let works=0;
+  qa('.work').forEach(el=>{const k=el.dataset.key,v=Number(el.value);works+=k==='paint'||k==='floor'?workValues[k][v]*surface:workValues[k][v]});
+  const equipWeight=qa('.equip:checked').reduce((s,e)=>s+Number(e.dataset.cost||0),0);
+  const furniture=(900+bedrooms*1050+capacity*260+surface*17)*levelFactor*furnishingFactor;
+  const equipment=(550+capacity*120+equipWeight*280)*levelFactor*furnishingFactor;
+  const linenMode=Number(document.querySelector('[data-key="linen"]').value);
+  const decorMode=Number(document.querySelector('[data-key="decor"]').value);
+  const securityMode=Number(document.querySelector('[data-key="security"]').value);
+  const launchMode=Number(document.querySelector('[data-key="launch"]').value);
+  const linen=(linenMode===0?120:linenMode===1?capacity*95:capacity*165)*levelFactor;
+  const decor=(decorMode===0?180:decorMode===1?480+surface*6:850+surface*11)*levelFactor;
+  const admin=securityMode===0?90:securityMode===1?330:690;
+  const consumables=launchMode===0?160:launchMode===1?420:850;
+  const diy=Number($('diy').value||0);
+  works*=1-diy;
+  const subtotal=works+furniture+equipment+linen+decor+admin+consumables;
+  const contingencyRate=Number($('contingency').value||.08);
+  const contingency=subtotal*contingencyRate;
+  const total=subtotal+contingency;
+  const rows=[
+    ['Travaux',works],['Mobilier',furniture],['Équipements',equipment],['Linge',linen],
+    ['Décoration',decor],['Accès / administratif',admin],['Consommables & lancement',consumables],['Imprévus',contingency]
+  ];
+  $('totalBudget').textContent=eur(total);
+  $('minBudget').textContent=eur(subtotal*.90);
+  $('safeBudget').textContent=eur(total);
+  const available=num('availableBudget');
+  $('gapBudget').textContent=available?eur(available-total):'Non renseigné';
+  const max=Math.max(...rows.map(r=>r[1]),1);
+  $('breakdown').innerHTML=rows.map(([name,value])=>`<div class="budget-row"><strong>${name}</strong><div class="bar-track"><span style="width:${Math.max(3,value/max*100)}%"></span></div><b>${eur(value)}</b></div>`).join('');
+  if(available){
+    const gap=available-total;
+    $('budgetAdvice').className='callout '+(gap<0?'warn':'');
+    $('budgetAdvice').innerHTML=`<strong>Lecture CleanUp :</strong> votre enveloppe de ${eur(available)} ${gap>=0?`couvre cette estimation avec une marge d’environ ${eur(gap)}.`:`laisse un écart à financer d’environ ${eur(Math.abs(gap))}.`}`;
+  }else{
+    $('budgetAdvice').className='callout';
+    $('budgetAdvice').innerHTML='<strong>Lecture CleanUp :</strong> ajoutez votre budget disponible pour mesurer immédiatement l’écart avec l’enveloppe cible.';
+  }
+  $('summarySentence').textContent=`${val('propertyType')||'Logement'} de ${surface} m², ${bedrooms} chambre(s), capacité ${capacity} voyageurs — niveau ${level==='essential'?'Essentiel':level==='premium'?'Premium':'Confort'}.`;
+  buildReport(rows,total,subtotal,contingency);
+}
+function buildReport(rows,total,subtotal,contingency){
+  const profile=`${val('propertyType')||'Logement'} · ${num('surface')} m² · ${num('bedrooms')} chambre(s) · ${num('capacity')} voyageurs`;
+  const cards=rows.map(([n,v])=>`<div class="report-card"><h3>${n}</h3><p><strong style="font-size:18px;color:#3E2D25">${eur(v)}</strong></p></div>`).join('');
+  $('reportPrint').innerHTML=`
+    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>${profile}</div></div><h1>Budget de lancement LCD</h1><p>Estimation préparatoire du budget avant première mise en location.</p><div style="margin:18mm 0 8mm" class="report-total">${eur(total)}</div><p>Budget cible estimé, marge imprévus incluse.</p><div class="report-grid" style="margin-top:12mm">${cards}</div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>1 / 5</span></div></section>
+    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Travaux</div></div><h2>Travaux & remise en état</h2><div class="report-grid">${cards.slice(0,0)}<div class="report-card"><h3>Enveloppe travaux</h3><p><strong style="font-size:24px;color:#3E2D25">${eur(rows[0][1])}</strong></p></div><div class="report-card"><h3>Lecture</h3><p>Le moteur final détaillera les postes, priorités et travaux différables.</p></div></div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>2 / 5</span></div></section>
+    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Mobilier & équipements</div></div><h2>Mobilier & équipements</h2><div class="report-grid"><div class="report-card"><h3>Mobilier</h3><p><strong style="font-size:24px;color:#3E2D25">${eur(rows[1][1])}</strong></p></div><div class="report-card"><h3>Équipements</h3><p><strong style="font-size:24px;color:#3E2D25">${eur(rows[2][1])}</strong></p></div><div class="report-card"><h3>Objectif</h3><p>Dimensionner les achats selon la capacité réelle du logement et le niveau de gamme choisi.</p></div></div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>3 / 5</span></div></section>
+    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Lancement</div></div><h2>Linge, décoration & lancement</h2><div class="report-grid">${rows.slice(3,7).map(([n,v])=>`<div class="report-card"><h3>${n}</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(v)}</strong></p></div>`).join('')}</div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>4 / 5</span></div></section>
+    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Plan de lancement</div></div><h2>Votre enveloppe finale</h2><div class="report-total">${eur(total)}</div><div class="report-grid" style="margin-top:10mm"><div class="report-card"><h3>Sous-total</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(subtotal)}</strong></p></div><div class="report-card"><h3>Marge imprévus</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(contingency)}</strong></p></div><div class="report-card"><h3>Prochaine étape</h3><p>Le moteur final classera les dépenses entre indispensables, différables et optimisables, puis l’IA rédigera la synthèse.</p></div></div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>5 / 5</span></div></section>`;
+}
+$('refreshBudget').addEventListener('click',calculateBudget);
+$('printPdf').addEventListener('click',()=>{calculateBudget();setTimeout(()=>window.print(),100)});
+showStep(1);
+</script>
+</body>
+</html>
