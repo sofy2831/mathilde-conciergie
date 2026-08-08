@@ -453,9 +453,37 @@ function listHtml(items){
   return values.length?`<ul class="report-list">${values.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`:'<p>Aucun point particulier.</p>';
 }
 
+function budgetItemLists(engine){
+  const eq=engine?.equipment?.selected || collectBudgetPayload().equipment || {};
+  const furniture=[];
+  if(eq.bedding) furniture.push('Lits et matelas adaptés aux chambres');
+  if(eq.storage) furniture.push('Chevets et rangements');
+  if(eq.living) furniture.push('Canapé, table, chaises et mobilier de séjour');
+  if(eq.sofaBed) furniture.push('Canapé convertible');
+
+  const equipment=[];
+  if(eq.kitchenKit) equipment.push('Vaisselle, batterie de cuisine et ustensiles');
+  if(eq.smallAppliances) equipment.push('Petit électroménager');
+  if(eq.appliances) equipment.push('Gros électroménager / lave-linge selon le logement');
+  if(eq.tvConnectivity) equipment.push('TV et connectivité');
+
+  const linenMode=Number(collectBudgetPayload().launch.linenMode||0);
+  const linen=linenMode===0
+    ? ['Linge déjà équipé : prévoir uniquement remplacement ou complément si nécessaire']
+    : ['Draps et jeux de rechange','Protège-matelas et protections','Couettes et oreillers','Serviettes de toilette','Tapis de bain'];
+
+  return {furniture,equipment,linen};
+}
+
+function compactListHtml(items){
+  const values=(Array.isArray(items)?items:[]).filter(Boolean);
+  return values.length?`<ul class="report-list" style="margin-top:2mm">${values.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`:'';
+}
+
 function buildReport(engine,ai,rows){
   const max=Math.max(...rows.map(r=>Number(r[1])||0),1);
   const profile=`${esc(engine.project.propertyType)} · ${engine.project.surface} m² · ${engine.project.bedrooms} chambre(s) · ${engine.project.capacity} voyageurs`;
+  const itemLists=budgetItemLists(engine);
   const budgetRows=rows.map(([name,value])=>`
     <div class="report-budget-row">
       <span>${esc(name)}</span>
@@ -504,9 +532,9 @@ function buildReport(engine,ai,rows){
     <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Mobilier & équipements</div></div>
     <div class="report-kicker">Priorité 2</div><h2>Mobilier & équipements</h2>
     <div class="report-grid">
-      <div class="report-card"><h3>Mobilier</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.furniture)}</strong><br>Dimensionné selon chambres, capacité, surface et niveau de gamme.</p></div>
-      <div class="report-card"><h3>Équipements</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.equipment)}</strong><br>Équipements sélectionnés dans le formulaire.</p></div>
-      <div class="report-card"><h3>Linge</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.linen)}</strong><br>Adapté à la capacité voyageurs.</p></div>
+      <div class="report-card"><h3>Mobilier — ${eur(engine.budget.furniture)}</h3><p>Enveloppe dimensionnée selon chambres, capacité, surface et niveau de gamme.</p>${compactListHtml(itemLists.furniture)}</div>
+      <div class="report-card"><h3>Équipements — ${eur(engine.budget.equipment)}</h3><p>Principaux achats couverts par cette enveloppe :</p>${compactListHtml(itemLists.equipment)}</div>
+      <div class="report-card"><h3>Linge — ${eur(engine.budget.linen)}</h3><p>Base prévue pour la capacité voyageurs :</p>${compactListHtml(itemLists.linen)}</div>
       <div class="report-card"><h3>Éléments déjà possédés</h3><p>${esc(engine.project.ownedItems||'Aucun élément renseigné.')}</p></div>
     </div>
     <div class="report-ai"><h3>Analyse mobilier & équipements</h3><p>${esc(ai?.furnitureEquipmentAnalysis||'')}</p></div>
