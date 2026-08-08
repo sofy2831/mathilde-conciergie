@@ -93,6 +93,44 @@ h1 span{color:var(--terracotta)}
 .dev-note{margin-top:18px;padding:12px 14px;border:1px dashed var(--sand-2);border-radius:14px;background:#fff;color:var(--taupe);font-size:10px;line-height:1.5}
 .report-print{display:none}.report-page{width:210mm;height:297mm;padding:14mm 15mm 13mm;background:#fff;color:var(--text);position:relative;overflow:hidden;page-break-after:always;break-after:page;font-family:Inter,Arial,sans-serif}.report-page:last-child{page-break-after:auto;break-after:auto}
 .report-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:4mm;margin-bottom:5mm}.report-brand{font-weight:900;color:var(--brown);font-size:15px}.report-brand small{display:block;font-size:6px;letter-spacing:.28em;color:var(--terracotta);margin-top:1mm}.report-page h1{font-size:30px;margin:0 0 4mm}.report-page h2{font-family:"DM Serif Display",serif;font-size:25px;color:var(--brown);font-weight:400;margin:0 0 5mm}.report-total{font-family:"DM Serif Display",serif;font-size:44px;color:var(--brown)}.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4mm}.report-card{border:1px solid var(--line);border-radius:4mm;padding:4mm;background:var(--cream)}.report-card h3{margin:0 0 2mm;font-size:11px;color:var(--brown)}.report-card p{margin:0;font-size:8.3px;line-height:1.45;color:var(--muted)}.report-footer{position:absolute;left:15mm;right:15mm;bottom:7mm;display:flex;justify-content:space-between;font-size:6.8px;color:var(--taupe);border-top:1px solid var(--line);padding-top:2mm}
+
+.generation-box{
+  margin-top:18px;padding:16px 17px;border-radius:17px;
+  background:var(--beige);border:1px solid var(--line);
+  font-size:11px;line-height:1.5;color:var(--brown)
+}
+.generation-box strong{display:block;margin-bottom:4px}
+.generation-box.loading{background:var(--amber-soft);border-color:#EEDCB4}
+.generation-box.success{background:var(--sage-soft);border-color:#D3DFD0;color:#536B52}
+.generation-box.error{background:var(--red-soft);border-color:#EBCAC4;color:#8D3E35}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.report-kicker{font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--terracotta);margin-bottom:2mm}
+.report-lead{font-size:9px;line-height:1.55;color:var(--muted);margin:0 0 5mm}
+.report-hero{
+  padding:7mm;border-radius:5mm;background:linear-gradient(145deg,#F6EEE7,#EFE2D7);
+  border:1px solid var(--sand-2);display:grid;grid-template-columns:1fr auto;gap:6mm;align-items:center;margin:6mm 0
+}
+.report-hero strong{display:block;font-family:"DM Serif Display",serif;font-size:13px;color:var(--brown);font-weight:400}
+.report-hero .big{font-family:"DM Serif Display",serif;font-size:31px;color:var(--brown);line-height:1}
+.report-hero small{display:block;font-size:7px;color:var(--taupe);font-weight:800;margin-top:1mm;text-align:right}
+.report-budget-list{display:grid;gap:2.3mm;margin-top:5mm}
+.report-budget-row{display:grid;grid-template-columns:42mm 1fr 24mm;gap:3mm;align-items:center;border:1px solid var(--line);border-radius:3mm;padding:2.7mm 3mm;background:#fff}
+.report-budget-row span{font-size:8px;font-weight:800;color:var(--brown)}
+.report-budget-row b{font-size:8.5px;color:var(--brown);text-align:right}
+.report-budget-bar{height:2.5mm;border-radius:99px;background:var(--beige);overflow:hidden}
+.report-budget-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--terracotta),#D49A82);border-radius:inherit}
+.report-ai{margin-top:5mm;padding:4mm 4.5mm;border-radius:4mm;background:var(--sage-soft);border:1px solid #D3DFD0}
+.report-ai h3{margin:0 0 1.5mm;font-size:9.5px;color:#536B52}
+.report-ai p{margin:0;font-size:7.8px;line-height:1.5;color:#60705E}
+.report-warning{background:var(--amber-soft)!important;border-color:#EEDCB4!important}
+.report-warning h3{color:#8A6324!important}.report-warning p{color:#7B6643!important}
+.report-list{margin:0;padding-left:4mm;display:grid;gap:1.7mm}
+.report-list li{font-size:8px;line-height:1.4;color:var(--muted)}
+.report-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:5mm 0}
+.report-kpi{border:1px solid var(--line);border-radius:4mm;padding:4mm;background:var(--cream);text-align:center}
+.report-kpi b{display:block;font-family:"DM Serif Display",serif;font-size:20px;color:var(--brown);font-weight:400}
+.report-kpi span{display:block;margin-top:1mm;font-size:6.8px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;color:var(--terracotta)}
+
 @media(max-width:980px){.hero{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.assistant-card{position:static}.stepper{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:680px){.page{padding:22px 14px 60px}.header-inner{padding:13px 14px}.header-note{display:none}.hero{grid-template-columns:1fr}h1{font-size:42px}.hero p{font-size:15px}.stepper{grid-template-columns:repeat(2,1fr)}.main-card{padding:20px;min-height:auto}.section-head{display:block}.section-badge{display:inline-block;margin-top:12px}.form-grid,.form-grid.three,.choice-grid,.category-grid,.kpi-grid{grid-template-columns:1fr}.status-row{grid-template-columns:1fr}.summary-hero,.cta-services{grid-template-columns:1fr}.summary-total{text-align:left}.budget-row{grid-template-columns:1fr auto}.bar-track{grid-column:1/-1}.nav-actions{flex-direction:column}.nav-actions .right{width:100%}.nav-actions .btn{flex:1}}
 @media print{html,body{width:210mm;background:#fff!important}body *{visibility:hidden!important}.report-print,.report-print *{visibility:visible!important}.report-print{display:block!important;position:absolute;left:0;top:0;width:210mm}.report-page{display:block!important;margin:0!important;box-shadow:none!important}@page{size:A4;margin:0}}
@@ -200,23 +238,30 @@ h1 span{color:var(--terracotta)}
       </div>
 
       <div class="section" id="step5">
-        <div class="section-head"><div><h2>Votre budget de lancement</h2><p>Première restitution visuelle. Les montants seront ensuite pilotés par <strong>engine.js</strong>, puis commentés par l’IA.</p></div><div class="section-badge">Étape 5 sur 5</div></div>
+        <div class="section-head"><div><h2>Votre budget de lancement</h2><p>Votre dossier est prêt. CleanUp calcule les postes puis génère l’analyse et le PDF personnalisé.</p></div><div class="section-badge">Étape 5 sur 5</div></div>
         <div class="summary-hero">
-          <div><h3>Budget cible CleanUp</h3><p id="summarySentence">Estimation de travail basée sur les informations saisies.</p></div>
+          <div><h3>Budget cible CleanUp</h3><p id="summarySentence">Cliquez sur « Générer mon budget » pour lancer le calcul final.</p></div>
           <div class="summary-total"><b id="totalBudget">—</b><span>budget de lancement estimé</span></div>
         </div>
         <div class="breakdown" id="breakdown"></div>
         <div class="kpi-grid">
           <div class="kpi"><b id="minBudget">—</b><span>Budget minimum</span></div>
-          <div class="kpi"><b id="safeBudget">—</b><span>Budget avec sécurité</span></div>
+          <div class="kpi"><b id="safeBudget">—</b><span>Budget sécurisé</span></div>
           <div class="kpi"><b id="gapBudget">—</b><span>Écart avec votre enveloppe</span></div>
         </div>
-        <div class="callout" id="budgetAdvice"><strong>Lecture CleanUp :</strong> complétez le formulaire pour obtenir la première simulation.</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-          <button class="btn terracotta" type="button" id="refreshBudget">↻ Recalculer</button>
-          <button class="btn primary" type="button" id="printPdf">Imprimer / PDF de démonstration</button>
+        <div class="callout" id="budgetAdvice"><strong>Lecture CleanUp :</strong> le résultat apparaîtra après génération.</div>
+
+        <div class="generation-box" id="generationStatus">
+          <strong>Prêt à générer</strong>
+          Les montants sont calculés par le moteur CleanUp puis commentés pour construire votre plan de lancement.
         </div>
-        <div class="dev-note"><strong>Version HTML de travail.</strong> Les chiffres de cette maquette servent uniquement à tester l’UX et le rendu. Le prochain branchement remplacera cette simulation locale par <code>engine.js</code>, puis ajoutera <code>prompt.js</code>, <code>schema.js</code>, Firestore/Functions et Stripe.</div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+          <button class="btn terracotta" type="button" id="generateBudget">✦ Générer mon budget</button>
+          <button class="btn primary" type="button" id="printPdf" disabled>Imprimer / PDF</button>
+        </div>
+
+        <div class="dev-note"><strong>Estimation indicative.</strong> Ce document aide à préparer une enveloppe de lancement. Il ne remplace pas les devis d’artisans, fournisseurs ou prestataires lorsque des travaux ou achats importants sont nécessaires.</div>
         <div class="cta-services"><div><h3>Retour aux indispensables</h3><p>Retrouvez tous les outils propriétaires CleanUp au même endroit.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div>
       </div>
 
@@ -245,88 +290,310 @@ h1 span{color:var(--terracotta)}
 const $=id=>document.getElementById(id);
 const qa=s=>[...document.querySelectorAll(s)];
 let currentStep=1;
-const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n||0));
+let cleanupAdminMode=false;
+let budgetResult=null;
+
+const GENERATE_BUDGET_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateBudget';
+
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(Number(n)||0));
 const num=id=>Number($(id)?.value||0);
 const val=id=>($(id)?.value||'').trim();
 const radio=name=>document.querySelector(`input[name="${name}"]:checked`)?.value||'comfort';
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function showStep(step){
   currentStep=Math.max(1,Math.min(5,step));
   qa('.section').forEach(s=>s.classList.remove('active'));
   $('step'+currentStep).classList.add('active');
-  qa('.step').forEach(btn=>{const n=Number(btn.dataset.step);btn.classList.toggle('active',n===currentStep);btn.classList.toggle('done',n<currentStep)});
+  qa('.step').forEach(btn=>{
+    const n=Number(btn.dataset.step);
+    btn.classList.toggle('active',n===currentStep);
+    btn.classList.toggle('done',n<currentStep);
+  });
   $('prevBtn').style.visibility=currentStep===1?'hidden':'visible';
   $('nextBtn').style.display=currentStep===5?'none':'inline-flex';
   const pct=Math.round((currentStep-1)/4*100);
-  $('progressLabel').textContent=pct+' %';$('progressBar').style.width=pct+'%';
-  if(currentStep===5) calculateBudget();
+  $('progressLabel').textContent=pct+' %';
+  $('progressBar').style.width=pct+'%';
+  updateAssistant();
 }
+
 qa('.step').forEach(b=>b.addEventListener('click',()=>showStep(Number(b.dataset.step))));
 $('nextBtn').addEventListener('click',()=>showStep(currentStep+1));
 $('prevBtn').addEventListener('click',()=>showStep(currentStep-1));
-qa('.choice').forEach(c=>c.addEventListener('click',()=>{c.closest('.choice-grid').querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));c.classList.add('active');c.querySelector('input').checked=true}));
+qa('.choice').forEach(c=>c.addEventListener('click',()=>{
+  c.closest('.choice-grid').querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active');
+  c.querySelector('input').checked=true;
+}));
 
-function calculateBudget(){
-  // MAQUETTE LOCALE — à remplacer ensuite par engine.js.
-  const surface=Math.max(20,num('surface')||50), bedrooms=Math.max(0,num('bedrooms')), capacity=Math.max(1,num('capacity')||2);
-  const level=radio('level'), levelFactor={essential:.82,comfort:1,premium:1.32}[level]||1;
-  const furnished=val('furnished'), furnishingFactor={empty:1,partial:.58,furnished:.28}[furnished]??1;
+function selectedExtra(key){
+  return Number(document.querySelector(`[data-key="${key}"]`)?.value||0);
+}
 
-  const workValues={paint:[0,8,18,32],floor:[0,10,28,55],kitchen:[0,400,1800,5500],bath:[0,350,1500,4800],technical:[0,250,1000,3500],finish:[0,180,550,1200]};
-  let works=0;
-  qa('.work').forEach(el=>{const k=el.dataset.key,v=Number(el.value);works+=k==='paint'||k==='floor'?workValues[k][v]*surface:workValues[k][v]});
-  const equipWeight=qa('.equip:checked').reduce((s,e)=>s+Number(e.dataset.cost||0),0);
-  const furniture=(900+bedrooms*1050+capacity*260+surface*17)*levelFactor*furnishingFactor;
-  const equipment=(550+capacity*120+equipWeight*280)*levelFactor*furnishingFactor;
-  const linenMode=Number(document.querySelector('[data-key="linen"]').value);
-  const decorMode=Number(document.querySelector('[data-key="decor"]').value);
-  const securityMode=Number(document.querySelector('[data-key="security"]').value);
-  const launchMode=Number(document.querySelector('[data-key="launch"]').value);
-  const linen=(linenMode===0?120:linenMode===1?capacity*95:capacity*165)*levelFactor;
-  const decor=(decorMode===0?180:decorMode===1?480+surface*6:850+surface*11)*levelFactor;
-  const admin=securityMode===0?90:securityMode===1?330:690;
-  const consumables=launchMode===0?160:launchMode===1?420:850;
-  const diy=Number($('diy').value||0);
-  works*=1-diy;
-  const subtotal=works+furniture+equipment+linen+decor+admin+consumables;
-  const contingencyRate=Number($('contingency').value||.08);
-  const contingency=subtotal*contingencyRate;
-  const total=subtotal+contingency;
-  const rows=[
-    ['Travaux',works],['Mobilier',furniture],['Équipements',equipment],['Linge',linen],
-    ['Décoration',decor],['Accès / administratif',admin],['Consommables & lancement',consumables],['Imprévus',contingency]
-  ];
-  $('totalBudget').textContent=eur(total);
-  $('minBudget').textContent=eur(subtotal*.90);
-  $('safeBudget').textContent=eur(total);
-  const available=num('availableBudget');
-  $('gapBudget').textContent=available?eur(available-total):'Non renseigné';
-  const max=Math.max(...rows.map(r=>r[1]),1);
-  $('breakdown').innerHTML=rows.map(([name,value])=>`<div class="budget-row"><strong>${name}</strong><div class="bar-track"><span style="width:${Math.max(3,value/max*100)}%"></span></div><b>${eur(value)}</b></div>`).join('');
-  if(available){
-    const gap=available-total;
-    $('budgetAdvice').className='callout '+(gap<0?'warn':'');
-    $('budgetAdvice').innerHTML=`<strong>Lecture CleanUp :</strong> votre enveloppe de ${eur(available)} ${gap>=0?`couvre cette estimation avec une marge d’environ ${eur(gap)}.`:`laisse un écart à financer d’environ ${eur(Math.abs(gap))}.`}`;
-  }else{
-    $('budgetAdvice').className='callout';
-    $('budgetAdvice').innerHTML='<strong>Lecture CleanUp :</strong> ajoutez votre budget disponible pour mesurer immédiatement l’écart avec l’enveloppe cible.';
+function collectBudgetPayload(){
+  const works={};
+  qa('.work').forEach(el=>works[el.dataset.key]=Number(el.value||0));
+
+  const equip=qa('.equip');
+  const equipment={
+    bedding:equip[0]?.checked!==false,
+    storage:equip[1]?.checked!==false,
+    living:equip[2]?.checked!==false,
+    sofaBed:equip[3]?.checked!==false,
+    kitchenKit:equip[4]?.checked!==false,
+    smallAppliances:equip[5]?.checked!==false,
+    appliances:equip[6]?.checked!==false,
+    tvConnectivity:equip[7]?.checked!==false
+  };
+
+  return {
+    project:{
+      address:val('address'),
+      propertyType:val('propertyType')||'Appartement',
+      surface:num('surface'),
+      bedrooms:num('bedrooms'),
+      capacity:num('capacity'),
+      furnishing:val('furnished')||'empty',
+      level:radio('level'),
+      availableBudget:num('availableBudget'),
+      ownedItems:val('owned')
+    },
+    works,
+    equipment,
+    launch:{
+      linenMode:selectedExtra('linen'),
+      decorMode:selectedExtra('decor'),
+      securityMode:selectedExtra('security'),
+      launchMode:selectedExtra('launch'),
+      diyRate:Number($('diy').value||0),
+      contingencyRate:Number($('contingency').value||0.08)
+    }
+  };
+}
+
+async function waitForAdminAuth(){
+  for(let i=0;i<40;i++){
+    if(window.CleanUpAdminAuth){
+      await window.CleanUpAdminAuth.ready();
+      return window.CleanUpAdminAuth;
+    }
+    await new Promise(resolve=>setTimeout(resolve,50));
   }
-  $('summarySentence').textContent=`${val('propertyType')||'Logement'} de ${surface} m², ${bedrooms} chambre(s), capacité ${capacity} voyageurs — niveau ${level==='essential'?'Essentiel':level==='premium'?'Premium':'Confort'}.`;
-  buildReport(rows,total,subtotal,contingency);
+  return null;
 }
-function buildReport(rows,total,subtotal,contingency){
-  const profile=`${val('propertyType')||'Logement'} · ${num('surface')} m² · ${num('bedrooms')} chambre(s) · ${num('capacity')} voyageurs`;
-  const cards=rows.map(([n,v])=>`<div class="report-card"><h3>${n}</h3><p><strong style="font-size:18px;color:#3E2D25">${eur(v)}</strong></p></div>`).join('');
+
+async function refreshAdminInterface(){
+  const api=await waitForAdminAuth();
+  cleanupAdminMode=api?await api.isAdmin():false;
+  if(cleanupAdminMode){
+    $('generateBudget').textContent='✦ Générer mon budget — Admin';
+    $('generationStatus').className='generation-box success';
+    $('generationStatus').innerHTML='<strong>Mode administrateur actif</strong>La génération peut être testée sans paiement.';
+  }
+}
+
+function updateAssistant(){
+  const messages={
+    1:['Commencez par le logement.','Surface, chambres, capacité et niveau de gamme donnent la base du budget.'],
+    2:['Évaluez seulement ce qui est nécessaire.','Un niveau « important » doit rester réservé aux postes réellement à reprendre.'],
+    3:['Distinguez achat et récupération.','Décochez les équipements inutiles et indiquez ce que vous possédez déjà.'],
+    4:['Pensez aux petits postes.','Linge, accès, consommables et imprévus font vite varier l’enveloppe finale.'],
+    5:['Votre dossier est prêt.','Lancez le calcul final pour obtenir le budget et le plan de lancement.']
+  };
+  const [title,text]=messages[currentStep]||messages[1];
+  $('assistantMessages').innerHTML=`<div class="ai-message"><strong>${title}</strong>${text}</div><div class="ai-message good"><strong>Objectif : éviter les oublis.</strong>Le résultat distinguera les postes indispensables, recommandés et différables.</div>`;
+}
+
+function setGenerationStatus(type,title,message){
+  const box=$('generationStatus');
+  box.className='generation-box'+(type?' '+type:'');
+  box.innerHTML=`<strong>${esc(title)}</strong>${esc(message)}`;
+}
+
+function renderBudgetResult(engine,ai){
+  const rows=[
+    ['Travaux',engine.budget.works],
+    ['Mobilier',engine.budget.furniture],
+    ['Équipements',engine.budget.equipment],
+    ['Linge',engine.budget.linen],
+    ['Décoration',engine.budget.decoration],
+    ['Accès / sécurité',engine.budget.accessSecurity],
+    ['Consommables & lancement',engine.budget.launch],
+    ['Imprévus',engine.budget.contingency]
+  ];
+
+  $('totalBudget').textContent=eur(engine.budget.total);
+  $('minBudget').textContent=eur(engine.ranges.minimum);
+  $('safeBudget').textContent=eur(engine.ranges.secure);
+  $('gapBudget').textContent=engine.comparison.availableBudget===null
+    ?'Non renseigné'
+    :`${engine.comparison.gap>=0?'+':''}${eur(engine.comparison.gap)}`;
+
+  const max=Math.max(...rows.map(r=>Number(r[1])||0),1);
+  $('breakdown').innerHTML=rows.map(([name,value])=>`
+    <div class="budget-row">
+      <strong>${esc(name)}</strong>
+      <div class="bar-track"><span style="width:${Math.max(3,(Number(value)||0)/max*100)}%"></span></div>
+      <b>${eur(value)}</b>
+    </div>`).join('');
+
+  const levelLabel={essential:'Essentiel',comfort:'Confort',premium:'Premium'}[engine.project.level]||engine.project.level;
+  $('summarySentence').textContent=`${engine.project.propertyType} de ${engine.project.surface} m², ${engine.project.bedrooms} chambre(s), capacité ${engine.project.capacity} voyageurs — niveau ${levelLabel}.`;
+
+  $('budgetAdvice').className='callout '+(engine.comparison.status==='insuffisant'?'warn':'');
+  $('budgetAdvice').innerHTML=`<strong>Lecture CleanUp :</strong> ${esc(ai?.budgetReading||ai?.executiveSummary||'Votre budget de lancement a été calculé.')}`;
+
+  buildReport(engine,ai,rows);
+  $('printPdf').disabled=false;
+}
+
+function listHtml(items){
+  const values=Array.isArray(items)?items.filter(Boolean):[];
+  return values.length?`<ul class="report-list">${values.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`:'<p>Aucun point particulier.</p>';
+}
+
+function buildReport(engine,ai,rows){
+  const max=Math.max(...rows.map(r=>Number(r[1])||0),1);
+  const profile=`${esc(engine.project.propertyType)} · ${engine.project.surface} m² · ${engine.project.bedrooms} chambre(s) · ${engine.project.capacity} voyageurs`;
+  const budgetRows=rows.map(([name,value])=>`
+    <div class="report-budget-row">
+      <span>${esc(name)}</span>
+      <div class="report-budget-bar"><i style="width:${Math.max(3,(Number(value)||0)/max*100)}%"></i></div>
+      <b>${eur(value)}</b>
+    </div>`).join('');
+
+  const worksLabels={paint:'Peinture & murs',floor:'Sols',kitchen:'Cuisine',bath:'Salle de bain',technical:'Électricité & plomberie',finish:'Finitions'};
+  const levelLabels=['Aucun','Léger','Moyen','Important'];
+  const worksCards=Object.entries(engine.works.details||{}).map(([key,value])=>`
+    <div class="report-card">
+      <h3>${esc(worksLabels[key]||key)}</h3>
+      <p><strong style="font-size:18px;color:#3E2D25">${eur(value)}</strong><br>${esc(levelLabels[engine.works.levels?.[key]||0])}</p>
+    </div>`).join('');
+
+  const warnings=Array.isArray(engine.control?.warnings)?engine.control.warnings:[];
   $('reportPrint').innerHTML=`
-    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>${profile}</div></div><h1>Budget de lancement LCD</h1><p>Estimation préparatoire du budget avant première mise en location.</p><div style="margin:18mm 0 8mm" class="report-total">${eur(total)}</div><p>Budget cible estimé, marge imprévus incluse.</p><div class="report-grid" style="margin-top:12mm">${cards}</div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>1 / 5</span></div></section>
-    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Travaux</div></div><h2>Travaux & remise en état</h2><div class="report-grid">${cards.slice(0,0)}<div class="report-card"><h3>Enveloppe travaux</h3><p><strong style="font-size:24px;color:#3E2D25">${eur(rows[0][1])}</strong></p></div><div class="report-card"><h3>Lecture</h3><p>Le moteur final détaillera les postes, priorités et travaux différables.</p></div></div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>2 / 5</span></div></section>
-    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Mobilier & équipements</div></div><h2>Mobilier & équipements</h2><div class="report-grid"><div class="report-card"><h3>Mobilier</h3><p><strong style="font-size:24px;color:#3E2D25">${eur(rows[1][1])}</strong></p></div><div class="report-card"><h3>Équipements</h3><p><strong style="font-size:24px;color:#3E2D25">${eur(rows[2][1])}</strong></p></div><div class="report-card"><h3>Objectif</h3><p>Dimensionner les achats selon la capacité réelle du logement et le niveau de gamme choisi.</p></div></div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>3 / 5</span></div></section>
-    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Lancement</div></div><h2>Linge, décoration & lancement</h2><div class="report-grid">${rows.slice(3,7).map(([n,v])=>`<div class="report-card"><h3>${n}</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(v)}</strong></p></div>`).join('')}</div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>4 / 5</span></div></section>
-    <section class="report-page"><div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Plan de lancement</div></div><h2>Votre enveloppe finale</h2><div class="report-total">${eur(total)}</div><div class="report-grid" style="margin-top:10mm"><div class="report-card"><h3>Sous-total</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(subtotal)}</strong></p></div><div class="report-card"><h3>Marge imprévus</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(contingency)}</strong></p></div><div class="report-card"><h3>Prochaine étape</h3><p>Le moteur final classera les dépenses entre indispensables, différables et optimisables, puis l’IA rédigera la synthèse.</p></div></div><div class="report-footer"><span>Budget de lancement CleanUp</span><span>5 / 5</span></div></section>`;
+  <section class="report-page">
+    <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>${profile}</div></div>
+    <div class="report-kicker">Budget de lancement LCD</div>
+    <h1>Votre enveloppe de lancement</h1>
+    <p class="report-lead">Estimation personnalisée des dépenses à prévoir avant la première réservation.</p>
+    <div class="report-hero"><div><strong>Budget cible CleanUp</strong><p class="report-lead" style="margin:1.5mm 0 0">${esc(ai?.executiveSummary||'Budget calculé selon le profil du logement et les choix de lancement.')}</p></div><div><div class="big">${eur(engine.budget.total)}</div><small>imprévus inclus</small></div></div>
+    <div class="report-kpis">
+      <div class="report-kpi"><b>${eur(engine.ranges.minimum)}</b><span>Budget minimum</span></div>
+      <div class="report-kpi"><b>${eur(engine.ranges.target)}</b><span>Budget cible</span></div>
+      <div class="report-kpi"><b>${eur(engine.ranges.secure)}</b><span>Budget sécurisé</span></div>
+    </div>
+    <div class="report-budget-list">${budgetRows}</div>
+    <div class="report-ai"><h3>Lecture CleanUp</h3><p>${esc(ai?.budgetReading||'')}</p></div>
+    <div class="report-footer"><span>Budget de lancement CleanUp</span><span>1 / 5</span></div>
+  </section>
+
+  <section class="report-page">
+    <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Travaux & remise en état</div></div>
+    <div class="report-kicker">Priorité 1</div><h2>Travaux & remise en état</h2>
+    <p class="report-lead">Les montants ci-dessous proviennent du niveau de travaux déclaré dans le formulaire.</p>
+    <div class="report-grid">${worksCards}</div>
+    <div class="report-hero" style="margin-top:6mm"><div><strong>Enveloppe travaux</strong><p class="report-lead" style="margin:1mm 0 0">Part réalisée soi-même déjà intégrée au calcul.</p></div><div><div class="big">${eur(engine.budget.works)}</div></div></div>
+    <div class="report-ai"><h3>Analyse</h3><p>${esc(ai?.worksAnalysis||'')}</p></div>
+    ${warnings.length?`<div class="report-ai report-warning"><h3>Points à sécuriser</h3>${listHtml(warnings)}</div>`:''}
+    <div class="report-footer"><span>Budget de lancement CleanUp</span><span>2 / 5</span></div>
+  </section>
+
+  <section class="report-page">
+    <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Mobilier & équipements</div></div>
+    <div class="report-kicker">Priorité 2</div><h2>Mobilier & équipements</h2>
+    <div class="report-grid">
+      <div class="report-card"><h3>Mobilier</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.furniture)}</strong><br>Dimensionné selon chambres, capacité, surface et niveau de gamme.</p></div>
+      <div class="report-card"><h3>Équipements</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.equipment)}</strong><br>Équipements sélectionnés dans le formulaire.</p></div>
+      <div class="report-card"><h3>Linge</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.linen)}</strong><br>Adapté à la capacité voyageurs.</p></div>
+      <div class="report-card"><h3>Éléments déjà possédés</h3><p>${esc(engine.project.ownedItems||'Aucun élément renseigné.')}</p></div>
+    </div>
+    <div class="report-ai"><h3>Analyse mobilier & équipements</h3><p>${esc(ai?.furnitureEquipmentAnalysis||'')}</p></div>
+    <div class="report-ai"><h3>Économies possibles</h3>${listHtml(ai?.savings)}</div>
+    <div class="report-footer"><span>Budget de lancement CleanUp</span><span>3 / 5</span></div>
+  </section>
+
+  <section class="report-page">
+    <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Linge, décoration & lancement</div></div>
+    <div class="report-kicker">Priorité 3</div><h2>Lancement du logement</h2>
+    <div class="report-grid">
+      <div class="report-card"><h3>Décoration</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.decoration)}</strong></p></div>
+      <div class="report-card"><h3>Accès & sécurité</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.accessSecurity)}</strong></p></div>
+      <div class="report-card"><h3>Consommables & mise en ligne</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.launch)}</strong></p></div>
+      <div class="report-card"><h3>Imprévus</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.contingency)}</strong><br>${Math.round((engine.assumptions.contingencyRate||0)*100)} % du sous-total.</p></div>
+    </div>
+    <div class="report-ai"><h3>Analyse lancement</h3><p>${esc(ai?.launchAnalysis||'')}</p></div>
+    <div class="report-ai"><h3>Dépenses différables</h3>${listHtml(ai?.deferredExpenses)}</div>
+    <div class="report-footer"><span>Budget de lancement CleanUp</span><span>4 / 5</span></div>
+  </section>
+
+  <section class="report-page">
+    <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Plan de lancement</div></div>
+    <div class="report-kicker">Synthèse</div><h2>Votre plan de lancement</h2>
+    <div class="report-hero"><div><strong>Enveloppe finale</strong><p class="report-lead" style="margin:1.5mm 0 0">${esc(ai?.availableBudgetAnalysis||'')}</p></div><div><div class="big">${eur(engine.budget.total)}</div><small>budget cible</small></div></div>
+    <div class="report-grid">
+      <div class="report-card"><h3>Indispensable avant ouverture</h3>${listHtml(ai?.priorities?.essential||engine.priorities?.essential)}</div>
+      <div class="report-card"><h3>Recommandé</h3>${listHtml(ai?.priorities?.recommended||engine.priorities?.recommended)}</div>
+      <div class="report-card"><h3>Peut attendre</h3>${listHtml(ai?.priorities?.deferrable||engine.priorities?.deferrable)}</div>
+      <div class="report-card"><h3>Budget disponible</h3><p>${engine.comparison.availableBudget===null?'Non renseigné':eur(engine.comparison.availableBudget)}<br><strong>Écart : ${engine.comparison.gap===null?'—':`${engine.comparison.gap>=0?'+':''}${eur(engine.comparison.gap)}`}</strong></p></div>
+    </div>
+    <div class="report-ai"><h3>Recommandation finale</h3><p>${esc(ai?.finalRecommendation||'')}</p></div>
+    <div class="report-footer"><span>Budget de lancement CleanUp · Estimation indicative, hors devis professionnels</span><span>5 / 5</span></div>
+  </section>`;
 }
-$('refreshBudget').addEventListener('click',calculateBudget);
-$('printPdf').addEventListener('click',()=>{calculateBudget();setTimeout(()=>window.print(),100)});
+
+async function generateBudgetFromServer(){
+  const button=$('generateBudget');
+  const previous=button.textContent;
+
+  try{
+    const api=await waitForAdminAuth();
+    cleanupAdminMode=api?await api.isAdmin():false;
+
+    button.disabled=true;
+    $('printPdf').disabled=true;
+    button.textContent='Génération en cours…';
+    setGenerationStatus('loading','Calcul et analyse en cours','CleanUp prépare les montants puis rédige votre plan de lancement.');
+
+    const response=await fetch(GENERATE_BUDGET_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(collectBudgetPayload())
+    });
+
+    let result={};
+    try{result=await response.json();}
+    catch{throw new Error(`Réponse serveur illisible (${response.status}).`);}
+
+    if(!response.ok||result.ok===false){
+      throw new Error(result.error||`Erreur serveur (${response.status}).`);
+    }
+
+    budgetResult=result;
+    renderBudgetResult(result.engine,result.ai);
+    setGenerationStatus('success','Budget généré',result.adminMode===true?'Génération administrateur terminée. Le PDF est prêt.':'Votre budget et votre PDF sont prêts.');
+    button.textContent=cleanupAdminMode?'✦ Régénérer — Admin':'✦ Régénérer mon budget';
+
+  }catch(error){
+    console.error('generateBudgetFromServer error:',error);
+    setGenerationStatus('error','Génération impossible',error.message||'Une erreur est survenue.');
+    alert(error.message||'La génération du budget a échoué.');
+    button.textContent=previous;
+  }finally{
+    button.disabled=false;
+  }
+}
+
+$('generateBudget').addEventListener('click',generateBudgetFromServer);
+$('printPdf').addEventListener('click',()=>{
+  if(!budgetResult) return;
+  window.print();
+});
+
 showStep(1);
+refreshAdminInterface();
 </script>
+  <script type="module" src="admin-auth.js"></script>
 </body>
 </html>
