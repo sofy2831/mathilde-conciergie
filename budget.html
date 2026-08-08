@@ -480,10 +480,88 @@ function compactListHtml(items){
   return values.length?`<ul class="report-list" style="margin-top:2mm">${values.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`:'';
 }
 
+
+function workDetailItems(key,level){
+  const byKey={
+    paint:{
+      0:['Aucun poste déclaré'],
+      1:['Rafraîchissement des murs','Petites reprises','Fournitures de peinture'],
+      2:['Préparation plus complète des supports','Peinture de plusieurs pièces','Reprises visibles à traiter'],
+      3:['Remise en état importante des murs','Préparation approfondie','Peinture complète à planifier']
+    },
+    floor:{
+      0:['Aucun poste déclaré'],
+      1:['Nettoyage renforcé','Petites reprises locales'],
+      2:['Réparations ciblées','Remplacement partiel selon l’état'],
+      3:['Remplacement ou rénovation importante des sols']
+    },
+    kitchen:{
+      0:['Aucun poste déclaré'],
+      1:['Petites reprises','Façades / poignées','Plan de travail ou évier selon besoin'],
+      2:['Plusieurs éléments à reprendre','Rafraîchissement du mobilier','Interventions ciblées sur plan de travail / évier'],
+      3:['Rénovation importante de la cuisine à chiffrer par devis']
+    },
+    bath:{
+      0:['Aucun poste déclaré'],
+      1:['Joints','Robinetterie','Petites réparations'],
+      2:['Meuble vasque ou équipements à remplacer','Reprises d’étanchéité ou de finition'],
+      3:['Réfection importante de la salle de bain à chiffrer par devis']
+    },
+    technical:{
+      0:['Aucun poste déclaré'],
+      1:['Petites reprises électriques ou plomberie','Prises / raccords / contrôle de sécurité'],
+      2:['Plusieurs interventions techniques à prévoir','Remises en conformité ciblées'],
+      3:['Travaux techniques importants à faire chiffrer par un professionnel']
+    },
+    finish:{
+      0:['Aucun poste déclaré'],
+      1:['Poignées','Stores / tringles','Joints et petites réparations'],
+      2:['Finitions multiples dans le logement','Petite menuiserie et ajustements'],
+      3:['Reprises de finition importantes avant mise en location']
+    }
+  };
+  return (byKey[key]&&byKey[key][level])?byKey[key][level]:[];
+}
+
+function launchDetailLists(engine){
+  const payload=collectBudgetPayload();
+  const decorMode=Number(payload.launch.decorMode||0);
+  const securityMode=Number(payload.launch.securityMode||0);
+  const launchMode=Number(payload.launch.launchMode||0);
+  const contingencyPct=Math.round((engine?.assumptions?.contingencyRate||0)*100);
+
+  const decoration=decorMode===0
+    ? ['Décoration minimale','Quelques accessoires utiles','Éclairage simple']
+    : decorMode===1
+      ? ['Luminaires','Rideaux / occultation','Miroirs','Cadres, plantes ou accessoires']
+      : ['Luminaires plus valorisants','Rideaux et miroirs','Décoration renforcée','Accessoires de mise en scène'];
+
+  const accessSecurity=securityMode===0
+    ? ['Équipements de sécurité déjà présents','Contrôle des détecteurs et accès avant ouverture']
+    : securityMode===1
+      ? ['Détecteurs','Trousse de secours','Boîte à clés ou sécurisation de l’accès selon besoin']
+      : ['Accès connecté ou renforcé','Détecteurs','Trousse de secours','Sécurisation complémentaire'];
+
+  const launch=launchMode===0
+    ? ['Consommables de départ','Création / mise en ligne réalisée par le propriétaire']
+    : launchMode===1
+      ? ['Consommables de départ','Préparation de la mise en ligne','Photos / présentation selon besoin']
+      : ['Consommables de départ','Photos et présentation renforcées','Préparation plus complète de la mise en ligne'];
+
+  const contingency=[
+    `Réserve de sécurité de ${contingencyPct} %`,
+    'Petits achats oubliés',
+    'Ajustements de dernière minute'
+  ];
+
+  return {decoration,accessSecurity,launch,contingency};
+}
+
 function buildReport(engine,ai,rows){
   const max=Math.max(...rows.map(r=>Number(r[1])||0),1);
   const profile=`${esc(engine.project.propertyType)} · ${engine.project.surface} m² · ${engine.project.bedrooms} chambre(s) · ${engine.project.capacity} voyageurs`;
   const itemLists=budgetItemLists(engine);
+  const launchLists=launchDetailLists(engine);
   const budgetRows=rows.map(([name,value])=>`
     <div class="report-budget-row">
       <span>${esc(name)}</span>
@@ -493,11 +571,16 @@ function buildReport(engine,ai,rows){
 
   const worksLabels={paint:'Peinture & murs',floor:'Sols',kitchen:'Cuisine',bath:'Salle de bain',technical:'Électricité & plomberie',finish:'Finitions'};
   const levelLabels=['Aucun','Léger','Moyen','Important'];
-  const worksCards=Object.entries(engine.works.details||{}).map(([key,value])=>`
+  const worksCards=Object.entries(engine.works.details||{}).map(([key,value])=>{
+    const level=engine.works.levels?.[key]||0;
+    const details=workDetailItems(key,level);
+    return `
     <div class="report-card">
-      <h3>${esc(worksLabels[key]||key)}</h3>
-      <p><strong style="font-size:18px;color:#3E2D25">${eur(value)}</strong><br>${esc(levelLabels[engine.works.levels?.[key]||0])}</p>
-    </div>`).join('');
+      <h3>${esc(worksLabels[key]||key)} — ${eur(value)}</h3>
+      <p>Niveau déclaré : ${esc(levelLabels[level])}</p>
+      ${compactListHtml(details)}
+    </div>`;
+  }).join('');
 
   const warnings=Array.isArray(engine.control?.warnings)?engine.control.warnings:[];
   $('reportPrint').innerHTML=`
@@ -546,10 +629,10 @@ function buildReport(engine,ai,rows){
     <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Linge, décoration & lancement</div></div>
     <div class="report-kicker">Priorité 3</div><h2>Lancement du logement</h2>
     <div class="report-grid">
-      <div class="report-card"><h3>Décoration</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.decoration)}</strong></p></div>
-      <div class="report-card"><h3>Accès & sécurité</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.accessSecurity)}</strong></p></div>
-      <div class="report-card"><h3>Consommables & mise en ligne</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.launch)}</strong></p></div>
-      <div class="report-card"><h3>Imprévus</h3><p><strong style="font-size:22px;color:#3E2D25">${eur(engine.budget.contingency)}</strong><br>${Math.round((engine.assumptions.contingencyRate||0)*100)} % du sous-total.</p></div>
+      <div class="report-card"><h3>Décoration — ${eur(engine.budget.decoration)}</h3><p>Principaux éléments couverts :</p>${compactListHtml(launchLists.decoration)}</div>
+      <div class="report-card"><h3>Accès & sécurité — ${eur(engine.budget.accessSecurity)}</h3><p>Postes à vérifier avant ouverture :</p>${compactListHtml(launchLists.accessSecurity)}</div>
+      <div class="report-card"><h3>Consommables & mise en ligne — ${eur(engine.budget.launch)}</h3><p>Préparation du démarrage :</p>${compactListHtml(launchLists.launch)}</div>
+      <div class="report-card"><h3>Imprévus — ${eur(engine.budget.contingency)}</h3><p>Réserve intégrée au budget :</p>${compactListHtml(launchLists.contingency)}</div>
     </div>
     <div class="report-ai"><h3>Analyse lancement</h3><p>${esc(ai?.launchAnalysis||'')}</p></div>
     <div class="report-ai"><h3>Dépenses différables</h3>${listHtml(ai?.deferredExpenses)}</div>
