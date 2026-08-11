@@ -159,7 +159,7 @@ h1 span{color:var(--terracotta)}
       </div>
     </div>
     <aside class="hero-card">
-      <div class="price">39 € <small>TTC</small></div>
+      <div class="price">29 € <small>TTC</small></div>
       <h3>Votre enveloppe de lancement, poste par poste</h3>
       <p>Un outil pour éviter les oublis et savoir où investir d’abord avant de mettre le logement en ligne.</p>
       <div class="mini-list">
@@ -167,7 +167,7 @@ h1 span{color:var(--terracotta)}
         <span><i>✓</i> Mobilier, équipements et linge</span>
         <span><i>✓</i> Budget cible et marge de sécurité</span>
       </div>
-      <p class="price-note">Tarif de travail provisoire — à valider après le premier rendu.</p>
+      <p class="price-note">Paiement ponctuel · une génération personnalisée.</p>
     </aside>
   </section>
 
@@ -220,7 +220,7 @@ h1 span{color:var(--terracotta)}
           <div class="category-card"><h3>🍽️ Cuisine & vaisselle</h3><p>Vaisselle, batterie de cuisine, ustensiles et petit électroménager.</p><div class="mini-checks"><label class="check-pill"><input type="checkbox" class="equip" data-cost=".8" checked> Kit cuisine complet</label><label class="check-pill"><input type="checkbox" class="equip" data-cost=".5" checked> Petit électroménager</label></div></div>
           <div class="category-card"><h3>📺 Électroménager & confort</h3><p>TV, lave-linge, gros électroménager et confort voyageurs.</p><div class="mini-checks"><label class="check-pill"><input type="checkbox" class="equip" data-cost=".9" checked> Électroménager</label><label class="check-pill"><input type="checkbox" class="equip" data-cost=".4" checked> TV / connectivité</label></div></div>
         </div>
-        <div class="field full" style="margin-top:18px"><label>Éléments déjà possédés ou récupérés <small>— facultatif</small></label><textarea class="textarea" id="owned" placeholder="Ex. canapé, TV, table, 2 lits..."></textarea></div>
+        <div class="field full" style="margin-top:18px"><label>Que possédez-vous déjà ? <small>— facultatif · évite de prévoir des achats inutiles</small></label><textarea class="textarea" id="owned" placeholder="Ex. canapé, TV, table, 2 lits, vaisselle..."></textarea></div>
       </div>
 
       <div class="section" id="step4">
@@ -286,12 +286,16 @@ h1 span{color:var(--terracotta)}
 
 <div class="report-print" id="reportPrint" aria-hidden="true"></div>
 
+<script src="stripe-checkout.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const qa=s=>[...document.querySelectorAll(s)];
 let currentStep=1;
 let cleanupAdminMode=false;
 let budgetResult=null;
+let paidSessionId='';
+let generationLocked=false;
+const PRODUCT_KEY='budget';
 
 const GENERATE_BUDGET_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateBudget';
 
@@ -381,6 +385,34 @@ async function waitForAdminAuth(){
     await new Promise(resolve=>setTimeout(resolve,50));
   }
   return null;
+}
+
+function restoreBudgetPayload(saved){
+  const p=saved?.budgetPayload||saved;
+  if(!p)return;
+  const project=p.project||{};
+  const map={address:project.address,propertyType:project.propertyType,surface:project.surface,bedrooms:project.bedrooms,capacity:project.capacity,furnished:project.furnishing,availableBudget:project.availableBudget,owned:project.ownedItems,diy:p.launch?.diyRate,contingency:p.launch?.contingencyRate};
+  Object.entries(map).forEach(([id,value])=>{const el=$(id);if(el&&value!==undefined&&value!==null)el.value=value;});
+  const level=document.querySelector(`input[name="level"][value="${project.level||'comfort'}"]`);if(level){qa('.choice').forEach(x=>x.classList.remove('active'));level.checked=true;level.closest('.choice')?.classList.add('active');}
+  qa('.work').forEach(el=>{if(p.works&&p.works[el.dataset.key]!==undefined)el.value=String(p.works[el.dataset.key]);});
+  const eq=p.equipment||{}, keys=['bedding','storage','living','sofaBed','kitchenKit','smallAppliances','appliances','tvConnectivity'];qa('.equip').forEach((el,i)=>{if(eq[keys[i]]!==undefined)el.checked=!!eq[keys[i]];});
+  ['linen','decor','security','launch'].forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);const prop={linen:'linenMode',decor:'decorMode',security:'securityMode',launch:'launchMode'}[k];if(el&&p.launch?.[prop]!==undefined)el.value=String(p.launch[prop]);});
+}
+async function ensureBudgetPayment(){
+  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+  if(cleanupAdminMode||paidSessionId)return true;
+  if(!window.CleanUpStripe)throw new Error('Le module de paiement Stripe est indisponible.');
+  await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{budgetPayload:collectBudgetPayload(),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});
+  return false;
+}
+function secureBudgetPayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+function lockBudgetAfterGeneration(){
+  if(cleanupAdminMode)return;
+  generationLocked=true;
+  qa('input,select,textarea').forEach(el=>el.disabled=true);
+  qa('.step').forEach(el=>{el.disabled=true;el.style.pointerEvents='none';});
+  $('prevBtn').style.display='none';$('nextBtn').style.display='none';$('generateBudget').style.display='none';
+  try{const u=new URL(location.href);u.searchParams.delete('session_id');history.replaceState({budgetGenerated:true},'',u.pathname+u.search+u.hash);}catch{}
 }
 
 async function refreshAdminInterface(){
@@ -659,8 +691,8 @@ async function generateBudgetFromServer(){
   const previous=button.textContent;
 
   try{
-    const api=await waitForAdminAuth();
-    cleanupAdminMode=api?await api.isAdmin():false;
+    if(generationLocked) throw new Error('Ce budget a déjà été généré. Un nouveau budget nécessite un nouveau paiement.');
+    if(!await ensureBudgetPayment()) return;
 
     button.disabled=true;
     $('printPdf').disabled=true;
@@ -670,7 +702,7 @@ async function generateBudgetFromServer(){
     const response=await fetch(GENERATE_BUDGET_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(collectBudgetPayload())
+      body:JSON.stringify(secureBudgetPayload(collectBudgetPayload()))
     });
 
     let result={};
@@ -684,7 +716,7 @@ async function generateBudgetFromServer(){
     budgetResult=result;
     renderBudgetResult(result.engine,result.ai);
     setGenerationStatus('success','Budget généré',result.adminMode===true?'Génération administrateur terminée. Le PDF est prêt.':'Votre budget et votre PDF sont prêts.');
-    button.textContent=cleanupAdminMode?'✦ Régénérer — Admin':'✦ Régénérer mon budget';
+    if(cleanupAdminMode){button.textContent='✦ Régénérer — Admin';}else{CleanUpStripe.complete(PRODUCT_KEY);lockBudgetAfterGeneration();}
 
   }catch(error){
     console.error('generateBudgetFromServer error:',error);
@@ -704,6 +736,19 @@ $('printPdf').addEventListener('click',()=>{
 
 showStep(1);
 refreshAdminInterface();
+(async()=>{
+  try{
+    const payment=await CleanUpStripe.resume(PRODUCT_KEY);
+    if(!payment.returnedFromStripe)return;
+    if(payment.used){setGenerationStatus('error','Paiement déjà utilisé','Cette génération a déjà été consommée. Un nouveau budget nécessite un nouveau paiement.');return;}
+    if(!payment.paid){setGenerationStatus('error','Paiement non confirmé','Le paiement Stripe n’a pas été confirmé.');return;}
+    paidSessionId=payment.sessionId;
+    restoreBudgetPayload(payment.payload||{});
+    showStep(5);
+    setGenerationStatus('loading','Paiement validé','Génération automatique de votre budget en cours…');
+    setTimeout(()=>$('generateBudget')?.click(),150);
+  }catch(e){console.error(e);setGenerationStatus('error','Paiement impossible à vérifier',e.message||'Une erreur est survenue.');}
+})();
 </script>
   <script type="module" src="admin-auth.js"></script>
 </body>
