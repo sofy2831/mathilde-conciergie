@@ -100,6 +100,15 @@ h1 span{color:var(--terracotta)}
   font-size:11px;line-height:1.5;color:var(--brown)
 }
 .generation-box strong{display:block;margin-bottom:4px}
+.generation-progress{margin-top:12px}
+.generation-progress-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px;font-size:10px;font-weight:800;color:var(--taupe)}
+.generation-progress-track{height:9px;border-radius:999px;background:rgba(255,255,255,.75);overflow:hidden;border:1px solid rgba(228,217,207,.9)}
+.generation-progress-track span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--terracotta),#D49A82);transition:width .45s ease}
+.generation-progress-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
+.generation-progress-steps span{font-size:9px;line-height:1.3;color:var(--taupe);font-weight:700}
+.generation-progress-steps span.active{color:var(--brown)}
+.generation-progress-steps span.done{color:#536B52}
+
 .generation-box.loading{background:var(--amber-soft);border-color:#EEDCB4}
 .generation-box.success{background:var(--sage-soft);border-color:#D3DFD0;color:#536B52}
 .generation-box.error{background:var(--red-soft);border-color:#EBCAC4;color:#8D3E35}
@@ -252,8 +261,18 @@ h1 span{color:var(--terracotta)}
         <div class="callout" id="budgetAdvice"><strong>Lecture CleanUp :</strong> le résultat apparaîtra après génération.</div>
 
         <div class="generation-box" id="generationStatus">
-          <strong>Prêt à générer</strong>
-          Les montants sont calculés par le moteur CleanUp puis commentés pour construire votre plan de lancement.
+          <strong id="generationTitle">Prêt à générer</strong>
+          <span id="generationMessage">Les montants sont calculés par le moteur CleanUp puis commentés pour construire votre plan de lancement.</span>
+          <div class="generation-progress" id="generationProgress" hidden>
+            <div class="generation-progress-head"><span id="generationProgressLabel">Préparation</span><span id="generationProgressPct">0 %</span></div>
+            <div class="generation-progress-track"><span id="generationProgressBar"></span></div>
+            <div class="generation-progress-steps">
+              <span data-gen-step="1">Analyse du projet</span>
+              <span data-gen-step="2">Calcul du budget</span>
+              <span data-gen-step="3">Analyse personnalisée</span>
+              <span data-gen-step="4">Préparation du PDF</span>
+            </div>
+          </div>
         </div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
@@ -421,7 +440,9 @@ async function refreshAdminInterface(){
   if(cleanupAdminMode){
     $('generateBudget').textContent='✦ Générer mon budget — Admin';
     $('generationStatus').className='generation-box success';
-    $('generationStatus').innerHTML='<strong>Mode administrateur actif</strong>La génération peut être testée sans paiement.';
+    $('generationTitle').textContent='Mode administrateur actif';
+    $('generationMessage').textContent='La génération peut être testée sans paiement.';
+    resetGenerationProgress();
   }
 }
 
@@ -437,10 +458,63 @@ function updateAssistant(){
   $('assistantMessages').innerHTML=`<div class="ai-message"><strong>${title}</strong>${text}</div><div class="ai-message good"><strong>Objectif : éviter les oublis.</strong>Le résultat distinguera les postes indispensables, recommandés et différables.</div>`;
 }
 
+let generationProgressTimer=null;
+function updateGenerationProgress(percent,label){
+  const box=$('generationProgress');
+  if(!box)return;
+  box.hidden=false;
+  const pct=Math.max(0,Math.min(100,Math.round(percent||0)));
+  $('generationProgressBar').style.width=pct+'%';
+  $('generationProgressPct').textContent=pct+' %';
+  $('generationProgressLabel').textContent=label||'Préparation';
+  const thresholds=[15,40,70,100];
+  const currentIndex=thresholds.findIndex(v=>pct<v);
+  qa('[data-gen-step]').forEach((el,index)=>{
+    el.classList.remove('active','done');
+    if(pct>=thresholds[index])el.classList.add('done');
+    else if(index===currentIndex)el.classList.add('active');
+  });
+}
+
+function startGenerationProgress(){
+  clearInterval(generationProgressTimer);
+  const phases=[
+    {pct:15,label:'Analyse du projet'},
+    {pct:40,label:'Calcul du budget'},
+    {pct:70,label:'Analyse personnalisée'},
+    {pct:88,label:'Préparation du PDF'}
+  ];
+  let index=0;
+  updateGenerationProgress(phases[0].pct,phases[0].label);
+  generationProgressTimer=setInterval(()=>{
+    index=Math.min(index+1,phases.length-1);
+    updateGenerationProgress(phases[index].pct,phases[index].label);
+    if(index===phases.length-1)clearInterval(generationProgressTimer);
+  },900);
+}
+
+function finishGenerationProgress(){
+  clearInterval(generationProgressTimer);
+  updateGenerationProgress(100,'PDF prêt');
+}
+
+function resetGenerationProgress(){
+  clearInterval(generationProgressTimer);
+  const box=$('generationProgress');
+  if(box)box.hidden=true;
+  if($('generationProgressBar'))$('generationProgressBar').style.width='0%';
+  if($('generationProgressPct'))$('generationProgressPct').textContent='0 %';
+  qa('[data-gen-step]').forEach(el=>el.classList.remove('active','done'));
+}
+
 function setGenerationStatus(type,title,message){
   const box=$('generationStatus');
   box.className='generation-box'+(type?' '+type:'');
-  box.innerHTML=`<strong>${esc(title)}</strong>${esc(message)}`;
+  $('generationTitle').textContent=title||'';
+  $('generationMessage').textContent=message||'';
+  if(type==='loading')startGenerationProgress();
+  else if(type==='success')finishGenerationProgress();
+  else if(type==='error')resetGenerationProgress();
 }
 
 function renderBudgetResult(engine,ai){
