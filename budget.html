@@ -315,6 +315,7 @@ let cleanupAdminMode=false;
 let budgetResult=null;
 let paidSessionId='';
 let generationLocked=false;
+let checkoutLocked=false;
 const PRODUCT_KEY='budget';
 
 const GENERATE_BUDGET_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateBudget';
@@ -329,6 +330,7 @@ function getLevelLabel(level=radio('level')){return {essential:'Essentiel',comfo
 function updateSelectedLevelTag(){const el=$('selectedLevelTag');if(el)el.textContent='Niveau '+getLevelLabel();}
 
 function showStep(step){
+  if((checkoutLocked||generationLocked)&&Number(step)!==5&&!cleanupAdminMode)return;
   currentStep=Math.max(1,Math.min(5,step));
   qa('.section').forEach(s=>s.classList.remove('active'));
   $('step'+currentStep).classList.add('active');
@@ -423,21 +425,81 @@ function restoreBudgetPayload(saved){
   const eq=p.equipment||{}, keys=['bedding','storage','living','sofaBed','kitchenKit','smallAppliances','appliances','tvConnectivity'];qa('.equip').forEach((el,i)=>{if(eq[keys[i]]!==undefined)el.checked=!!eq[keys[i]];});
   ['linen','decor','security','launch'].forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);const prop={linen:'linenMode',decor:'decorMode',security:'securityMode',launch:'launchMode'}[k];if(el&&p.launch?.[prop]!==undefined)el.value=String(p.launch[prop]);});
 }
+function freezeBudgetForCheckout(){
+  if(cleanupAdminMode)return;
+  checkoutLocked=true;
+  qa('input,select,textarea').forEach(el=>el.disabled=true);
+  qa('.step').forEach(el=>{el.disabled=true;el.style.pointerEvents='none';});
+  $('prevBtn').style.display='none';
+  $('nextBtn').style.display='none';
+  $('generateBudget').disabled=true;
+  $('generateBudget').textContent='Redirection vers le paiement…';
+  setGenerationStatus('loading','Projet verrouillé','Vos réponses sont figées. Redirection vers le paiement sécurisé Stripe…');
+}
+
+function restoreBudgetAfterCheckoutFailure(){
+  if(cleanupAdminMode||generationLocked)return;
+  checkoutLocked=false;
+  qa('input,select,textarea').forEach(el=>el.disabled=false);
+  qa('.step').forEach(el=>{el.disabled=false;el.style.pointerEvents='';});
+  $('prevBtn').style.display='';
+  $('nextBtn').style.display=currentStep===5?'none':'inline-flex';
+  $('prevBtn').style.visibility=currentStep===1?'hidden':'visible';
+  $('generateBudget').disabled=false;
+  $('generateBudget').textContent='✦ Générer mon budget';
+  setGenerationStatus('','Prêt à générer','Les montants sont calculés par CleanUp après validation du paiement.');
+}
+
+function freezeBudgetAfterPaidReturn(){
+  if(cleanupAdminMode)return;
+  checkoutLocked=true;
+  qa('input,select,textarea').forEach(el=>el.disabled=true);
+  qa('.step').forEach(el=>{el.disabled=true;el.style.pointerEvents='none';});
+  $('prevBtn').style.display='none';
+  $('nextBtn').style.display='none';
+  $('generateBudget').disabled=true;
+}
+
 async function ensureBudgetPayment(){
-  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
+  const api=await waitForAdminAuth();
+  cleanupAdminMode=api?await api.isAdmin():false;
   if(cleanupAdminMode||paidSessionId)return true;
   if(!window.CleanUpStripe)throw new Error('Le module de paiement Stripe est indisponible.');
-  await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{budgetPayload:collectBudgetPayload(),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});
-  return false;
+
+  freezeBudgetForCheckout();
+
+  try{
+    await CleanUpStripe.start({
+      productKey:PRODUCT_KEY,
+      payload:{budgetPayload:collectBudgetPayload(),pendingAction:'generate'},
+      successUrl:location.href,
+      cancelUrl:location.href
+    });
+    return false;
+  }catch(error){
+    restoreBudgetAfterCheckoutFailure();
+    throw error;
+  }
 }
-function secureBudgetPayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+
+function secureBudgetPayload(data){
+  return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);
+}
+
 function lockBudgetAfterGeneration(){
   if(cleanupAdminMode)return;
   generationLocked=true;
+  checkoutLocked=false;
   qa('input,select,textarea').forEach(el=>el.disabled=true);
   qa('.step').forEach(el=>{el.disabled=true;el.style.pointerEvents='none';});
-  $('prevBtn').style.display='none';$('nextBtn').style.display='none';$('generateBudget').style.display='none';
-  try{const u=new URL(location.href);u.searchParams.delete('session_id');history.replaceState({budgetGenerated:true},'',u.pathname+u.search+u.hash);}catch{}
+  $('prevBtn').style.display='none';
+  $('nextBtn').style.display='none';
+  $('generateBudget').style.display='none';
+  try{
+    const u=new URL(location.href);
+    u.searchParams.delete('session_id');
+    history.replaceState({budgetGenerated:true},'',u.pathname+u.search+u.hash);
+  }catch{}
 }
 
 async function refreshAdminInterface(){
@@ -822,13 +884,23 @@ refreshAdminInterface();
   try{
     const payment=await CleanUpStripe.resume(PRODUCT_KEY);
     if(!payment.returnedFromStripe)return;
-    if(payment.used){setGenerationStatus('error','Paiement déjà utilisé','Cette génération a déjà été consommée. Un nouveau budget nécessite un nouveau paiement.');return;}
+    if(payment.used){
+      freezeBudgetAfterPaidReturn();
+      showStep(5);
+      $('generateBudget').style.display='none';
+      setGenerationStatus('error','Paiement déjà utilisé','Cette génération a déjà été consommée. Un nouveau budget nécessite un nouveau paiement.');
+      return;
+    }
     if(!payment.paid){setGenerationStatus('error','Paiement non confirmé','Le paiement Stripe n’a pas été confirmé.');return;}
     paidSessionId=payment.sessionId;
     restoreBudgetPayload(payment.payload||{});
+    freezeBudgetAfterPaidReturn();
     showStep(5);
-    setGenerationStatus('loading','Paiement validé','Génération automatique de votre budget en cours…');
-    setTimeout(()=>$('generateBudget')?.click(),150);
+    setGenerationStatus('loading','Paiement validé','Paiement confirmé. Génération automatique de votre budget en cours…');
+    setTimeout(()=>{
+      const btn=$('generateBudget');
+      if(btn){btn.disabled=false;btn.click();}
+    },150);
   }catch(e){console.error(e);setGenerationStatus('error','Paiement impossible à vérifier',e.message||'Une erreur est survenue.');}
 })();
 </script>
