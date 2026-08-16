@@ -28,7 +28,8 @@
     "contrat",
     "reglement",
     "diagnostic",
-    "investissement"
+    "investissement",
+    "budget"
   ]);
 
   const STORAGE_PREFIX = "cleanup_stripe_checkout_v1";
