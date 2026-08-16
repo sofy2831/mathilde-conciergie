@@ -68,7 +68,7 @@ h1 span{color:var(--terracotta)}
 .section{display:none}.section.active{display:block}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:25px}
 .section-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:36px;font-weight:400;color:var(--brown);letter-spacing:-.02em}
 .section-head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55;max-width:640px}
-.section-badge{padding:9px 12px;border-radius:999px;background:var(--terracotta-soft);color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap}
+.section-badge{padding:9px 12px;border-radius:999px;background:var(--terracotta-soft);color:var(--terracotta);font-size:11px;font-weight:800;white-space:nowrap}.level-tag{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;background:var(--brown);color:#fff;font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}.level-tag:before{content:"◆";font-size:8px;color:#E9DDCF}.report-level-tag{display:inline-block;margin:0 0 3mm;padding:1.8mm 3.2mm;border-radius:99px;background:var(--brown);color:#fff;font-size:7px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:var(--brown);letter-spacing:.02em}.field label small{color:var(--taupe);font-weight:500}
 .input,.select,.textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--cream);padding:13px 14px;color:var(--text);outline:none;transition:.2s}
@@ -247,7 +247,7 @@ h1 span{color:var(--terracotta)}
       </div>
 
       <div class="section" id="step5">
-        <div class="section-head"><div><h2>Votre budget de lancement</h2><p>Votre dossier est prêt. CleanUp calcule les postes puis génère l’analyse et le PDF personnalisé.</p></div><div class="section-badge">Étape 5 sur 5</div></div>
+        <div class="section-head"><div><h2>Votre budget de lancement</h2><p>Votre dossier est prêt. CleanUp calcule les postes puis génère l’analyse et le PDF personnalisé.</p></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><div class="level-tag" id="selectedLevelTag">Niveau Confort</div><div class="section-badge">Étape 5 sur 5</div></div></div>
         <div class="summary-hero">
           <div><h3>Budget cible CleanUp</h3><p id="summarySentence">Cliquez sur « Générer mon budget » pour lancer le calcul final.</p></div>
           <div class="summary-total"><b id="totalBudget">—</b><span>budget de lancement estimé</span></div>
@@ -324,6 +324,9 @@ const val=id=>($(id)?.value||'').trim();
 const radio=name=>document.querySelector(`input[name="${name}"]:checked`)?.value||'comfort';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+function getLevelLabel(level=radio('level')){return {essential:'Essentiel',comfort:'Confort',premium:'Premium'}[level]||'Confort';}
+function updateSelectedLevelTag(){const el=$('selectedLevelTag');if(el)el.textContent='Niveau '+getLevelLabel();}
+
 function showStep(step){
   currentStep=Math.max(1,Math.min(5,step));
   qa('.section').forEach(s=>s.classList.remove('active'));
@@ -339,6 +342,7 @@ function showStep(step){
   $('progressLabel').textContent=pct+' %';
   $('progressBar').style.width=pct+'%';
   updateAssistant();
+  updateSelectedLevelTag();
 }
 
 qa('.step').forEach(b=>b.addEventListener('click',()=>showStep(Number(b.dataset.step))));
@@ -348,6 +352,7 @@ qa('.choice').forEach(c=>c.addEventListener('click',()=>{
   c.closest('.choice-grid').querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));
   c.classList.add('active');
   c.querySelector('input').checked=true;
+  updateSelectedLevelTag();
 }));
 
 function selectedExtra(key){
@@ -666,6 +671,7 @@ function launchDetailLists(engine){
 function buildReport(engine,ai,rows){
   const max=Math.max(...rows.map(r=>Number(r[1])||0),1);
   const profile=`${esc(engine.project.propertyType)} · ${engine.project.surface} m² · ${engine.project.bedrooms} chambre(s) · ${engine.project.capacity} voyageurs`;
+  const projectLevelLabel=getLevelLabel(engine.project.level);
   const itemLists=budgetItemLists(engine);
   const launchLists=launchDetailLists(engine);
   const budgetRows=rows.map(([name,value])=>`
@@ -693,6 +699,7 @@ function buildReport(engine,ai,rows){
   <section class="report-page">
     <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>${profile}</div></div>
     <div class="report-kicker">Budget de lancement LCD</div>
+    <div class="report-level-tag">Niveau de gamme · ${esc(projectLevelLabel)}</div>
     <h1>Votre enveloppe de lancement</h1>
     <p class="report-lead">Estimation personnalisée des dépenses à prévoir avant la première réservation.</p>
     <div class="report-hero"><div><strong>Budget cible CleanUp</strong><p class="report-lead" style="margin:1.5mm 0 0">${esc(ai?.executiveSummary||'Budget calculé selon le profil du logement et les choix de lancement.')}</p></div><div><div class="big">${eur(engine.budget.total)}</div><small>imprévus inclus</small></div></div>
@@ -747,8 +754,8 @@ function buildReport(engine,ai,rows){
 
   <section class="report-page">
     <div class="report-header"><div class="report-brand">CleanUp<small>MANAGER</small></div><div>Plan de lancement</div></div>
-    <div class="report-kicker">Synthèse</div><h2>Votre plan de lancement</h2>
-    <div class="report-hero"><div><strong>Enveloppe finale</strong><p class="report-lead" style="margin:1.5mm 0 0">${esc(ai?.availableBudgetAnalysis||'')}</p></div><div><div class="big">${eur(engine.budget.total)}</div><small>budget cible</small></div></div>
+    <div class="report-kicker">Synthèse</div><div class="report-level-tag">Niveau de gamme · ${esc(projectLevelLabel)}</div><h2>Votre plan de lancement</h2>
+    <div class="report-hero"><div><strong>Enveloppe finale · ${esc(projectLevelLabel)}</strong><p class="report-lead" style="margin:1.5mm 0 0">${esc(ai?.availableBudgetAnalysis||'')}</p></div><div><div class="big">${eur(engine.budget.total)}</div><small>budget cible</small></div></div>
     <div class="report-grid">
       <div class="report-card"><h3>Indispensable avant ouverture</h3>${listHtml(ai?.priorities?.essential||engine.priorities?.essential)}</div>
       <div class="report-card"><h3>Recommandé</h3>${listHtml(ai?.priorities?.recommended||engine.priorities?.recommended)}</div>
