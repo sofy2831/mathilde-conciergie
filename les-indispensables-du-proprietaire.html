@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
@@ -280,6 +279,20 @@ body.preview-open{overflow:hidden}
   from{opacity:0;transform:translateY(12px) scale(.985)}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
+
+.choice-paths{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 22px;
+}
+.choice-path{
+  display:flex;flex-direction:column;gap:5px;padding:17px 18px;border-radius:18px;
+  background:rgba(255,255,255,.88);border:1px solid var(--line);box-shadow:var(--shadow-soft);
+  transition:.2s;
+}
+.choice-path:hover{transform:translateY(-3px);border-color:var(--terracotta)}
+.choice-path strong{font-size:13px;color:var(--brown)}
+.choice-path span{font-size:10px;line-height:1.45;color:var(--muted)}
+@media(max-width:680px){.choice-paths{grid-template-columns:1fr}}
+
 </style><meta content="index,follow" name="robots"/><link href="https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html" rel="canonical"/><meta content="Les indispensables du propriétaire | Outils location saisonnière" property="og:title"/><meta content="9 outils accessibles à l’unité pour préparer, exploiter et optimiser une location courte durée." property="og:description"/><meta content="website" property="og:type"/><meta content="https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html" property="og:url"/></head>
 <body>
 <header class="site-header">
@@ -297,37 +310,42 @@ body.preview-open{overflow:hidden}
 <main class="page">
 <section class="hero">
 <div class="hero-copy">
-<div class="eyebrow">Outils pratiques pour la location saisonnière</div>
-<h1>Les indispensables <span>du propriétaire</span></h1>
-<p>Créez les documents essentiels de votre location, améliorez votre annonce et obtenez une vision plus claire de votre projet. Chaque service est indépendant, sans abonnement et accessible même si vous ne travaillez pas avec une conciergerie.</p>
+<div class="eyebrow">Location saisonnière · Des outils concrets, quand vous en avez besoin</div>
+<h1>Mieux louer. <span>Mieux accueillir. Mieux rentabiliser.</span></h1>
+<p>Préparez votre location, améliorez votre annonce ou vérifiez la rentabilité de votre projet avec des outils prêts à l’emploi. Choisissez uniquement ce dont vous avez besoin, à partir de 9 €, sans abonnement.</p>
 <div class="hero-benefits">
-<div class="benefit"><b>✓</b> Achat à l’unité</div>
-<div class="benefit"><b>✓</b> Aucune inscription</div>
-<div class="benefit"><b>✓</b> Documents prêts à utiliser</div>
-<div class="benefit"><b>✓</b> Paiement sécurisé</div>
+<div class="benefit"><b>✓</b> À partir de 9 €</div>
+<div class="benefit"><b>✓</b> Paiement unique</div>
+<div class="benefit"><b>✓</b> Résultat personnalisé</div>
+<div class="benefit"><b>✓</b> Sans abonnement</div>
 </div>
 </div>
 <aside class="hero-card">
-<div class="kicker">By CleanUp</div>
-<h2>Des outils simples, sans engagement</h2>
-<p>Vous choisissez uniquement le service dont vous avez besoin. Vos informations servent à générer votre résultat pendant la session et ne sont pas conservées.</p>
+<div class="kicker">Votre projet, votre besoin, votre outil</div>
+<h2>Pas besoin d’un logiciel complet pour obtenir une réponse utile.</h2>
+<p>Vous avez un besoin précis ? Choisissez l’outil correspondant, visualisez un exemple avant de commencer et obtenez un résultat adapté à votre location ou à votre projet.</p>
 <div class="mini-list">
-<span><i>✓</i> Pour les propriétaires autonomes</span>
-<span><i>✓</i> Pour les conciergeries et leurs clients</span>
-<span><i>✓</i> Pour préparer ou améliorer un projet</span>
+<span><i>✓</i> Vous lancez votre location</span>
+<span><i>✓</i> Vous voulez améliorer une location existante</span>
+<span><i>✓</i> Vous étudiez la rentabilité d’un projet</span>
 </div>
 </aside>
 </section>
 <section>
 <div class="section-head">
 <div>
-<h2>Choisissez votre service</h2>
-<p>Chaque outil répond à un besoin précis. Vous pouvez en utiliser un seul ou revenir plus tard pour compléter votre parcours.</p>
+<h2>De quoi avez-vous besoin aujourd’hui ?</h2>
+<p>Pas de formule imposée : choisissez l’outil qui répond à votre situation. Chaque service peut être utilisé séparément.</p>
 </div>
 <div class="section-badge">9 services indépendants</div>
 </div>
+<div class="choice-paths">
+<a class="choice-path" href="#lancement"><strong>Je prépare ma location</strong><span>Budget, annonce, contrat et documents utiles</span></a>
+<a class="choice-path" href="#amelioration"><strong>Je loue déjà</strong><span>Améliorer l’annonce et l’expérience voyageur</span></a>
+<a class="choice-path" href="#rentabilite"><strong>Je veux vérifier la rentabilité</strong><span>Diagnostic ou étude avant investissement</span></a>
+</div>
 <div class="services-grid">
-<article class="service-card featured">
+<article class="service-card featured" id="lancement">
 <div class="card-top">
 <div class="icon-wrap">✍️</div>
 <span class="tag hot">Création complète</span>
@@ -340,24 +358,24 @@ body.preview-open{overflow:hidden}
 <li>Prévisualisation et export</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">29 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<div class="price price-line">29 € <small>TTC</small></div><div class="price-meta">Paiement unique · Annonce personnalisée prête à publier</div>
 <button class="btn primary preview-btn" data-preview="annonce" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="mon-annonce-pro.html">Créer mon annonce →</a>
 </div>
 </article>
-<article class="service-card">
+<article class="service-card" id="amelioration">
 <div class="card-top">
 <div class="icon-wrap">🚀</div>
 <span class="tag">Amélioration</span>
 </div>
 <h3>Optimisation de mon annonce</h3>
-<p class="desc">Collez votre annonce actuelle et obtenez une version plus claire, plus attractive et mieux structurée.</p>
+<p class="desc">Votre annonce existe déjà mais manque d’impact ? Faites analyser son titre et sa description et repartez avec une version plus claire, plus attractive et mieux structurée.</p>
 <ul>
 <li>Analyse du titre et de la description</li>
 <li>Réécriture des passages faibles</li>
 <li>Conseils concrets d’amélioration</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · Votre annonce optimisée et prête à reprendre</div>
 <button class="btn primary preview-btn" data-preview="optimisation" type="button">👁 Voir un exemple</button> <a class="btn primary" href="optimisation-annonce.html">Optimiser mon annonce →</a>
 </div>
 </article>
@@ -374,7 +392,7 @@ body.preview-open{overflow:hidden}
 <li>Version française et anglaise</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · Fiche A4 prête à imprimer</div>
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · Fiche personnalisée prête à imprimer</div>
 <button class="btn primary preview-btn" data-preview="guide" type="button">👁 Voir un exemple</button> <a class="btn primary" href="guide-accueil-personnalise.html">Créer mon guide →</a>
 </div>
 </article>
@@ -391,7 +409,7 @@ body.preview-open{overflow:hidden}
 <li>Mise à jour libre selon la saison</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · Livret personnalisé pour vos voyageurs</div>
 <button class="btn primary preview-btn" data-preview="livret" type="button">👁 Voir un exemple</button> <a class="btn primary" href="livret-voyageur-premium.html">Créer mon livret →</a>
 </div>
 </article>
@@ -411,7 +429,7 @@ body.preview-open{overflow:hidden}
           Contrat de prestations ou mandat de gestion : le choix est expliqué avant la génération.
         </p>
 <div class="card-bottom">
-<div class="price price-line">19 € <small>TTC</small></div><div class="price-meta">Paiement unique · Contrat de 4 pages</div>
+<div class="price price-line">19 € <small>TTC</small></div><div class="price-meta">Paiement unique · Contrat adapté à votre situation</div>
 <button class="btn primary preview-btn" data-preview="contrat" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="contrat-proprietaire-conciergerie.html">Créer mon contrat →</a>
 </div>
 </article>
@@ -428,7 +446,7 @@ body.preview-open{overflow:hidden}
 <li>Version claire, imprimable et modifiable</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 2 pages</div>
+<div class="price price-line">9 € <small>TTC</small></div><div class="price-meta">Paiement unique · Règlement personnalisé prêt à utiliser</div>
 <button class="btn primary preview-btn" data-preview="reglement" type="button">👁 Voir un exemple</button> <a class="btn primary" href="reglement-interieur-location.html">Créer mon règlement →</a>
 </div>
 </article>
@@ -445,24 +463,24 @@ body.preview-open{overflow:hidden}
 <li>Écart avec votre budget disponible</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">29 € <small>TTC</small></div><div class="price-meta">Paiement ponctuel · PDF 5 pages</div>
+<div class="price price-line">29 € <small>TTC</small></div><div class="price-meta">Paiement unique · Budget détaillé pour lancer votre location</div>
 <button class="btn primary preview-btn" data-preview="budget" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="budget.html">Calculer mon budget →</a>
 </div>
 </article>
-<article class="service-card featured">
+<article class="service-card featured" id="rentabilite">
 <div class="card-top">
 <div class="icon-wrap">📊</div>
 <span class="tag hot">Rentabilité</span>
 </div>
 <h3>Diagnostic de rentabilité</h3>
-<p class="desc">Obtenez une vision synthétique du potentiel locatif de votre logement et de son positionnement.</p>
+<p class="desc">Avant de fixer vos tarifs ou de vous lancer, estimez ce que votre logement peut réellement générer et identifiez le positionnement le plus cohérent.</p>
 <ul>
 <li>Estimation du chiffre d’affaires</li>
 <li>Scénarios d’occupation</li>
 <li>Recommandations de positionnement</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">49 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 6 pages</div>
+<div class="price price-line">49 € <small>TTC</small></div><div class="price-meta">Paiement unique · Votre analyse de rentabilité personnalisée</div>
 <button class="btn primary preview-btn" data-preview="diagnostic" type="button">👁 Voir un exemple</button> <a class="btn terracotta" href="diagnostic-template.html">Lancer le diagnostic →</a>
 </div>
 </article>
@@ -472,14 +490,14 @@ body.preview-open{overflow:hidden}
 <span class="tag gold">Service premium</span>
 </div>
 <h3>Étude d’investissement</h3>
-<p class="desc">Analysez un projet avant achat avec une étude structurée de la rentabilité, des risques et du positionnement.<br/><br/><strong>Projet de plusieurs lots ou d’un immeuble ?</strong><br/>Demandez une étude sur mesure à <strong>contact@cleanup-manager.fr</strong>.</p>
+<p class="desc">Avant d’acheter, confrontez votre projet à des hypothèses concrètes de rentabilité, de charges, de risques et de positionnement.<br/><br/><strong>Projet de plusieurs lots ou d’un immeuble ?</strong><br/>Demandez une étude sur mesure à <strong>contact@cleanup-manager.fr</strong>.</p>
 <ul>
 <li>Analyse du projet et de la zone</li>
 <li>Hypothèses financières détaillées</li>
 <li>Avis argumenté et recommandations</li>
 </ul>
 <div class="card-bottom">
-<div class="price price-line">129 € <small>TTC</small></div><div class="price-meta">Paiement unique · PDF 10 pages</div>
+<div class="price price-line">129 € <small>TTC</small></div><div class="price-meta">Paiement unique · Analyse complète avant d’investir</div>
 <button class="btn primary preview-btn" data-preview="etude" type="button">👁 Voir un exemple</button> <a class="btn gold" href="etude-investissement.html">Étudier mon projet →</a>
 </div>
 </article>
@@ -511,13 +529,14 @@ body.preview-open{overflow:hidden}
 </div>
 <div class="info-item">
 <i>🗂️</i>
-<div><strong>Aucun stockage permanent</strong><span>Les informations saisies servent uniquement à générer votre document pendant la session.</span></div>
+<div><strong>Résultat prêt à utiliser</strong><span>Chaque outil vous guide jusqu’à un document ou une analyse personnalisée, directement exploitable.</span></div>
 </div>
 </section>
 <section class="bottom-cta">
 <div>
-<h3>Chaque besoin mérite son outil</h3>
-<p>Choisissez uniquement le service dont vous avez besoin aujourd'hui. Vous pourrez revenir à tout moment pour utiliser un autre outil.</p>
+<h3>Un besoin précis ? Commencez par l’outil qui vous fera gagner du temps aujourd’hui.</h3>
+<p>Préparer votre location, améliorer ce qui existe déjà ou vérifier vos chiffres avant d’investir : choisissez votre objectif et visualisez un exemple avant de commencer.</p>
+<div style="margin-top:16px"><a class="btn terracotta" href="#lancement">Choisir mon outil →</a></div>
 </div>
 </section>
 </main>
