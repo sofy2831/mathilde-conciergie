@@ -258,6 +258,38 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 }
 </style>
 
+
+<style>
+/* ÉCRAN 4 : PNG commercial complet, navigation générale conservée */
+.scene.fourth-image-scene{
+  display:none;
+  grid-template-columns:1fr !important;
+  background:transparent !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.scene.fourth-image-scene.on{display:block !important}
+.fourth-image-only{
+  width:100%;
+  min-height:620px;
+  background:#f3e7df;
+  overflow:hidden;
+}
+.fourth-image-only img{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:620px;
+  object-fit:cover;
+  object-position:center;
+  margin:0;
+  padding:0;
+  border:0;
+}
+@media(max-width:850px){
+  .fourth-image-only,.fourth-image-only img{min-height:420px}
+}
+</style>
 </head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
@@ -277,13 +309,10 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   <div class="third-image-only">
     <img src="images-demo/page-3.png" alt="Présentation commerciale CleanUp — diagnostic de rentabilité">
   </div>
-</article><article class="scene" data-i="3">
-<div class="pitch">
-<div class="step">04 / 11  •  PERSONNALISER</div>
-<h2>Votre annonce existe déjà ? Faites-la travailler davantage.</h2><p>CleanUp audite le contenu existant, repère ce qui affaiblit l’annonce et construit une version plus claire, plus précise et plus convaincante.</p>
-<div class="proof">Optimisation d’annonce • 19 €</div>
-</div>
-<div class="shot"><div class="float-stack"><div class="float-card"><small>Avant / Après</small><b>Annonce optimisée</b><em>Le changement se voit</em></div><div class="float-card"><small>Audit</small><b>Contenu</b><em>Faiblesses repérées</em></div><div class="float-card"><small>Résultat</small><b>PDF</b><em>Texte modifiable</em></div></div><div class="glass"><span>PERSONNALISER</span><b>Le même principe pour un livret voyageur.</b></div></div>
+</article><article class="scene fourth-image-scene" data-i="3">
+  <div class="fourth-image-only">
+    <img src="images-demo/page-4.png" alt="Présentation commerciale CleanUp — budget de lancement">
+  </div>
 </article><article class="scene" data-i="4">
 <div class="pitch">
 <div class="step">05 / 11  •  MESURER</div>
