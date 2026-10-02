@@ -225,6 +225,39 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 }
 </style>
 
+
+<style>
+/* ÉCRAN 3 : PNG commercial complet, navigation générale conservée */
+.scene.third-image-scene{
+  display:none;
+  grid-template-columns:1fr !important;
+  background:transparent !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.scene.third-image-scene.on{display:block !important}
+.third-image-only{
+  width:100%;
+  min-height:620px;
+  background:#f3e7df;
+  overflow:hidden;
+}
+.third-image-only img{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:620px;
+  object-fit:cover;
+  object-position:center;
+  margin:0;
+  padding:0;
+  border:0;
+}
+@media(max-width:850px){
+  .third-image-only,.third-image-only img{min-height:420px}
+}
+</style>
+
 </head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
@@ -240,13 +273,10 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   <div class="second-image-only">
     <img src="images-demo/page-2.png" alt="Présentation commerciale CleanUp — étude d’investissement">
   </div>
-</article><article class="scene" data-i="2">
-<div class="pitch">
-<div class="step">03 / 11  •  RENSEIGNER</div>
-<h2>Créez une annonce qui donne envie de réserver.</h2><p>Quelques informations sur le logement, ses équipements et ses photos. CleanUp contrôle les incohérences puis prépare les versions adaptées aux plateformes.</p>
-<div class="proof">Mon Annonce Pro • 29 €</div>
-</div>
-<div class="shot"><div class="float-stack"><div class="float-card"><small>Annonce</small><b>Airbnb • Booking</b><em>Versions adaptées</em></div><div class="float-card"><small>Contrôle</small><b>Cohérence</b><em>Points faibles détectés</em></div><div class="float-card"><small>Livrable</small><b>PDF</b><em>Prêt à publier</em></div></div><div class="glass"><span>RENSEIGNER</span><b>Exemple 1 — Accueillir comme un pro.</b></div></div>
+</article><article class="scene third-image-scene" data-i="2">
+  <div class="third-image-only">
+    <img src="images-demo/page-3.png" alt="Présentation commerciale CleanUp — diagnostic de rentabilité">
+  </div>
 </article><article class="scene" data-i="3">
 <div class="pitch">
 <div class="step">04 / 11  •  PERSONNALISER</div>
