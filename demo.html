@@ -130,7 +130,24 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 .scene[data-i="0"] .curve{position:absolute;z-index:5;font-size:42px;font-weight:900;filter:drop-shadow(0 4px 5px rgba(62,43,36,.16))}.scene[data-i="0"] .a1{left:18%;top:132px;color:#cf7457;transform:rotate(-15deg)}.scene[data-i="0"] .a2{right:18%;top:185px;color:#4ca86b;transform:rotate(22deg)}.scene[data-i="0"] .a3{right:20%;bottom:80px;color:#d39a16;transform:rotate(108deg)}
 @keyframes callFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @media(max-width:850px){.scene[data-i="0"] .project-board{height:auto;display:flex;flex-direction:column;gap:12px}.scene[data-i="0"] .project-main,.scene[data-i="0"] .sheet-row,.scene[data-i="0"] .callout{position:relative;inset:auto;width:100%}.scene[data-i="0"] .sheet-row{display:grid;grid-template-columns:1fr 1fr}.scene[data-i="0"] .mini-sheet:nth-child(2),.scene[data-i="0"] .mini-sheet:nth-child(4){transform:none}.scene[data-i="0"] .curve{display:none}.scene[data-i="0"] .callout{animation:none}.scene[data-i="0"] .c1,.scene[data-i="0"] .c2,.scene[data-i="0"] .c3{order:2}.scene[data-i="0"] .project-main{order:1;height:auto}.scene[data-i="0"] .sheet-row{order:3}}
-</style></head><body>
+</style>
+<style>
+.scene[data-i="0"] .hero-concept{position:relative;padding:18px 18px 12px;background:radial-gradient(circle at 55% 35%,#fffaf6 0,#f0e2d8 64%,#e7d3c5 100%);overflow:visible}
+.scene[data-i="0"] .concept-crop{position:relative;height:610px;border-radius:25px;overflow:hidden;box-shadow:0 30px 70px rgba(61,39,30,.20);border:1px solid rgba(255,255,255,.9);background:#fff}
+.scene[data-i="0"] .concept-crop img{position:absolute;height:100%;width:auto;max-width:none;left:-34%;top:0;transform:none!important;animation:none!important;filter:none}
+.scene[data-i="0"] .concept-note{position:absolute;z-index:8;min-width:190px;padding:13px 17px;border-radius:18px;box-shadow:0 18px 38px rgba(53,34,27,.20);border:2px solid #fff;animation:noteFloat 4.6s ease-in-out infinite}
+.scene[data-i="0"] .concept-note b{display:block;font:700 19px/1.05 Georgia,serif;margin-bottom:4px}.scene[data-i="0"] .concept-note span{font-size:10px;font-weight:750}
+.scene[data-i="0"] .note-a{left:-12px;top:70px;background:#ffd9ca;color:#653427;border-color:#ef9a78;transform:rotate(-2deg)}
+.scene[data-i="0"] .note-b{right:-12px;top:180px;background:#d8f1e2;color:#245d3a;border-color:#72c890;animation-delay:.7s;transform:rotate(2deg)}
+.scene[data-i="0"] .note-c{right:38px;bottom:0;background:#ffecb3;color:#70520e;border-color:#e6b43d;animation-delay:1.25s;transform:rotate(-1deg)}
+.scene[data-i="0"] .concept-note:after{content:"";position:absolute;width:48px;height:24px;border-bottom:4px solid currentColor;border-radius:0 0 60% 50%;opacity:.8}
+.scene[data-i="0"] .note-a:after{right:-45px;bottom:-8px;transform:rotate(22deg)}
+.scene[data-i="0"] .note-b:after{left:-44px;bottom:-7px;transform:rotate(-18deg)}
+.scene[data-i="0"] .note-c:after{left:-40px;top:-12px;transform:rotate(145deg)}
+@keyframes noteFloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@media(max-width:850px){.scene[data-i="0"] .concept-crop{height:430px}.scene[data-i="0"] .concept-crop img{left:-46%}.scene[data-i="0"] .concept-note{position:relative;inset:auto!important;margin:9px 0;transform:none!important;animation:none;min-width:0}.scene[data-i="0"] .concept-note:after{display:none}}
+</style>
+</head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
 <div class="logo"><span class="home">⌂</span><div>CleanUp<small>MANAGER</small></div></div>
@@ -143,18 +160,7 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 <h2>Avant d’acheter, sachez où vous mettez les pieds.</h2><p>Étude d’investissement, rentabilité, budget de lancement : transformez un projet immobilier en décision chiffrée, avant de dépenser.</p>
 <div class="proof">Décider avant de dépenser • dès 29 €</div>
 </div>
-<div class="shot"><div class="project-board">
-<div class="project-main"><div class="eyebrow">Votre projet</div><h3>Un logement. Un objectif.<br/>Les bons outils au bon moment.</h3><p>CleanUp transforme quelques informations simples en documents professionnels prêts à utiliser.</p><div class="project-tags"><span>Sans abonnement</span><span>Paiement unique</span><span>PDF exploitable</span></div></div>
-<div class="callout c1"><small>Avant d’acheter</small><strong>Décider</strong>Rentabilité et étude d’investissement</div><span class="curve a1">↪</span>
-<div class="callout c2"><small>Avant de louer</small><strong>Préparer</strong>Budget, annonce et contrat</div><span class="curve a2">↩</span>
-<div class="callout c3"><small>Pour accueillir</small><strong>Professionnaliser</strong>Guide, livret et règlement</div><span class="curve a3">➜</span>
-<div class="sheet-row">
-<div class="mini-sheet"><span>01</span><b>Étude d’investissement</b><small>Comparer avant d’acheter.</small><i></i></div>
-<div class="mini-sheet"><span>02</span><b>Diagnostic rentabilité</b><small>Tester le potentiel locatif.</small><i></i></div>
-<div class="mini-sheet"><span>03</span><b>Budget lancement</b><small>Anticiper chaque dépense.</small><i></i></div>
-<div class="mini-sheet"><span>04</span><b>Annonce &amp; accueil</b><small>Publier et recevoir mieux.</small><i></i></div>
-<div class="mini-sheet"><span>05</span><b>Cadre &amp; documents</b><small>Contrat et règlement prêts.</small><i></i></div>
-</div></div></div>
+<div class="shot hero-concept"><div class="concept-crop"><img src="wide_clean_modern_promotional_web_ui_landing_pag.png" alt="Présentation visuelle des outils CleanUp"></div><div class="concept-note note-a"><b>Votre projet</b><span>Quelques informations suffisent</span></div><div class="concept-note note-b"><b>Analyse</b><span>CleanUp transforme vos données</span></div><div class="concept-note note-c"><b>Livrables</b><span>Des résultats prêts à utiliser</span></div></div>
 </article><article class="scene" data-i="1">
 <div class="pitch">
 <div class="step">02 / 11  •  CHOISIR</div>
