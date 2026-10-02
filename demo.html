@@ -324,6 +324,14 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 .eighth-image-only img{display:block;width:100%;height:auto;min-height:620px;object-fit:cover;object-position:center;margin:0;padding:0;border:0}
 @media(max-width:850px){.eighth-image-only,.eighth-image-only img{min-height:420px}}
 </style>
+<style>
+/* ÉCRAN 9 : PNG commercial complet, navigation générale conservée */
+.scene.ninth-image-scene{display:none;grid-template-columns:1fr !important;background:transparent !important;min-height:0 !important;overflow:hidden !important}
+.scene.ninth-image-scene.on{display:block !important}
+.ninth-image-only{width:100%;min-height:620px;background:#f3e7df;overflow:hidden}
+.ninth-image-only img{display:block;width:100%;height:auto;min-height:620px;object-fit:cover;object-position:center;margin:0;padding:0;border:0}
+@media(max-width:850px){.ninth-image-only,.ninth-image-only img{min-height:420px}}
+</style>
 </head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
@@ -363,13 +371,10 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   <div class="eighth-image-only">
     <img src="images-demo/page-8.png" alt="Présentation commerciale CleanUp — Livret Voyageur Premium">
   </div>
-</article><article class="scene" data-i="8">
-<div class="pitch">
-<div class="step">09 / 11  •  PROJETER</div>
-<h2>Faites découvrir plus qu’un logement.</h2><p>Le Livret Voyageur transforme vos informations locales en un document bilingue, personnalisable et prêt à transmettre aux voyageurs.</p>
-<div class="proof">Livret Voyageur Premium • PDF bilingue</div>
-</div>
-<div class="shot"><div class="float-stack"><div class="float-card"><small>Bilingue</small><b>FR / EN</b><em>Contenu personnalisable</em></div><div class="float-card"><small>Local</small><b>Bonnes adresses</b><em>Destination valorisée</em></div><div class="float-card"><small>PDF</small><b>Prêt à envoyer</b><em>Expérience voyageur</em></div></div><div class="glass"><span>PROJETER</span><b>Le potentiel locatif devient concret.</b></div></div>
+</article><article class="scene ninth-image-scene" data-i="8">
+  <div class="ninth-image-only">
+    <img src="images-demo/page-9.png" alt="Présentation commerciale CleanUp — Règlement intérieur">
+  </div>
 </article><article class="scene" data-i="9">
 <div class="pitch">
 <div class="step">10 / 11  •  CRÉER</div>
