@@ -158,6 +158,40 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   padding:40px;text-align:center;color:#786860;font-weight:800;font-size:14px;
 }
 </style>
+
+<style>
+/* ÉCRAN 1 : uniquement le PNG, aucune ancienne structure */
+.scene.first-image-scene{
+  display:none;
+  grid-template-columns:1fr !important;
+  background:transparent !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.scene.first-image-scene.on{display:block !important}
+.first-image-only{
+  width:100%;
+  height:100%;
+  min-height:620px;
+  background:#f3e7df;
+  overflow:hidden;
+}
+.first-image-only img{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:620px;
+  object-fit:cover;
+  object-position:center;
+  margin:0;
+  padding:0;
+  border:0;
+}
+@media(max-width:850px){
+  .first-image-only,.first-image-only img{min-height:420px}
+}
+</style>
+
 </head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
@@ -165,13 +199,10 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 <div class="pill">● Sans abonnement</div>
 </header>
 <main class="wrap"><section class="intro"><div><div class="kicker">CLEANUP • LES INDISPENSABLES DU PROPRIÉTAIRE</div><h1>De l’idée aux voyageurs.<br/>Tout devient plus simple.</h1></div><p><b>9 outils professionnels. Aucun abonnement.</b><br/>Analysez, préparez, publiez et sécurisez votre location avec des livrables immédiatement exploitables.</p></section>
-<div class="demo" id="demo"><article class="scene on" data-i="0">
-<div class="pitch">
-<div class="step">01 / 11  •  DÉCOUVRIR</div>
-<h2>Avant d’acheter, sachez où vous mettez les pieds.</h2><p>Étude d’investissement, rentabilité, budget de lancement : transformez un projet immobilier en décision chiffrée, avant de dépenser.</p>
-<div class="proof">Décider avant de dépenser • dès 29 €</div>
-</div>
-<div class="shot hero-concept"><div class="concept-crop"><img src="images-demo/demo-avant-achat.png" alt="Présentation commerciale CleanUp — avant achat"></div></div>
+<div class="demo" id="demo"><article class="scene on first-image-scene" data-i="0">
+  <div class="first-image-only">
+    <img src="images-demo/demo-avant-achat.png" alt="Présentation commerciale CleanUp — avant achat">
+  </div>
 </article><article class="scene" data-i="1">
 <div class="pitch">
 <div class="step">02 / 11  •  CHOISIR</div>
