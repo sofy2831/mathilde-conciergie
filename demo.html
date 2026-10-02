@@ -192,6 +192,39 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 }
 </style>
 
+
+<style>
+/* ÉCRAN 2 : PNG commercial complet, navigation générale conservée */
+.scene.second-image-scene{
+  display:none;
+  grid-template-columns:1fr !important;
+  background:transparent !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.scene.second-image-scene.on{display:block !important}
+.second-image-only{
+  width:100%;
+  min-height:620px;
+  background:#f3e7df;
+  overflow:hidden;
+}
+.second-image-only img{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:620px;
+  object-fit:cover;
+  object-position:center;
+  margin:0;
+  padding:0;
+  border:0;
+}
+@media(max-width:850px){
+  .second-image-only,.second-image-only img{min-height:420px}
+}
+</style>
+
 </head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
@@ -203,13 +236,10 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   <div class="first-image-only">
     <img src="images-demo/demo-avant-achat.png" alt="Présentation commerciale CleanUp — avant achat">
   </div>
-</article><article class="scene" data-i="1">
-<div class="pitch">
-<div class="step">02 / 11  •  CHOISIR</div>
-<h2>Un besoin précis. Une réponse immédiatement exploitable.</h2><p>Pas de logiciel à apprendre, pas de formule imposée. Vous choisissez l’outil utile aujourd’hui et CleanUp produit le résultat.</p>
-<div class="proof">9 outils • paiement unique • sans abonnement</div>
-</div>
-<div class="shot"><div class="float-stack"><div class="float-card"><small>Simple</small><b>1 besoin</b><em>1 outil</em></div><div class="float-card"><small>Libre</small><b>0 abonnement</b><em>Aucun engagement</em></div><div class="float-card"><small>Concret</small><b>1 livrable</b><em>À utiliser immédiatement</em></div></div><div class="glass"><span>CHOISIR</span><b>Un besoin. Un outil. Un prix.</b></div></div>
+</article><article class="scene second-image-scene" data-i="1">
+  <div class="second-image-only">
+    <img src="images-demo/page-2.png" alt="Présentation commerciale CleanUp — étude d’investissement">
+  </div>
 </article><article class="scene" data-i="2">
 <div class="pitch">
 <div class="step">03 / 11  •  RENSEIGNER</div>
