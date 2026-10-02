@@ -299,6 +299,16 @@ body.preview-open{overflow:hidden}
 .choice-path span{font-size:10px;line-height:1.45;color:var(--muted)}
 @media(max-width:680px){.choice-paths{grid-template-columns:1fr}}
 
+/* Keep circular controls perfectly round at every viewport size */
+.brand-mark,.info-item i,.preview-close,.preview-arrow{
+  flex:0 0 auto;
+  aspect-ratio:1 / 1;
+}
+.brand-mark{min-width:42px;min-height:42px}
+.info-item i{min-width:38px;min-height:38px}
+.preview-close{min-width:38px;min-height:38px}
+.preview-arrow{min-width:44px;min-height:44px}
+
 </style><meta content="index,follow" name="robots"/><link href="https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html" rel="canonical"/><meta content="Les indispensables du propriétaire | Outils location saisonnière" property="og:title"/><meta content="9 outils accessibles à l’unité pour préparer, exploiter et optimiser une location courte durée." property="og:description"/><meta content="website" property="og:type"/><meta content="https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html" property="og:url"/></head>
 <body>
 <header class="site-header">
@@ -326,7 +336,7 @@ body.preview-open{overflow:hidden}
 <div class="benefit"><b>✓</b> Sans abonnement</div>
 </div>
 <div class="hero-demo-cta">
-  <a class="demo-btn" href="demo.html">▶ Voir la démo</a>
+  <a class="demo-btn" href="https://conciergerie45.cleanup-manager.fr/demo.html">▶ Voir la démo</a>
   <span>Découvrez le parcours en quelques écrans</span>
 </div>
 </div>
