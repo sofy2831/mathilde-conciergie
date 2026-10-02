@@ -134,7 +134,7 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 <style>
 .scene[data-i="0"] .hero-concept{position:relative;padding:18px 18px 12px;background:radial-gradient(circle at 55% 35%,#fffaf6 0,#f0e2d8 64%,#e7d3c5 100%);overflow:visible}
 .scene[data-i="0"] .concept-crop{position:relative;height:610px;border-radius:25px;overflow:hidden;box-shadow:0 30px 70px rgba(61,39,30,.20);border:1px solid rgba(255,255,255,.9);background:#fff}
-.scene[data-i="0"] .concept-crop img{position:absolute;height:100%;width:auto;max-width:none;left:-34%;top:0;transform:none!important;animation:none!important;filter:none}
+.scene[data-i="0"] .concept-crop img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center;transform:none!important;animation:none!important;filter:none}
 .scene[data-i="0"] .concept-note{position:absolute;z-index:8;min-width:190px;padding:13px 17px;border-radius:18px;box-shadow:0 18px 38px rgba(53,34,27,.20);border:2px solid #fff;animation:noteFloat 4.6s ease-in-out infinite}
 .scene[data-i="0"] .concept-note b{display:block;font:700 19px/1.05 Georgia,serif;margin-bottom:4px}.scene[data-i="0"] .concept-note span{font-size:10px;font-weight:750}
 .scene[data-i="0"] .note-a{left:-12px;top:70px;background:#ffd9ca;color:#653427;border-color:#ef9a78;transform:rotate(-2deg)}
@@ -145,7 +145,7 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 .scene[data-i="0"] .note-b:after{left:-44px;bottom:-7px;transform:rotate(-18deg)}
 .scene[data-i="0"] .note-c:after{left:-40px;top:-12px;transform:rotate(145deg)}
 @keyframes noteFloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
-@media(max-width:850px){.scene[data-i="0"] .concept-crop{height:430px}.scene[data-i="0"] .concept-crop img{left:-46%}.scene[data-i="0"] .concept-note{position:relative;inset:auto!important;margin:9px 0;transform:none!important;animation:none;min-width:0}.scene[data-i="0"] .concept-note:after{display:none}}
+@media(max-width:850px){.scene[data-i="0"] .concept-crop{height:430px}.scene[data-i="0"] .concept-crop img{left:0;object-fit:cover}.scene[data-i="0"] .concept-note{position:relative;inset:auto!important;margin:9px 0;transform:none!important;animation:none;min-width:0}.scene[data-i="0"] .concept-note:after{display:none}}
 </style>
 
 <style>
@@ -171,7 +171,7 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 <h2>Avant d’acheter, sachez où vous mettez les pieds.</h2><p>Étude d’investissement, rentabilité, budget de lancement : transformez un projet immobilier en décision chiffrée, avant de dépenser.</p>
 <div class="proof">Décider avant de dépenser • dès 29 €</div>
 </div>
-<div class="shot hero-concept"><div class="concept-crop"><img src="images-demo/demo-avant-achat.png" alt="Présentation visuelle des outils CleanUp" onerror="this.style.display='none';this.parentElement.classList.add('missing-image')"></div><div class="concept-note note-a"><b>Votre projet</b><span>Quelques informations suffisent</span></div><div class="concept-note note-b"><b>Analyse</b><span>CleanUp transforme vos données</span></div><div class="concept-note note-c"><b>Livrables</b><span>Des résultats prêts à utiliser</span></div></div>
+<div class="shot hero-concept"><div class="concept-crop"><img src="demo-avant-achat.png" alt="Présentation commerciale CleanUp — avant achat"></div></div>
 </article><article class="scene" data-i="1">
 <div class="pitch">
 <div class="step">02 / 11  •  CHOISIR</div>
