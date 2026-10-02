@@ -290,6 +290,15 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   .fourth-image-only,.fourth-image-only img{min-height:420px}
 }
 </style>
+
+<style>
+/* ÉCRAN 5 : PNG commercial complet, navigation générale conservée */
+.scene.fifth-image-scene{display:none;grid-template-columns:1fr !important;background:transparent !important;min-height:0 !important;overflow:hidden !important}
+.scene.fifth-image-scene.on{display:block !important}
+.fifth-image-only{width:100%;min-height:620px;background:#f3e7df;overflow:hidden}
+.fifth-image-only img{display:block;width:100%;height:auto;min-height:620px;object-fit:cover;object-position:center;margin:0;padding:0;border:0}
+@media(max-width:850px){.fifth-image-only,.fifth-image-only img{min-height:420px}}
+</style>
 </head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
@@ -313,13 +322,10 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
   <div class="fourth-image-only">
     <img src="images-demo/page-4.png" alt="Présentation commerciale CleanUp — budget de lancement">
   </div>
-</article><article class="scene" data-i="4">
-<div class="pitch">
-<div class="step">05 / 11  •  MESURER</div>
-<h2>Votre projet est-il réellement rentable ?</h2><p>L’adresse est vérifiée, quelques données suffisent, puis CleanUp structure les revenus possibles, la saisonnalité et les scénarios d’exploitation.</p>
-<div class="proof">Diagnostic de rentabilité • 49 €</div>
-</div>
-<div class="shot"><div class="float-stack"><div class="float-card"><small>49 €</small><b>Diagnostic</b><em>Sans abonnement</em></div><div class="float-card"><small>Adresse</small><b>Couverture vérifiée</b><em>Avant paiement</em></div><div class="float-card"><small>Rapport</small><b>6 pages A4</b><em>Scénarios financiers</em></div></div><div class="glass"><span>MESURER</span><b>Exemple 2 — Savoir si le projet est rentable.</b></div></div>
+</article><article class="scene fifth-image-scene" data-i="4">
+  <div class="fifth-image-only">
+    <img src="images-demo/page-5.png" alt="Présentation commerciale CleanUp — Mon annonce Pro">
+  </div>
 </article><article class="scene" data-i="5">
 <div class="pitch">
 <div class="step">06 / 11  •  COMPARER</div>
