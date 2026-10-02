@@ -75,6 +75,41 @@ body:after{width:360px;height:360px;background:rgba(62,43,36,.06);left:-160px;bo
 .end{box-shadow:0 20px 55px rgba(62,43,36,.15);position:relative;overflow:hidden}.end:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(207,116,87,.18);right:130px;top:-90px}
 @media(max-width:850px){.intro h1{letter-spacing:-1px}.scene{min-height:0}.pitch:after{display:none}.shot{padding:16px}.shot img{transform:none!important;animation:none!important}.float-stack{position:static;width:100%;padding:12px 10px 0;flex-direction:row;overflow:auto}.float-card,.float-card:nth-child(2),.float-card:nth-child(3){min-width:180px;margin-left:0}.glass{position:static;animation:none}.proof{width:auto}.logo{position:static}}
 
+
+/* === V2 : blocs flottants très visibles + flèches === */
+.shot{isolation:isolate}
+.float-stack{left:22px;top:28px;gap:18px;width:250px;overflow:visible}
+.float-card{
+  position:relative;min-width:215px;max-width:235px;padding:15px 18px 16px 20px;
+  border:2px solid rgba(255,255,255,.92);border-radius:19px;
+  box-shadow:0 18px 34px rgba(48,31,24,.22),0 3px 0 rgba(255,255,255,.75) inset;
+  backdrop-filter:blur(14px);transform-origin:center;
+}
+.float-card:nth-child(1){background:linear-gradient(135deg,#fff1e9,#ffd9c9);border-color:#f29a77;animation:floatMiniA 4.4s ease-in-out infinite}
+.float-card:nth-child(2){background:linear-gradient(135deg,#eefaf2,#cfeeda);border-color:#63bd84;margin-left:34px;animation:floatMiniB 5s ease-in-out infinite .5s}
+.float-card:nth-child(3){background:linear-gradient(135deg,#fff8df,#ffe8a6);border-color:#e8b43f;margin-left:8px;animation:floatMiniC 4.7s ease-in-out infinite 1s}
+.float-card small{font-size:9px;letter-spacing:1.6px;color:#8d4936}.float-card:nth-child(2) small{color:#31794c}.float-card:nth-child(3) small{color:#926c12}
+.float-card b{font-size:20px;color:#2f211c}.float-card em{font-size:12px;color:#65554d;line-height:1.3}
+.float-card:before{content:"";position:absolute;right:-46px;top:50%;width:42px;height:3px;border-radius:4px;background:currentColor;opacity:.78;transform:translateY(-50%)}
+.float-card:after{content:"➜";position:absolute;right:-61px;top:50%;font-size:27px;font-weight:900;line-height:1;color:#cf7457;transform:translateY(-53%);filter:drop-shadow(0 4px 5px rgba(62,43,36,.18))}
+.float-card:nth-child(2):after{color:#49a86c}.float-card:nth-child(3):after{color:#d69d18}
+@keyframes floatMiniA{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(.5deg)}}
+@keyframes floatMiniB{0%,100%{transform:translateY(0) rotate(1deg)}50%{transform:translateY(-9px) rotate(-.8deg)}}
+@keyframes floatMiniC{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-11px) rotate(1deg)}}
+.glass{border:2px solid rgba(255,255,255,.65);background:linear-gradient(135deg,rgba(62,43,36,.97),rgba(104,62,46,.94));box-shadow:0 22px 50px rgba(40,25,20,.34);transform:rotate(-1deg)}
+.glass:before{content:"↙";position:absolute;left:-43px;top:-38px;font-size:42px;color:#cf7457;font-weight:900;filter:drop-shadow(0 4px 4px rgba(62,43,36,.18))}
+.scene.on .float-card{opacity:0;animation-fill-mode:both}
+.scene.on .float-card:nth-child(1){animation:cardEnter1 .65s .12s cubic-bezier(.2,.9,.2,1) forwards,floatMiniA 4.4s .9s ease-in-out infinite}
+.scene.on .float-card:nth-child(2){animation:cardEnter2 .65s .28s cubic-bezier(.2,.9,.2,1) forwards,floatMiniB 5s 1.1s ease-in-out infinite}
+.scene.on .float-card:nth-child(3){animation:cardEnter3 .65s .44s cubic-bezier(.2,.9,.2,1) forwards,floatMiniC 4.7s 1.25s ease-in-out infinite}
+@keyframes cardEnter1{from{opacity:0;transform:translate(-30px,18px) rotate(-6deg) scale(.88)}to{opacity:1;transform:translate(0,0) rotate(-1.5deg) scale(1)}}
+@keyframes cardEnter2{from{opacity:0;transform:translate(-25px,12px) rotate(5deg) scale(.88)}to{opacity:1;transform:translate(0,0) rotate(1deg) scale(1)}}
+@keyframes cardEnter3{from{opacity:0;transform:translate(-28px,18px) rotate(-5deg) scale(.88)}to{opacity:1;transform:translate(0,0) rotate(-.5deg) scale(1)}}
+@media(max-width:850px){
+ .float-stack{width:100%;overflow:auto;gap:12px}.float-card,.float-card:nth-child(2),.float-card:nth-child(3){min-width:200px;margin-left:0;animation:none!important;opacity:1!important;transform:none!important}
+ .float-card:before,.float-card:after,.glass:before{display:none}
+}
+
 </style></head><body>
 <header class="top">
 <a class="back-btn" href="les-indispensables-du-proprietaire.html">← Retour aux Indispensables</a>
