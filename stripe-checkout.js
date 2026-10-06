@@ -2,7 +2,7 @@
 
 /**
  * CleanUp Stripe Checkout
- * Module partagé par les 8 outils « Les Indispensables ».
+ * Module partagé par les 9 outils « Les Indispensables ».
  *
  * API principale :
  *   CleanUpStripe.start({ productKey, payload })
@@ -34,6 +34,34 @@
 
   const STORAGE_PREFIX = "cleanup_stripe_checkout_v1";
   const SESSION_PARAMETER = "session_id";
+
+  // Attribution partenaire partagée par les 9 outils.
+  const PARTNER_KEY = "indispensablesPartnerRef";
+  const PARTNER_EXP_KEY = "indispensablesPartnerRefExpires";
+  const PARTNER_TTL = 30 * 24 * 60 * 60 * 1000;
+
+  function getPartnerRef() {
+    const params = new URLSearchParams(window.location.search);
+    const incomingRef = String(params.get("ref") || "").trim().slice(0, 80);
+    const now = Date.now();
+
+    if (incomingRef) {
+      localStorage.setItem(PARTNER_KEY, incomingRef);
+      localStorage.setItem(PARTNER_EXP_KEY, String(now + PARTNER_TTL));
+      return incomingRef;
+    }
+
+    const storedRef = String(localStorage.getItem(PARTNER_KEY) || "").trim().slice(0, 80);
+    const expiresAt = Number(localStorage.getItem(PARTNER_EXP_KEY) || 0);
+
+    if (!storedRef || !expiresAt || expiresAt < now) {
+      localStorage.removeItem(PARTNER_KEY);
+      localStorage.removeItem(PARTNER_EXP_KEY);
+      return "";
+    }
+
+    return storedRef;
+  }
 
   function assertProductKey(productKey) {
     const key = String(productKey || "").trim();
@@ -172,7 +200,8 @@
       body: JSON.stringify({
         productKey: key,
         successUrl,
-        cancelUrl
+        cancelUrl,
+        partnerRef: getPartnerRef()
       })
     });
 
@@ -342,6 +371,7 @@
     readCheckoutState,
     clearCheckoutState,
     complete,
-    getCurrentSessionId
+    getCurrentSessionId,
+    getPartnerRef
   });
 })();
