@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Les Indispensables — Stats prospection</title>
+<style>
+:root{--brown:#3e2b24;--terr:#cf7457;--cream:#f7f0e8;--paper:#fffdf9;--muted:#786860;--line:#e8d8cb}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,"Segoe UI",Arial;background:var(--cream);color:var(--brown)}
+header{background:var(--brown);color:white;padding:20px 5vw;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:950;font-size:22px}.brand b{color:#f0aa91}main{max-width:1280px;margin:32px auto;padding:0 22px}
+h1{font-size:36px;margin-bottom:6px}p{color:var(--muted)}.card,.kpi{background:var(--paper);border-radius:18px;padding:22px;box-shadow:0 10px 30px #3e2b2412;margin:18px 0}
+.login{max-width:540px}.row{display:flex;gap:10px;flex-wrap:wrap}input{flex:1;min-width:210px;padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit}
+button{border:0;border-radius:10px;padding:13px 17px;background:var(--terr);color:white;font-weight:900;cursor:pointer}.secondary{background:var(--brown)}
+.google{background:#fff;color:#202124;border:1px solid var(--line)}.google:hover{background:#faf7f3}.sep{margin:12px 0;color:var(--muted);font-size:13px;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.kpi{margin:0}.kpi strong{display:block;font-size:34px}.kpi span{color:var(--muted);font-weight:700}
+table{width:100%;border-collapse:collapse}th,td{padding:13px 11px;border-bottom:1px solid #eee3da;text-align:left}th{font-size:11px;text-transform:uppercase;color:var(--muted)}
+.num{text-align:right}.pill{background:#f5e4dc;color:#a84f35;border-radius:999px;padding:5px 9px;font-weight:850;font-size:12px}
+.hidden{display:none}.error{color:#b42318;font-weight:700}.muted{font-size:13px}.links code{font-size:12px;overflow-wrap:anywhere}
+@media(max-width:760px){.kpis{grid-template-columns:1fr}.tablewrap{overflow:auto}h1{font-size:30px}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">LES <b>INDISPENSABLES</b></div><small>Stats prospection</small></div><button id="logout" class="secondary hidden">Déconnexion</button></header>
+<main>
+<h1>Acquisition commerciale</h1>
+<p>Suivi des visites de la page, des consultations de la démo et des clics vers les outils, par cible et campagne.</p>
+
+<section id="loginCard" class="card login">
+<h2>Connexion administrateur</h2>
+<div class="row"><input id="email" type="email" placeholder="Adresse e-mail"><input id="password" type="password" placeholder="Mot de passe"></div>
+<p><button id="login">Se connecter</button></p><div class="sep">ou</div>
+<p><button id="googleLogin" class="google">Continuer avec Google</button></p><p id="loginError" class="error"></p>
+</section>
+
+<section id="dash" class="hidden">
+<div class="kpis">
+<div class="kpi"><strong id="pageViews">0</strong><span>Visites page</span></div>
+<div class="kpi"><strong id="demoViews">0</strong><span>Consultations démo</span></div>
+<div class="kpi"><strong id="toolClicks">0</strong><span>Clics vers les outils</span></div>
+</div>
+
+<div class="card">
+<div class="row" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">Résultats par campagne</h2><p class="muted">Les lignes Axe Flow sont exclues : seuls les événements « ind- » sont affichés.</p></div><button id="refresh" class="secondary">Actualiser</button></div>
+<div class="tablewrap"><table><thead><tr>
+<th>Cible</th><th>Campagne</th><th class="num">Visites page</th><th class="num">Clics démo</th><th class="num">Démo vue</th><th class="num">Clics outils</th><th class="num">Page → démo</th><th>Dernière activité</th>
+</tr></thead><tbody id="tbody"></tbody></table></div><p id="err" class="error"></p>
+</div>
+
+<div class="card links"><strong>Liens Réunion prêts à utiliser</strong><p>
+Conciergeries : <code>https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html?src=conciergerie&amp;camp=IND-REUNION-CONCIERGERIE-01</code><br>
+Agences immobilières : <code>https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html?src=agence-immo&amp;camp=IND-REUNION-AGENCE-01</code><br>
+Co-hôtes / gestionnaires : <code>https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html?src=co-hote&amp;camp=IND-REUNION-COHOTE-01</code><br>
+Investissement immobilier : <code>https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html?src=investissement&amp;camp=IND-REUNION-INVEST-01</code><br>
+Propriétaires : <code>https://conciergerie45.cleanup-manager.fr/les-indispensables-du-proprietaire.html?src=proprietaire&amp;camp=IND-REUNION-PROPRIETAIRE-01</code>
+</p></div>
+</section>
+</main>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+const cfg={apiKey:"AIzaSyAhAPxM-RBJOSSXBPwkXiEu6GPKk0S6GfE",authDomain:"cleanup-diagnostic.firebaseapp.com",projectId:"cleanup-diagnostic",storageBucket:"cleanup-diagnostic.firebasestorage.app",messagingSenderId:"6668236990",appId:"1:6668236990:web:d1304e6113d974a04c46ef"};
+const URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/marketingStats",auth=getAuth(initializeApp(cfg)),$=x=>document.getElementById(x),
+esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+async function load(){
+ try{
+  $("err").textContent="";
+  const tok=await auth.currentUser.getIdToken(),r=await fetch(URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();
+  if(!r.ok)throw Error(d.error||"Erreur");
+  const raw=(d.rows||[]).filter(x=>String(x.source||"").startsWith("ind-"));
+  const by=new Map();
+  raw.forEach(x=>{
+    const src=String(x.source||"");
+    const kind=src.endsWith("-demo")?"demo":"page";
+    const target=src.replace(/^ind-/,"").replace(/-(page|demo)$/,"");
+    const key=`${target}|||${x.campaign}`;
+    const z=by.get(key)||{target,campaign:x.campaign,pageViews:0,demoClicks:0,demoViews:0,toolClicks:0,lastActivity:null};
+    if(kind==="page"){
+      z.pageViews+=Number(x.demoViews||0);
+      z.demoClicks+=Number(x.tariffClicks||0);
+      z.toolClicks+=Number(x.signupClicks||0);
+    }else{
+      z.demoViews+=Number(x.demoViews||0);
+    }
+    if(x.lastActivity&&(!z.lastActivity||new Date(x.lastActivity)>new Date(z.lastActivity)))z.lastActivity=x.lastActivity;
+    by.set(key,z);
+  });
+  const a=[...by.values()].sort((a,b)=>new Date(b.lastActivity||0)-new Date(a.lastActivity||0));
+  $("pageViews").textContent=a.reduce((s,x)=>s+x.pageViews,0);
+  $("demoViews").textContent=a.reduce((s,x)=>s+x.demoViews,0);
+  $("toolClicks").textContent=a.reduce((s,x)=>s+x.toolClicks,0);
+  $("tbody").innerHTML=a.length?a.map(x=>`<tr><td><span class="pill">${esc(x.target)}</span></td><td>${esc(x.campaign)}</td><td class="num">${x.pageViews}</td><td class="num">${x.demoClicks}</td><td class="num">${x.demoViews}</td><td class="num">${x.toolClicks}</td><td class="num">${x.pageViews?((x.demoClicks/x.pageViews)*100).toFixed(1)+" %":"—"}</td><td>${x.lastActivity?new Date(x.lastActivity).toLocaleString("fr-FR"):"—"}</td></tr>`).join(""):`<tr><td colspan="8">Aucune visite Les Indispensables pour le moment.</td></tr>`;
+ }catch(e){$("err").textContent=e.message}
+}
+function authMsg(e){const c=e?.code||"";if(["auth/invalid-credential","auth/wrong-password","auth/user-not-found"].includes(c))return"Identifiants invalides.";if(c==="auth/invalid-email")return"Adresse e-mail invalide.";if(c==="auth/too-many-requests")return"Trop de tentatives. Réessayez plus tard.";if(c==="auth/popup-closed-by-user")return"Connexion Google annulée.";if(c==="auth/popup-blocked")return"La fenêtre Google a été bloquée par le navigateur.";return e?.message||"Connexion impossible."}
+$("login").onclick=async()=>{try{$("loginError").textContent="";await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(e){$("loginError").textContent=authMsg(e)}};
+$("googleLogin").onclick=async()=>{try{$("loginError").textContent="";const p=new GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});await signInWithPopup(auth,p)}catch(e){$("loginError").textContent=authMsg(e)}};
+$("logout").onclick=()=>signOut(auth);$("refresh").onclick=load;
+onAuthStateChanged(auth,u=>{$("loginCard").classList.toggle("hidden",!!u);$("dash").classList.toggle("hidden",!u);$("logout").classList.toggle("hidden",!u);if(u)load()});
+</script>
+</body></html>
