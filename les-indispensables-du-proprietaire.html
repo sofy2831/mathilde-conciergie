@@ -677,5 +677,40 @@ document.addEventListener('contextmenu',e=>{
 document.addEventListener('dragstart',e=>{
   if(e.target.closest('.preview-dialog')) e.preventDefault();
 });
-</script></body>
+</script>
+<script>
+(()=>{
+  const U="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/trackMarketingEvent";
+  const q=new URLSearchParams(location.search);
+  const rawSource=(q.get("src")||"direct").slice(0,48);
+  const campaign=(q.get("camp")||"sans-campagne").slice(0,80);
+  const source=("ind-"+rawSource+"-page").slice(0,60);
+  let sid=sessionStorage.getItem("indispensablesProspectSession");
+  if(!sid){
+    sid=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+    sessionStorage.setItem("indispensablesProspectSession",sid);
+  }
+  function t(type){
+    fetch(U,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({type,source,campaign,sessionId:sid}),
+      credentials:"omit",keepalive:true}).catch(()=>{});
+  }
+  function carry(a){
+    try{
+      const u=new URL(a.href,location.href);
+      if(u.origin===location.origin){
+        u.searchParams.set("src",rawSource);
+        u.searchParams.set("camp",campaign);
+        a.href=u.toString();
+      }
+    }catch(e){}
+  }
+  t("DEMO_VIEW");
+  document.querySelectorAll("a[href]").forEach(a=>carry(a));
+  document.querySelectorAll('a.demo-btn').forEach(a=>a.addEventListener("click",()=>t("TARIFF_CLICK")));
+  document.querySelectorAll('.service-card a.btn, #previewStart').forEach(a=>a.addEventListener("click",()=>t("SIGNUP_CLICK")));
+})();
+</script>
+
+</body>
 </html>
