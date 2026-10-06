@@ -708,6 +708,27 @@ document.addEventListener('dragstart',e=>{
 (()=>{
   const U="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/trackMarketingEvent";
   const q=new URLSearchParams(location.search);
+
+  // Attribution partenaire : dernier partenaire cliqué, conservé 30 jours.
+  const PARTNER_KEY="indispensablesPartnerRef";
+  const PARTNER_EXP_KEY="indispensablesPartnerRefExpires";
+  const PARTNER_TTL=30*24*60*60*1000;
+  const incomingRef=(q.get("ref")||"").trim().slice(0,80);
+  const now=Date.now();
+
+  if(incomingRef){
+    localStorage.setItem(PARTNER_KEY,incomingRef);
+    localStorage.setItem(PARTNER_EXP_KEY,String(now+PARTNER_TTL));
+  }
+
+  let partnerRef=localStorage.getItem(PARTNER_KEY)||"";
+  const partnerExpires=Number(localStorage.getItem(PARTNER_EXP_KEY)||0);
+  if(!partnerRef || !partnerExpires || partnerExpires<now){
+    localStorage.removeItem(PARTNER_KEY);
+    localStorage.removeItem(PARTNER_EXP_KEY);
+    partnerRef="";
+  }
+
   const rawSource=(q.get("src")||"direct").slice(0,48);
   const campaign=(q.get("camp")||"sans-campagne").slice(0,80);
   const source=("ind-"+rawSource+"-page").slice(0,60);
@@ -727,6 +748,7 @@ document.addEventListener('dragstart',e=>{
       if(u.origin===location.origin){
         u.searchParams.set("src",rawSource);
         u.searchParams.set("camp",campaign);
+        if(partnerRef) u.searchParams.set("ref",partnerRef);
         a.href=u.toString();
       }
     }catch(e){}
@@ -734,7 +756,10 @@ document.addEventListener('dragstart',e=>{
   t("DEMO_VIEW");
   document.querySelectorAll("a[href]").forEach(a=>carry(a));
   document.querySelectorAll('a.demo-btn').forEach(a=>a.addEventListener("click",()=>t("TARIFF_CLICK")));
-  document.querySelectorAll('.service-card a.btn, #previewStart').forEach(a=>a.addEventListener("click",()=>t("SIGNUP_CLICK")));
+  document.querySelectorAll('.service-card a.btn, #previewStart').forEach(a=>a.addEventListener("click",()=>{
+    carry(a);
+    t("SIGNUP_CLICK");
+  }));
   document.querySelectorAll('.partner-cta').forEach(a=>a.addEventListener("click",()=>t("PARTNER_CLICK")));
 })();
 </script>
