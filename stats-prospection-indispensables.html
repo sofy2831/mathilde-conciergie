@@ -45,7 +45,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:13px 11px;border-bottom:
 <div class="card">
 <div class="row" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">Résultats par campagne</h2><p class="muted">Les lignes Axe Flow sont exclues : seuls les événements « ind- » sont affichés.</p></div><button id="refresh" class="secondary">Actualiser</button></div>
 <div class="tablewrap"><table><thead><tr>
-<th>Cible</th><th>Campagne</th><th class="num">Visites page</th><th class="num">Clics démo</th><th class="num">Démo vue</th><th class="num">Clics outils</th><th class="num">Clics partenaires</th><th class="num">Page → démo</th><th>Dernière activité</th>
+<th>Cible</th><th>Campagne</th><th class="num">Visites page</th><th class="num">Démo vue</th><th class="num">Clics outils</th><th class="num">Clics partenaires</th><th class="num">Page → démo</th><th>Dernière activité</th>
 </tr></thead><tbody id="tbody"></tbody></table></div><p id="err" class="error"></p>
 </div>
 
@@ -95,7 +95,7 @@ async function load(){
   $("demoViews").textContent=a.reduce((s,x)=>s+x.demoViews,0);
   $("toolClicks").textContent=a.reduce((s,x)=>s+x.toolClicks,0);
   $("partnerClicks").textContent=a.reduce((s,x)=>s+x.partnerClicks,0);
-  $("tbody").innerHTML=a.length?a.map(x=>`<tr><td><span class="pill">${esc(x.target)}</span></td><td>${esc(x.campaign)}</td><td class="num">${x.pageViews}</td><td class="num">${x.demoClicks}</td><td class="num">${x.demoViews}</td><td class="num">${x.toolClicks}</td><td class="num">${x.partnerClicks}</td><td class="num">${x.pageViews?((x.demoClicks/x.pageViews)*100).toFixed(1)+" %":"—"}</td><td>${x.lastActivity?new Date(x.lastActivity).toLocaleString("fr-FR"):"—"}</td></tr>`).join(""):`<tr><td colspan="9">Aucune visite Les Indispensables pour le moment.</td></tr>`;
+  $("tbody").innerHTML=a.length?a.map(x=>`<tr><td><span class="pill">${esc(x.target)}</span></td><td>${esc(x.campaign)}</td><td class="num">${x.pageViews}</td><td class="num">${x.demoViews}</td><td class="num">${x.toolClicks}</td><td class="num">${x.partnerClicks}</td><td class="num">${x.pageViews?((x.demoViews/x.pageViews)*100).toFixed(1)+" %":"—"}</td><td>${x.lastActivity?new Date(x.lastActivity).toLocaleString("fr-FR"):"—"}</td></tr>`).join(""):`<tr><td colspan="8">Aucune visite Les Indispensables pour le moment.</td></tr>`;
  }catch(e){$("err").textContent=e.message}
 }
 function authMsg(e){const c=e?.code||"";if(["auth/invalid-credential","auth/wrong-password","auth/user-not-found"].includes(c))return"Identifiants invalides.";if(c==="auth/invalid-email")return"Adresse e-mail invalide.";if(c==="auth/too-many-requests")return"Trop de tentatives. Réessayez plus tard.";if(c==="auth/popup-closed-by-user")return"Connexion Google annulée.";if(c==="auth/popup-blocked")return"La fenêtre Google a été bloquée par le navigateur.";return e?.message||"Connexion impossible."}
