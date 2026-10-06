@@ -340,6 +340,15 @@ body.preview-open{overflow:hidden}
   .service-card .card-bottom{margin-top:auto!important;}
 }
 </style>
+
+<style>
+.partner-section{margin-top:28px;padding:30px;border-radius:28px;background:linear-gradient(145deg,#FFFDFB,#F3E8DE);border:1px solid var(--sand-2);box-shadow:var(--shadow-soft)}
+.partner-head{max-width:820px}.partner-head .eyebrow{margin-bottom:8px}.partner-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:38px;font-weight:400;color:var(--brown)}
+.partner-head p{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.65}.partner-options{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.partner-option{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:20px;padding:20px}.partner-option strong{display:block;font-size:15px;color:var(--brown);margin-bottom:7px}.partner-option span{display:block;font-size:11px;line-height:1.55;color:var(--muted)}
+.partner-option .partner-highlight{display:inline-block;margin-top:12px;padding:7px 10px;border-radius:999px;background:var(--terracotta-soft);color:var(--terracotta);font-size:10px;font-weight:900}.partner-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}.partner-actions small{color:var(--taupe);font-size:10px;font-weight:700}
+@media(max-width:760px){.partner-section{padding:22px}.partner-head h2{font-size:31px}.partner-options{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -583,6 +592,23 @@ body.preview-open{overflow:hidden}
 <div><strong>Résultat prêt à utiliser</strong><span>Chaque outil vous guide jusqu’à un document ou une analyse personnalisée, directement exploitable.</span></div>
 </div>
 </section>
+
+<section class="partner-section" id="partenaires">
+  <div class="partner-head">
+    <div class="eyebrow">Conciergeries · agences immobilières · professionnels de la location</div>
+    <h2>Proposez Les Indispensables à vos propriétaires</h2>
+    <p>Enrichissez votre offre sans développer de nouveaux outils. Recommandez nos services à vos clients propriétaires, percevez une commission sur les achats réalisés ou échangez avec nous pour une intégration en marque blanche.</p>
+  </div>
+  <div class="partner-options">
+    <div class="partner-option"><strong>Recommander</strong><span>Partagez Les Indispensables avec vos propriétaires grâce à un lien partenaire dédié.</span></div>
+    <div class="partner-option"><strong>Percevoir une commission</strong><span>Recevez une commission sur chaque achat réalisé grâce à votre recommandation.</span><span class="partner-highlight">20 % de commission au lancement</span></div>
+    <div class="partner-option"><strong>Marque blanche</strong><span>Intégrez les outils à votre propre offre et présentez-les sous votre identité. Configuration et conditions sur devis.</span></div>
+  </div>
+  <div class="partner-actions">
+    <a class="btn terracotta partner-cta" href="mailto:contact@cleanup-manager.fr?subject=Devenir%20partenaire%20-%20Les%20Indispensables">Devenir partenaire →</a>
+    <small>Partenariat, commission et marque blanche : échange sans engagement.</small>
+  </div>
+</section>
 <section class="bottom-cta">
 <div>
 <h3>Un besoin précis ? Commencez par l’outil qui vous fera gagner du temps aujourd’hui.</h3>
@@ -709,6 +735,7 @@ document.addEventListener('dragstart',e=>{
   document.querySelectorAll("a[href]").forEach(a=>carry(a));
   document.querySelectorAll('a.demo-btn').forEach(a=>a.addEventListener("click",()=>t("TARIFF_CLICK")));
   document.querySelectorAll('.service-card a.btn, #previewStart').forEach(a=>a.addEventListener("click",()=>t("SIGNUP_CLICK")));
+  document.querySelectorAll('.partner-cta').forEach(a=>a.addEventListener("click",()=>t("PARTNER_CLICK")));
 })();
 </script>
 
