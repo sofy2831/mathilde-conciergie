@@ -13,11 +13,19 @@ main{max-width:1240px;margin:auto;padding:34px 20px 60px}h1{font-family:Georgia,
 .login{max-width:620px;margin-top:24px}.row{display:flex;gap:10px;flex-wrap:wrap}input,select,button{font:inherit;border-radius:11px;border:1px solid var(--line);padding:11px 13px}
 input,select{background:#fff;color:var(--text)}button{border:0;background:var(--terracotta);color:#fff;font-weight:850;cursor:pointer}.secondary{background:var(--brown)}
 .google{background:#fff;color:#202124;border:1px solid var(--line)}.hidden{display:none!important}.error{color:#b42318;font-weight:700}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0}.kpi strong{display:block;font-size:32px}.kpi span{color:var(--muted);font-weight:750}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:24px 0}.kpi strong{display:block;font-size:32px}.kpi span{color:var(--muted);font-weight:750}
 .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}.filters{display:flex;gap:8px;flex-wrap:wrap}
 .tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:13px 10px;border-bottom:1px solid #eee3da;text-align:left;white-space:nowrap}th{font-size:11px;text-transform:uppercase;color:var(--muted)}
 .num{text-align:right}.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850;background:#f5e4dc;color:#9d4e34}
 .pill.green{background:#e5f4eb;color:var(--green)}.pill.amber{background:#fff3cd;color:var(--amber)}.muted{font-size:13px}
+.section-title{font-family:Georgia,serif;font-size:25px;margin:0 0 6px}.section-note{margin:0 0 16px}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 22px}
+.summary-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(65,42,32,.04)}
+.summary-card table{min-width:0}.summary-card th,.summary-card td{white-space:normal}
+.total-row td{font-weight:900;background:#fcf4ed}
+.periodbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 18px}.periodbtn{background:#fff;color:var(--brown);border:1px solid var(--line)}.periodbtn.active{background:var(--brown);color:#fff}
+.detail-card{margin-top:16px}
+@media(max-width:950px){.summary-grid{grid-template-columns:1fr}}
 @media(max-width:800px){h1{font-size:32px}.kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.kpis{grid-template-columns:1fr}}
 </style>
 </head>
@@ -39,13 +47,40 @@ input,select{background:#fff;color:var(--text)}button{border:0;background:var(--
 <div class="kpi"><strong id="salesCount">0</strong><span>Ventes partenaires</span></div>
 <div class="kpi"><strong id="revenue">0,00 €</strong><span>CA généré</span></div>
 <div class="kpi"><strong id="toInvoice">0,00 €</strong><span>Commissions à facturer</span></div>
-<div class="kpi"><strong id="paidCommission">0,00 €</strong><span>Commissions payées</span></div>
+<div class="kpi"><strong id="invoicedCommission">0,00 €</strong><span>Commissions facturées</span></div><div class="kpi"><strong id="paidCommission">0,00 €</strong><span>Commissions payées</span></div>
 </div>
 
-<div class="card">
+<div class="periodbar">
+<button class="periodbtn active" data-period="day">Jour</button>
+<button class="periodbtn" data-period="month">Mois</button>
+<button class="periodbtn" data-period="year">Année</button>
+</div>
+
+<div class="summary-grid">
+<section class="summary-card">
+<h2 class="section-title">Cumul par période</h2>
+<p class="section-note">Ventes, chiffre d’affaires et commissions selon la période choisie.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Période</th><th class="num">Ventes</th><th class="num">CA</th><th class="num">Commission</th></tr></thead>
+<tbody id="periodBody"></tbody>
+</table></div>
+</section>
+
+<section class="summary-card">
+<h2 class="section-title">Cumul par produit</h2>
+<p class="section-note">Pour voir immédiatement quels outils génèrent les ventes.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Produit</th><th class="num">Ventes</th><th class="num">CA</th><th class="num">Commission</th></tr></thead>
+<tbody id="productBody"></tbody>
+</table></div>
+</section>
+</div>
+
+<div class="card detail-card">
 <div class="toolbar">
  <div class="filters">
   <select id="partnerFilter"><option value="">Tous les partenaires</option></select>
+  <select id="productFilter"><option value="">Tous les produits</option></select>
   <select id="statusFilter"><option value="">Tous les statuts</option><option value="a_facturer">À facturer</option><option value="facture">Facturé</option><option value="paye">Payé</option></select>
  </div>
  <button id="refresh" class="secondary">Actualiser</button>
@@ -66,19 +101,40 @@ const cfg={apiKey:"AIzaSyAhAPxM-RBJOSSXBPwkXiEu6GPKk0S6GfE",authDomain:"cleanup-
 const URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerSalesStats";
 const STATUS_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/updatePartnerSaleStatus";
 const auth=getAuth(initializeApp(cfg)),$=x=>document.getElementById(x);
-let rows=[];
+let rows=[]; let periodMode="day";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=c=>new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(Number(c||0)/100);
 const date=v=>v?new Intl.DateTimeFormat("fr-FR",{dateStyle:"short",timeStyle:"short"}).format(new Date(v)):"—";
 const statusLabel=s=>({a_facturer:"À facturer",facture:"Facturé",paye:"Payé"}[s]||s||"—");
+const periodKey=(v,mode)=>{
+ const d=new Date(v); if(Number.isNaN(d.getTime()))return "Sans date";
+ if(mode==="year")return String(d.getFullYear());
+ if(mode==="month")return new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"}).format(d);
+ return new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short",year:"numeric"}).format(d);
+};
+function groupRows(a,keyFn){
+ const m=new Map();
+ a.forEach(x=>{const k=keyFn(x),v=m.get(k)||{label:k,count:0,amount:0,commission:0};v.count++;v.amount+=Number(x.amountTotal||0);v.commission+=Number(x.commissionAmount||0);m.set(k,v)});
+ return [...m.values()];
+}
+function renderSummaries(a){
+ const periods=groupRows(a,x=>periodKey(x.paidAt,periodMode));
+ $("periodBody").innerHTML=periods.map(v=>`<tr><td><strong>${esc(v.label)}</strong></td><td class="num">${v.count}</td><td class="num">${money(v.amount)}</td><td class="num">${money(v.commission)}</td></tr>`).join("")
+ + `<tr class="total-row"><td>CUMUL</td><td class="num">${a.length}</td><td class="num">${money(a.reduce((n,x)=>n+Number(x.amountTotal||0),0))}</td><td class="num">${money(a.reduce((n,x)=>n+Number(x.commissionAmount||0),0))}</td></tr>`;
+ const products=groupRows(a,x=>x.productLabel||x.productKey||"Produit");
+ $("productBody").innerHTML=products.sort((x,y)=>y.amount-x.amount).map(v=>`<tr><td><strong>${esc(v.label)}</strong></td><td class="num">${v.count}</td><td class="num">${money(v.amount)}</td><td class="num">${money(v.commission)}</td></tr>`).join("")
+ + `<tr class="total-row"><td>CUMUL</td><td class="num">${a.length}</td><td class="num">${money(a.reduce((n,x)=>n+Number(x.amountTotal||0),0))}</td><td class="num">${money(a.reduce((n,x)=>n+Number(x.commissionAmount||0),0))}</td></tr>`;
+}
 
 function render(){
- const p=$("partnerFilter").value,s=$("statusFilter").value;
- const a=rows.filter(x=>(!p||x.partnerRef===p)&&(!s||x.status===s));
+ const p=$("partnerFilter").value,s=$("statusFilter").value,prod=$("productFilter").value;
+ const a=rows.filter(x=>(!p||x.partnerRef===p)&&(!s||x.status===s)&&(!prod||x.productKey===prod));
  $("salesCount").textContent=rows.length;
  $("revenue").textContent=money(rows.reduce((n,x)=>n+Number(x.amountTotal||0),0));
  $("toInvoice").textContent=money(rows.filter(x=>x.status==="a_facturer").reduce((n,x)=>n+Number(x.commissionAmount||0),0));
+ $("invoicedCommission").textContent=money(rows.filter(x=>x.status==="facture").reduce((n,x)=>n+Number(x.commissionAmount||0),0));
  $("paidCommission").textContent=money(rows.filter(x=>x.status==="paye").reduce((n,x)=>n+Number(x.commissionAmount||0),0));
+ renderSummaries(a);
  $("tbody").innerHTML=a.map(x=>`<tr>
   <td>${esc(date(x.paidAt))}</td><td><strong>${esc(x.partnerName||x.partnerRef)}</strong><br><span class="muted">${esc(x.partnerRef)}</span></td>
   <td>${esc(x.productLabel)}</td><td>${esc(x.customerEmail||"—")}</td>
@@ -118,12 +174,17 @@ async function load(){
   const partners=[...new Map(rows.map(x=>[x.partnerRef,x.partnerName||x.partnerRef])).entries()].filter(x=>x[0]).sort((a,b)=>a[1].localeCompare(b[1],"fr"));
   $("partnerFilter").innerHTML='<option value="">Tous les partenaires</option>'+partners.map(([ref,name])=>`<option value="${esc(ref)}">${esc(name)} — ${esc(ref)}</option>`).join("");
   if(partners.some(x=>x[0]===current))$("partnerFilter").value=current;
+  const currentProduct=$("productFilter").value;
+  const products=[...new Map(rows.map(x=>[x.productKey,x.productLabel||x.productKey])).entries()].filter(x=>x[0]).sort((a,b)=>a[1].localeCompare(b[1],"fr"));
+  $("productFilter").innerHTML='<option value="">Tous les produits</option>'+products.map(([key,name])=>`<option value="${esc(key)}">${esc(name)}</option>`).join("");
+  if(products.some(x=>x[0]===currentProduct))$("productFilter").value=currentProduct;
   render();
  }catch(e){$("err").textContent=e.message||"Impossible de charger les ventes."}
 }
 $("login").onclick=async()=>{try{$("loginError").textContent="";await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(e){$("loginError").textContent="Connexion impossible."}};
 $("googleLogin").onclick=async()=>{try{$("loginError").textContent="";await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){$("loginError").textContent="Connexion Google impossible."}};
-$("logout").onclick=()=>signOut(auth);$("refresh").onclick=load;$("partnerFilter").onchange=render;$("statusFilter").onchange=render;
+$("logout").onclick=()=>signOut(auth);$("refresh").onclick=load;$("partnerFilter").onchange=render;$("productFilter").onchange=render;$("statusFilter").onchange=render;
+document.querySelectorAll(".periodbtn").forEach(b=>b.onclick=()=>{periodMode=b.dataset.period;document.querySelectorAll(".periodbtn").forEach(x=>x.classList.toggle("active",x===b));render()});
 onAuthStateChanged(auth,u=>{$("loginCard").classList.toggle("hidden",!!u);$("dash").classList.toggle("hidden",!u);$("logout").classList.toggle("hidden",!u);if(u)load()});
 </script>
 </body></html>
