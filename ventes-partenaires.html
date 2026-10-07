@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Les Indispensables — Ventes partenaires</title>
+<style>
+:root{--brown:#4b3025;--terracotta:#cc7c5d;--cream:#fbf7f2;--line:#eadbd0;--text:#2f241f;--muted:#806f66;--green:#2e7d4f;--amber:#9a6700}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:18px max(20px,calc((100% - 1240px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-size:20px;font-weight:900;letter-spacing:.03em}.brand b{color:var(--terracotta)}header small{color:var(--muted);font-weight:700}
+main{max-width:1240px;margin:auto;padding:34px 20px 60px}h1{font-family:Georgia,serif;font-size:42px;margin:0 0 8px}p{color:var(--muted)}
+.card,.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(65,42,32,.04)}
+.login{max-width:620px;margin-top:24px}.row{display:flex;gap:10px;flex-wrap:wrap}input,select,button{font:inherit;border-radius:11px;border:1px solid var(--line);padding:11px 13px}
+input,select{background:#fff;color:var(--text)}button{border:0;background:var(--terracotta);color:#fff;font-weight:850;cursor:pointer}.secondary{background:var(--brown)}
+.google{background:#fff;color:#202124;border:1px solid var(--line)}.hidden{display:none!important}.error{color:#b42318;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0}.kpi strong{display:block;font-size:32px}.kpi span{color:var(--muted);font-weight:750}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}.filters{display:flex;gap:8px;flex-wrap:wrap}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:13px 10px;border-bottom:1px solid #eee3da;text-align:left;white-space:nowrap}th{font-size:11px;text-transform:uppercase;color:var(--muted)}
+.num{text-align:right}.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850;background:#f5e4dc;color:#9d4e34}
+.pill.green{background:#e5f4eb;color:var(--green)}.pill.amber{background:#fff3cd;color:var(--amber)}.muted{font-size:13px}
+@media(max-width:800px){h1{font-size:32px}.kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">LES <b>INDISPENSABLES</b></div><small>Ventes partenaires</small></div><button id="logout" class="secondary hidden">Déconnexion</button></header>
+<main>
+<h1>Ventes & commissions partenaires</h1>
+<p>Suivi séparé de la prospection : ventes attribuées aux partenaires, chiffre d’affaires et commissions.</p>
+
+<section id="loginCard" class="card login">
+<h2>Connexion administrateur</h2>
+<div class="row"><input id="email" type="email" placeholder="Adresse e-mail"><input id="password" type="password" placeholder="Mot de passe"></div>
+<p><button id="login">Se connecter</button></p>
+<p><button id="googleLogin" class="google">Continuer avec Google</button></p><p id="loginError" class="error"></p>
+</section>
+
+<section id="dash" class="hidden">
+<div class="kpis">
+<div class="kpi"><strong id="salesCount">0</strong><span>Ventes partenaires</span></div>
+<div class="kpi"><strong id="revenue">0,00 €</strong><span>CA généré</span></div>
+<div class="kpi"><strong id="toInvoice">0,00 €</strong><span>Commissions à facturer</span></div>
+<div class="kpi"><strong id="paidCommission">0,00 €</strong><span>Commissions payées</span></div>
+</div>
+
+<div class="card">
+<div class="toolbar">
+ <div class="filters">
+  <select id="partnerFilter"><option value="">Tous les partenaires</option></select>
+  <select id="statusFilter"><option value="">Tous les statuts</option><option value="a_facturer">À facturer</option><option value="facture">Facturé</option><option value="paye">Payé</option></select>
+ </div>
+ <button id="refresh" class="secondary">Actualiser</button>
+</div>
+<div class="tablewrap"><table>
+<thead><tr><th>Date</th><th>Partenaire</th><th>Produit</th><th>Client</th><th class="num">Vente</th><th class="num">Taux</th><th class="num">Commission</th><th>Statut</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table></div>
+<p id="empty" class="muted hidden">Aucune vente partenaire pour ce filtre.</p><p id="err" class="error"></p>
+</div>
+</section>
+</main>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+const cfg={apiKey:"AIzaSyAhAPxM-RBJOSSXBPwkXiEu6GPKk0S6GfE",authDomain:"cleanup-diagnostic.firebaseapp.com",projectId:"cleanup-diagnostic",storageBucket:"cleanup-diagnostic.firebasestorage.app",messagingSenderId:"6668236990",appId:"1:6668236990:web:d1304e6113d974a04c46ef"};
+const URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerSalesStats";
+const auth=getAuth(initializeApp(cfg)),$=x=>document.getElementById(x);
+let rows=[];
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=c=>new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(Number(c||0)/100);
+const date=v=>v?new Intl.DateTimeFormat("fr-FR",{dateStyle:"short",timeStyle:"short"}).format(new Date(v)):"—";
+const statusLabel=s=>({a_facturer:"À facturer",facture:"Facturé",paye:"Payé"}[s]||s||"—");
+
+function render(){
+ const p=$("partnerFilter").value,s=$("statusFilter").value;
+ const a=rows.filter(x=>(!p||x.partnerRef===p)&&(!s||x.status===s));
+ $("salesCount").textContent=rows.length;
+ $("revenue").textContent=money(rows.reduce((n,x)=>n+Number(x.amountTotal||0),0));
+ $("toInvoice").textContent=money(rows.filter(x=>x.status==="a_facturer").reduce((n,x)=>n+Number(x.commissionAmount||0),0));
+ $("paidCommission").textContent=money(rows.filter(x=>x.status==="paye").reduce((n,x)=>n+Number(x.commissionAmount||0),0));
+ $("tbody").innerHTML=a.map(x=>`<tr>
+  <td>${esc(date(x.paidAt))}</td><td><strong>${esc(x.partnerName||x.partnerRef)}</strong><br><span class="muted">${esc(x.partnerRef)}</span></td>
+  <td>${esc(x.productLabel)}</td><td>${esc(x.customerEmail||"—")}</td>
+  <td class="num"><strong>${money(x.amountTotal)}</strong></td><td class="num">${esc(x.commissionRate)} %</td>
+  <td class="num"><strong>${money(x.commissionAmount)}</strong></td>
+  <td><span class="pill ${x.status==="paye"?"green":x.status==="a_facturer"?"amber":""}">${esc(statusLabel(x.status))}</span></td>
+ </tr>`).join("");
+ $("empty").classList.toggle("hidden",a.length>0);
+}
+async function load(){
+ try{
+  $("err").textContent="";
+  const tok=await auth.currentUser.getIdToken(),r=await fetch(URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();
+  if(!r.ok)throw Error(d.error||"Erreur");
+  rows=d.rows||[];
+  const current=$("partnerFilter").value;
+  const partners=[...new Map(rows.map(x=>[x.partnerRef,x.partnerName||x.partnerRef])).entries()].filter(x=>x[0]).sort((a,b)=>a[1].localeCompare(b[1],"fr"));
+  $("partnerFilter").innerHTML='<option value="">Tous les partenaires</option>'+partners.map(([ref,name])=>`<option value="${esc(ref)}">${esc(name)} — ${esc(ref)}</option>`).join("");
+  if(partners.some(x=>x[0]===current))$("partnerFilter").value=current;
+  render();
+ }catch(e){$("err").textContent=e.message||"Impossible de charger les ventes."}
+}
+$("login").onclick=async()=>{try{$("loginError").textContent="";await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(e){$("loginError").textContent="Connexion impossible."}};
+$("googleLogin").onclick=async()=>{try{$("loginError").textContent="";await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){$("loginError").textContent="Connexion Google impossible."}};
+$("logout").onclick=()=>signOut(auth);$("refresh").onclick=load;$("partnerFilter").onchange=render;$("statusFilter").onchange=render;
+onAuthStateChanged(auth,u=>{$("loginCard").classList.toggle("hidden",!!u);$("dash").classList.toggle("hidden",!u);$("logout").classList.toggle("hidden",!u);if(u)load()});
+</script>
+</body></html>
