@@ -165,7 +165,7 @@ async function changeStatus(saleId,status){
   await load();
  }catch(e){$("err").textContent=e.message||"Impossible de modifier le statut."}
 }
-async function loadInvoices(){try{const tok=await auth.currentUser.getIdToken();const r=await fetch(INVOICES_URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();if(!r.ok)throw Error(d.error||"Erreur");$("invoiceList").innerHTML=(d.rows||[]).map(x=>`<tr><td>${esc(x.partnerRef)}</td><td>${esc(x.month)}</td><td>${money(x.total)}</td><td>${esc(date(x.receivedAt))}</td><td><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">Voir le PDF</a></td></tr>`).join("")||'<tr><td colspan="5">Aucune facture reçue.</td></tr>';$("invoiceError").textContent=""}catch(e){$("invoiceError").textContent=e.message}}
+async function loadInvoices(){$("invoiceError").textContent="Chargement des factures…";try{const tok=await auth.currentUser.getIdToken();const r=await fetch(INVOICES_URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();if(!r.ok)throw Error(d.error||"Erreur");$("invoiceList").innerHTML=(d.rows||[]).map(x=>`<tr><td>${esc(x.partnerRef)}</td><td>${esc(x.month)}</td><td>${money(x.total)}</td><td>${esc(date(x.receivedAt))}</td><td><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">Voir le PDF</a></td></tr>`).join("")||'<tr><td colspan="5">Aucune facture reçue.</td></tr>';$("invoiceError").textContent=""}catch(e){$("invoiceError").textContent=e.message||"Impossible de charger les factures."}}
 async function load(){
  try{
   $("err").textContent="";
@@ -181,11 +181,12 @@ async function load(){
   $("productFilter").innerHTML='<option value="">Tous les produits</option>'+products.map(([key,name])=>`<option value="${esc(key)}">${esc(name)}</option>`).join("");
   if(products.some(x=>x[0]===currentProduct))$("productFilter").value=currentProduct;
   render();
+  await loadInvoices();
  }catch(e){$("err").textContent=e.message||"Impossible de charger les ventes."}
 }
 $("login").onclick=async()=>{try{$("loginError").textContent="";await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(e){$("loginError").textContent="Connexion impossible."}};
 $("googleLogin").onclick=async()=>{try{$("loginError").textContent="";await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){$("loginError").textContent="Connexion Google impossible."}};
-$("logout").onclick=()=>signOut(auth);$("refresh").onclick=load;$("partnerFilter").onchange=render;$("productFilter").onchange=render;$("statusFilter").onchange=render;
+$("logout").onclick=()=>signOut(auth);$("refresh").onclick=async()=>{const btn=$("refresh");btn.disabled=true;btn.textContent="Actualisation…";try{await load()}finally{btn.disabled=false;btn.textContent="Actualiser"}};$("partnerFilter").onchange=render;$("productFilter").onchange=render;$("statusFilter").onchange=render;
 document.querySelectorAll(".periodbtn").forEach(b=>b.onclick=()=>{periodMode=b.dataset.period;document.querySelectorAll(".periodbtn").forEach(x=>x.classList.toggle("active",x===b));render()});
 onAuthStateChanged(auth,u=>{$("loginCard").classList.toggle("hidden",!!u);$("dash").classList.toggle("hidden",!u);$("logout").classList.toggle("hidden",!u);if(u)load()});
 </script>
