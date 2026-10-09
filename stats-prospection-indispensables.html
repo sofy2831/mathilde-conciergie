@@ -40,12 +40,17 @@ table{width:100%;border-collapse:collapse}th,td{padding:13px 11px;border-bottom:
 <div class="kpi"><strong id="demoViews">0</strong><span>Consultations démo</span></div>
 <div class="kpi"><strong id="toolClicks">0</strong><span>Clics vers les outils</span></div>
 <div class="kpi"><strong id="partnerClicks">0</strong><span>Clics partenaires</span></div>
+<div class="kpi"><strong id="purchaseClicks">—</strong><span>Clics vers achat</span></div>
+<div class="kpi"><strong id="confirmedPurchases">—</strong><span>Achats confirmés</span></div>
+<div class="kpi"><strong id="partnerSignups">—</strong><span>Inscriptions partenaires</span></div>
+<div class="kpi"><strong id="whiteLabelRequests">—</strong><span>Clics marque blanche</span></div>
 </div>
 
+<div class="card"><h2>Suivi du parcours commercial</h2><p class="muted">Les tirets signifient que la donnée n’est pas encore remontée par le serveur. Un clic vers un e-mail ne prouve pas son envoi. Les achats confirmés nécessitent une attribution de campagne côté serveur.</p><div class="row" style="gap:16px"><span class="pill">Démo → Achat</span><span class="pill">Démo → Partenaire</span><span class="pill">Démo → Marque blanche</span></div></div>
 <div class="card">
-<div class="row" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">Résultats par campagne</h2><p class="muted">Les lignes Axe Flow sont exclues : seuls les événements « ind- » sont affichés.</p></div><button id="refresh" class="secondary">Actualiser</button></div>
+<div class="row" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">Résultats par campagne</h2><p class="muted">Les lignes Axe Flow sont exclues : seuls les événements « ind- » sont affichés. Les achats confirmés et les inscriptions doivent être reliés au serveur pour être attribués à une campagne.</p></div><button id="refresh" class="secondary">Actualiser</button></div>
 <div class="tablewrap"><table><thead><tr>
-<th>Cible</th><th>Campagne</th><th class="num">Visites page</th><th class="num">Démo vue</th><th class="num">Clics outils</th><th class="num">Clics partenaires</th><th class="num">Page → démo</th><th>Dernière activité</th>
+<th>Cible</th><th>Campagne</th><th class="num">Visites page</th><th class="num">Démo vue</th><th class="num">Clics outils</th><th class="num">Clics partenaires</th><th class="num">Clics acheter</th><th class="num">Achats</th><th class="num">Inscriptions partenaires</th><th class="num">Clics marque blanche</th><th class="num">Page → démo</th><th>Dernière activité</th>
 </tr></thead><tbody id="tbody"></tbody></table></div><p id="err" class="error"></p>
 </div>
 
@@ -71,19 +76,23 @@ async function load(){
   $("err").textContent="";
   const tok=await auth.currentUser.getIdToken(),r=await fetch(URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();
   if(!r.ok)throw Error(d.error||"Erreur");
-  const raw=(d.rows||[]).filter(x=>String(x.source||"").startsWith("ind-"));
+  const raw=(Array.isArray(d.rows)?d.rows:[]).filter(x=>String(x.source||"").startsWith("ind-"));
+  const metrics=["purchaseClicks","confirmedPurchases","partnerSignups","whiteLabelRequests"];
+  const supported=Object.fromEntries(metrics.map(k=>[k,raw.some(x=>Object.prototype.hasOwnProperty.call(x,k))]));
+  metrics.forEach(k=>{$(k).textContent=supported[k]?"0":"—";});
   const by=new Map();
   raw.forEach(x=>{
     const src=String(x.source||"");
     const kind=src.endsWith("-demo")?"demo":"page";
     const target=src.replace(/^ind-/,"").replace(/-(page|demo)$/,"");
     const key=`${target}|||${x.campaign}`;
-    const z=by.get(key)||{target,campaign:x.campaign,pageViews:0,demoClicks:0,demoViews:0,toolClicks:0,partnerClicks:0,lastActivity:null};
+    const z=by.get(key)||{target,campaign:x.campaign,pageViews:0,demoClicks:0,demoViews:0,toolClicks:0,partnerClicks:0,purchaseClicks:0,confirmedPurchases:0,partnerSignups:0,whiteLabelRequests:0,lastActivity:null};
     if(kind==="page"){
       z.pageViews+=Number(x.demoViews||0);
       z.demoClicks+=Number(x.tariffClicks||0);
       z.toolClicks+=Number(x.signupClicks||0);
       z.partnerClicks+=Number(x.partnerClicks||0);
+       for(const k of ["purchaseClicks","confirmedPurchases","partnerSignups","whiteLabelRequests"])if(x[k]!==undefined)z[k]+=Number(x[k]||0);
     }else{
       z.demoViews+=Number(x.demoViews||0);
     }
@@ -95,7 +104,8 @@ async function load(){
   $("demoViews").textContent=a.reduce((s,x)=>s+x.demoViews,0);
   $("toolClicks").textContent=a.reduce((s,x)=>s+x.toolClicks,0);
   $("partnerClicks").textContent=a.reduce((s,x)=>s+x.partnerClicks,0);
-  $("tbody").innerHTML=a.length?a.map(x=>`<tr><td><span class="pill">${esc(x.target)}</span></td><td>${esc(x.campaign)}</td><td class="num">${x.pageViews}</td><td class="num">${x.demoViews}</td><td class="num">${x.toolClicks}</td><td class="num">${x.partnerClicks}</td><td class="num">${x.pageViews?((x.demoViews/x.pageViews)*100).toFixed(1)+" %":"—"}</td><td>${x.lastActivity?new Date(x.lastActivity).toLocaleString("fr-FR"):"—"}</td></tr>`).join(""):`<tr><td colspan="8">Aucune visite Les Indispensables pour le moment.</td></tr>`;
+  metrics.forEach(k=>{if(supported[k])$(k).textContent=a.reduce((sum,x)=>sum+x[k],0);});
+  $("tbody").innerHTML=a.length?a.map(x=>`<tr><td><span class="pill">${esc(x.target)}</span></td><td>${esc(x.campaign)}</td><td class="num">${x.pageViews}</td><td class="num">${x.demoViews}</td><td class="num">${x.toolClicks}</td><td class="num">${x.partnerClicks}</td><td class="num">${supported.purchaseClicks?x.purchaseClicks:"—"}</td><td class="num">${supported.confirmedPurchases?x.confirmedPurchases:"—"}</td><td class="num">${supported.partnerSignups?x.partnerSignups:"—"}</td><td class="num">${supported.whiteLabelRequests?x.whiteLabelRequests:"—"}</td><td class="num">${x.pageViews?((x.demoViews/x.pageViews)*100).toFixed(1)+" %":"—"}</td><td>${x.lastActivity?new Date(x.lastActivity).toLocaleString("fr-FR"):"—"}</td></tr>`).join(""):`<tr><td colspan="12">Aucune visite Les Indispensables pour le moment.</td></tr>`;
  }catch(e){$("err").textContent=e.message}
 }
 function authMsg(e){const c=e?.code||"";if(["auth/invalid-credential","auth/wrong-password","auth/user-not-found"].includes(c))return"Identifiants invalides.";if(c==="auth/invalid-email")return"Adresse e-mail invalide.";if(c==="auth/too-many-requests")return"Trop de tentatives. Réessayez plus tard.";if(c==="auth/popup-closed-by-user")return"Connexion Google annulée.";if(c==="auth/popup-blocked")return"La fenêtre Google a été bloquée par le navigateur.";return e?.message||"Connexion impossible."}
