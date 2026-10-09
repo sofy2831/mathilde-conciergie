@@ -25,6 +25,9 @@ input,select{background:#fff;color:var(--text)}button{border:0;background:var(--
 .total-row td{font-weight:900;background:#fcf4ed}
 .periodbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 18px}.periodbtn{background:#fff;color:var(--brown);border:1px solid var(--line)}.periodbtn.active{background:var(--brown);color:#fff}
 .detail-card{margin-top:16px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(31,20,17,.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999}
+.modal-panel{background:#fff;border-radius:16px;padding:20px;width:min(530px,100%);box-shadow:0 16px 45px rgba(0,0,0,.18)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.modal-head h2{font-family:Georgia,serif;margin:0;font-size:21px}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}.modal-actions .cancel{background:#f5eee9;color:var(--brown);border:1px solid var(--line)}
 @media(max-width:950px){.summary-grid{grid-template-columns:1fr}}
 @media(max-width:800px){h1{font-size:32px}.kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.kpis{grid-template-columns:1fr}}
 </style>
@@ -93,6 +96,11 @@ input,select{background:#fff;color:var(--text)}button{border:0;background:var(--
 </div>
 </section>
 </main>
+<div id="statusModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+ <div class="modal-panel"><div class="modal-head"><h2 id="statusModalTitle">Confirmer le paiement</h2><button id="statusModalClose" class="secondary" type="button">Fermer</button></div>
+ <p id="statusModalText"></p><p id="statusModalError" class="error"></p>
+ <div class="modal-actions"><button id="statusModalCancel" class="cancel" type="button">Annuler</button><button id="statusModalConfirm" type="button">Confirmer</button></div></div>
+</div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -154,18 +162,40 @@ function render(){
  document.querySelectorAll(".statusBtn").forEach(b=>b.onclick=()=>changeStatus(b.dataset.id,b.dataset.status));
  $("empty").classList.toggle("hidden",a.length>0);
 }
-async function changeStatus(saleId,status){
- const label=status==="facture"?"passer cette commission à « Facturé »":"passer cette commission à « Payé »";
- if(!confirm(`Confirmer : ${label} ?`))return;
+let pendingStatus=null;
+function closeStatusModal(){if($("statusModalConfirm").disabled)return;$("statusModal").classList.add("hidden");pendingStatus=null}
+function changeStatus(saleId,status){
+ const sale=rows.find(x=>String(x.id)===String(saleId));
+ pendingStatus={saleId,status};
+ $("statusModalTitle").textContent=status==="paye"?"Confirmer le paiement":"Confirmer la facturation";
+ $("statusModalText").textContent=status==="paye"
+  ? `Confirmer le paiement de la commission de ${money(sale?.commissionAmount)} pour ${sale?.partnerName||sale?.partnerRef||"ce partenaire"} ?`
+  : `Confirmer le passage à « Facturé » de la commission de ${money(sale?.commissionAmount)} ?`;
+ $("statusModalError").textContent="";
+ $("statusModalConfirm").textContent=status==="paye"?"Confirmer le paiement":"Confirmer";
+ $("statusModal").classList.remove("hidden");
+ $("statusModalConfirm").focus();
+}
+$("statusModalClose").onclick=closeStatusModal;
+$("statusModalCancel").onclick=closeStatusModal;
+$("statusModal").onclick=e=>{if(e.target===$("statusModal"))closeStatusModal()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("statusModal").classList.contains("hidden"))closeStatusModal()});
+$("statusModalConfirm").onclick=async()=>{
+ if(!pendingStatus)return;
+ const {saleId,status}=pendingStatus,btn=$("statusModalConfirm");
+ btn.disabled=true;btn.textContent="Enregistrement…";
  try{
-  $("err").textContent="";
+  $("err").textContent="";$("statusModalError").textContent="";
   const tok=await auth.currentUser.getIdToken();
   const r=await fetch(STATUS_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${tok}`},body:JSON.stringify({saleId,status})});
   const d=await r.json();
   if(!r.ok)throw Error(d.error||"Erreur");
+  $("statusModal").classList.add("hidden");pendingStatus=null;
   await load();
- }catch(e){$("err").textContent=e.message||"Impossible de modifier le statut."}
-}
+ }catch(e){$("statusModalError").textContent=e.message||"Impossible de modifier le statut."}
+ finally{btn.disabled=false;btn.textContent="Confirmer"}
+};
+
 async function viewInvoice(id,button){
  const old=button.textContent;const tab=window.open("", "_blank");button.disabled=true;button.textContent="Ouverture…";
  try{
