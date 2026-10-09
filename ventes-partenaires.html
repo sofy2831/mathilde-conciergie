@@ -100,6 +100,7 @@ import{getAuth,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,sig
 const cfg={apiKey:"AIzaSyAhAPxM-RBJOSSXBPwkXiEu6GPKk0S6GfE",authDomain:"cleanup-diagnostic.firebaseapp.com",projectId:"cleanup-diagnostic",storageBucket:"cleanup-diagnostic.firebasestorage.app",messagingSenderId:"6668236990",appId:"1:6668236990:web:d1304e6113d974a04c46ef"};
 const URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerSalesStats";
 const INVOICES_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerInvoicesAdmin";
+const PDF_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerInvoicePdf";
 const STATUS_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/updatePartnerSaleStatus";
 const auth=getAuth(initializeApp(cfg)),$=x=>document.getElementById(x);
 let rows=[]; let periodMode="day";
@@ -165,7 +166,21 @@ async function changeStatus(saleId,status){
   await load();
  }catch(e){$("err").textContent=e.message||"Impossible de modifier le statut."}
 }
-async function loadInvoices(){$("invoiceError").textContent="Chargement des factures…";try{const tok=await auth.currentUser.getIdToken();const r=await fetch(INVOICES_URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();if(!r.ok)throw Error(d.error||"Erreur");$("invoiceList").innerHTML=(d.rows||[]).map(x=>`<tr><td>${esc(x.partnerRef)}</td><td>${esc(x.month)}</td><td>${money(x.total)}</td><td>${esc(date(x.receivedAt))}</td><td><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">Voir le PDF</a></td></tr>`).join("")||'<tr><td colspan="5">Aucune facture reçue.</td></tr>';$("invoiceError").textContent=""}catch(e){$("invoiceError").textContent=e.message||"Impossible de charger les factures."}}
+async function viewInvoice(id,button){
+ const old=button.textContent;const tab=window.open("", "_blank");button.disabled=true;button.textContent="Ouverture…";
+ try{
+  const tok=await auth.currentUser.getIdToken();
+  const r=await fetch(PDF_URL+"?id="+encodeURIComponent(id),{headers:{Authorization:`Bearer ${tok}`}});
+  if(!r.ok){const d=await r.json().catch(()=>({}));throw Error(d.error||"Impossible d'ouvrir le PDF.");}
+  const blob=await r.blob();
+  if(blob.type!=="application/pdf")throw Error("Le document reçu n'est pas un PDF.");
+  const url=window.URL.createObjectURL(blob);
+  if(tab){tab.location.href=url;}else{const a=document.createElement("a");a.href=url;a.download="facture-partenaire.pdf";document.body.appendChild(a);a.click();a.remove();}
+  setTimeout(()=>window.URL.revokeObjectURL(url),60000);
+ }catch(e){if(tab&&!tab.closed)tab.close();$("invoiceError").textContent=e.message||"Impossible d'ouvrir le PDF."}
+ finally{button.disabled=false;button.textContent=old}
+}
+async function loadInvoices(){$("invoiceError").textContent="Chargement des factures…";try{const tok=await auth.currentUser.getIdToken();const r=await fetch(INVOICES_URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();if(!r.ok)throw Error(d.error||"Erreur");$("invoiceList").innerHTML=(d.rows||[]).map(x=>`<tr><td>${esc(x.partnerRef)}</td><td>${esc(x.month)}</td><td>${money(x.total)}</td><td>${esc(date(x.receivedAt))}</td><td><button class="viewInvoiceBtn secondary" data-id="${esc(x.id)}">Voir le PDF</button></td></tr>`).join("")||'<tr><td colspan="5">Aucune facture reçue.</td></tr>';$("invoiceError").textContent="";document.querySelectorAll(".viewInvoiceBtn").forEach(b=>b.onclick=()=>viewInvoice(b.dataset.id,b))}catch(e){$("invoiceError").textContent=e.message||"Impossible de charger les factures."}}
 async function load(){
  try{
   $("err").textContent="";
