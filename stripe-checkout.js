@@ -63,6 +63,26 @@
     return storedRef;
   }
 
+  // Conserver la provenance du lien de prospection pendant le parcours des outils.
+  const MARKETING_STORAGE_KEY = "indispensablesMarketingAttribution";
+  function getMarketingAttribution() {
+    const params = new URLSearchParams(window.location.search);
+    const src = String(params.get("src") || "").trim().slice(0, 48);
+    const camp = String(params.get("camp") || "").trim().slice(0, 80);
+    if (src && camp && src !== "direct" && camp !== "sans-campagne") {
+      const data = { marketingSource: `ind-${src}-page`.slice(0, 60), marketingCampaign: camp };
+      try { sessionStorage.setItem(MARKETING_STORAGE_KEY, JSON.stringify(data)); } catch (_) {}
+      return data;
+    }
+    try {
+      const stored = JSON.parse(sessionStorage.getItem(MARKETING_STORAGE_KEY) || "null");
+      if (stored && /^ind-[\w-]+-page$/.test(stored.marketingSource || "") && stored.marketingCampaign) {
+        return { marketingSource: String(stored.marketingSource).slice(0, 60), marketingCampaign: String(stored.marketingCampaign).slice(0, 80) };
+      }
+    } catch (_) {}
+    return {};
+  }
+
   function assertProductKey(productKey) {
     const key = String(productKey || "").trim();
 
@@ -201,7 +221,8 @@
         productKey: key,
         successUrl,
         cancelUrl,
-        partnerRef: getPartnerRef()
+        partnerRef: getPartnerRef(),
+        ...getMarketingAttribution()
       })
     });
 
