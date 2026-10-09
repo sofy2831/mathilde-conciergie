@@ -76,7 +76,7 @@ input,select{background:#fff;color:var(--text)}button{border:0;background:var(--
 </section>
 </div>
 
-<div class="card detail-card">
+<div class="card detail-card"><h2>Factures partenaires reçues</h2><p>PDF déposés par les partenaires. Accès réservé à l’administrateur.</p><div class="tablewrap"><table style="min-width:600px"><thead><tr><th>Partenaire</th><th>Mois</th><th>Montant TTC</th><th>Reçue le</th><th>Document</th></tr></thead><tbody id="invoiceList"></tbody></table></div><p id="invoiceError" class="error"></p></div><div class="card detail-card">
 <div class="toolbar">
  <div class="filters">
   <select id="partnerFilter"><option value="">Tous les partenaires</option></select>
@@ -99,6 +99,7 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-ap
 import{getAuth,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 const cfg={apiKey:"AIzaSyAhAPxM-RBJOSSXBPwkXiEu6GPKk0S6GfE",authDomain:"cleanup-diagnostic.firebaseapp.com",projectId:"cleanup-diagnostic",storageBucket:"cleanup-diagnostic.firebasestorage.app",messagingSenderId:"6668236990",appId:"1:6668236990:web:d1304e6113d974a04c46ef"};
 const URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerSalesStats";
+const INVOICES_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/partnerInvoicesAdmin";
 const STATUS_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/updatePartnerSaleStatus";
 const auth=getAuth(initializeApp(cfg)),$=x=>document.getElementById(x);
 let rows=[]; let periodMode="day";
@@ -164,6 +165,7 @@ async function changeStatus(saleId,status){
   await load();
  }catch(e){$("err").textContent=e.message||"Impossible de modifier le statut."}
 }
+async function loadInvoices(){try{const tok=await auth.currentUser.getIdToken();const r=await fetch(INVOICES_URL,{headers:{Authorization:`Bearer ${tok}`}}),d=await r.json();if(!r.ok)throw Error(d.error||"Erreur");$("invoiceList").innerHTML=(d.rows||[]).map(x=>`<tr><td>${esc(x.partnerRef)}</td><td>${esc(x.month)}</td><td>${money(x.total)}</td><td>${esc(date(x.receivedAt))}</td><td><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">Voir le PDF</a></td></tr>`).join("")||'<tr><td colspan="5">Aucune facture reçue.</td></tr>';$("invoiceError").textContent=""}catch(e){$("invoiceError").textContent=e.message}}
 async function load(){
  try{
   $("err").textContent="";
