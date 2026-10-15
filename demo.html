@@ -442,12 +442,32 @@ img{max-width:100%}
     sid=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
     sessionStorage.setItem("indispensablesProspectSession",sid);
   }
+
+  // Consentement explicite avant stockage d'un identifiant de visiteur persistant.
+  const VISITOR_KEY="indispensablesVisitorId";
+  function getVisitorId(){try{return localStorage.getItem(VISITOR_KEY)||"";}catch(e){return "";}}
+  function ensureVisitorId(){
+    let id=getVisitorId();if(id)return id;
+    id=crypto.randomUUID();try{localStorage.setItem(VISITOR_KEY,id);}catch(e){return "";}
+    return id;
+  }
+  const existingId=getVisitorId();
+  if(!existingId && !sessionStorage.getItem("indispensablesConsentAsked")){
+    const notice=document.createElement("div");
+    notice.setAttribute("role","dialog");notice.setAttribute("aria-label","Mesure d'audience");
+    notice.style.cssText="position:fixed;bottom:15px;left:15px;right:15px;max-width:570px;margin:auto;background:white;color:#33231d;padding:18px;border:1px solid #e8d8cb;border-radius:14px;box-shadow:0 10px 35px #0003;z-index:9999;font:14px/1.5 Arial";
+    notice.innerHTML='<strong>Mesure d’audience</strong><p>Autorisez-vous un identifiant anonyme conservé dans ce navigateur pour compter les visiteurs uniques ? Vous pouvez refuser et continuer la démo.</p><button type="button" id="indYes" style="margin-right:8px;padding:10px">Accepter</button><button type="button" id="indNo" style="padding:10px">Refuser</button>';
+    document.body.appendChild(notice);
+    notice.querySelector("#indYes").onclick=()=>{sessionStorage.setItem("indispensablesConsentAsked","yes");ensureVisitorId();notice.remove();t("DEMO_VIEW");};
+    notice.querySelector("#indNo").onclick=()=>{sessionStorage.setItem("indispensablesConsentAsked","no");notice.remove();t("DEMO_VIEW");};
+  }
+
   function t(type){
     fetch(U,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({type,source,campaign,sessionId:sid}),
+      body:JSON.stringify({type,source,campaign,sessionId:sid,visitorId:getVisitorId()}),
       credentials:"omit",keepalive:true}).catch(()=>{});
   }
-  t("DEMO_VIEW");
+  if(existingId || sessionStorage.getItem("indispensablesConsentAsked"))t("DEMO_VIEW");
   document.querySelectorAll('a.back-btn').forEach(a=>{
     try{
       const u=new URL(a.href,location.href);
