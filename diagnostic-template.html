@@ -638,7 +638,7 @@ text-overflow:clip!important;
 
 </head>
 <body>
-<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
+<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="recoverDiagnosticBtn" type="button">Récupérer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
 
 <section class="service-shell">
   <div class="service-intro">
@@ -850,6 +850,23 @@ function updateCoverage(value){
 }
 
 const PRODUCT_KEY='diagnostic';
+const RECOVERY_KEY='cleanup_diagnostic_last_paid_session';
+const RECOVERY_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/retrievePaidDiagnostic';
+async function recoverDiagnostic(sessionId){
+  const id=String(sessionId||'').trim();
+  if(!id)return setStripeStatus('Aucune commande enregistrée sur cet appareil.',false);
+  try{
+    setStripeStatus('Récupération du diagnostic en cours…');
+    const r=await fetch(RECOVERY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({paymentSessionId:id})});
+    const data=await r.json();
+    if(!r.ok||!data.ok)throw new Error(data.error||'Diagnostic introuvable.');
+    injectDiagnostic(data);
+    setStripeStatus('Diagnostic retrouvé. Cliquez sur Imprimer / PDF pour l’enregistrer.');
+    document.getElementById('printDiagnosticBtn')?.focus();
+  }catch(e){setStripeStatus(e.message||'Récupération impossible.',false);}
+}
+
 let paidSessionId='',cleanupAdminMode=false;
 const API_URL = 'https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateDiagnostic';
 const $ = (id) => document.getElementById(id);
@@ -1399,6 +1416,9 @@ async function generateDiagnostic() {
     }
 
     injectDiagnostic(payload);
+    if(!cleanupAdminMode && paidSessionId){
+      localStorage.setItem(RECOVERY_KEY,paidSessionId);
+    }
     setLoading(false, `Diagnostic généré le ${new Date(payload.generatedAt).toLocaleString('fr-FR')}.`);
     if(!cleanupAdminMode){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');}else setStripeStatus('Diagnostic généré en mode administrateur');
   } catch (error) {
@@ -1522,14 +1542,25 @@ setReportIdentity();
 <script type="module" src="admin-auth.js"></script>
 
 <script type="module">
+document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
+  recoverDiagnostic(localStorage.getItem(RECOVERY_KEY));
+});
 (async()=>{
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
  if(cleanupAdminMode){document.getElementById('generateBtn').textContent='Générer le diagnostic — Admin';const b=document.getElementById('stripeCheckoutBtn');if(b){b.textContent='Mode administrateur actif';b.disabled=true;}setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
  try{
   const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
-  if(payment.used)return setStripeStatus('Ce paiement a déjà été utilisé.',false);
+  if(payment.used){
+    if(payment.sessionId){
+      localStorage.setItem(RECOVERY_KEY,payment.sessionId);
+      await recoverDiagnostic(payment.sessionId);
+    }
+    return;
+  }
   if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
-  paidSessionId=payment.sessionId;const saved=payment.payload||{};restoreFormState(saved.formState||saved);
+  paidSessionId=payment.sessionId;
+  if(paidSessionId)localStorage.setItem(RECOVERY_KEY,paidSessionId);
+  const saved=payment.payload||{};restoreFormState(saved.formState||saved);
   setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>document.getElementById('generateBtn')?.click(),150);
  }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
