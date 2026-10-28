@@ -528,6 +528,20 @@ button:disabled{
 
 </style>
 
+<style id="cleanup-print-map-scrollbar-fix">
+/* L'iframe OSM garde ses dimensions à l'écran ; en impression, on masque
+   uniquement les bandes de défilement internes en les rognant. */
+@media print {
+  .page1 .geo-map { overflow:hidden!important; isolation:isolate!important; }
+  .page1 .osm-map-frame {
+    width:calc(100% + 20px)!important;
+    height:calc(100% + 20px)!important;
+    max-width:none!important;
+    display:block!important;
+  }
+}
+</style>
+
 <style id="cleanup-final-fixes">
 .page2 .client p{
 display:block!important;
@@ -1355,10 +1369,29 @@ function injectPage4(ai) {
   });
 }
 
-function injectPage5(ai) {
+function harmonizePrudentOccupancy(text, engine) {
+  const prudent = Number(engine?.occupancy?.prudent);
+  if (!Number.isFinite(prudent)) return text;
+  const expected = `${Math.round(prudent)} %`;
+  // Ne rectifier que les pourcentages liés explicitement au scénario prudent.
+  return String(text)
+    .replace(/(\bprudent(?:e)?\b[^.!?\n]{0,90}?)(\d{1,2})\s*%/gi,
+      (_, prefix) => prefix + expected)
+    .replace(/(\d{1,2})\s*%([^.!?\n]{0,65}?\bprudent(?:e)?\b)/gi,
+      (_, _number, suffix) => expected + suffix);
+}
+
+function injectPage5(ai, engine) {
   const ownerNote = q('.page5 .owner-note p');
-  if (ownerNote) ownerNote.textContent = cleanPublicText(ai.page5.lectureScenarios, 300).replace(/\bpar le moteur\b\s*:?/gi, '').replace(/^\s*Trois\s+scénarios?\s*:?/i, 'Scénarios : ').replace(/^\s*Scénarios?\s*:?/i, 'Scénarios : ');
-  $('financialRead').textContent = cleanPublicText(ai.page5.seuilRentabilite, 250);
+  if (ownerNote) {
+    const note = cleanPublicText(ai.page5.lectureScenarios, 300)
+      .replace(/\bpar le moteur\b\s*:?/gi, '')
+      .replace(/^\s*Trois\s+scénarios?\s*:?/i, 'Scénarios : ')
+      .replace(/^\s*Scénarios?\s*:?/i, 'Scénarios : ');
+    ownerNote.textContent = harmonizePrudentOccupancy(note, engine);
+  }
+  $('financialRead').textContent = harmonizePrudentOccupancy(
+    cleanPublicText(ai.page5.seuilRentabilite, 250), engine);
 }
 
 function injectPage6(ai) {
@@ -1393,7 +1426,7 @@ function injectDiagnostic(payload) {
   injectPage2(payload.ai);
   injectPage3(payload.ai, payload.engine);
   injectPage4(payload.ai);
-  injectPage5(payload.ai);
+  injectPage5(payload.ai, payload.engine);
   injectPage6(payload.ai);
   setReportIdentity(payload.generatedAt);
 }
