@@ -221,6 +221,7 @@
         productKey: key,
         successUrl,
         cancelUrl,
+        testMode: key === "diagnostic" && new URLSearchParams(window.location.search).get("stripe_test") === "1",
         partnerRef: getPartnerRef(),
         ...getMarketingAttribution()
       })
@@ -269,7 +270,7 @@
 
     const response = await fetch(ENDPOINTS.verify, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...(await getAdminHeaders()) },
       body: JSON.stringify({
         sessionId: cleanSessionId,
         productKey: key
