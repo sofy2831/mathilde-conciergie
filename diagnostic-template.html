@@ -917,7 +917,10 @@ function restoreFormState(saved){
 async function diagnosticAdminHeaders(){
  const auth=await waitForAdminAuth();
  if(!auth || !await auth.isAdmin())throw new Error('Connexion administrateur requise pour Stripe TEST.');
- const token=await auth.getIdToken();
+ const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+ const user=getAuth().currentUser;
+ if(!user)throw new Error('Session administrateur expirée. Reconnectez-vous.');
+ const token=await user.getIdToken();
  if(!token)throw new Error('Jeton administrateur indisponible.');
  return {Authorization:'Bearer '+token};
 }
