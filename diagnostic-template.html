@@ -658,6 +658,18 @@ text-overflow:clip!important;
 .diagnostic-ready button{background:#087b4b;color:white;box-shadow:none;white-space:normal;text-align:center}
 @media print{.diagnostic-ready{display:none!important}}
 </style>
+
+<style id="cleanup-osm-print-recovery-fix">
+/* L'iframe externe n'est pas imprimable de manière fiable par Chrome.
+   Les tuiles image OSM et le repère HTML sont indépendants de l'iframe. */
+.print-osm-map{display:none;position:absolute;inset:0;overflow:hidden;background:#EEF2F8;z-index:3}
+.print-osm-tiles{position:absolute;inset:0;overflow:hidden}
+.print-osm-tiles img{position:absolute;width:256px;height:256px;max-width:none;display:block}
+.print-osm-marker{position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-95%) rotate(-45deg);border-radius:50% 50% 50% 0;background:#66B532;border:3px solid white;box-shadow:0 2px 6px #34405488;z-index:2}
+.print-osm-marker::after{content:"";position:absolute;inset:5px;border-radius:50%;background:white}
+.print-osm-credit{position:absolute;right:2px;bottom:2px;background:#ffffffdd;font-size:7px;color:#344054;z-index:2;padding:2px}
+@media print{.page1 .osm-map-frame,.page1 .map-fallback{display:none!important}.page1 .print-osm-map{display:block!important}}
+</style>
 </head>
 <body>
 <div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="recoverDiagnosticBtn" type="button">Récupérer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Télécharger / Imprimer PDF</button></div></div>
@@ -725,6 +737,7 @@ text-overflow:clip!important;
   <div class="geo-map" aria-label="Localisation du logement">
     <iframe id="osmMapFrame" class="osm-map-frame" title="Carte de localisation" loading="eager"></iframe>
     <div id="mapFallback" class="map-fallback">Localisation en cours…</div>
+    <div id="printOsmMap" class="print-osm-map" aria-label="Carte du logement pour le PDF"><div id="printOsmTiles" class="print-osm-tiles"></div><span class="print-osm-marker" aria-hidden="true"></span><span class="print-osm-credit">© OpenStreetMap contributors</span></div>
   </div>
   <div class="geo-caption">
     <div class="geo-title">Géolocalisation du bien</div>
@@ -888,6 +901,7 @@ async function recoverDiagnostic(sessionId){
       body:JSON.stringify({paymentSessionId:id})});
     const data=await r.json();
     if(!r.ok||!data.ok)throw new Error(data.error||'Diagnostic introuvable.');
+    lastMappedAddress='';
     injectDiagnostic(data);
     setStripeStatus('Diagnostic retrouvé. Votre PDF est prêt.');
     showDiagnosticReady(true);
@@ -971,6 +985,36 @@ const setComp = (key, value) => setText(`[data-comp="${key}"]`, value);
 
 
 let lastMappedAddress = '';
+let mapRequestSequence = 0;
+// Reconstitution d'une carte imprimable à partir des tuiles raster OSM.
+// Le repère est dessiné en HTML : il reste présent dans l'aperçu PDF.
+function buildPrintableOSMMap(lat,lon){
+  const layer=$('printOsmTiles');
+  const printable=$('printOsmMap');
+  if(!layer||!printable)return;
+  const z=15, size=256, scale=Math.pow(2,z);
+  const latitude=Math.max(-85.05112878,Math.min(85.05112878,Number(lat)));
+  const longitude=Number(lon);
+  if(!Number.isFinite(latitude)||!Number.isFinite(longitude))return;
+  const x=(longitude+180)/360*scale;
+  const rad=latitude*Math.PI/180;
+  const y=(1-Math.asinh(Math.tan(rad))/Math.PI)/2*scale;
+  const centerX=x*size, centerY=y*size;
+  // 3x3 tuiles couvrent la vignette A4 sans iframe ni capture cross-origin.
+  layer.innerHTML='';
+  for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){
+    const tx=Math.floor(x)+dx,ty=Math.floor(y)+dy;
+    if(ty<0||ty>=scale)continue;
+    const img=document.createElement('img');
+    img.alt='';img.decoding='async';
+    img.src=`https://tile.openstreetmap.org/${z}/${((tx%scale)+scale)%scale}/${ty}.png`;
+    img.style.left=`calc(50% + ${tx*size-centerX}px)`;
+    img.style.top=`calc(50% + ${ty*size-centerY}px)`;
+    layer.appendChild(img);
+  }
+  printable.dataset.ready='1';
+}
+
 
 async function geocodeAddressOSM(address){
   const url = new URL('https://nominatim.openstreetmap.org/search');
@@ -996,8 +1040,12 @@ async function geocodeAddressOSM(address){
 
 async function updateOSMMap(address){
   const cleaned = String(address || '').trim();
-  if(cleaned.length < 5 || cleaned === lastMappedAddress) return;
+  if(cleaned.length < 5) return;
+  // Une récupération doit aussi recharger la carte après fermeture de l'onglet.
+  if(cleaned === lastMappedAddress && $('printOsmMap')?.dataset.ready === '1') return;
   lastMappedAddress = cleaned;
+  const requestSequence=++mapRequestSequence;
+  if($('printOsmMap'))$('printOsmMap').dataset.ready='';
 
   const fallback = $('mapFallback');
   const frame = $('osmMapFrame');
@@ -1009,6 +1057,8 @@ async function updateOSMMap(address){
 
   try{
     const {lat, lon} = await geocodeAddressOSM(cleaned);
+    if(requestSequence!==mapRequestSequence)return;
+    buildPrintableOSMMap(lat,lon);
 
     const latDelta = 0.009;
     const lonDelta = 0.014;
@@ -1025,6 +1075,8 @@ async function updateOSMMap(address){
     };
     frame.src = src;
   }catch(error){
+    if(requestSequence!==mapRequestSequence)return;
+    lastMappedAddress='';
     console.warn('Carte OSM :', error);
     if(fallback){
       fallback.style.display = 'grid';
