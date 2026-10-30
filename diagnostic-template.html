@@ -650,9 +650,23 @@ text-overflow:clip!important;
 }
 </style>
 
+<style>
+/* Confirmation de disponibilité du document : interface uniquement. */
+.diagnostic-ready{width:min(210mm,100%);margin:0 auto 16px;padding:17px 20px;border:2px solid #20a66a;border-radius:18px;background:#eafaf2;color:#075f3b;box-shadow:0 8px 24px rgba(8,110,67,.12);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.diagnostic-ready[hidden]{display:none!important}
+.diagnostic-ready strong{display:block;font-size:18px;font-weight:900;margin-bottom:4px}
+.diagnostic-ready p{margin:0;font-size:13px;line-height:1.5;color:#075f3b;font-weight:650}
+.diagnostic-ready button{background:#087b4b;color:white;box-shadow:none;white-space:normal;text-align:center}
+@media print{.diagnostic-ready{display:none!important}}
+</style>
 </head>
 <body>
-<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="recoverDiagnosticBtn" type="button">Récupérer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Imprimer / PDF</button></div></div>
+<div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="recoverDiagnosticBtn" type="button">Récupérer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Télécharger / Imprimer PDF</button></div></div>
+
+<section id="diagnosticReady" class="diagnostic-ready" role="status" aria-live="polite" hidden>
+  <div><strong>✓ Votre diagnostic est disponible !</strong><p>Paiement confirmé. Votre document a été retrouvé : aucun nouveau paiement nécessaire.</p></div>
+  <button id="downloadRecoveredBtn" type="button">Télécharger / Imprimer mon PDF</button>
+</section>
 
 <section class="service-shell">
   <div class="service-intro">
@@ -876,7 +890,8 @@ async function recoverDiagnostic(sessionId){
     const data=await r.json();
     if(!r.ok||!data.ok)throw new Error(data.error||'Diagnostic introuvable.');
     injectDiagnostic(data);
-    setStripeStatus('Diagnostic retrouvé. Cliquez sur Imprimer / PDF pour l’enregistrer.');
+    setStripeStatus('Diagnostic retrouvé. Votre PDF est prêt.');
+    showDiagnosticReady(true);
     document.getElementById('printDiagnosticBtn')?.focus();
   }catch(e){setStripeStatus(e.message||'Récupération impossible.',false);}
 }
@@ -923,6 +938,16 @@ async function diagnosticAdminHeaders(){
  const token=await user.getIdToken();
  if(!token)throw new Error('Jeton administrateur indisponible.');
  return {Authorization:'Bearer '+token};
+}
+function showDiagnosticReady(recovered=false){
+  const panel=document.getElementById('diagnosticReady');
+  if(!panel)return;
+  panel.hidden=false;
+  const message=panel.querySelector('p');
+  if(message)message.textContent=recovered
+    ? 'Votre diagnostic a été retrouvé. Aucun nouveau paiement nécessaire. Téléchargez votre PDF ci-dessous.'
+    : 'Votre diagnostic est généré et prêt à être téléchargé au format PDF.';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function setStripeStatus(message,ok=true){const el=document.getElementById('stripeStatus');if(el){el.textContent=message;el.style.color=ok?'':'#B42318';}}
 async function ensureDiagnosticPayment(){
@@ -1464,7 +1489,7 @@ async function generateDiagnostic() {
       localStorage.setItem(RECOVERY_KEY,paidSessionId);
     }
     setLoading(false, `Diagnostic généré le ${new Date(payload.generatedAt).toLocaleString('fr-FR')}.`);
-    if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');}else setStripeStatus('Diagnostic généré en mode administrateur');
+    if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');showDiagnosticReady(false);}else {setStripeStatus('Diagnostic généré en mode administrateur');showDiagnosticReady(false);}
   } catch (error) {
     console.error(error);
     setLoading(false, `Erreur : ${error.message}`);
@@ -1558,6 +1583,9 @@ document.getElementById("requestCoverageBtn")?.addEventListener("click",()=>{
 
 document.getElementById("stripeCheckoutBtn")?.addEventListener("click",async()=>{
  try{await ensureDiagnosticPayment();}catch(e){setStripeStatus(e.message||'Impossible d’ouvrir Stripe.',false);}
+});
+document.getElementById('downloadRecoveredBtn')?.addEventListener('click',()=>{
+  document.getElementById('printDiagnosticBtn')?.click();
 });
 document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
   diagnosticExportLocked=true;
