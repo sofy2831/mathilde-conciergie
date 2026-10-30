@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
@@ -651,10 +650,9 @@ text-overflow:clip!important;
 </style>
 
 <style>
-/* Confirmation de disponibilité du document : interface uniquement. */
+/* Confirmation affichée uniquement après récupération explicite du document. */
 .diagnostic-ready[hidden]{display:none!important}
 .diagnostic-ready{width:min(210mm,100%);margin:0 auto 16px;padding:17px 20px;border:2px solid #20a66a;border-radius:18px;background:#eafaf2;color:#075f3b;box-shadow:0 8px 24px rgba(8,110,67,.12);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.diagnostic-ready[hidden]{display:none!important}
 .diagnostic-ready strong{display:block;font-size:18px;font-weight:900;margin-bottom:4px}
 .diagnostic-ready p{margin:0;font-size:13px;line-height:1.5;color:#075f3b;font-weight:650}
 .diagnostic-ready button{background:#087b4b;color:white;box-shadow:none;white-space:normal;text-align:center}
@@ -1490,7 +1488,7 @@ async function generateDiagnostic() {
       localStorage.setItem(RECOVERY_KEY,paidSessionId);
     }
     setLoading(false, `Diagnostic généré le ${new Date(payload.generatedAt).toLocaleString('fr-FR')}.`);
-    if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');showDiagnosticReady(false);}else {setStripeStatus('Diagnostic généré en mode administrateur');showDiagnosticReady(false);}
+    if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');}else {setStripeStatus('Diagnostic généré en mode administrateur');}
   } catch (error) {
     console.error(error);
     setLoading(false, `Erreur : ${error.message}`);
