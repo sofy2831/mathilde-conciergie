@@ -221,7 +221,7 @@
         productKey: key,
         successUrl,
         cancelUrl,
-        testMode: key === "diagnostic" && new URLSearchParams(window.location.search).get("stripe_test") === "1",
+        testMode: new URLSearchParams(window.location.search).get("stripe_test") === "1",
         partnerRef: getPartnerRef(),
         ...getMarketingAttribution()
       })
