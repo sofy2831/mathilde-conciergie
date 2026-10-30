@@ -86,7 +86,7 @@
       <section id="toolsGrid" class="grid"></section>
 
       <div class="notice">
-        <strong>À savoir :</strong> la connexion administrateur fonctionne. Le contournement de Stripe sera activé à l’étape suivante dans <code>index.js</code> et dans les pages outils.
+        <strong>À savoir :</strong> la connexion administrateur fonctionne. Le test Stripe du diagnostic est réservé aux administrateurs connectés. Les paiements réels des clients restent inchangés.
       </div>
 
       <footer>CleanUp Manager — administration privée</footer>
@@ -127,6 +127,7 @@
         <h3>${tool.title}</h3>
         <p>${tool.description}</p>
         <a href="${tool.href}">Ouvrir l’outil</a>
+        ${tool.title === "Diagnostic de rentabilité" ? '<a style="margin-top:9px;background:#067647" href="diagnostic-template.html?stripe_test=1">Tester Stripe (49 € fictifs)</a>' : ''}
       </article>
     `).join("");
 
