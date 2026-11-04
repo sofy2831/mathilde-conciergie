@@ -783,9 +783,9 @@ function buildStaySeeds(){
   set('heating',heat.length?`Le logement dispose de ${sentenceList(heat)}.${val('heatingNote')?' '+val('heatingNote'):''}`:'');
   set('tv',tv.length?`Les équipements multimédias disponibles sont : ${sentenceList(tv)}.${val('tvNote')?' '+val('tvNote'):''}`:'');
   set('kitchen',kitchen.length?`La cuisine est équipée de ${sentenceList(kitchen)}.${val('kitchenNote')?' '+val('kitchenNote'):''}`:'');
-  set('waste',waste.length?`Le logement prévoit ${sentenceList(waste)}.${val('wasteNote')?' '+val('wasteNote'):''}`:'');
-  set('cleaningStay',clean.length?`Pour l’entretien pendant le séjour, vous disposez de ${sentenceList(clean)}.${val('cleaningNote')?' '+val('cleaningNote'):''}`:'');
-  if(!$('cleaningDeparture').value.trim())set('cleaningDeparture','Merci de laisser le logement rangé et dans un état normal de propreté avant votre départ.');
+  set('waste',waste.length?`Le logement dispose de ${sentenceList(waste)}.${val('wasteNote')?' '+val('wasteNote'):''}`:'');
+  set('cleaningStay',clean.length?`Pour l’entretien pendant le séjour, les équipements suivants sont disponibles : ${sentenceList(clean)}.${val('cleaningNote')?' '+val('cleaningNote'):''}`:'');
+  if(!$('cleaningDeparture').value.trim())set('cleaningDeparture','Merci de laisser le logement propre et rangé avant votre départ.');
 }
 function departureActions(){
   const actions=[];
@@ -1178,7 +1178,8 @@ function compactGuideFields(){
 
 function preparePrintSheet(){
   compactGuideFields();
-  buildRuleSeeds();
+  // Ne pas réécrire les consignes de départ après une modification manuelle.
+  if(!val('departure').trim())buildRuleSeeds();
   $('printTitle').textContent=(val('homeName')||'Bienvenue / Welcome').toUpperCase();
   $('printSubtitle').textContent=tr(val('welcome'),FIELD_LIMITS.welcome,'Bienvenue dans votre logement. Nous vous souhaitons un excellent séjour. / Welcome to your accommodation. We wish you a wonderful stay.');
 
@@ -1250,8 +1251,9 @@ $('buildGuide').onclick=async()=>{
   if($('buildGuide').disabled)return;
   if(!await ensureGuidePayment('build')) return;
   if(!val('departure')||!val('emergency')||!val('departure').includes(' / '))buildRuleSeeds();
-  if(!val('access').includes(' / '))buildAccessText(true);
-  buildWelcomeText(false);buildAccessText(false);
+  // Toujours recalculer les instructions selon le mode d’arrivée réellement sélectionné.
+  buildAccessText(true);
+  buildWelcomeText(false);
   const button=$('buildGuide'),box=$('guideGeneration'),bar=$('guideGenerationBar'),text=$('guideGenerationText'),title=$('guideGenerationTitle');
   button.disabled=true;box.classList.add('show');
   const stages=[[15,'Lecture des informations du logement.'],[35,'Vérification de la cohérence de l’arrivée.'],[58,'Préparation des rubriques bilingues.'],[78,'Mise en page du guide.'],[94,'Vérification du format A4.']];
