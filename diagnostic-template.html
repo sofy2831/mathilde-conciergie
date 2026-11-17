@@ -780,6 +780,7 @@ text-overflow:clip!important;
 
 const STRIPE_PAYMENT_LINK = "";
 let diagnosticExportLocked = false;
+let diagnosticReadyToPrint = false;
 
 const PREMIUM_ALIASES = [
   "orleans","orléans","olivet","saran","fleury les aubrais","saint jean de braye",
@@ -969,7 +970,7 @@ function setStripeStatus(message,ok=true){const el=document.getElementById('stri
 async function ensureDiagnosticPayment(){
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
  if((cleanupAdminMode && !diagnosticStripeTest)||paidSessionId)return true;
- await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{formState:collectFormState(),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});return false;
+ await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{formState:collectFormState(),pendingAction:'generate',diagnosticDraft:{...validateInputs(),nom:$('inputNom').value.trim()}},successUrl:location.href,cancelUrl:location.href});return false;
 }
 function secureDiagnosticPayload(data){return cleanupAdminMode && !diagnosticStripeTest?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
 
@@ -1230,7 +1231,7 @@ function setLoading(isLoading, message = '') {
   const status = $('generationStatus');
 
   if (button) {
-    button.disabled = isLoading;
+    button.disabled = isLoading || diagnosticExportLocked;
     button.textContent = isLoading ? 'Analyse en cours…' : 'Générer mon diagnostic';
     button.style.opacity = isLoading ? '.72' : '1';
     button.style.cursor = isLoading ? 'wait' : 'pointer';
@@ -1261,7 +1262,7 @@ function validateInputs() {
   if (!Number.isInteger(surface) || surface < 10 || surface > 500) throw new Error('La surface doit être comprise entre 10 et 500 m².');
   if (!Number.isInteger(capacite) || capacite < 1 || capacite > 30) throw new Error('La capacité doit être comprise entre 1 et 30 voyageurs.');
 
-  return { adresse, surface: Math.round(surface), capacite: Math.round(capacite) };
+  return { adresse, surface: Math.round(surface), capacite: Math.round(capacite), nom: $('inputNom').value.trim() };
 }
 
 function updateCircle(id, value) {
@@ -1513,6 +1514,8 @@ function injectPage6(ai) {
 }
 
 function injectDiagnostic(payload) {
+  if(payload.nom) $('inputNom').value=payload.nom;
+  if(payload.engine?.inputs){const i=payload.engine.inputs;$('inputAdresse').value=i.adresse;$('coverageAddress').value=i.adresse;$('inputSurface').value=i.surface;$('inputCapacite').value=i.capacite;} 
   injectEngine(payload.engine);
   injectPage1(payload.ai);
   injectPage2(payload.ai);
@@ -1521,6 +1524,9 @@ function injectDiagnostic(payload) {
   injectPage5(payload.ai, payload.engine);
   injectPage6(payload.ai);
   setReportIdentity(payload.generatedAt);
+  diagnosticReadyToPrint=true; diagnosticExportLocked=true;
+  ["inputNom","inputAdresse","inputSurface","inputCapacite","coverageAddress","checkCoverageBtn","stripeCheckoutBtn"].forEach(id=>{if($(id))$(id).disabled=true;});
+  $("generateBtn").disabled=true;
 }
 
 async function generateDiagnostic() {
@@ -1531,7 +1537,7 @@ async function generateDiagnostic() {
 
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(diagnosticStripeTest?await diagnosticAdminHeaders():{}) },
+      headers: { 'Content-Type': 'application/json', ...(cleanupAdminMode?await diagnosticAdminHeaders():{}) },
       body: JSON.stringify(secureDiagnosticPayload(inputs)),
     });
 
@@ -1545,7 +1551,7 @@ async function generateDiagnostic() {
       localStorage.setItem(RECOVERY_KEY,paidSessionId);
     }
     setLoading(false, `Diagnostic généré le ${new Date(payload.generatedAt).toLocaleString('fr-FR')}.`);
-    if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus('Paiement validé · diagnostic généré');}else {setStripeStatus('Diagnostic généré en mode administrateur');}
+    if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);localStorage.removeItem(diagnosticStripeTest?'cleanup_diagnostic_pending_test':'cleanup_diagnostic_pending_live');setStripeStatus('Paiement validé · diagnostic généré');}else {setStripeStatus('Diagnostic généré en mode administrateur');}
   } catch (error) {
     console.error(error);
     setLoading(false, `Erreur : ${error.message}`);
@@ -1649,6 +1655,7 @@ document.getElementById('downloadRecoveredBtn')?.addEventListener('click',()=>{
   document.getElementById('printDiagnosticBtn')?.click();
 });
 document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
+  if(!diagnosticReadyToPrint){setStripeStatus("Générez ou récupérez votre diagnostic avant de télécharger le PDF.",false);return;}
   diagnosticExportLocked=true;
   ["inputNom","inputAdresse","inputSurface","inputCapacite"].forEach(id=>{
     const el=document.getElementById(id); if(el) el.disabled=true;
@@ -1698,25 +1705,33 @@ document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
    setStripeStatus('Environnement Stripe TEST — aucun débit réel.');
  }
  try{
-  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
+  const pendingKey=diagnosticStripeTest?'cleanup_diagnostic_pending_test':'cleanup_diagnostic_pending_live';
+  const pending=localStorage.getItem(pendingKey);
+  const payment=CleanUpStripe.getCurrentSessionId()?await CleanUpStripe.resume(PRODUCT_KEY):pending?await CleanUpStripe.verifyCheckout(PRODUCT_KEY,pending):null;
+  if(!payment)return;
+  if(!payment.paid){localStorage.removeItem(pendingKey);return;}
+  localStorage.setItem(pendingKey,payment.sessionId);
   if(payment.used){
     if(payment.sessionId){
       localStorage.setItem(RECOVERY_KEY,payment.sessionId);
       await recoverDiagnostic(payment.sessionId);
+      if(diagnosticReadyToPrint)localStorage.removeItem(pendingKey);
     }
     return;
   }
   if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
   paidSessionId=payment.sessionId;
   if(paidSessionId)localStorage.setItem(RECOVERY_KEY,paidSessionId);
-  const saved=payment.payload||{};restoreFormState(saved.formState||saved);
+  const d=payment.diagnosticDraft;
+  const saved=d?{fields:{inputNom:d.nom,inputAdresse:d.adresse,coverageAddress:d.adresse,inputSurface:d.surface,inputCapacite:d.capacite}}:payment.payload||CleanUpStripe.readCheckoutState(PRODUCT_KEY)?.payload||{};restoreFormState(saved.formState||saved);
   const restoredFields=(saved.formState||saved).fields||(saved.formState||saved);
   const restoredAddress=String(restoredFields.inputAdresse||restoredFields.coverageAddress||'').trim();
   $('coverageAddress').value=restoredAddress;
   const coverage=updateCoverage(restoredAddress);
   if(['premium','standard'].includes(coverage.level)){verifiedDiagnosticAddress=restoredAddress;$('inputAdresse').value=restoredAddress;}
-  setStripeStatus('Paiement validé · vérifiez vos informations puis générez votre diagnostic sans repayer.');
+  setStripeStatus('Paiement validé · génération du diagnostic…');
   $('stripeCheckoutBtn').disabled=true;
+  if(checkDiagnosticForm()){diagActionBusy=true;try{await generateDiagnostic();}finally{diagActionBusy=false;}}else setStripeStatus('Paiement validé · complétez vos informations sans repayer.',false);
  }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
