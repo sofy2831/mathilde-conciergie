@@ -670,7 +670,10 @@ text-overflow:clip!important;
 .print-osm-credit{position:absolute;right:2px;bottom:2px;background:#ffffffdd;font-size:7px;color:#344054;z-index:2;padding:2px}
 @media print{.page1 .osm-map-frame,.page1 .map-fallback{display:none!important}.page1 .print-osm-map{display:block!important}}
 </style>
-</head>
+<style>
+#diagConfirm{border:0;border-radius:22px;padding:24px;width:min(520px,calc(100% - 28px));box-shadow:0 20px 70px #10182855;color:var(--blue)}
+#diagConfirm::backdrop{background:#10182899}#diagConfirm h2{font-size:23px;text-transform:none;margin:0 0 12px}#diagConfirm dl{background:#F8F7FF;border-radius:14px;padding:14px;display:grid;gap:5px}#diagConfirm dt{font-size:12px;color:#667085}#diagConfirm dd{margin:0 0 8px;font-weight:800;overflow-wrap:anywhere}#diagConfirm .warning{background:#FFF7E6;padding:12px;border-radius:12px;color:#92400E;margin:12px 0}#diagConfirm label{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:15px 0}#diagConfirm button{width:100%;margin-top:8px}#diagConfirmCancel{background:white!important;color:var(--purple);border:1px solid #DDD6FE;box-shadow:none}#diagInputError{color:#B42318;font-size:13px;font-weight:700;margin-top:10px} @media print{#diagConfirm,#diagInputError{display:none!important}}
+</style></head>
 <body>
 <div class="toolbar"><strong>CleanUp Manager — Diagnostic de rentabilité</strong><div style="display:flex;gap:10px;align-items:center"><button id="recoverDiagnosticBtn" type="button">Récupérer mon diagnostic</button><button id="printDiagnosticBtn" type="button">Télécharger / Imprimer PDF</button></div></div>
 
@@ -718,7 +721,7 @@ text-overflow:clip!important;
   </aside>
 </section>
 
-<section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" value="6 Imp. Notre Dame du Chemin, 45000 Orléans"></div><div class="field"><label>Surface</label><input id="inputSurface" value="54 m²"></div><div class="field"><label>Capacité</label><input id="inputCapacite" value="6 voyageurs"></div></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div>
+<section class="panel"><h2>Données du diagnostic</h2><div class="grid diagnostic-inputs"><div class="field"><label>Nom du propriétaire</label><input id="inputNom" required placeholder="Ex. M. Dupont"></div><div class="field"><label>Adresse</label><input id="inputAdresse" placeholder="Adresse vérifiée" required readonly></div><div class="field"><label>Surface (m²)</label><input id="inputSurface" type="number" min="10" max="500" step="1" required placeholder="Ex. 33"></div><div class="field"><label>Capacité (voyageurs)</label><input id="inputCapacite" type="number" min="1" max="30" step="1" required placeholder="Ex. 4"></div></div><div id="diagInputError" role="alert" hidden></div><div class="generate-action"><button id="generateBtn" type="button">Générer mon diagnostic</button></div>
 <div class="generation-progress" id="generationProgress" aria-hidden="true">
   <div class="generation-progress-head">
     <span id="generationProgressText">Préparation de l’analyse…</span>
@@ -873,7 +876,7 @@ function renderCoverageResult(result){
   request?.classList.toggle("show",result.level==="unavailable");
 
   const canBuy=result.level==="premium" || result.level==="standard";
-  if(stripeBtn) stripeBtn.disabled=!canBuy;
+  if(stripeBtn) stripeBtn.disabled=!canBuy || !!paidSessionId || (cleanupAdminMode && !diagnosticStripeTest);
   if(stripeStatus){
     stripeStatus.textContent=canBuy
       ? "Adresse couverte — paiement sécurisé Stripe."
@@ -926,7 +929,7 @@ async function waitForAdminAuth(){
 function collectFormState(extra={}){
  const fields={};
  document.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
-  if(el.type==='file')return;
+  if(el.type==='file'||el.closest('#diagConfirm'))return;
   fields[el.id]=(el.type==='checkbox'||el.type==='radio')?el.checked:el.value;
  });
  return {fields,...extra};
@@ -936,7 +939,7 @@ function restoreFormState(saved){
  const fields=saved.fields||saved;
  Object.entries(fields||{}).forEach(([id,value])=>{
   const el=document.getElementById(id);if(!el||el.type==='file')return;
-  if(el.type==='checkbox'||el.type==='radio')el.checked=!!value;else el.value=value??'';
+  if(el.type==='checkbox'||el.type==='radio')el.checked=!!value;else el.value=el.type==='number'&&value!==''&&value!=null?String(value).match(/\d+(?:[.,]\d+)?/)?.[0]?.replace(',','.')||'':value??'';
   el.dispatchEvent(new Event('input',{bubbles:true}));
   el.dispatchEvent(new Event('change',{bubbles:true}));
  });
@@ -1249,12 +1252,14 @@ function setLoading(isLoading, message = '') {
 
 function validateInputs() {
   const adresse = $('inputAdresse').value.trim();
-  const surface = onlyNumber($('inputSurface').value, NaN);
-  const capacite = onlyNumber($('inputCapacite').value, NaN);
+  const surface = Number($('inputSurface').value);
+  const capacite = Number($('inputCapacite').value);
+  if (!$('inputNom').value.trim()) throw new Error('Renseignez le nom du propriétaire.');
+  if (!verifiedDiagnosticAddress || adresse !== verifiedDiagnosticAddress || adresse !== $('coverageAddress').value.trim()) throw new Error('Vérifiez d’abord la couverture de votre adresse.');
 
   if (adresse.length < 5) throw new Error('Renseigne une adresse complète.');
-  if (!Number.isFinite(surface) || surface < 10 || surface > 500) throw new Error('La surface doit être comprise entre 10 et 500 m².');
-  if (!Number.isFinite(capacite) || capacite < 1 || capacite > 30) throw new Error('La capacité doit être comprise entre 1 et 30 voyageurs.');
+  if (!Number.isInteger(surface) || surface < 10 || surface > 500) throw new Error('La surface doit être comprise entre 10 et 500 m².');
+  if (!Number.isInteger(capacite) || capacite < 1 || capacite > 30) throw new Error('La capacité doit être comprise entre 1 et 30 voyageurs.');
 
   return { adresse, surface: Math.round(surface), capacite: Math.round(capacite) };
 }
@@ -1520,8 +1525,8 @@ function injectDiagnostic(payload) {
 
 async function generateDiagnostic() {
   try {
-    if(!await ensureDiagnosticPayment())return;
     const inputs = validateInputs();
+    if(!await ensureDiagnosticPayment())return;
     setLoading(true, 'Analyse du logement et rédaction des 6 pages…');
 
     const response = await fetch(API_URL, {
@@ -1548,6 +1553,7 @@ async function generateDiagnostic() {
 }
 
 
+let verifiedDiagnosticAddress="";
 const coverageAddressEl = document.getElementById("coverageAddress");
 const inputAddressEl = document.getElementById("inputAdresse");
 const checkCoverageBtn = document.getElementById("checkCoverageBtn");
@@ -1555,6 +1561,7 @@ const checkCoverageBtn = document.getElementById("checkCoverageBtn");
 if(coverageAddressEl && inputAddressEl){
   // Le champ de vérification devient le point d’entrée principal.
   coverageAddressEl.value = "";
+  coverageAddressEl.addEventListener("input",()=>{verifiedDiagnosticAddress="";inputAddressEl.value="";updateCoverage("");});
 
   // Si l’adresse est modifiée plus tard dans le formulaire, on la reflète en haut.
   inputAddressEl.addEventListener("input",()=>{
@@ -1584,10 +1591,13 @@ checkCoverageBtn?.addEventListener("click",()=>{
   checkCoverageBtn.disabled=true;
 
   setTimeout(()=>{
+    if(address!==coverageAddressEl.value.trim()){checkCoverageBtn.disabled=false;checkCoverageBtn.textContent="Vérifier";return;}
+    verifiedDiagnosticAddress="";inputAddressEl.value="";
     const result=updateCoverage(address);
 
     // Reprise automatique dans les données du diagnostic uniquement si le diagnostic est disponible.
     if((result.level==="premium" || result.level==="standard") && inputAddressEl){
+      verifiedDiagnosticAddress=address;
       inputAddressEl.value=address;
       inputAddressEl.dispatchEvent(new Event("input",{bubbles:true}));
     }
@@ -1633,7 +1643,7 @@ document.getElementById("requestCoverageBtn")?.addEventListener("click",()=>{
 });
 
 document.getElementById("stripeCheckoutBtn")?.addEventListener("click",async()=>{
- try{await ensureDiagnosticPayment();}catch(e){setStripeStatus(e.message||'Impossible d’ouvrir Stripe.',false);}
+ confirmDiagnostic('pay');
 });
 document.getElementById('downloadRecoveredBtn')?.addEventListener('click',()=>{
   document.getElementById('printDiagnosticBtn')?.click();
@@ -1650,19 +1660,30 @@ document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
 });
 updateCoverage("");
 
-$('generateBtn').addEventListener('click', ()=>{
-  const verifiedAddress=(coverageAddressEl?.value||"").trim();
-  if(verifiedAddress && inputAddressEl && inputAddressEl.value.trim() !== verifiedAddress){
-    inputAddressEl.value=verifiedAddress;
-  }
-  generateDiagnostic();
-});
+$('generateBtn').addEventListener('click', ()=>confirmDiagnostic('generate'));
 $('inputNom')?.addEventListener('input', () => setReportIdentity());
 $('inputAdresse')?.addEventListener('change', () => updateOSMMap($('inputAdresse').value));
 updateOSMMap($('inputAdresse')?.value || '');
 setReportIdentity();
 </script>
-<script type="module" src="admin-auth.js"></script>
+<dialog id="diagConfirm" aria-labelledby="diagConfirmTitle"><h2 id="diagConfirmTitle">Vérifiez vos informations</h2><p>Assurez-vous que les données de votre logement sont exactes.</p><dl><dt>Propriétaire</dt><dd id="confirmNom"></dd><dt>Adresse</dt><dd id="confirmAdresse"></dd><dt>Surface</dt><dd id="confirmSurface"></dd><dt>Capacité</dt><dd id="confirmCapacite"></dd></dl><p class="warning">Attention : une fois généré, votre diagnostic ne pourra plus être modifié gratuitement.</p><label><input type="checkbox" id="diagConfirmCheck"> Je confirme l’exactitude des informations renseignées.</label><button id="diagConfirmGo" type="button" disabled>Confirmer et générer mon diagnostic</button><button id="diagConfirmCancel" type="button">Modifier mes informations</button></dialog>
+<script>
+let diagActionBusy=false;
+function checkDiagnosticForm(){
+ const error=$('diagInputError');error.hidden=true;
+ try{return validateInputs();}catch(e){error.textContent=e.message;error.hidden=false;error.scrollIntoView({block:'nearest'});return null;}
+}
+function confirmDiagnostic(action){
+ if(diagActionBusy||diagnosticExportLocked)return;
+ const inputs=checkDiagnosticForm();if(!inputs)return;
+ const modal=$('diagConfirm'), check=$('diagConfirmCheck'), go=$('diagConfirmGo');
+ $('confirmNom').textContent=$('inputNom').value.trim();$('confirmAdresse').textContent=inputs.adresse;$('confirmSurface').textContent=inputs.surface+' m²';$('confirmCapacite').textContent=inputs.capacite+' voyageurs';
+ check.checked=false;go.disabled=true;go.textContent=action==='pay'?'Confirmer et payer 49 €':'Confirmer et générer mon diagnostic';
+ check.onchange=()=>{go.disabled=!check.checked;};$('diagConfirmCancel').onclick=()=>modal.close();
+ go.onclick=async()=>{if(!check.checked||diagActionBusy)return;modal.close();if(!checkDiagnosticForm())return;diagActionBusy=true;try{if(action==='pay'){await ensureDiagnosticPayment();}else{await generateDiagnostic();}}catch(e){setStripeStatus(e.message,false);}finally{diagActionBusy=false;}};
+ modal.showModal();
+}
+</script><script type="module" src="admin-auth.js"></script>
 
 <script type="module">
 document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
@@ -1689,7 +1710,13 @@ document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
   paidSessionId=payment.sessionId;
   if(paidSessionId)localStorage.setItem(RECOVERY_KEY,paidSessionId);
   const saved=payment.payload||{};restoreFormState(saved.formState||saved);
-  setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>document.getElementById('generateBtn')?.click(),150);
+  const restoredFields=(saved.formState||saved).fields||(saved.formState||saved);
+  const restoredAddress=String(restoredFields.inputAdresse||restoredFields.coverageAddress||'').trim();
+  $('coverageAddress').value=restoredAddress;
+  const coverage=updateCoverage(restoredAddress);
+  if(['premium','standard'].includes(coverage.level)){verifiedDiagnosticAddress=restoredAddress;$('inputAdresse').value=restoredAddress;}
+  setStripeStatus('Paiement validé · vérifiez vos informations puis générez votre diagnostic sans repayer.');
+  $('stripeCheckoutBtn').disabled=true;
  }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
