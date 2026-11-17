@@ -668,7 +668,7 @@ text-overflow:clip!important;
 .print-osm-marker{position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-95%) rotate(-45deg);border-radius:50% 50% 50% 0;background:#66B532;border:3px solid white;box-shadow:0 2px 6px #34405488;z-index:2}
 .print-osm-marker::after{content:"";position:absolute;inset:5px;border-radius:50%;background:white}
 .print-osm-credit{position:absolute;right:2px;bottom:2px;background:#ffffffdd;font-size:7px;color:#344054;z-index:2;padding:2px}
-@media print{.page1 .osm-map-frame,.page1 .map-fallback{display:none!important}.page1 .print-osm-map{display:block!important}}
+@media print{.page1 .osm-map-frame,.page1 .map-fallback{display:none!important}.page1 .print-osm-map{display:block!important}.print-osm-map:not([data-ready="1"]) .print-osm-marker,.print-osm-map:not([data-ready="1"]) .print-osm-tiles{display:none!important}.print-osm-map:not([data-ready="1"])::after{content:"Carte indisponible";position:absolute;inset:0;display:grid;place-items:center;font-size:12px}}
 </style>
 <style>
 #diagConfirm{border:0;border-radius:22px;padding:24px;width:min(520px,calc(100% - 28px));box-shadow:0 20px 70px #10182855;color:var(--blue)}
@@ -896,21 +896,33 @@ function updateCoverage(value){
 const PRODUCT_KEY='diagnostic';
 const RECOVERY_KEY=new URLSearchParams(location.search).get('stripe_test')==='1'?'cleanup_diagnostic_last_test_session':'cleanup_diagnostic_last_paid_session';
 const RECOVERY_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/retrievePaidDiagnostic';
-async function recoverDiagnostic(sessionId){
+let recoveryBusy=false;
+async function recoverDiagnostic(sessionId, showBanner=true){
+  if(recoveryBusy)return false;
   const id=String(sessionId||'').trim();
   if(!id)return setStripeStatus('Aucune commande enregistrée sur cet appareil.',false);
+  recoveryBusy=true;
   try{
     setStripeStatus('Récupération du diagnostic en cours…');
     const r=await fetch(RECOVERY_URL,{method:'POST',headers:{'Content-Type':'application/json',...(diagnosticStripeTest?await diagnosticAdminHeaders():{})},
       body:JSON.stringify({paymentSessionId:id})});
     const data=await r.json();
     if(!r.ok||!data.ok)throw new Error(data.error||'Diagnostic introuvable.');
+    paidSessionId=id;
     lastMappedAddress='';
     injectDiagnostic(data);
+    clearInterval(generationProgressTimer);
+    generationProgressTimer=null;
+    $('generationProgress')?.classList.remove('show');
+    $('generationStatus').textContent='';
+    $('diagInputError').hidden=true;
+    localStorage.setItem(RECOVERY_KEY,id);
+    localStorage.removeItem(diagnosticStripeTest?'cleanup_diagnostic_pending_test':'cleanup_diagnostic_pending_live');
     setStripeStatus('Diagnostic retrouvé. Votre PDF est prêt.');
-    showDiagnosticReady(true);
+    if(showBanner)showDiagnosticReady(true);
     document.getElementById('printDiagnosticBtn')?.focus();
-  }catch(e){setStripeStatus(e.message||'Récupération impossible.',false);}
+    return true;
+  }catch(e){setStripeStatus(e.message||'Récupération impossible.',false);return false;}finally{recoveryBusy=false;}
 }
 
 const diagnosticStripeTest = new URLSearchParams(location.search).get('stripe_test') === '1';
@@ -992,7 +1004,7 @@ let lastMappedAddress = '';
 let mapRequestSequence = 0;
 // Reconstitution d'une carte imprimable à partir des tuiles raster OSM.
 // Le repère est dessiné en HTML : il reste présent dans l'aperçu PDF.
-function buildPrintableOSMMap(lat,lon){
+async function buildPrintableOSMMap(lat,lon){
   const layer=$('printOsmTiles');
   const printable=$('printOsmMap');
   if(!layer||!printable)return;
@@ -1006,17 +1018,21 @@ function buildPrintableOSMMap(lat,lon){
   const centerX=x*size, centerY=y*size;
   // 3x3 tuiles couvrent la vignette A4 sans iframe ni capture cross-origin.
   layer.innerHTML='';
+  const loads=[];
   for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){
     const tx=Math.floor(x)+dx,ty=Math.floor(y)+dy;
     if(ty<0||ty>=scale)continue;
     const img=document.createElement('img');
     img.alt='';img.decoding='async';
+    loads.push(new Promise(resolve=>{img.onload=()=>resolve(true);img.onerror=()=>resolve(false);setTimeout(()=>resolve(false),8000);}));
     img.src=`https://tile.openstreetmap.org/${z}/${((tx%scale)+scale)%scale}/${ty}.png`;
     img.style.left=`calc(50% + ${tx*size-centerX}px)`;
     img.style.top=`calc(50% + ${ty*size-centerY}px)`;
     layer.appendChild(img);
   }
-  printable.dataset.ready='1';
+  const results=await Promise.all(loads);
+  if(results.length && results.every(Boolean))printable.dataset.ready='1';
+  return printable.dataset.ready==='1';
 }
 
 
@@ -1062,7 +1078,8 @@ async function updateOSMMap(address){
   try{
     const {lat, lon} = await geocodeAddressOSM(cleaned);
     if(requestSequence!==mapRequestSequence)return;
-    buildPrintableOSMMap(lat,lon);
+    await buildPrintableOSMMap(lat,lon);
+    if(requestSequence!==mapRequestSequence)return;
 
     const latDelta = 0.009;
     const lonDelta = 0.014;
@@ -1516,6 +1533,9 @@ function injectPage6(ai) {
 function injectDiagnostic(payload) {
   if(payload.nom) $('inputNom').value=payload.nom;
   if(payload.engine?.inputs){const i=payload.engine.inputs;$('inputAdresse').value=i.adresse;$('coverageAddress').value=i.adresse;$('inputSurface').value=i.surface;$('inputCapacite').value=i.capacite;} 
+  const address=$('inputAdresse').value.trim();
+  verifiedDiagnosticAddress=address;
+  updateCoverage(address);
   injectEngine(payload.engine);
   injectPage1(payload.ai);
   injectPage2(payload.ai);
@@ -1529,7 +1549,10 @@ function injectDiagnostic(payload) {
   $("generateBtn").disabled=true;
 }
 
+let generationBusy=false;
 async function generateDiagnostic() {
+  if(generationBusy||diagnosticExportLocked||recoveryBusy)return;
+  generationBusy=true;
   try {
     const inputs = validateInputs();
     if(!await ensureDiagnosticPayment())return;
@@ -1554,8 +1577,11 @@ async function generateDiagnostic() {
     if(!cleanupAdminMode || diagnosticStripeTest){CleanUpStripe.complete(PRODUCT_KEY);localStorage.removeItem(diagnosticStripeTest?'cleanup_diagnostic_pending_test':'cleanup_diagnostic_pending_live');setStripeStatus('Paiement validé · diagnostic généré');}else {setStripeStatus('Diagnostic généré en mode administrateur');}
   } catch (error) {
     console.error(error);
+    if(paidSessionId && /déjà|already|utilis|interromp|fetch|network/i.test(error.message)){
+      if(await recoverDiagnostic(paidSessionId,false)){setLoading(false);return;}
+    }
     setLoading(false, `Erreur : ${error.message}`);
-  }
+  } finally {generationBusy=false;}
 }
 
 
@@ -1654,7 +1680,7 @@ document.getElementById("stripeCheckoutBtn")?.addEventListener("click",async()=>
 document.getElementById('downloadRecoveredBtn')?.addEventListener('click',()=>{
   document.getElementById('printDiagnosticBtn')?.click();
 });
-document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
+document.getElementById("printDiagnosticBtn")?.addEventListener("click",async()=>{
   if(!diagnosticReadyToPrint){setStripeStatus("Générez ou récupérez votre diagnostic avant de télécharger le PDF.",false);return;}
   diagnosticExportLocked=true;
   ["inputNom","inputAdresse","inputSurface","inputCapacite"].forEach(id=>{
@@ -1663,7 +1689,18 @@ document.getElementById("printDiagnosticBtn")?.addEventListener("click",()=>{
   const generate=document.getElementById("generateBtn");
   if(generate) generate.disabled=true;
   document.getElementById("exportLockNote")?.classList.add("show");
-  window.print();
+  const printBtn=$('printDiagnosticBtn');
+  printBtn.disabled=true;
+  try{
+    const deadline=Date.now()+10000;
+    while($('printOsmMap')?.dataset.ready!=='1' && Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,250));
+    if($('printOsmMap')?.dataset.ready!=='1'){
+      lastMappedAddress='';
+      await updateOSMMap($('inputAdresse').value);
+    }
+    if($('printOsmMap')?.dataset.ready!=='1' && !confirm('La carte géographique est indisponible. Imprimer le diagnostic sans carte ?'))return;
+    window.print();
+  }finally{printBtn.disabled=false;}
 });
 updateCoverage("");
 
@@ -1676,12 +1713,13 @@ setReportIdentity();
 <dialog id="diagConfirm" aria-labelledby="diagConfirmTitle"><h2 id="diagConfirmTitle">Vérifiez vos informations</h2><p>Assurez-vous que les données de votre logement sont exactes.</p><dl><dt>Propriétaire</dt><dd id="confirmNom"></dd><dt>Adresse</dt><dd id="confirmAdresse"></dd><dt>Surface</dt><dd id="confirmSurface"></dd><dt>Capacité</dt><dd id="confirmCapacite"></dd></dl><p class="warning">Attention : une fois généré, votre diagnostic ne pourra plus être modifié gratuitement.</p><label><input type="checkbox" id="diagConfirmCheck"> Je confirme l’exactitude des informations renseignées.</label><button id="diagConfirmGo" type="button" disabled>Confirmer et générer mon diagnostic</button><button id="diagConfirmCancel" type="button">Modifier mes informations</button></dialog>
 <script>
 let diagActionBusy=false;
+let paymentResumeBusy=true;
 function checkDiagnosticForm(){
  const error=$('diagInputError');error.hidden=true;
  try{return validateInputs();}catch(e){error.textContent=e.message;error.hidden=false;error.scrollIntoView({block:'nearest'});return null;}
 }
 function confirmDiagnostic(action){
- if(diagActionBusy||diagnosticExportLocked)return;
+ if(diagActionBusy||generationBusy||recoveryBusy||paymentResumeBusy||diagnosticExportLocked)return;
  const inputs=checkDiagnosticForm();if(!inputs)return;
  const modal=$('diagConfirm'), check=$('diagConfirmCheck'), go=$('diagConfirmGo');
  $('confirmNom').textContent=$('inputNom').value.trim();$('confirmAdresse').textContent=inputs.adresse;$('confirmSurface').textContent=inputs.surface+' m²';$('confirmCapacite').textContent=inputs.capacite+' voyageurs';
@@ -1694,9 +1732,10 @@ function confirmDiagnostic(action){
 
 <script type="module">
 document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
-  recoverDiagnostic(localStorage.getItem(RECOVERY_KEY));
+  if(!paymentResumeBusy&&!generationBusy)recoverDiagnostic(localStorage.getItem(RECOVERY_KEY));
 });
 (async()=>{
+ try{
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
  if(cleanupAdminMode && !diagnosticStripeTest){document.getElementById('generateBtn').textContent='Générer le diagnostic — Admin';const b=document.getElementById('stripeCheckoutBtn');if(b){b.textContent='Mode administrateur actif';b.disabled=true;}setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
  if(diagnosticStripeTest){
@@ -1714,7 +1753,7 @@ document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
   if(payment.used){
     if(payment.sessionId){
       localStorage.setItem(RECOVERY_KEY,payment.sessionId);
-      await recoverDiagnostic(payment.sessionId);
+      await recoverDiagnostic(payment.sessionId,false);
       if(diagnosticReadyToPrint)localStorage.removeItem(pendingKey);
     }
     return;
@@ -1733,6 +1772,7 @@ document.getElementById('recoverDiagnosticBtn')?.addEventListener('click',()=>{
   $('stripeCheckoutBtn').disabled=true;
   if(checkDiagnosticForm()){diagActionBusy=true;try{await generateDiagnostic();}finally{diagActionBusy=false;}}else setStripeStatus('Paiement validé · complétez vos informations sans repayer.',false);
  }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
+ }finally{paymentResumeBusy=false;}
 })();
 </script>
 
