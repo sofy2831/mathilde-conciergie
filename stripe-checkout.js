@@ -207,7 +207,8 @@
   async function createCheckout({
     productKey,
     successUrl = window.location.href,
-    cancelUrl = window.location.href
+    cancelUrl = window.location.href,
+    diagnosticDraft = null
   }) {
     const key = assertProductKey(productKey);
 
@@ -219,6 +220,7 @@
       },
       body: JSON.stringify({
         productKey: key,
+        ...(key === "diagnostic" && diagnosticDraft ? {diagnosticDraft} : {}),
         successUrl,
         cancelUrl,
         testMode: new URLSearchParams(window.location.search).get("stripe_test") === "1",
@@ -244,6 +246,10 @@
       throw new Error("Stripe n'a renvoyé aucune URL de paiement.");
     }
 
+    if(key === "diagnostic" && data.sessionId){
+      const test = new URLSearchParams(location.search).get("stripe_test") === "1";
+      localStorage.setItem(test?"cleanup_diagnostic_pending_test":"cleanup_diagnostic_pending_live",data.sessionId);
+    }
     window.location.assign(data.checkoutUrl);
 
     return {
@@ -311,7 +317,8 @@
     const checkout = await createCheckout({
       productKey: key,
       successUrl,
-      cancelUrl
+      cancelUrl,
+      diagnosticDraft: key === "diagnostic" ? payload?.diagnosticDraft : null
     });
 
     if (checkout.adminBypass === true) {
