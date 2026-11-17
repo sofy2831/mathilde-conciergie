@@ -1004,7 +1004,7 @@ let lastMappedAddress = '';
 let mapRequestSequence = 0;
 // Reconstitution d'une carte imprimable à partir des tuiles raster OSM.
 // Le repère est dessiné en HTML : il reste présent dans l'aperçu PDF.
-async function buildPrintableOSMMap(lat,lon){
+async function buildPrintableOSMMap(lat,lon,sequence){
   const layer=$('printOsmTiles');
   const printable=$('printOsmMap');
   if(!layer||!printable)return;
@@ -1024,38 +1024,48 @@ async function buildPrintableOSMMap(lat,lon){
     if(ty<0||ty>=scale)continue;
     const img=document.createElement('img');
     img.alt='';img.decoding='async';
-    loads.push(new Promise(resolve=>{img.onload=()=>resolve(true);img.onerror=()=>resolve(false);setTimeout(()=>resolve(false),8000);}));
+    const left=tx*size-centerX, top=ty*size-centerY;
+    const required=left<190 && left+size> -190 && top<100 && top+size> -100;
+    const loaded=new Promise(resolve=>{img.onload=()=>resolve(true);img.onerror=()=>resolve(false);setTimeout(()=>resolve(false),12000);});
+    if(required)loads.push(loaded);
     img.src=`https://tile.openstreetmap.org/${z}/${((tx%scale)+scale)%scale}/${ty}.png`;
     img.style.left=`calc(50% + ${tx*size-centerX}px)`;
     img.style.top=`calc(50% + ${ty*size-centerY}px)`;
     layer.appendChild(img);
   }
   const results=await Promise.all(loads);
-  if(results.length && results.every(Boolean))printable.dataset.ready='1';
+  if(sequence===mapRequestSequence && results.length && results.every(Boolean))printable.dataset.ready='1';
   return printable.dataset.ready==='1';
 }
 
 
 async function geocodeAddressOSM(address){
-  const url = new URL('https://nominatim.openstreetmap.org/search');
-  url.searchParams.set('format', 'json');
-  url.searchParams.set('limit', '1');
-  url.searchParams.set('countrycodes', 'fr');
-  url.searchParams.set('q', address);
-
-  const response = await fetch(url.toString(), {
-    headers: {'Accept': 'application/json'},
-    cache: 'no-store'
-  });
-  if(!response.ok) throw new Error('Géolocalisation indisponible');
-
-  const results = await response.json();
-  if(!Array.isArray(results) || !results.length) throw new Error('Adresse introuvable');
-
-  return {
-    lat: Number(results[0].lat),
-    lon: Number(results[0].lon)
-  };
+  // Corrige les coquilles courantes sans modifier l'adresse du dossier.
+  const query=String(address).replace(/\bd6u\b/gi,'du').replace(/\bimp\.?\s+/gi,'impasse ').trim();
+  const postcode=query.match(/\b\d{5}\b/)?.[0];
+  try{
+    const url=new URL('https://data.geopf.fr/geocodage/search');
+    url.searchParams.set('q',query);
+    url.searchParams.set('limit','5');
+    url.searchParams.set('index','address');
+    if(postcode)url.searchParams.set('postcode',postcode);
+    const response=await fetch(url,{signal:AbortSignal.timeout(8000)});
+    if(response.ok){
+      const data=await response.json();
+      const feature=data.features?.find(f=>['housenumber','street'].includes(f.properties?.type)&&(!postcode||f.properties?.postcode===postcode)&&Number(f.properties?.score)>=0.55);
+      if(feature){const [lon,lat]=feature.geometry.coordinates;if(Number.isFinite(lat)&&Number.isFinite(lon))return {lat,lon};}
+    }
+  }catch(error){console.warn('Géocodage IGN :',error);}
+  const url=new URL('https://nominatim.openstreetmap.org/search');
+  url.searchParams.set('format','json');
+  url.searchParams.set('limit','1');
+  url.searchParams.set('countrycodes','fr');
+  url.searchParams.set('q',query);
+  const response=await fetch(url,{headers:{Accept:'application/json'},signal:AbortSignal.timeout(8000)});
+  if(!response.ok)throw new Error('Géolocalisation indisponible');
+  const results=await response.json();
+  if(!results?.length)throw new Error('Adresse introuvable');
+  return {lat:Number(results[0].lat),lon:Number(results[0].lon)};
 }
 
 async function updateOSMMap(address){
@@ -1078,7 +1088,7 @@ async function updateOSMMap(address){
   try{
     const {lat, lon} = await geocodeAddressOSM(cleaned);
     if(requestSequence!==mapRequestSequence)return;
-    await buildPrintableOSMMap(lat,lon);
+    await buildPrintableOSMMap(lat,lon,requestSequence);
     if(requestSequence!==mapRequestSequence)return;
 
     const latDelta = 0.009;
