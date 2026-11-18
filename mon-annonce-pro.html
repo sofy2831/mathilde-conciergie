@@ -957,7 +957,8 @@ h1 span{color:var(--terracotta)}
         <span><i>✓</i> Analyse des incohérences</span>
         <span><i>✓</i> Prévisualisation avant export</span>
       </div>
-      <button class="btn terracotta" id="stripeCheckoutBtn" type="button" style="margin-top:20px;width:100%">Payer 29 € et commencer</button>
+      <button class="btn terracotta" id="stripeCheckoutBtn" type="button" style="margin-top:20px;width:100%">Commencer mon annonce</button>
+      <button class="btn soft" id="recoverListing" type="button" style="margin-top:10px;width:100%">Récupérer mon annonce</button>
       <p id="stripeStatus" style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.65)">Paiement sécurisé par Stripe</p>
     </aside>
   </section>
@@ -1297,6 +1298,15 @@ let adviceItems = [];
 let generationLocked = false;
 const PRODUCT_KEY = 'annonce';
 let paidSessionId = '';
+const listingStripeTest = new URLSearchParams(location.search).get('stripe_test') === '1';
+const recoveryKey = listingStripeTest ? 'cleanup_annonce_last_test_session' : 'cleanup_annonce_last_paid_session';
+let paidListingReady = false;
+async function listingAdminHeaders(){
+  const api=await waitForAdminAuth();
+  const token=api ? await api.getIdToken() : null;
+  return token ? {Authorization:`Bearer ${token}`} : {};
+}
+
 
 const num = id => Number($(id)?.value || 0);
 const val = id => ($(id)?.value || '').trim();
@@ -1736,7 +1746,6 @@ async function savePhotosForCheckout(){
     name:p.name,width:p.width,height:p.height,size:p.size,
     type:p.file.type,blob:p.file
   }));
-  if(!records.length) return;
   const db=await openCheckoutMediaDb();
   await new Promise((resolve,reject)=>{
     const tx=db.transaction('media','readwrite');
@@ -1854,13 +1863,16 @@ async function refreshAdminInterface(){
   const api = await waitForAdminAuth();
   cleanupAdminMode = api ? await api.isAdmin() : false;
 
-  if(cleanupAdminMode){
+  if(cleanupAdminMode && !listingStripeTest){
     $('stripeCheckoutBtn').textContent = 'Mode administrateur actif';
     $('stripeCheckoutBtn').disabled = true;
     $('stripeCheckoutBtn').style.opacity = '1';
     $('stripeStatus').textContent = 'Connexion Firebase vérifiée · aucun paiement demandé';
     $('stripeStatus').style.color = '#DDE9D9';
     $('generateListing').textContent = '✦ Générer mon annonce — Admin';
+  }else if(listingStripeTest){
+    $('stripeStatus').textContent='Stripe TEST · paiement fictif à la génération';
+    $('generateListing').textContent='✦ Tester le paiement et générer';
   }
 }
 
@@ -1947,7 +1959,10 @@ async function generateListingFromServer(options = {}){
     const api=await waitForAdminAuth();
     cleanupAdminMode=api ? await api.isAdmin() : false;
 
-    if(!cleanupAdminMode && !paidSessionId){
+    if(paidListingReady) return;
+    if(listingStripeTest && !cleanupAdminMode) throw new Error('Connectez-vous au compte administrateur pour le test Stripe.');
+    if((!cleanupAdminMode || listingStripeTest) && !paidSessionId){
+      if(payload.property.address.length<5 || payload.property.capacity<1 || payload.property.capacity>30) throw new Error('Renseignez une adresse et une capacité valide (1 à 30 voyageurs).');
       button.disabled=true;
       button.textContent='Ouverture du paiement…';
       $('stripeStatus').textContent='Redirection vers le paiement sécurisé Stripe…';
@@ -1990,9 +2005,9 @@ async function generateListingFromServer(options = {}){
         : 'Création des textes adaptés aux plateformes.'
     );
 
-    const securedPayload=cleanupAdminMode
-      ? payloadWithImages
-      : CleanUpStripe.addPaymentSessionToPayload(payloadWithImages,paidSessionId);
+    const securedPayload=paidSessionId
+      ? CleanUpStripe.addPaymentSessionToPayload(payloadWithImages,paidSessionId)
+      : payloadWithImages;
 
     setListingGenerationProgress(
       56,
@@ -2002,7 +2017,7 @@ async function generateListingFromServer(options = {}){
 
     const response=await fetch(GENERATE_LISTING_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json',...(await listingAdminHeaders())},
       body:JSON.stringify(securedPayload)
     });
 
@@ -2033,7 +2048,9 @@ async function generateListingFromServer(options = {}){
       : 'Paiement validé · annonce générée';
     $('stripeStatus').style.color='#DDE9D9';
 
-    if(!cleanupAdminMode){
+    if(paidSessionId){
+      localStorage.setItem(recoveryKey,paidSessionId);
+      paidListingReady=true;
       CleanUpStripe.complete(PRODUCT_KEY);
       await clearCheckoutPhotos();
     }
@@ -2045,8 +2062,8 @@ async function generateListingFromServer(options = {}){
     stopListingGenerationProgress(error.message || "La génération de l'annonce a échoué.");
     alert(error.message || "La génération de l'annonce a échoué.");
   }finally{
-    button.disabled=false;
-    button.textContent=cleanupAdminMode
+    button.disabled=paidListingReady;
+    button.textContent=paidListingReady ? 'Annonce générée' : cleanupAdminMode && !listingStripeTest
       ? '✦ Régénérer mon annonce — Admin'
       : previousText;
   }
@@ -2971,7 +2988,9 @@ $('resetAll').addEventListener('click',async ()=>{
 
   if(isAdmin){
     if(!confirm('Réinitialiser le formulaire et créer une nouvelle annonce en mode administrateur ?')) return;
-    window.location.reload();
+    CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
+    await clearCheckoutPhotos();
+    const url=new URL(location.href);url.searchParams.delete('session_id');location.assign(url.href);
     return;
   }
 
@@ -2979,38 +2998,39 @@ $('resetAll').addEventListener('click',async ()=>{
 
   CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
   await clearCheckoutPhotos();
-  window.location.reload();
+  const url=new URL(location.href);url.searchParams.delete('session_id');location.assign(url.href);
 });
 
-$('stripeCheckoutBtn').addEventListener('click',async ()=>{
-  const api=await waitForAdminAuth();
-  const isAdmin=api ? await api.isAdmin() : false;
-
-  if(isAdmin){
-    $('stripeStatus').textContent='Mode administrateur déjà actif.';
-    $('stripeStatus').style.color='#DDE9D9';
-    return;
-  }
-
-  try{
-    $('stripeCheckoutBtn').disabled=true;
-    $('stripeCheckoutBtn').textContent='Ouverture du paiement…';
-    $('stripeStatus').textContent='Redirection vers Stripe…';
-    $('stripeStatus').style.color='#DDE9D9';
-
-    await CleanUpStripe.start({
-      productKey:PRODUCT_KEY,
-      payload:collectListingPayload(),
-      successUrl:window.location.href,
-      cancelUrl:window.location.href
-    });
-  }catch(error){
-    console.error('stripeCheckoutBtn error:',error);
-    $('stripeCheckoutBtn').disabled=false;
-    $('stripeCheckoutBtn').textContent='Payer 29 € et commencer';
-    $('stripeStatus').textContent=error.message || 'Impossible d’ouvrir Stripe.';
-    $('stripeStatus').style.color='#FFD8C7';
-  }
+$('stripeCheckoutBtn').addEventListener('click',()=>showStep(1));
+async function recoverListing(id){
+  if(!id) throw new Error('Aucune commande enregistrée sur cet appareil.');
+  const response=await fetch('https://europe-west9-cleanup-diagnostic.cloudfunctions.net/retrievePaidListing',{
+    method:'POST',headers:{'Content-Type':'application/json',...(await listingAdminHeaders())},body:JSON.stringify({paymentSessionId:id})
+  });
+  const data=await response.json();
+  if(!response.ok || !data.ok) throw new Error(data.error || 'Annonce introuvable.');
+  generationLocked=false;
+  qa('.step').forEach(b=>{b.disabled=false;b.removeAttribute('aria-disabled');});
+  $('prevBtn').style.display='';
+  restoreListingPayload(data.payload);
+  photos.forEach(p=>{if(p.url?.startsWith('blob:'))URL.revokeObjectURL(p.url);});
+  photos=(data.images||[]).map(p=>({name:p.name,url:p.dataUrl,width:p.width,height:p.height,size:p.size}));
+  renderPhotos();
+  $('coverChoice').value=String(data.payload?.photos?.coverIndex||0);
+  $('photoCountPlanned').value=data.payload?.photos?.plannedCount||photos.length;
+  serverListings=extractServerListings(data.ai);
+  serverPhotoAnalysis=data.ai?.photoAnalysis||null;
+  renderServerListing(currentPlatform);
+  runControl();
+  paidSessionId=id; paidListingReady=true;
+  localStorage.setItem(recoveryKey,id);
+  $('generateListing').disabled=true;
+  $('generateListing').textContent='Annonce générée';
+  $('stripeStatus').textContent='Annonce retrouvée · aucun nouveau paiement';
+  showStep(5);
+}
+$('recoverListing').addEventListener('click',async()=>{
+  try{await recoverListing(localStorage.getItem(recoveryKey));}catch(e){alert(e.message);}
 });
 
 async function resumeStripeCheckout(){
@@ -3019,8 +3039,7 @@ async function resumeStripeCheckout(){
     if(!payment.returnedFromStripe) return;
 
     if(payment.used){
-      $('stripeStatus').textContent='Ce paiement a déjà été utilisé.';
-      $('stripeStatus').style.color='#FFD8C7';
+      await recoverListing(payment.sessionId);
       return;
     }
 
@@ -3031,8 +3050,13 @@ async function resumeStripeCheckout(){
     }
 
     paidSessionId=payment.sessionId;
+    localStorage.setItem(recoveryKey,paidSessionId);
+    if(!payment.payload) throw new Error("Formulaire temporaire introuvable. Contactez le support avec votre référence de paiement.");
     restoreListingPayload(payment.payload);
     await restorePhotosAfterCheckout();
+    $('coverChoice').value=String(payment.payload?.photos?.coverIndex||0);
+    $('photoCountPlanned').value=payment.payload?.photos?.plannedCount||photos.length;
+    refreshPreview();
 
     $('stripeCheckoutBtn').textContent='Paiement validé';
     $('stripeCheckoutBtn').disabled=true;
@@ -3051,8 +3075,7 @@ async function resumeStripeCheckout(){
 }
 
 showStep(1);
-refreshAdminInterface();
-resumeStripeCheckout();
+refreshAdminInterface().then(resumeStripeCheckout).catch(console.error);
 </script>
  <script type="module" src="admin-auth.js"></script> 
 </body>
