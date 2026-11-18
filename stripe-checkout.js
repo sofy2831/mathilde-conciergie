@@ -340,6 +340,8 @@
    * Lorsque le client revient de Stripe, cette méthode vérifie le paiement
    * et restitue les données du formulaire sauvegardées avant la redirection.
    */
+  function cleanSessionKey(id){return id.startsWith("cs_test_") ? "cleanup_annonce_last_test_session" : "cleanup_annonce_last_paid_session";}
+
   async function resume(productKey) {
     const key = assertProductKey(productKey);
     const sessionId = getCurrentSessionId();
@@ -359,7 +361,10 @@
     const payment = await verifyCheckout(key, sessionId);
     const state = readCheckoutState(key);
 
-    removeCheckoutParameterFromUrl();
+    if(key === "annonce" && payment.paid){
+      localStorage.setItem(cleanSessionKey(sessionId),sessionId);
+    }
+    if(key !== "annonce" || payment.used) removeCheckoutParameterFromUrl();
 
     return {
       ...payment,
@@ -387,6 +392,7 @@
    */
   function complete(productKey) {
     clearCheckoutState(productKey);
+    if(productKey === "annonce") removeCheckoutParameterFromUrl();
   }
 
   window.CleanUpStripe = Object.freeze({
