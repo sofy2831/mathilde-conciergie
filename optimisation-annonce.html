@@ -533,6 +533,16 @@
 const PRODUCT_KEY='optimisation';
 let paidSessionId='';
 let cleanupAdminMode=false;
+const stripeTest=new URLSearchParams(location.search).get('stripe_test')==='1';
+let checkoutConsumed=false;
+let checkoutResuming=true;
+function adminBypass(){return cleanupAdminMode && !stripeTest;}
+async function optimizationHeaders(api){
+  const headers={'Content-Type':'application/json'};
+  const token=api ? await api.getIdToken() : null;
+  if(token) headers.Authorization='Bearer '+token;
+  return headers;
+}
 const OPTIMIZATION_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateOptimization';
 
 
@@ -689,6 +699,10 @@ function setStripeStatus(message,success=true){
 async function refreshAdminInterface(){
   const api=await waitForAdminAuth();
   cleanupAdminMode=api ? await api.isAdmin() : false;
+  if(stripeTest){
+    setStripeStatus(cleanupAdminMode?'Stripe TEST · paiement fictif requis':'Stripe TEST réservé à un administrateur connecté',cleanupAdminMode);
+    return;
+  }
   if(!cleanupAdminMode) return;
 
   const payButton=document.querySelector('.stripeBtn');
@@ -825,6 +839,11 @@ function finishAuditProgress(){
 }
 
 async function runOptimization(options={}){
+  if(checkoutResuming && !options.payload) return;
+  if($('analyzeBtn').disabled || checkoutConsumed){
+    if(checkoutConsumed) showStep(4);
+    return;
+  }
   const payload=options.payload||buildPayload();
   const validationError=validateBeforeAudit(payload);
   if(validationError){
@@ -835,7 +854,8 @@ async function runOptimization(options={}){
   const api=await waitForAdminAuth();
   cleanupAdminMode=api ? await api.isAdmin() : false;
 
-  if(!cleanupAdminMode && !paidSessionId){
+  if(stripeTest && !cleanupAdminMode){alert('Connectez-vous à l’administration pour utiliser Stripe TEST.');return;}
+  if(!adminBypass() && !paidSessionId){
     try{
       $('analyzeBtn').disabled=true;
       $('analyzeBtn').textContent='Ouverture du paiement…';
@@ -860,13 +880,13 @@ async function runOptimization(options={}){
   startAuditProgress();
 
   try{
-    const securedPayload=cleanupAdminMode
+    const securedPayload=adminBypass()
       ? payload
       : CleanUpStripe.addPaymentSessionToPayload(payload,paidSessionId);
 
     const response=await fetch(OPTIMIZATION_FUNCTION_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:await optimizationHeaders(api),
       body:JSON.stringify(securedPayload)
     });
     const data=await response.json();
@@ -881,8 +901,15 @@ async function runOptimization(options={}){
     buildReport();
     finishAuditProgress();
 
-    if(!cleanupAdminMode){
+    if(!adminBypass()){
+      checkoutConsumed=true;
       CleanUpStripe.complete(PRODUCT_KEY);
+      paidSessionId='';
+      const doneUrl=new URL(location.href);
+      doneUrl.searchParams.delete('session_id');
+      history.replaceState(history.state,'',doneUrl.href);
+      const payButton=document.querySelector('.stripeBtn');
+      if(payButton){payButton.disabled=true;payButton.textContent='Paiement validé';}
       setStripeStatus('Paiement validé · optimisation générée',true);
     }else{
       setStripeStatus('Optimisation générée en mode administrateur',true);
@@ -905,7 +932,7 @@ async function runOptimization(options={}){
     alert(message);
   }finally{
     $('analyzeBtn').disabled=false;
-    $('analyzeBtn').textContent=cleanupAdminMode?'✦ Lancer l’audit — Admin':'✦ Lancer l’audit';
+    $('analyzeBtn').textContent=adminBypass()?'✦ Lancer l’audit — Admin':'✦ Lancer l’audit';
     if(!optimizationResult){
       clearInterval(auditProgressTimer);
       $('loadingBox').classList.remove('show');
@@ -1331,14 +1358,17 @@ $('newOptimization').onclick=async()=>{
   const api=await waitForAdminAuth();
   const isAdmin=api ? await api.isAdmin() : false;
 
-  if(isAdmin){
+  if(isAdmin && !stripeTest){
     if(confirm('Réinitialiser ce document en mode administrateur ?')) window.location.reload();
     return;
   }
 
   if(!confirm('Une nouvelle optimisation nécessite un nouveau paiement. Continuer ?')) return;
   CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
-  window.location.reload();
+  const nextUrl=new URL(location.href);
+  nextUrl.searchParams.delete('session_id');
+  window.location.assign(nextUrl.href);
+  if(nextUrl.href===location.href) window.location.reload();
 };
 
 
@@ -1369,11 +1399,13 @@ document.querySelectorAll('.stripeBtn').forEach(button=>{
   button.addEventListener('click',async()=>{
     const api=await waitForAdminAuth();
     const isAdmin=api ? await api.isAdmin() : false;
-    if(isAdmin){
+    if(isAdmin && !stripeTest){
       setStripeStatus('Mode administrateur déjà actif.',true);
       return;
     }
 
+    if(checkoutResuming || checkoutConsumed || paidSessionId) return;
+    if(stripeTest && !isAdmin){alert('Connectez-vous à l’administration pour utiliser Stripe TEST.');return;}
     const payload=buildPayload();
     const validationError=validateBeforeAudit(payload);
     if(validationError){
@@ -1403,8 +1435,9 @@ document.querySelectorAll('.stripeBtn').forEach(button=>{
 
 async function resumeStripeCheckout(){
   try{
+    await waitForAdminAuth();
     const payment=await CleanUpStripe.resume(PRODUCT_KEY);
-    if(!payment.returnedFromStripe) return;
+    if(!payment.returnedFromStripe){if(payment.payload) restorePayload(payment.payload);return;}
 
     if(payment.used){
       setStripeStatus('Ce paiement a déjà été utilisé.',false);
@@ -1416,6 +1449,9 @@ async function resumeStripeCheckout(){
     }
 
     paidSessionId=payment.sessionId;
+    const retryUrl=new URL(location.href);
+    retryUrl.searchParams.set('session_id',paidSessionId);
+    history.replaceState(history.state,'',retryUrl.href);
     restorePayload(payment.payload);
 
     const payButton=document.querySelector('.stripeBtn');
@@ -1434,8 +1470,10 @@ async function resumeStripeCheckout(){
 
 refresh();
 showStep(1);
-refreshAdminInterface();
-resumeStripeCheckout();
+(async()=>{
+  try{await refreshAdminInterface();await resumeStripeCheckout();}
+  finally{checkoutResuming=false;}
+})();
 </script>
 <script type="module" src="admin-auth.js"></script>
 
