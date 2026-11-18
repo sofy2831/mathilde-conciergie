@@ -539,8 +539,16 @@ let checkoutResuming=true;
 function adminBypass(){return cleanupAdminMode && !stripeTest;}
 async function optimizationHeaders(api){
   const headers={'Content-Type':'application/json'};
-  const token=api ? await api.getIdToken() : null;
-  if(token) headers.Authorization='Bearer '+token;
+  if(!api || !await api.isAdmin()){
+    if(stripeTest) throw new Error('Connexion administrateur requise pour Stripe TEST.');
+    return headers;
+  }
+  const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+  const user=getAuth().currentUser;
+  if(!user) throw new Error('Session administrateur expirée. Reconnectez-vous.');
+  const token=await user.getIdToken();
+  if(!token) throw new Error('Jeton administrateur indisponible.');
+  headers.Authorization='Bearer '+token;
   return headers;
 }
 const OPTIMIZATION_FUNCTION_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateOptimization';
@@ -926,7 +934,7 @@ async function runOptimization(options={}){
     $('auditProgressLabel').textContent='Erreur';
     $('auditProgressMessage').textContent='La connexion au service d’analyse a échoué.';
     const localOrigin=location.origin==='null'?'fichier local':location.origin;
-    const message=error instanceof TypeError
+    const message=error instanceof TypeError && /failed to fetch|networkerror|load failed/i.test(error.message)
       ? `Connexion impossible avec le service CleanUp depuis ${localOrigin}. Vérifiez que cette origine est autorisée par CORS dans generateOptimization.`
       : (error.message||'Impossible de lancer l’optimisation.');
     alert(message);
