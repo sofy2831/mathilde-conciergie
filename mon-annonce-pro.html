@@ -1303,8 +1303,16 @@ const recoveryKey = listingStripeTest ? 'cleanup_annonce_last_test_session' : 'c
 let paidListingReady = false;
 async function listingAdminHeaders(){
   const api=await waitForAdminAuth();
-  const token=api ? await api.getIdToken() : null;
-  return token ? {Authorization:`Bearer ${token}`} : {};
+  if(!api || !await api.isAdmin()){
+    if(listingStripeTest) throw new Error('Connexion administrateur requise pour Stripe TEST.');
+    return {};
+  }
+  const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+  const user=getAuth().currentUser;
+  if(!user) throw new Error('Session administrateur expirée. Reconnectez-vous.');
+  const token=await user.getIdToken();
+  if(!token) throw new Error('Jeton administrateur indisponible.');
+  return {Authorization:`Bearer ${token}`};
 }
 
 
