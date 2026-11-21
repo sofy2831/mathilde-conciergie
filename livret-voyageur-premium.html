@@ -7,7 +7,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+if(new URLSearchParams(location.search).has('session_id'))document.documentElement.classList.add('livret-checkout-return');
+</script>
 <style>
+.livret-checkout-return .page,.livret-checkout-return .site-header{visibility:hidden}
+.livret-checkout-return #livretCheckoutWait{display:flex}
+#livretCheckoutWait{display:none;position:fixed;inset:0;z-index:100;background:#F7F3EE;align-items:center;justify-content:center;padding:22px}
+.livret-wait-card{width:min(520px,100%);padding:35px;background:#fff;border:1px solid #E4D9CF;border-radius:24px;box-shadow:0 22px 60px #3e2d251a;text-align:center}
+.livret-wait-card h2{font:normal 30px "DM Serif Display",serif;color:#3E2D25}
+.livret-wait-card p{font-size:13px;line-height:1.6;color:#766C66}
+.livret-wait-track{height:11px;background:#F5EFE7;border-radius:20px;overflow:hidden;margin:18px 0 8px}
+#livretWaitFill{height:100%;width:0;background:linear-gradient(90deg,#B96F52,#D39980);transition:width .6s}
+.livret-recovery{display:none;align-items:center;justify-content:space-between;gap:16px;background:#E7EEE5;border:1px solid #7E927C;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+.livret-recovery.show{display:flex}
+.livret-recovery strong{display:block;color:#3E2D25;font-size:15px}
+.livret-recovery small{display:block;color:#536B52;margin-top:4px;line-height:1.5}
+@media(max-width:680px){.livret-recovery{flex-direction:column;align-items:stretch}.livret-recovery button{width:100%}}
 :root{--brown:#3E2D25;--brown2:#5A4033;--sand:#E9DDCF;--beige:#F5EFE7;--cream:#FCFAF7;--white:#fff;--taupe:#8C7B70;--terracotta:#B96F52;--terracottaSoft:#F5E4DC;--sage:#7E927C;--sageSoft:#E7EEE5;--text:#2F2926;--muted:#766C66;--line:#E4D9CF;--shadow:0 22px 60px rgba(62,45,37,.10);--soft:0 10px 28px rgba(62,45,37,.07);--radius:24px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -204,6 +220,10 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 </header>
 
 <main class="page">
+<div class="livret-recovery" id="livretRecoveryBanner">
+<div><strong>Votre livret est disponible</strong><small>Retrouvez votre livret sauvegardé sur cet appareil, sans nouveau paiement.</small></div>
+<button class="btn primary" id="recoverLivret" type="button">Récupérer mon livret</button>
+</div>
 <section class="hero">
   <div>
     <div class="eyebrow">Les services indispensables du propriétaire</div>
@@ -404,11 +424,36 @@ input:focus,select:focus,textarea:focus{border-color:#C99E89;box-shadow:0 0 0 3p
 </div>
 </main>
 
+<div id="livretCheckoutWait" role="status" aria-live="polite"><div class="livret-wait-card">
+<h2>Paiement confirmé — préparation de votre livret</h2>
+<p id="livretWaitMessage">Nous reprenons la création de votre livret. Ne fermez pas cette page.</p>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:#5A4033"><span id="livretWaitPhase">Vérification du paiement…</span><strong id="livretWaitPercent">0 %</strong></div>
+<div class="livret-wait-track"><div id="livretWaitFill"></div></div>
+<small style="color:#766C66">Durée indicative : environ 30 secondes. Le traitement peut être plus long.</small>
+</div></div>
 <section id="printBooklet"></section>
 
 <script src="stripe-checkout.js"></script>
 <script>
 const PRODUCT_KEY='livret';
+const stripeTest=new URLSearchParams(location.search).get('stripe_test')==='1';
+function adminBypass(){return cleanupAdminMode && !stripeTest;}
+let livretWaitTimer=null,livretWaitProgress=0,livretGenerating=false;
+function livretWaitStart(phase='Préparation du livret…'){
+ document.documentElement.classList.add('livret-checkout-return');
+ $('livretWaitPhase').textContent=phase;
+ if(livretWaitTimer)return;
+ livretWaitTimer=setInterval(()=>{
+  livretWaitProgress=Math.min(95,livretWaitProgress+(livretWaitProgress<75?2:0.6));
+  $('livretWaitFill').style.width=livretWaitProgress+'%';
+  $('livretWaitPercent').textContent=Math.floor(livretWaitProgress)+' %';
+ },600);
+}
+function livretWaitEnd(){
+ clearInterval(livretWaitTimer);livretWaitTimer=null;
+ document.documentElement.classList.remove('livret-checkout-return');
+}
+
 let paidSessionId='';
 let cleanupAdminMode=false;
 let pendingStripeAction='';
@@ -519,7 +564,7 @@ async function clearCheckoutMedia(){
 async function ensureLivretPayment(action){
  const api=await waitForAdminAuth();
  cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode||paidSessionId)return true;
+ if(adminBypass()||paidSessionId)return true;
  pendingStripeAction=action||'';
  try{
   await saveCoverPhotoForCheckout();
@@ -538,8 +583,80 @@ async function ensureLivretPayment(action){
 }
 
 function securePayload(rawPayload){
- return cleanupAdminMode?rawPayload:CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
+ return adminBypass()?rawPayload:CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
 }
+
+const LIVRET_RECOVERY_KEY='livret:latest:report';
+async function livretHeaders(){
+ const headers={'Content-Type':'application/json'};
+ const api=await waitForAdminAuth();
+ if(!api || !await api.isAdmin()){
+  if(stripeTest)throw new Error('Connexion administrateur requise pour Stripe TEST.');
+  return headers;
+ }
+ const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+ const user=getAuth().currentUser;
+ if(!user)throw new Error('Session administrateur expirée. Reconnectez-vous.');
+ headers.Authorization='Bearer '+await user.getIdToken();
+ return headers;
+}
+async function saveLivretLocally(){
+ if(!bookletData)return;
+ try{
+  const db=await openCheckoutDb();
+  await new Promise((resolve,reject)=>{
+   const tx=db.transaction('media','readwrite');
+   tx.objectStore('media').put({version:1,savedAt:new Date().toISOString(),formState:collectFormState(),coverPhotoData,bookletData,editedText:$('bookletText').value},LIVRET_RECOVERY_KEY);
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+  });
+  db.close();
+  $('livretRecoveryBanner').classList.add('show');
+ }catch(e){console.warn('Sauvegarde locale du livret impossible',e);}
+}
+async function getSavedLivret(){
+ try{
+  const db=await openCheckoutDb();
+  const result=await new Promise((resolve,reject)=>{
+   const tx=db.transaction('media','readonly');
+   const request=tx.objectStore('media').get(LIVRET_RECOVERY_KEY);
+   request.onsuccess=()=>resolve(request.result||null);
+   request.onerror=()=>reject(request.error);
+  });
+  db.close();return result;
+ }catch(e){return null;}
+}
+async function refreshLivretRecovery(){
+ const saved=await getSavedLivret();
+ $('livretRecoveryBanner').classList.toggle('show',!!saved?.bookletData);
+}
+async function recoverSavedLivret(){
+ const saved=await getSavedLivret();
+ if(!saved?.bookletData)return alert('Aucun livret sauvegardé sur ce navigateur.');
+ restoreFormState(saved.formState);
+ coverPhotoData=saved.coverPhotoData||'';
+ if(coverPhotoData){
+  $('photoPreviewImg').src=coverPhotoData;
+  $('photoPreview').classList.add('show');
+  $('photoActions').style.display='flex';
+  $('chooseCoverPhoto').style.display='none';
+ }
+ bookletData=saved.bookletData;
+ $('bookletText').value=saved.editedText||allText(bookletData);
+ renderLivretResult();
+ exportLocked=false;
+ showStep(5);
+}
+function renderLivretResult(){
+ $('previewTitle').textContent=$('homeName').value||'Livret Voyageur Premium';
+ const cover=document.querySelector('.preview-cover');
+ if(coverPhotoData){cover.classList.add('has-photo');cover.innerHTML=`<img src="${coverPhotoData}" alt="Photo de couverture">`;}
+ else{cover.classList.remove('has-photo');cover.textContent='✦';}
+ $('previewText').textContent=bookletData?.welcome||'Votre livret est prêt.';
+ buildPrint(bookletData);
+}
+$('recoverLivret').addEventListener('click',recoverSavedLivret);
+$('bookletText').addEventListener('input',()=>{if(bookletData)saveLivretLocally();});
+refreshLivretRecovery();
 
 function showStep(n){
  if(exportLocked && n<5)return;
@@ -827,22 +944,24 @@ $('prepareRecommendations').onclick=async()=>{
 };
 
 $('generateBooklet').onclick=async()=>{
- if(!await ensureLivretPayment('booklet'))return;const loadingSteps=[...document.querySelectorAll('#loadingList .loading-step')];let loadingIndex=0;const activateLoading=i=>loadingSteps.forEach((el,index)=>el.classList.toggle('active',index===i));activateLoading(0);const loadingTimer=setInterval(()=>{loadingIndex=Math.min(loadingIndex+1,loadingSteps.length-1);activateLoading(loadingIndex)},1800);
+ if(livretGenerating)return;
+ if(!await ensureLivretPayment('booklet'))return;
+ livretGenerating=true;
+ if(paidSessionId)livretWaitStart('Création du livret en cours…');const loadingSteps=[...document.querySelectorAll('#loadingList .loading-step')];let loadingIndex=0;const activateLoading=i=>loadingSteps.forEach((el,index)=>el.classList.toggle('active',index===i));activateLoading(0);const loadingTimer=setInterval(()=>{loadingIndex=Math.min(loadingIndex+1,loadingSteps.length-1);activateLoading(loadingIndex)},1800);
  const btn=$('generateBooklet'),box=$('generationProgress'),bar=$('generationBar'),status=$('generationStatus');
  btn.disabled=true;box.classList.add('show');bar.style.width='20%';status.textContent='Analyse de la destination…';
  try{
   bar.style.width='45%';
-  const response=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(securePayload(payload()))});
+  const response=await fetch(FUNCTION_URL,{method:'POST',headers:await livretHeaders(),body:JSON.stringify(securePayload(payload()))});
   const data=await response.json();
   if(!response.ok||!data.ok)throw new Error(data.error||'Génération impossible.');
   bar.style.width='85%';status.textContent='Mise en page du livret…';
   bookletData=cleanBookletForExport(sanitizeAi(data.ai));
   $('bookletText').value=allText(bookletData);
-  $('previewTitle').textContent=$('homeName').value||'Livret Voyageur Premium';const previewCover=document.querySelector('.preview-cover');if(coverPhotoData){previewCover.classList.add('has-photo');previewCover.innerHTML=`<img src="${coverPhotoData}" alt="Photo de couverture">`}else{previewCover.classList.remove('has-photo');previewCover.textContent='✦'};
-  $('previewText').textContent=bookletData.welcome||'Votre livret est prêt.';
-  buildPrint(bookletData);
+  renderLivretResult();
+  await saveLivretLocally();
   bar.style.width='100%';status.textContent='Livret prêt.';
-  if(!cleanupAdminMode){
+  if(!adminBypass()){
    CleanUpStripe.complete(PRODUCT_KEY);
    setStripeStatus('Paiement validé · livret généré',true);
    await clearCheckoutMedia();
@@ -851,7 +970,7 @@ $('generateBooklet').onclick=async()=>{
   }
   setTimeout(()=>showStep(5),250);
  }catch(error){alert(error.message);status.textContent=error.message}
- finally{clearInterval(loadingTimer);btn.disabled=false}
+ finally{clearInterval(loadingTimer);btn.disabled=false;livretGenerating=false;livretWaitEnd()}
 };
 $('printPdf').onclick=()=>{if(!bookletData)return alert('Générez d’abord le livret.');lockAfterFirstExport();buildPrint(bookletData);window.print()};
 
@@ -861,7 +980,7 @@ $('copyAll').onclick=()=>{lockAfterFirstExport();return navigator.clipboard.writ
 $('newBooklet').onclick=async()=>{
  const api=await waitForAdminAuth();
  const isAdmin=api?await api.isAdmin():false;
- if(isAdmin){if(confirm('Réinitialiser ce document en mode administrateur ?'))window.location.reload();return;}
+ if(isAdmin && !stripeTest){if(confirm('Réinitialiser ce document en mode administrateur ?'))window.location.reload();return;}
  if(!confirm('Un nouveau livret nécessite un nouveau paiement. Continuer ?'))return;
  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
  await clearCheckoutMedia();
@@ -876,7 +995,7 @@ $('newBooklet').onclick=async()=>{
 (async()=>{
  const api=await waitForAdminAuth();
  cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode){
+ if(adminBypass()){
   const payButton=document.querySelector('.stripeBtn');
   if(payButton){payButton.textContent='Mode administrateur actif';payButton.disabled=true;payButton.style.opacity='1';}
   setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé',true);
@@ -893,8 +1012,9 @@ $('newBooklet').onclick=async()=>{
  try{
   const payment=await CleanUpStripe.resume(PRODUCT_KEY);
   if(!payment.returnedFromStripe)return;
-  if(payment.used){setStripeStatus('Ce paiement a déjà été utilisé.',false);return;}
-  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);return;}
+  if(payment.used){setStripeStatus('Ce paiement a déjà été utilisé.',false);livretWaitEnd();return;}
+  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);livretWaitEnd();return;}
+  livretWaitStart('Paiement confirmé — récupération de vos informations…');
   paidSessionId=payment.sessionId;
   const saved=payment.payload||{};
   restoreFormState(saved.formState||saved);
@@ -907,10 +1027,13 @@ $('newBooklet').onclick=async()=>{
     const button=$('generateBooklet');
     if(button && !button.disabled) button.click();
    },300);
-  }
+  }else livretWaitEnd();
  }catch(error){
   console.error('Stripe resume error:',error);
+  livretWaitEnd();
   setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
+ }finally{
+  if(!livretGenerating && !paidSessionId)livretWaitEnd();
  }
 })();
 </script>
