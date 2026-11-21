@@ -597,6 +597,11 @@ function showStep(n){
 qa('.step').forEach(b=>b.onclick=()=>showStep(Number(b.dataset.step)));
 $('prevBtn').onclick=()=>showStep(currentStep-1);
 $('nextBtn').onclick=()=>{
+  if(currentStep===2){
+    const error=validateCapacityConsistency(buildPayload());
+    if(error){ showCapacityWarning(error); return; }
+    clearCapacityWarning();
+  }
   if(currentStep===3){
     if(!optimizationResult){
       alert('Lancez d’abord l’audit pour afficher la version optimisée.');
@@ -722,6 +727,42 @@ async function refreshAdminInterface(){
   $('newOptimization').textContent='Optimiser une autre annonce — Admin';
   setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé',true);
 }
+
+// Vérification AVANT audit/paiement : incohérences explicites de capacité.
+function validateCapacityConsistency(payload){
+  const capacity=payload.property.capacity;
+  if(!Number.isInteger(capacity) || capacity<1 || capacity>30){
+    return 'Indiquez une capacité valide, comprise entre 1 et 30 personnes.';
+  }
+  const source=[payload.current.title,payload.current.description,payload.current.rules,
+    payload.property.strengths,payload.property.weaknesses].filter(Boolean).join(' ');
+  // Uniquement les mentions explicites d'occupation, pas les chambres, lits ou canapés.
+  const pattern=/(?:\b(?:jusqu[’']?\s*à|pour|accueill?ant|accueill?e|capacit[ée](?:\s+(?:maximale|d[’']accueil))?\s*(?:de|:)?|maximum|maximum de|max\.?|id[ée]al pour|pr[ée]vu pour|adapt[ée] pour|h[ée]berge(?:ment)?\s*(?:de|pour)?)\s*)(\d{1,2})\s*(?:personnes?|voyageurs?|occupants?|adultes?)\b/gi;
+  const found=[];
+  for(const match of source.matchAll(pattern)){
+    const value=Number(match[1]);
+    if(value!==capacity && !found.includes(value)) found.push(value);
+  }
+  if(found.length){
+    return `Vous avez indiqué ${capacity} personne${capacity>1?'s':''} à l’étape Objectif, mais votre annonce mentionne ${found.join(' et ')} personne(s). Vérifiez la capacité réelle et corrigez soit le champ « Capacité », soit le texte de l’annonce avant de continuer.`;
+  }
+  return '';
+}
+function showCapacityWarning(message){
+  let box=$('capacityWarning');
+  if(!box){
+    box=document.createElement('div');
+    box.id='capacityWarning';
+    box.setAttribute('role','alert');
+    box.style.cssText='margin:14px 0;padding:15px 17px;border:1px solid #D7A18F;border-radius:14px;background:#F8E6E2;color:#7C342D;font-size:12px;line-height:1.6';
+    $('step2').querySelector('.form-grid').after(box);
+  }
+  box.textContent='⚠ Capacité à vérifier — '+message;
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function clearCapacityWarning(){const box=$('capacityWarning');if(box)box.remove();}
+$('capacity').addEventListener('input',clearCapacityWarning);
+['currentTitle','currentDescription','currentRules','strengths','weaknesses'].forEach(id=>$(id).addEventListener('input',clearCapacityWarning));
 
 function validateBeforeAudit(payload){
   if(payload.current.title.length<5) return 'Renseignez le titre actuel.';
@@ -853,6 +894,8 @@ async function runOptimization(options={}){
     return;
   }
   const payload=options.payload||buildPayload();
+  const capacityError=validateCapacityConsistency(payload);
+  if(capacityError){showStep(2);showCapacityWarning(capacityError);return;}
   const validationError=validateBeforeAudit(payload);
   if(validationError){
     alert(validationError);
@@ -1415,7 +1458,9 @@ document.querySelectorAll('.stripeBtn').forEach(button=>{
     if(checkoutResuming || checkoutConsumed || paidSessionId) return;
     if(stripeTest && !isAdmin){alert('Connectez-vous à l’administration pour utiliser Stripe TEST.');return;}
     const payload=buildPayload();
-    const validationError=validateBeforeAudit(payload);
+    const capacityError=validateCapacityConsistency(payload);
+  if(capacityError){showStep(2);showCapacityWarning(capacityError);return;}
+  const validationError=validateBeforeAudit(payload);
     if(validationError){
       alert(validationError);
       showStep(validationError.includes('capacité')?2:1);
