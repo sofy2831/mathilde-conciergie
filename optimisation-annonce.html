@@ -519,7 +519,7 @@
 }
 </style>
 
-</head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
+<style id="cleanup-recovery-style">#checkoutWait{display:none;position:fixed;inset:0;z-index:9999;background:#F7F3EE;align-items:center;justify-content:center;padding:24px;text-align:center;color:#3E2D25;font-family:Inter,Arial,sans-serif}html.checkout-return #checkoutWait{display:flex}#checkoutWait .wait-card{max-width:480px;background:#fff;border:1px solid #E4D9CF;border-radius:22px;padding:36px;box-shadow:0 20px 60px #3e2d251a}#recoverOptimization{margin-top:10px;width:100%}</style><script>if(new URLSearchParams(location.search).has('session_id'))document.documentElement.classList.add('checkout-return');</script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><button class="btn soft" id="recoverOptimization" type="button">Récupérer mon rapport</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Améliorer la visibilité de l’annonce</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
 <div class="section" id="step3"><div class="section-head"><div><h2>Audit de votre annonce</h2><p>CleanUp mesure la clarté, la confiance, la structure et le potentiel de conversion avant toute réécriture.</p></div><div class="section-badge">Étape 3 sur 5</div></div><button class="btn terracotta" id="analyzeBtn">✦ Lancer l’audit</button><div class="panel" id="analysisBox"><h3>Résultat</h3><p>Ajoutez votre annonce puis lancez l’analyse.</p></div></div>
@@ -529,7 +529,7 @@
 <div class="compare-card after"><span class="compare-label">APRÈS</span><h3 id="afterTitle">Titre optimisé</h3><p id="afterDescription">Lancez l’audit pour générer la nouvelle version.</p></div>
 </div><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn terracotta" id="generateBtn">✎ Modifier la version optimisée</button></div><div class="generated-card panel" id="optimizedEditor"><div class="field"><label>Nouveau titre</label><textarea class="textarea" id="newTitle"></textarea></div><div class="field"><label>Nouvelle accroche</label><textarea class="textarea" id="newIntro"></textarea></div><div class="field"><label>Description optimisée</label><textarea class="textarea" id="newDescription" style="min-height:240px"></textarea></div><div class="field"><label>Informations pratiques</label><textarea class="textarea" id="newRules"></textarea></div></div></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Rapport d’optimisation</h2><p>Copiez l’annonce optimisée ou téléchargez le rapport professionnel.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Votre nouveau titre</h3><p id="previewText">Votre annonce optimisée apparaîtra ici.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier l’annonce</h3><p>Copiez tout le contenu prêt à publier.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Téléchargez le rapport professionnel de 6 pages.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Optimiser une autre annonce</h3><p>Une nouvelle optimisation nécessite un nouveau paiement.</p><button class="btn soft" id="newOptimization">Optimiser une autre annonce (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre annonce optimisée a été générée.</strong><br>Vous pouvez encore la copier ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div><div class="cta"><div><h3>Découvrez les autres indispensables</h3><p>Guide d’accueil bilingue, livret voyageur, diagnostic de rentabilité et autres outils sont disponibles séparément, sans abonnement.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div></div>
-<div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div class="report-print" id="reportPrint"></div><script src="stripe-checkout.js"></script><script>
+<div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div id="checkoutWait" role="status" aria-live="polite"><div class="wait-card"><h2>Paiement confirmé — préparation de votre rapport</h2><p>Nous reprenons votre optimisation. Ne fermez pas cette page.</p></div></div><div class="report-print" id="reportPrint"></div><script src="stripe-checkout.js"></script><script>
 const PRODUCT_KEY='optimisation';
 let paidSessionId='';
 let cleanupAdminMode=false;
@@ -564,6 +564,33 @@ const STEPS=5;
 let currentStep=1;
 let exportLocked=false;
 let optimizationResult=null;
+const OPTIMIZATION_RECOVERY_KEY='cleanup_optimisation_saved_report_v1';
+function saveOptimizationLocally(){
+  if(!optimizationResult) return false;
+  try{
+    const edits={};
+    ['newTitle','newIntro','newDescription','newRules'].forEach(id=>edits[id]=val(id));
+    localStorage.setItem(OPTIMIZATION_RECOVERY_KEY,JSON.stringify({version:1,savedAt:new Date().toISOString(),payload:buildPayload(),result:optimizationResult,edits}));
+    return true;
+  }catch(error){console.warn('Sauvegarde locale impossible',error);setStripeStatus('Rapport généré, mais sauvegarde locale impossible : exportez votre PDF maintenant.',false);return false;}
+}
+function recoverOptimizationLocally(){
+  let saved;
+  try{saved=JSON.parse(localStorage.getItem(OPTIMIZATION_RECOVERY_KEY)||'null');}catch(e){}
+  if(!saved || saved.version!==1 || !saved.result?.engine || !saved.result?.ai){alert('Aucun rapport sauvegardé dans ce navigateur.');return false;}
+  restorePayload(saved.payload);
+  optimizationResult=saved.result;
+  applyOptimizedVersion();
+  Object.entries(saved.edits||{}).forEach(([id,value])=>{if(['newTitle','newIntro','newDescription','newRules'].includes(id)&&$(id))$(id).value=value;});
+  refresh();renderAudit();buildReport();
+  checkoutConsumed=true;paidSessionId='';
+  const payButton=document.querySelector('.stripeBtn');
+  if(payButton){payButton.disabled=true;payButton.textContent='Rapport sauvegardé';}
+  setStripeStatus('Rapport récupéré depuis ce navigateur · aucun paiement demandé',true);
+  showStep(5);
+  return true;
+}
+$('recoverOptimization').onclick=()=>recoverOptimizationLocally();
 
 function escapeHtml(value){
   return String(value||'').replace(/[&<>"']/g,c=>({
@@ -620,7 +647,7 @@ function updateAssistant(){
   if(currentStep===2) messages.push('<div class="ai-message"><strong>Objectif</strong><br>CleanUp améliore la présentation sans inventer d’équipement ni masquer une limite utile.</div>');
   if(currentStep===3) messages.push('<div class="ai-message"><strong>Audit professionnel</strong><br>Le score mesure la qualité éditoriale de l’annonce, pas un classement garanti.</div>');
   if(currentStep===4) messages.push('<div class="ai-message good"><strong>Avant / Après</strong><br>Relisez les informations concrètes avant de valider la version optimisée.</div>');
-  if(currentStep===5) messages.push('<div class="ai-message good"><strong>Avant de quitter</strong><br>Téléchargez votre rapport. Aucune annonce n’est conservée après cette utilisation.</div>');
+  if(currentStep===5) messages.push('<div class="ai-message good"><strong>Votre rapport</strong><br>Il est conservé dans ce navigateur. Exportez également le PDF : la sauvegarde locale disparaît si les données du navigateur sont effacées.</div>');
   $('assistantMessages').innerHTML=messages.join('');
 }
 
@@ -824,7 +851,7 @@ function refresh(){
   $('previewTitle').textContent=newTitle;
   $('previewText').textContent=[val('newIntro'),val('newDescription'),val('newRules')].filter(Boolean).join('\n\n')||'Votre annonce optimisée apparaîtra ici.';
 }
-qa('#step4 textarea').forEach(x=>x.oninput=refresh);
+qa('#step4 textarea').forEach(x=>x.oninput=()=>{refresh();saveOptimizationLocally();});
 
 $('analysisBox').insertAdjacentHTML('beforebegin',`<div class="audit-loading" id="loadingBox">
   <div class="audit-loading-head"><span>Analyse de votre annonce en cours…</span><strong id="auditProgressLabel">0 %</strong></div>
@@ -950,6 +977,7 @@ async function runOptimization(options={}){
     renderAudit();
     applyOptimizedVersion();
     buildReport();
+    saveOptimizationLocally();
     finishAuditProgress();
 
     if(!adminBypass()){
@@ -1393,6 +1421,7 @@ function copyText(text,btn){
 
 $('copyAll').onclick=e=>{
   if(!optimizationResult) return alert('Lancez d’abord l’audit.');
+  saveOptimizationLocally();
   lockAfterExport();
   copyText([val('newTitle'),val('newIntro'),val('newDescription'),val('newRules')].join('\n\n'),e.currentTarget);
 };
@@ -1400,6 +1429,7 @@ $('copyAll').onclick=e=>{
 
 $('printPdf').onclick=()=>{
   if(!optimizationResult) return alert('Lancez d’abord l’audit.');
+  saveOptimizationLocally();
   lockAfterExport();
   buildReport();
   window.print();
@@ -1414,7 +1444,7 @@ $('newOptimization').onclick=async()=>{
     return;
   }
 
-  if(!confirm('Une nouvelle optimisation nécessite un nouveau paiement. Continuer ?')) return;
+  if(!confirm('Une nouvelle optimisation nécessite un nouveau paiement. Le rapport précédent reste récupérable tant qu’il n’est pas remplacé. Continuer ?')) return;
   CleanUpStripe.clearCheckoutState(PRODUCT_KEY);
   const nextUrl=new URL(location.href);
   nextUrl.searchParams.delete('session_id');
@@ -1493,7 +1523,7 @@ async function resumeStripeCheckout(){
     if(!payment.returnedFromStripe){if(payment.payload) restorePayload(payment.payload);return;}
 
     if(payment.used){
-      setStripeStatus('Ce paiement a déjà été utilisé.',false);
+      if(!recoverOptimizationLocally()) setStripeStatus('Ce paiement a déjà été utilisé. Aucun rapport local disponible.',false);
       return;
     }
     if(!payment.paid){
@@ -1518,14 +1548,14 @@ async function resumeStripeCheckout(){
   }catch(error){
     console.error('Stripe resume error:',error);
     setStripeStatus(error.message||'Impossible de reprendre après le paiement.',false);
-  }
+  }finally{document.documentElement.classList.remove('checkout-return');}
 }
 
 refresh();
 showStep(1);
 (async()=>{
   try{await refreshAdminInterface();await resumeStripeCheckout();}
-  finally{checkoutResuming=false;}
+  finally{checkoutResuming=false;document.documentElement.classList.remove('checkout-return');}
 })();
 </script>
 <script type="module" src="admin-auth.js"></script>
