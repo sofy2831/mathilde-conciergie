@@ -8,7 +8,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>if(new URLSearchParams(location.search).has('session_id'))document.documentElement.classList.add('contract-returning');</script>
 <style>
+.contract-returning .site-header,.contract-returning .page{visibility:hidden}
+#contractWait{display:none;position:fixed;inset:0;z-index:200;background:#F7F3EE;align-items:center;justify-content:center;padding:20px}
+.contract-returning #contractWait{display:flex}
+.contract-wait-card{width:min(520px,100%);background:#fff;border:1px solid #E4D9CF;border-radius:24px;padding:32px;text-align:center;box-shadow:0 22px 60px #3e2d251a}
+.contract-wait-card h2{font:normal 30px 'DM Serif Display',Georgia,serif;color:#3E2D25;margin:0 0 12px}
+.contract-wait-card p{font-size:13px;line-height:1.65;color:#766C66}
+.contract-wait-track{height:11px;background:#F5EFE7;border-radius:20px;overflow:hidden;margin:16px 0}
+#contractWaitFill{height:100%;width:0;background:linear-gradient(90deg,#B96F52,#D39980);transition:width .5s}
+.contract-recovery{display:none;align-items:center;justify-content:space-between;gap:16px;background:#E7EEE5;border:1px solid #7E927C;border-radius:16px;padding:17px 20px;margin:0 0 24px}
+.contract-recovery.show{display:flex}.contract-recovery strong{display:block;color:#3E2D25;font-size:15px}.contract-recovery small{display:block;margin-top:5px;color:#536B52;font-size:11px;line-height:1.5}
+@media(max-width:680px){.contract-recovery{flex-direction:column;align-items:stretch}.contract-recovery button{width:100%}}
+@media print{#contractWait,.contract-recovery{display:none!important}}
+
 :root{--brown:#3E2D25;--brown2:#5A4033;--sand:#E9DDCF;--beige:#F5EFE7;--cream:#FCFAF7;--white:#fff;--taupe:#8C7B70;--terracotta:#B96F52;--terracottaSoft:#F5E4DC;--sage:#7E927C;--sageSoft:#E7EEE5;--gold:#B88635;--goldSoft:#FAF1DC;--text:#2F2926;--muted:#766C66;--line:#E4D9CF;--shadow:0 22px 60px rgba(62,45,37,.10);--soft:0 10px 28px rgba(62,45,37,.07);--radius:24px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 5% 0%,rgba(233,221,207,.8),transparent 28%),radial-gradient(circle at 100% 10%,rgba(245,228,220,.8),transparent 30%),#F7F3EE;color:var(--text)}
 button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.hidden{display:none!important}
@@ -58,7 +72,7 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 </head>
 <body>
 <header class="site-header"><div class="header-inner"><a class="brand" href="les-indispensables-du-proprietaire.html"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-actions"><a class="back-link" href="les-indispensables-du-proprietaire.html">← Les indispensables</a><div class="header-pill"><i></i> Sans abonnement</div></div></div></header>
-<main class="page">
+<main class="page"><div class="contract-recovery" id="contractRecoveryBanner"><div><strong>Votre contrat est disponible</strong><small>Retrouvez votre contrat sauvegardé sur cet appareil, sans nouveau paiement.</small></div><button class="btn primary" type="button" id="recoverContract">Récupérer mon contrat</button></div>
 <section class="hero"><div><div class="eyebrow">Les indispensables du propriétaire</div><h1>Contrat <span>propriétaire / conciergerie</span></h1><p>Choisissez le document qui correspond réellement à votre collaboration, puis générez un contrat personnalisé, clair et prêt à relire.</p><div class="benefits"><div class="benefit">✓ Deux contrats distincts</div><div class="benefit">✓ Parcours guidé</div><div class="benefit">✓ Export PDF professionnel</div><div class="benefit">✓ Prêt à signer</div></div></div><aside class="hero-card"><div class="price">19 € <small>TTC</small></div><h3>Un contrat adapté à votre activité</h3><p>Le choix du document est expliqué avant toute saisie afin d’éviter les confusions.</p><ul><li>Prestations de services</li><li>Gestion avec mandat</li><li>Présentation premium A4</li></ul></aside></section>
 
 <section class="choice-zone" id="choiceZone">
@@ -201,13 +215,67 @@ Optimisation d’annonce : 49 €"></textarea><span class="hint">Indiquez unique
 
 <div class="nav-actions"><button class="btn soft" id="prevBtn" type="button">← Précédent</button><button class="btn primary" id="nextBtn" type="button">Continuer →</button></div>
 </section>
-<aside class="assistant-card"><div class="assistant-head"><strong>Assistant CleanUp</strong><div style="font-size:11px;opacity:.75;margin-top:5px" id="selectedTypeLabel"></div></div><div class="assistant-body"><div class="ai-message" id="assistantText">Commencez par choisir votre contrat.</div><ul class="check-list"><li>Informations non conservées après la session</li><li>Document à relire avant signature</li><li>Contrat personnalisé selon vos réponses</li></ul></div></aside>
+<aside class="assistant-card"><div class="assistant-head"><strong>Assistant CleanUp</strong><div style="font-size:11px;opacity:.75;margin-top:5px" id="selectedTypeLabel"></div></div><div class="assistant-body"><div class="ai-message" id="assistantText">Commencez par choisir votre contrat.</div><ul class="check-list"><li>Contrat conservé localement après génération</li><li>Document à relire avant signature</li><li>Contrat personnalisé selon vos réponses</li></ul></div></aside>
 </div>
 </div>
 </main>
+<div id="contractWait" role="status" aria-live="polite"><div class="contract-wait-card"><h2>Paiement confirmé — préparation de votre contrat</h2><p>Nous reprenons la rédaction de votre contrat. Ne fermez pas cette page.</p><div style="display:flex;justify-content:space-between;font-size:12px;color:#5A4033"><span id="contractWaitPhase">Vérification du paiement…</span><strong id="contractWaitPercent">0 %</strong></div><div class="contract-wait-track"><div id="contractWaitFill"></div></div><small style="font-size:11px;color:#766C66">Progression indicative, environ 30 secondes. La durée peut varier.</small></div></div>
 <script src="stripe-checkout.js"></script>
 <script>
 const PRODUCT_KEY="contrat";
+const contractStripeTest=new URLSearchParams(location.search).get('stripe_test')==='1';
+const contractAdminBypass=()=>cleanupAdminMode&&!contractStripeTest;
+const CONTRACT_SAVED_KEY='cleanup_contract_latest_v1';
+let contractGenerating=false,contractWaitTimer=null,contractProgress=0;
+function startContractWait(phase='Rédaction de votre contrat…'){
+ document.documentElement.classList.add('contract-returning');
+ $('contractWaitPhase').textContent=phase;
+ if(contractWaitTimer)return;
+ contractWaitTimer=setInterval(()=>{
+  contractProgress=Math.min(95,contractProgress+(contractProgress<75?2:0.55));
+  $('contractWaitFill').style.width=contractProgress+'%';
+  $('contractWaitPercent').textContent=Math.floor(contractProgress)+' %';
+ },600);
+}
+function endContractWait(){
+ clearInterval(contractWaitTimer);contractWaitTimer=null;
+ document.documentElement.classList.remove('contract-returning');
+}
+async function contractAdminHeaders(){
+ const headers={'Content-Type':'application/json'};
+ const api=await waitForAdminAuth();
+ if(!api||!await api.isAdmin()){
+  if(contractStripeTest)throw new Error('Connexion administrateur requise pour Stripe TEST.');
+  return headers;
+ }
+ const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+ const user=getAuth().currentUser;
+ if(!user)throw new Error('Session administrateur expirée. Reconnectez-vous.');
+ headers.Authorization='Bearer '+await user.getIdToken();
+ return headers;
+}
+function readSavedContract(){try{const x=JSON.parse(localStorage.getItem(CONTRACT_SAVED_KEY)||'null');return x&&x.generated&&x.state?x:null}catch(e){return null}}
+function refreshContractRecovery(){
+ $('contractRecoveryBanner').classList.toggle('show',!!readSavedContract());
+}
+function saveContractLocally(){
+ try{
+  localStorage.setItem(CONTRACT_SAVED_KEY,JSON.stringify({version:1,savedAt:new Date().toISOString(),state:collectContractState(),generated}));
+  refreshContractRecovery();
+ }catch(e){console.warn('Sauvegarde locale du contrat impossible :',e);setStripeStatus('Contrat généré. Sauvegarde locale indisponible : enregistrez le PDF maintenant.',false)}
+}
+function recoverSavedContract(){
+ const saved=readSavedContract();if(!saved)return alert('Aucun contrat sauvegardé sur ce navigateur.');
+ contractLocked=false;
+ restoreContractState(saved.state);
+ generated=saved.generated;
+ $('resultArea').innerHTML=renderContract(generated);
+ $('printPdf').disabled=false;
+ showStep(6);
+ lockContract();
+ $('step6').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 let paidSessionId="";
 let cleanupAdminMode=false;
 let pendingStripeAction="";
@@ -280,7 +348,7 @@ function restoreContractState(saved){
 async function ensureContractPayment(){
  const api=await waitForAdminAuth();
  cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode||paidSessionId)return true;
+ if(contractAdminBypass()||paidSessionId)return true;
  pendingStripeAction='generate';
  try{
   setStripeStatus('Redirection vers le paiement sécurisé Stripe…',true);
@@ -298,7 +366,7 @@ async function ensureContractPayment(){
 }
 
 function securePayload(rawPayload){
- return cleanupAdminMode?rawPayload:CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
+ return contractAdminBypass()?rawPayload:CleanUpStripe.addPaymentSessionToPayload(rawPayload,paidSessionId);
 }
 
 
@@ -520,30 +588,37 @@ function lockContract(){
  $("assistantText").textContent="Le contrat est verrouillé. Vous pouvez réimprimer exactement ce document ou créer un nouveau contrat après un nouveau paiement.";
 }
 
-$("generateDoc").onclick=async()=>{
+$('recoverContract').addEventListener('click',recoverSavedContract);
+refreshContractRecovery();
+$('generateDoc').onclick=async()=>{
+ if(contractGenerating)return;
  for(let i=1;i<=5;i++){if(!validateStep(i)){showStep(i);return}}
  if(!await ensureContractPayment())return;
+ contractGenerating=true;
+ if(paidSessionId)startContractWait('Rédaction et mise en forme du contrat…');
  showStep(6);
  $("resultArea").innerHTML='<div class="loading"><div><div class="spinner"></div><strong>CleanUp prépare votre contrat…</strong><p style="font-size:11px;color:#766C66">Sélection des clauses et mise en forme du document.</p></div></div>';
  $("printPdf").disabled=true;
  try{
-  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(securePayload(payload()))});
+  const r=await fetch(API_URL,{method:"POST",headers:await contractAdminHeaders(),body:JSON.stringify(securePayload(payload()))});
   const data=await r.json();
   if(!r.ok||!data.ok)throw new Error(data.error||"La génération a échoué.");
   generated=data;$("resultArea").innerHTML=renderContract(data);$("printPdf").disabled=false;
-   if(!cleanupAdminMode){
+   saveContractLocally();
+   if(!contractAdminBypass()){
     CleanUpStripe.complete(PRODUCT_KEY);
     setStripeStatus("Paiement validé · contrat généré",true);
    }else{
     setStripeStatus("Contrat généré en mode administrateur",true);
    }
- }catch(e){$("resultArea").innerHTML=`<div class="error-box"><strong>Impossible de générer le contrat.</strong><br>${esc(e.message)}</div>`}
+ }catch(e){$("resultArea").innerHTML=`<div class="error-box"><strong>Impossible de générer le contrat.</strong><br>${esc(e.message)}</div>`;setStripeStatus(e.message||'Erreur de génération',false)}
+ finally{contractGenerating=false;endContractWait()}
 };
 $("printPdf").onclick=()=>{lockContract();setTimeout(()=>window.print(),80)};
 $("resetForm").onclick=async()=>{
  const api=await waitForAdminAuth();
  const isAdmin=api?await api.isAdmin():false;
- if(isAdmin){
+ if(isAdmin&&!contractStripeTest){
   if(confirm('Réinitialiser ce contrat en mode administrateur ?'))window.location.reload();
   return;
  }
@@ -616,16 +691,22 @@ updateGuaranteeField();
 (async()=>{
  const api=await waitForAdminAuth();
  cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode){
+ if(contractAdminBypass()){
   $('generateDoc').textContent='Générer mon contrat — Admin →';
   $('resetForm').textContent='Créer un nouveau contrat';
   setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé',true);
  }
  try{
+  // Stripe TEST exige un jeton Firebase administrateur valide lors de la vérification.
+  if(contractStripeTest){
+   if(!api||!cleanupAdminMode)throw new Error('Connectez-vous comme administrateur avant de reprendre ce paiement TEST.');
+   await contractAdminHeaders();
+  }
   const payment=await CleanUpStripe.resume(PRODUCT_KEY);
-  if(!payment.returnedFromStripe)return;
-  if(payment.used){setStripeStatus('Ce paiement a déjà été utilisé.',false);return;}
-  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);return;}
+  if(!payment.returnedFromStripe){endContractWait();return;}
+  if(payment.used){setStripeStatus('Ce paiement a déjà été utilisé.',false);endContractWait();return;}
+  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);endContractWait();return;}
+  startContractWait('Paiement confirmé — récupération des informations…');
   paidSessionId=payment.sessionId;
   const saved=payment.payload||{};
   restoreContractState(saved.formState||saved);
@@ -637,9 +718,10 @@ updateGuaranteeField();
    showStep(6);
    $('resultArea').innerHTML='<div class="loading"><div><div class="spinner"></div><strong>Paiement validé · CleanUp prépare votre contrat…</strong><p style="font-size:11px;color:#766C66">Restauration des données et rédaction du document.</p></div></div>';
    setTimeout(()=>$('generateDoc')?.click(),100);
-  }
+  }else endContractWait();
  }catch(error){
   console.error('Stripe resume error:',error);
+  endContractWait();
   setStripeStatus(error.message||'Impossible de vérifier le paiement.',false);
  }
 })();
