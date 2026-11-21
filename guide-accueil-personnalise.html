@@ -1460,6 +1460,24 @@ document.querySelectorAll('.startGuideBtn').forEach(button=>{
 
 async function resumeStripeCheckout(){
   try{
+    // Stripe TEST exige un jeton Firebase administrateur pour verifier la session.
+    // Attendre le chargement du module admin-auth.js avant d'appeler le module Stripe.
+    if(new URLSearchParams(location.search).has('session_id')){
+      guideWaitStart('Vérification du paiement Stripe…');
+      const api=await waitForAdminAuth();
+      if(guideTestMode){
+        if(!api || !await api.isAdmin())throw new Error('Session administrateur non reconnue. Reconnectez-vous à l’administration puis revenez sur cette page.');
+        // Le module Stripe partagé utilise getIdToken(); adapter uniquement ici.
+        if(typeof api.getIdToken!=='function'){
+          const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+          api.getIdToken=async()=>{
+            const user=getAuth().currentUser;
+            if(!user)throw new Error('Session Firebase expirée.');
+            return user.getIdToken();
+          };
+        }
+      }
+    }
     const payment=await CleanUpStripe.resume(PRODUCT_KEY);
     if(!payment.returnedFromStripe){guideWaitEnd();return;}
     if(payment.used){
