@@ -519,7 +519,13 @@
 }
 </style>
 
-<style id="cleanup-recovery-style">#checkoutWait{display:none;position:fixed;inset:0;z-index:9999;background:#F7F3EE;align-items:center;justify-content:center;padding:24px;text-align:center;color:#3E2D25;font-family:Inter,Arial,sans-serif}html.checkout-return #checkoutWait{display:flex}#checkoutWait .wait-card{max-width:480px;background:#fff;border:1px solid #E4D9CF;border-radius:22px;padding:36px;box-shadow:0 20px 60px #3e2d251a}#recoverOptimization{margin-top:10px;width:100%}</style><script>if(new URLSearchParams(location.search).has('session_id'))document.documentElement.classList.add('checkout-return');</script></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><button class="btn soft" id="recoverOptimization" type="button">Récupérer mon rapport</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
+<style id="cleanup-recovery-style">#checkoutWait{display:none;position:fixed;inset:0;z-index:9999;background:#F7F3EE;align-items:center;justify-content:center;padding:24px;text-align:center;color:#3E2D25;font-family:Inter,Arial,sans-serif}html.checkout-return #checkoutWait{display:flex}#checkoutWait .wait-card{max-width:480px;background:#fff;border:1px solid #E4D9CF;border-radius:22px;padding:36px;box-shadow:0 20px 60px #3e2d251a}#recoverOptimization{margin-top:10px;width:100%}#checkoutWait .wait-progress{margin-top:24px;text-align:left}#checkoutWait .wait-progress-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:9px;font-size:12px;font-weight:700;color:#5A4033}#checkoutWait .wait-track{height:11px;border-radius:999px;background:#F5EFE7;overflow:hidden}#checkoutWait .wait-fill{display:block;width:0;height:100%;border-radius:999px;background:linear-gradient(90deg,#B96F52,#D39980);transition:width .45s ease}#checkoutWait .wait-foot{margin-top:9px;font-size:11px;color:#766C66;line-height:1.5}</style><script>if(new URLSearchParams(location.search).has('session_id'))document.documentElement.classList.add('checkout-return');</script><style id="cleanup-recovery-visibility">
+#recoverOptimization{min-height:54px!important;margin-top:14px!important;font-size:15px!important;font-weight:900!important;background:#fff!important;color:#3E2D25!important;border:2px solid #D9C6B4!important;box-shadow:0 5px 16px rgba(0,0,0,.12)!important}
+#recoverOptimization:hover,#recoveryBannerButton:hover{background:#F5EFE7!important}
+#recoveryBanner{display:none;align-items:center;justify-content:space-between;gap:18px;margin:0 0 24px;padding:20px 24px;border:2px solid #7E927C;border-radius:20px;background:#E7EEE5;color:#3E2D25;box-shadow:0 8px 24px rgba(62,45,37,.08)}
+#recoveryBanner.visible{display:flex}#recoveryBanner strong{display:block;font-size:19px;margin-bottom:5px}#recoveryBanner p{margin:0;font-size:13px;line-height:1.5;color:#536B52}#recoveryBannerButton{flex-shrink:0;padding:15px 24px;border-radius:999px;border:0;background:#3E2D25;color:white;font-size:14px;font-weight:800;cursor:pointer}
+@media(max-width:680px){#recoveryBanner{flex-direction:column;align-items:stretch;padding:18px}#recoveryBannerButton{width:100%}}
+</style></head><body data-steps="5" style="--steps:5"><header class="site-header"><div class="header-inner"><a class="brand" href="#"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-note">Optimisation guidée de votre annonce</div><div class="header-pill"><i></i> Aucune inscription</div></div></header><main class="page"><div id="recoveryBanner" role="region" aria-label="Rapport sauvegardé"><div><strong>Votre rapport est disponible</strong><p>Retrouvez votre optimisation sauvegardée sur cet appareil, sans nouveau paiement.</p></div><button id="recoveryBannerButton" type="button">Récupérer mon rapport</button></div><section class="hero"><div><div class="eyebrow">Les services indispensables du propriétaire</div><h1>Optimisation de mon <span>annonce</span></h1><p>Améliorez une annonce existante pour la rendre plus claire, attractive et rassurante.</p><div class="benefits"><div class="benefit"><b>✓</b> Simple et guidé</div><div class="benefit"><b>✓</b> Sans compte client</div><div class="benefit"><b>✓</b> Export PDF</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Optimisation guidée de votre annonce</h3><p>Un service indépendant de la conciergerie. Vous payez uniquement le document choisi.</p><div class="mini-list"><span>✓ Paiement sécurisé Stripe</span><span>✓ Aucun abonnement</span><span>✓ Aucun stockage permanent</span><span>✓ Une commande = une annonce optimisée</span></div><button class="btn terracotta stripeBtn" type="button" style="margin-top:20px;width:100%">Payer 9 € et commencer</button><button class="btn soft" id="recoverOptimization" type="button">Récupérer mon rapport</button><p class="stripeStatus">Paiement sécurisé par Stripe</p></aside></section><nav class="stepper"><button class="step active" data-step="1"><span class="num">1</span>Annonce</button><button class="step " data-step="2"><span class="num">2</span>Objectif</button><button class="step " data-step="3"><span class="num">3</span>Audit</button><button class="step " data-step="4"><span class="num">4</span>Avant / Après</button><button class="step " data-step="5"><span class="num">5</span>Rapport</button></nav><div class="workspace"><section class="main-card">
 <div class="section active" id="step1"><div class="section-head"><div><h2>Collez votre annonce actuelle</h2><p>Ajoutez le titre, la description, le règlement et les éléments utiles de votre annonce existante.</p></div><div class="section-badge">Étape 1 sur 5</div></div><div class="form-grid"><div class="field full"><label>Titre actuel</label><input class="input" id="currentTitle" placeholder="Titre publié actuellement"></div><div class="field full"><label>Description actuelle</label><textarea class="textarea" id="currentDescription" style="min-height:220px"></textarea></div><div class="field full"><label>Règlement et informations pratiques</label><textarea class="textarea" id="currentRules"></textarea></div><div class="field"><label>Plateforme principale</label><select class="select" id="platform"><option>Airbnb</option><option>Booking</option><option>Abritel</option></select></div><div class="field"><label>Lien de l’annonce <small>(facultatif)</small></label><input class="input" id="listingUrl" placeholder="https://..."></div></div></div>
 <div class="section" id="step2"><div class="section-head"><div><h2>Ce que vous voulez améliorer</h2><p>L’outil adaptera la réécriture à votre objectif réel.</p></div><div class="section-badge">Étape 2 sur 5</div></div><div class="form-grid"><div class="field"><label>Type de logement</label><select class="select" id="propertyType"><option>Appartement</option><option>Maison</option><option>Studio</option><option>Villa</option></select></div><div class="field"><label>Capacité</label><input class="input" id="capacity" type="number" min="1"></div><div class="field full"><label>Points forts à mieux valoriser</label><textarea class="textarea" id="strengths"></textarea></div><div class="field full"><label>Points faibles à expliquer honnêtement</label><textarea class="textarea" id="weaknesses"></textarea></div></div><div class="panel"><h3>Priorités</h3><div class="check-grid"><label class="check-pill"><input id="goalTitle" type="checkbox" checked> Améliorer le titre</label><label class="check-pill"><input id="goalClarity" type="checkbox" checked> Rendre le texte plus clair</label><label class="check-pill"><input id="goalSEO" type="checkbox"> Améliorer la visibilité de l’annonce</label><label class="check-pill"><input id="goalTrust" type="checkbox" checked> Rassurer les voyageurs</label><label class="check-pill"><input id="goalPremium" type="checkbox"> Positionnement plus premium</label><label class="check-pill"><input id="goalFamilies" type="checkbox"> Cibler les familles</label></div></div></div>
 <div class="section" id="step3"><div class="section-head"><div><h2>Audit de votre annonce</h2><p>CleanUp mesure la clarté, la confiance, la structure et le potentiel de conversion avant toute réécriture.</p></div><div class="section-badge">Étape 3 sur 5</div></div><button class="btn terracotta" id="analyzeBtn">✦ Lancer l’audit</button><div class="panel" id="analysisBox"><h3>Résultat</h3><p>Ajoutez votre annonce puis lancez l’analyse.</p></div></div>
@@ -529,7 +535,7 @@
 <div class="compare-card after"><span class="compare-label">APRÈS</span><h3 id="afterTitle">Titre optimisé</h3><p id="afterDescription">Lancez l’audit pour générer la nouvelle version.</p></div>
 </div><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn terracotta" id="generateBtn">✎ Modifier la version optimisée</button></div><div class="generated-card panel" id="optimizedEditor"><div class="field"><label>Nouveau titre</label><textarea class="textarea" id="newTitle"></textarea></div><div class="field"><label>Nouvelle accroche</label><textarea class="textarea" id="newIntro"></textarea></div><div class="field"><label>Description optimisée</label><textarea class="textarea" id="newDescription" style="min-height:240px"></textarea></div><div class="field"><label>Informations pratiques</label><textarea class="textarea" id="newRules"></textarea></div></div></div>
 <div class="section" id="step5"><div class="section-head"><div><h2>Rapport d’optimisation</h2><p>Copiez l’annonce optimisée ou téléchargez le rapport professionnel.</p></div><div class="section-badge">Étape 5 sur 5</div></div><article class="preview-card"><div class="preview-content"><h3 id="previewTitle">Votre nouveau titre</h3><p id="previewText">Votre annonce optimisée apparaîtra ici.</p></div></article><div class="export-grid"><div class="export-card"><h3>Copier l’annonce</h3><p>Copiez tout le contenu prêt à publier.</p><button class="btn primary" id="copyAll">Copier tout</button></div><div class="export-card"><h3>Enregistrer en PDF</h3><p>Téléchargez le rapport professionnel de 6 pages.</p><button class="btn primary" id="printPdf">Imprimer / PDF</button></div><div class="export-card"><h3>Optimiser une autre annonce</h3><p>Une nouvelle optimisation nécessite un nouveau paiement.</p><button class="btn soft" id="newOptimization">Optimiser une autre annonce (9 €)</button></div></div><div class="export-lock-note" id="exportLockNote"><strong>Votre annonce optimisée a été générée.</strong><br>Vous pouvez encore la copier ou l’enregistrer en PDF. Les étapes précédentes sont désormais verrouillées.</div><div class="cta"><div><h3>Découvrez les autres indispensables</h3><p>Guide d’accueil bilingue, livret voyageur, diagnostic de rentabilité et autres outils sont disponibles séparément, sans abonnement.</p></div><a class="btn terracotta" href="les-indispensables-du-proprietaire.html">Voir les services</a></div></div>
-<div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div id="checkoutWait" role="status" aria-live="polite"><div class="wait-card"><h2>Paiement confirmé — préparation de votre rapport</h2><p>Nous reprenons votre optimisation. Ne fermez pas cette page.</p></div></div><div class="report-print" id="reportPrint"></div><script src="stripe-checkout.js"></script><script>
+<div class="nav-actions"><button class="btn ghost" id="prevBtn">← Précédent</button><button class="btn primary" id="nextBtn">Continuer →</button></div></section><aside class="assistant-card"><div class="assistant-head"><div class="assistant-title"><div class="ai-icon">✦</div><div><strong>Assistant CleanUp</strong><span>Aide en temps réel</span></div></div></div><div class="assistant-body"><div id="assistantMessages"><div class="ai-message"><strong>Confidentialité</strong>Vos informations restent dans votre navigateur pendant cette utilisation.</div></div><div class="assistant-progress"><div class="row"><span>Progression</span><span id="progressLabel"></span></div><div class="progress"><span id="progressBar"></span></div></div></div></aside></div></main><div id="checkoutWait" role="status" aria-live="polite"><div class="wait-card"><h2>Paiement confirmé — préparation de votre rapport</h2><p>Nous reprenons votre optimisation. Ne fermez pas cette page.</p><div class="wait-progress"><div class="wait-progress-top"><span id="waitPhase">Vérification du paiement…</span><strong id="waitPercent">0 %</strong></div><div class="wait-track"><span class="wait-fill" id="waitFill"></span></div><div class="wait-foot">Durée habituelle : environ 30 secondes. Le temps peut varier selon l’analyse.</div></div></div></div><div class="report-print" id="reportPrint"></div><script src="stripe-checkout.js"></script><script>
 const PRODUCT_KEY='optimisation';
 let paidSessionId='';
 let cleanupAdminMode=false;
@@ -571,6 +577,7 @@ function saveOptimizationLocally(){
     const edits={};
     ['newTitle','newIntro','newDescription','newRules'].forEach(id=>edits[id]=val(id));
     localStorage.setItem(OPTIMIZATION_RECOVERY_KEY,JSON.stringify({version:1,savedAt:new Date().toISOString(),payload:buildPayload(),result:optimizationResult,edits}));
+    updateRecoveryBanner();
     return true;
   }catch(error){console.warn('Sauvegarde locale impossible',error);setStripeStatus('Rapport généré, mais sauvegarde locale impossible : exportez votre PDF maintenant.',false);return false;}
 }
@@ -590,7 +597,15 @@ function recoverOptimizationLocally(){
   showStep(5);
   return true;
 }
+function updateRecoveryBanner(){
+  let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(OPTIMIZATION_RECOVERY_KEY)||'null');}catch(e){}
+  const available=!!(saved && saved.version===1 && saved.result?.engine && saved.result?.ai);
+  $('recoveryBanner')?.classList.toggle('visible',available);
+}
 $('recoverOptimization').onclick=()=>recoverOptimizationLocally();
+$('recoveryBannerButton').onclick=()=>recoverOptimizationLocally();
+updateRecoveryBanner();
 
 function escapeHtml(value){
   return String(value||'').replace(/[&<>"']/g,c=>({
@@ -1516,7 +1531,37 @@ document.querySelectorAll('.stripeBtn').forEach(button=>{
   });
 });
 
+let checkoutWaitTimer=null;
+let checkoutWaitStarted=0;
+function updateCheckoutWait(value,phase){
+  const fill=document.getElementById('waitFill');
+  const percent=document.getElementById('waitPercent');
+  const label=document.getElementById('waitPhase');
+  if(fill) fill.style.width=value+'%';
+  if(percent) percent.textContent=Math.round(value)+' %';
+  if(label && phase) label.textContent=phase;
+}
+function startCheckoutWait(){
+  clearInterval(checkoutWaitTimer);
+  checkoutWaitStarted=Date.now();
+  updateCheckoutWait(0,'Vérification du paiement…');
+  checkoutWaitTimer=setInterval(()=>{
+    const elapsed=(Date.now()-checkoutWaitStarted)/1000;
+    // Estimation visuelle uniquement : le résultat réel commande la fin.
+    const value=Math.min(95,Math.round(95*(1-Math.exp(-elapsed/13))));
+    const phase=elapsed<5?'Vérification du paiement…':elapsed<18?'Analyse de votre annonce…':elapsed<30?'Rédaction de la version optimisée…':'Finalisation du rapport…';
+    updateCheckoutWait(value,phase);
+  },450);
+}
+function stopCheckoutWait(success){
+  clearInterval(checkoutWaitTimer);
+  checkoutWaitTimer=null;
+  if(success) updateCheckoutWait(100,'Rapport prêt');
+}
+
 async function resumeStripeCheckout(){
+  startCheckoutWait();
+  let waitSuccess=false;
   try{
     await waitForAdminAuth();
     const payment=await CleanUpStripe.resume(PRODUCT_KEY);
@@ -1545,10 +1590,11 @@ async function resumeStripeCheckout(){
     setStripeStatus('Paiement confirmé · optimisation en cours…',true);
     showStep(3);
     await runOptimization({payload:payment.payload||buildPayload()});
+    waitSuccess=!!optimizationResult;
   }catch(error){
     console.error('Stripe resume error:',error);
     setStripeStatus(error.message||'Impossible de reprendre après le paiement.',false);
-  }finally{document.documentElement.classList.remove('checkout-return');}
+  }finally{stopCheckoutWait(waitSuccess);document.documentElement.classList.remove('checkout-return');}
 }
 
 refresh();
