@@ -1459,6 +1459,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 let generated=false;
 const PRODUCT_KEY='investissement';
 let paidSessionId='',cleanupAdminMode=false;
+const investmentStripeTest=new URLSearchParams(location.search).get('stripe_test')==='1';
+const INVESTMENT_SAVED_REPORT='cleanup_investment_report_v1';
 const STRIPE_PAYMENT_LINK='';
 const CLEANUP_AI_ENDPOINT='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateInvestmentStudy';
 
@@ -1561,7 +1563,7 @@ async function clearInvestmentCheckoutPhoto(){
 }
 async function ensureInvestmentPayment(){
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode||paidSessionId)return true;
+ if((cleanupAdminMode&&!investmentStripeTest)||paidSessionId)return true;
  await saveInvestmentPhotoForCheckout();
  await CleanUpStripe.start({
   productKey:PRODUCT_KEY,
@@ -1571,7 +1573,28 @@ async function ensureInvestmentPayment(){
  });
  return false;
 }
-function secureInvestmentPayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+function secureInvestmentPayload(data){return (cleanupAdminMode&&!investmentStripeTest)?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+function saveInvestmentReport(){
+ try{localStorage.setItem(INVESTMENT_SAVED_REPORT,JSON.stringify({version:1,formState:collectFormState({currentStep:10}),engine:window.studyEngine,ai:window.studyAI,savedAt:Date.now()}));return true;}catch(error){console.warn('Sauvegarde locale du rapport impossible',error);return false;}
+}
+function getInvestmentSavedReport(){try{const x=JSON.parse(localStorage.getItem(INVESTMENT_SAVED_REPORT)||'null');return x?.engine&&x?.ai?x:null;}catch{return null;}}
+function restoreInvestmentSavedReport(){
+ const saved=getInvestmentSavedReport();if(!saved)return false;
+ restoreFormState(saved.formState);applyBackendStudy(saved.engine,saved.ai);
+ setAIUxStep(4);const ready=$('uxStudyReady');if(ready)ready.style.display='block';
+ const btn=$('uxGenerateStudy');if(btn)btn.style.display='none';
+ document.body.classList.add('study-final-locked');
+ document.querySelectorAll('.step,[data-step],#prevBtn,.nav-actions button').forEach(el=>{if(el.id!=='uxPrintPdf'&&el.id!=='uxNewStudy')el.disabled=true;});
+ setStripeStatus('Votre étude sauvegardée est disponible sans nouveau paiement');return true;
+}
+function showInvestmentRecovery(){
+ if(!getInvestmentSavedReport()||document.getElementById('investmentRecoveryBanner'))return;
+ const banner=document.createElement('div');banner.id='investmentRecoveryBanner';banner.style.cssText='max-width:1260px;margin:18px auto;padding:16px 20px;background:#E8F7F1;border:1px solid #A9D5BD;border-radius:15px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;color:#071A33';
+ banner.innerHTML='<div><strong>Votre étude d’investissement est disponible</strong><div style="font-size:12px;margin-top:4px">Retrouvez votre rapport sur cet appareil, sans nouveau paiement.</div></div><button type="button" class="btn primary" id="investmentRecoverButton">Récupérer mon étude</button>';
+ (document.querySelector('.page')||document.body).prepend(banner);
+ document.getElementById('investmentRecoverButton').onclick=()=>{restoreInvestmentSavedReport();banner.remove();};
+}
+
 
 
 function showStep(step){
@@ -2193,7 +2216,7 @@ async function generateInvestmentStudy(){
     return;
   }
 
-  if(!cleanupAdminMode && !paidSessionId){
+  if((!cleanupAdminMode||investmentStripeTest) && !paidSessionId){
     updateStudyProgress(5,'Préparation sécurisée de votre étude…');
     if($('uxStudyProgressBar'))$('uxStudyProgressBar').style.width='5%';
     if($('uxStudyProgressPercent'))$('uxStudyProgressPercent').textContent='5 %';
@@ -2214,7 +2237,7 @@ async function generateInvestmentStudy(){
     if(!response.ok || !data.ok)throw new Error(data.error||`Erreur HTTP ${response.status}`);
     applyBackendStudy(data.engine,data.ai);
     finishStudyProgress(true);
-    if(!cleanupAdminMode){CleanUpStripe.complete(PRODUCT_KEY);await clearInvestmentCheckoutPhoto();setStripeStatus('Paiement validé · étude générée');}else setStripeStatus('Étude générée en mode administrateur');
+    saveInvestmentReport();if(!cleanupAdminMode||investmentStripeTest){CleanUpStripe.complete(PRODUCT_KEY);await clearInvestmentCheckoutPhoto();setStripeStatus('Paiement validé · étude générée');}else setStripeStatus('Étude générée en mode administrateur');
   }catch(error){
     console.error(error);
     finishStudyProgress(false);
@@ -2494,7 +2517,7 @@ function startNewStudy(){
     location.href=STRIPE_PAYMENT_LINK;
     return;
   }
-  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
+  localStorage.removeItem(INVESTMENT_SAVED_REPORT);CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
 }
 $('uxNewStudy')?.addEventListener('click',startNewStudy);
 $('newStudy')?.addEventListener('click',startNewStudy);
@@ -2574,10 +2597,10 @@ $('uxGenerateStudy')?.addEventListener('click',async()=>{
   syncUxToEngine();
   const btn=$('uxGenerateStudy');
   btn.disabled=true;
-  btn.textContent=paidSessionId||cleanupAdminMode?'Analyse en cours…':'Ouverture du paiement sécurisé…';
+  btn.textContent=paidSessionId||(cleanupAdminMode&&!investmentStripeTest)?'Analyse en cours…':'Ouverture du paiement sécurisé…';
   const uxBox=$('uxStudyGenerationProgress');
   if(uxBox)uxBox.classList.add('show');
-  if(!paidSessionId&&!cleanupAdminMode){
+  if(!paidSessionId&&(!cleanupAdminMode||investmentStripeTest)){
     if($('uxStudyProgressBar'))$('uxStudyProgressBar').style.width='5%';
     if($('uxStudyProgressPercent'))$('uxStudyProgressPercent').textContent='5 %';
     if($('uxStudyProgressText'))$('uxStudyProgressText').textContent='Préparation sécurisée de votre étude…';
@@ -2612,17 +2635,17 @@ setAIUxStep(1);
 <script type="module">
 (async()=>{
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode){const g=document.getElementById('generateStudy');if(g)g.textContent='✦ Générer l’étude — Admin';const b=document.getElementById('stripeCheckoutBtn');if(b){b.textContent='Mode administrateur actif';b.disabled=true;}setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
+ if(cleanupAdminMode&&!investmentStripeTest){const g=document.getElementById('generateStudy');if(g)g.textContent='✦ Générer l’étude — Admin';const b=document.getElementById('stripeCheckoutBtn');if(b){b.textContent='Mode administrateur actif';b.disabled=true;}setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
  ['newStudy','uxNewStudy'].forEach(id=>document.getElementById(id)?.addEventListener('click',async event=>{
   event.preventDefault();event.stopImmediatePropagation();
   const api2=await waitForAdminAuth();const admin=api2?await api2.isAdmin():false;
-  if(admin){if(confirm('Réinitialiser cette étude en mode administrateur ?'))location.reload();return;}
+  if(admin&&!investmentStripeTest){if(confirm('Réinitialiser cette étude en mode administrateur ?')){localStorage.removeItem(INVESTMENT_SAVED_REPORT);location.reload();}return;}
   if(!confirm('Une nouvelle étude nécessite un nouveau paiement de 129 €. Continuer ?'))return;
-  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
+  localStorage.removeItem(INVESTMENT_SAVED_REPORT);CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
  },true));
  try{
-  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
-  if(payment.used)return setStripeStatus('Ce paiement a déjà été utilisé.',false);
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe){showInvestmentRecovery();return;}
+  if(payment.used){showInvestmentRecovery();return setStripeStatus('Ce paiement a déjà été utilisé. Récupérez votre étude sauvegardée si disponible.',false);}
   if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
   paidSessionId=payment.sessionId;
   const saved=payment.payload||{};
