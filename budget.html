@@ -143,6 +143,11 @@ h1 span{color:var(--terracotta)}
 @media(max-width:980px){.hero{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.assistant-card{position:static}.stepper{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:680px){.page{padding:22px 14px 60px}.header-inner{padding:13px 14px}.header-note{display:none}.hero{grid-template-columns:1fr}h1{font-size:42px}.hero p{font-size:15px}.stepper{grid-template-columns:repeat(2,1fr)}.main-card{padding:20px;min-height:auto}.section-head{display:block}.section-badge{display:inline-block;margin-top:12px}.form-grid,.form-grid.three,.choice-grid,.category-grid,.kpi-grid{grid-template-columns:1fr}.status-row{grid-template-columns:1fr}.summary-hero,.cta-services{grid-template-columns:1fr}.summary-total{text-align:left}.budget-row{grid-template-columns:1fr auto}.bar-track{grid-column:1/-1}.nav-actions{flex-direction:column}.nav-actions .right{width:100%}.nav-actions .btn{flex:1}}
 @media print{html,body{width:210mm;background:#fff!important}body *{visibility:hidden!important}.report-print,.report-print *{visibility:visible!important}.report-print{display:block!important;position:absolute;left:0;top:0;width:210mm}.report-page{display:block!important;margin:0!important;box-shadow:none!important}@page{size:A4;margin:0}}
+ .budget-recovery{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;margin-bottom:22px;background:var(--sage-soft);border:1px solid var(--sage);border-radius:17px;box-shadow:var(--shadow-soft)}
+.budget-recovery[hidden]{display:none!important}
+.budget-recovery strong{display:block;color:var(--brown);font-size:16px}
+.budget-recovery small{display:block;margin-top:5px;color:#536B52;line-height:1.5}
+@media(max-width:680px){.budget-recovery{flex-direction:column;align-items:stretch}.budget-recovery button{width:100%}}
 </style>
 </head>
 <body>
@@ -155,6 +160,10 @@ h1 span{color:var(--terracotta)}
 </header>
 
 <main class="page">
+  <div id="budgetRecovery" class="budget-recovery" hidden>
+    <div><strong>Votre budget est disponible</strong><small>Retrouvez votre budget sauvegardé sur cet appareil, sans nouveau paiement.</small></div>
+    <button class="btn primary" type="button" id="recoverBudget">Récupérer mon budget</button>
+  </div>
   <section class="hero">
     <div>
       <div class="eyebrow">Préparer sa location courte durée</div>
@@ -316,6 +325,60 @@ let paidSessionId='';
 let generationLocked=false;
 let checkoutLocked=false;
 const PRODUCT_KEY='budget';
+const budgetTestMode=new URLSearchParams(location.search).get('stripe_test')==='1';
+const budgetAdminBypass=()=>cleanupAdminMode&&!budgetTestMode;
+const BUDGET_RECOVERY_KEY='cleanup:budget:recovery:v1';
+let budgetGenerating=false;
+function savedBudget(){
+  try{const data=JSON.parse(localStorage.getItem(BUDGET_RECOVERY_KEY)||'null');return data?.result?.engine?.budget?data:null;}catch{return null;}
+}
+function refreshBudgetRecovery(){
+  $('budgetRecovery').hidden=!savedBudget();
+}
+function saveBudgetLocally(){
+  try{
+    localStorage.setItem(BUDGET_RECOVERY_KEY,JSON.stringify({result:budgetResult,payload:collectBudgetPayload(),savedAt:new Date().toISOString()}));
+    refreshBudgetRecovery();
+  }catch(error){console.warn('Sauvegarde locale du budget indisponible :',error);}
+}
+function recoverBudget(){
+  const saved=savedBudget();
+  if(!saved)return;
+  restoreBudgetPayload(saved.payload);
+  budgetResult=saved.result;
+  renderBudgetResult(budgetResult.engine,budgetResult.ai);
+  showStep(5);
+  setGenerationStatus('success','Budget sauvegardé','Votre budget a été récupéré sur cet appareil. Vous pouvez le consulter et l’imprimer sans nouveau paiement.');
+  if(!budgetAdminBypass())lockBudgetAfterGeneration();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('recoverBudget').addEventListener('click',recoverBudget);
+refreshBudgetRecovery();
+async function budgetAdminHeaders(){
+  const headers={'Content-Type':'application/json'};
+  if(!budgetTestMode)return headers;
+  const api=await waitForAdminAuth();
+  if(!api||!await api.isAdmin())throw new Error('Connexion administrateur requise pour Stripe TEST.');
+  const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+  const user=getAuth().currentUser;
+  if(!user)throw new Error('Session administrateur expirée. Reconnectez-vous.');
+  headers.Authorization='Bearer '+await user.getIdToken();
+  return headers;
+}
+async function prepareBudgetTestResume(){
+  if(!budgetTestMode)return;
+  const api=await waitForAdminAuth();
+  if(!api||!await api.isAdmin())throw new Error('Connexion administrateur requise pour reprendre le paiement TEST.');
+  if(typeof api.getIdToken!=='function'){
+    const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+    api.getIdToken=async()=>{
+      const user=getAuth().currentUser;
+      if(!user)throw new Error('Session Firebase expirée.');
+      return user.getIdToken();
+    };
+  }
+}
+
 
 const GENERATE_BUDGET_URL='https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateBudget';
 
@@ -329,7 +392,7 @@ function getLevelLabel(level=radio('level')){return {essential:'Essentiel',comfo
 function updateSelectedLevelTag(){const el=$('selectedLevelTag');if(el)el.textContent='Niveau '+getLevelLabel();}
 
 function showStep(step){
-  if((checkoutLocked||generationLocked)&&Number(step)!==5&&!cleanupAdminMode)return;
+  if((checkoutLocked||generationLocked)&&Number(step)!==5&&!budgetAdminBypass())return;
   currentStep=Math.max(1,Math.min(5,step));
   qa('.section').forEach(s=>s.classList.remove('active'));
   $('step'+currentStep).classList.add('active');
@@ -425,7 +488,7 @@ function restoreBudgetPayload(saved){
   ['linen','decor','security','launch'].forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);const prop={linen:'linenMode',decor:'decorMode',security:'securityMode',launch:'launchMode'}[k];if(el&&p.launch?.[prop]!==undefined)el.value=String(p.launch[prop]);});
 }
 function freezeBudgetForCheckout(){
-  if(cleanupAdminMode)return;
+  if(budgetAdminBypass())return;
   checkoutLocked=true;
   qa('input,select,textarea').forEach(el=>el.disabled=true);
   qa('.step').forEach(el=>{el.disabled=true;el.style.pointerEvents='none';});
@@ -437,7 +500,7 @@ function freezeBudgetForCheckout(){
 }
 
 function restoreBudgetAfterCheckoutFailure(){
-  if(cleanupAdminMode||generationLocked)return;
+  if(budgetAdminBypass()||generationLocked)return;
   checkoutLocked=false;
   qa('input,select,textarea').forEach(el=>el.disabled=false);
   qa('.step').forEach(el=>{el.disabled=false;el.style.pointerEvents='';});
@@ -450,7 +513,7 @@ function restoreBudgetAfterCheckoutFailure(){
 }
 
 function freezeBudgetAfterPaidReturn(){
-  if(cleanupAdminMode)return;
+  if(budgetAdminBypass())return;
   checkoutLocked=true;
   qa('input,select,textarea').forEach(el=>el.disabled=true);
   qa('.step').forEach(el=>{el.disabled=true;el.style.pointerEvents='none';});
@@ -462,7 +525,7 @@ function freezeBudgetAfterPaidReturn(){
 async function ensureBudgetPayment(){
   const api=await waitForAdminAuth();
   cleanupAdminMode=api?await api.isAdmin():false;
-  if(cleanupAdminMode||paidSessionId)return true;
+  if(budgetAdminBypass()||paidSessionId)return true;
   if(!window.CleanUpStripe)throw new Error('Le module de paiement Stripe est indisponible.');
 
   freezeBudgetForCheckout();
@@ -482,11 +545,11 @@ async function ensureBudgetPayment(){
 }
 
 function secureBudgetPayload(data){
-  return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);
+  return budgetAdminBypass()?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);
 }
 
 function lockBudgetAfterGeneration(){
-  if(cleanupAdminMode)return;
+  if(budgetAdminBypass())return;
   generationLocked=true;
   checkoutLocked=false;
   qa('input,select,textarea').forEach(el=>el.disabled=true);
@@ -504,7 +567,7 @@ function lockBudgetAfterGeneration(){
 async function refreshAdminInterface(){
   const api=await waitForAdminAuth();
   cleanupAdminMode=api?await api.isAdmin():false;
-  if(cleanupAdminMode){
+  if(budgetAdminBypass()){
     $('generateBudget').textContent='✦ Générer mon budget — Admin';
     $('generationStatus').className='generation-box success';
     $('generationTitle').textContent='Mode administrateur actif';
@@ -545,21 +608,15 @@ function updateGenerationProgress(percent,label){
 
 function startGenerationProgress(){
   clearInterval(generationProgressTimer);
-  const phases=[
-    {pct:15,label:'Analyse du projet'},
-    {pct:40,label:'Calcul du budget'},
-    {pct:70,label:'Analyse personnalisée'},
-    {pct:88,label:'Préparation du PDF'}
-  ];
-  let index=0;
-  updateGenerationProgress(phases[0].pct,phases[0].label);
+  const started=Date.now();
+  updateGenerationProgress(5,'Analyse du projet');
   generationProgressTimer=setInterval(()=>{
-    index=Math.min(index+1,phases.length-1);
-    updateGenerationProgress(phases[index].pct,phases[index].label);
-    if(index===phases.length-1)clearInterval(generationProgressTimer);
-  },900);
+    const elapsed=(Date.now()-started)/1000;
+    const pct=Math.min(95,5+90*(1-Math.exp(-elapsed/16)));
+    const label=pct<30?'Analyse du projet':pct<55?'Calcul du budget':pct<80?'Analyse personnalisée':'Préparation du PDF';
+    updateGenerationProgress(pct,label);
+  },500);
 }
-
 function finishGenerationProgress(){
   clearInterval(generationProgressTimer);
   updateGenerationProgress(100,'PDF prêt');
@@ -834,9 +891,11 @@ async function generateBudgetFromServer(){
   const previous=button.textContent;
 
   try{
+    if(budgetGenerating)return;
     if(generationLocked) throw new Error('Ce budget a déjà été généré. Un nouveau budget nécessite un nouveau paiement.');
     if(!await ensureBudgetPayment()) return;
 
+    budgetGenerating=true;
     button.disabled=true;
     $('printPdf').disabled=true;
     button.textContent='Génération en cours…';
@@ -844,7 +903,7 @@ async function generateBudgetFromServer(){
 
     const response=await fetch(GENERATE_BUDGET_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:await budgetAdminHeaders(),
       body:JSON.stringify(secureBudgetPayload(collectBudgetPayload()))
     });
 
@@ -859,7 +918,9 @@ async function generateBudgetFromServer(){
     budgetResult=result;
     renderBudgetResult(result.engine,result.ai);
     setGenerationStatus('success','Budget généré',result.adminMode===true?'Génération administrateur terminée. Le PDF est prêt.':'Votre budget et votre PDF sont prêts.');
-    if(cleanupAdminMode){button.textContent='✦ Régénérer — Admin';}else{CleanUpStripe.complete(PRODUCT_KEY);lockBudgetAfterGeneration();}
+    saveBudgetLocally();
+    if(budgetAdminBypass()){button.textContent='✦ Régénérer — Admin';}
+    else{CleanUpStripe.complete(PRODUCT_KEY);lockBudgetAfterGeneration();}
 
   }catch(error){
     console.error('generateBudgetFromServer error:',error);
@@ -867,7 +928,8 @@ async function generateBudgetFromServer(){
     alert(error.message||'La génération du budget a échoué.');
     button.textContent=previous;
   }finally{
-    button.disabled=false;
+    budgetGenerating=false;
+    button.disabled=generationLocked;
   }
 }
 
@@ -881,9 +943,14 @@ showStep(1);
 refreshAdminInterface();
 (async()=>{
   try{
+    if(new URLSearchParams(location.search).has('session_id')){
+      setGenerationStatus('loading','Vérification du paiement','Nous vérifions votre paiement. Ne fermez pas cette page.');
+      await prepareBudgetTestResume();
+    }
     const payment=await CleanUpStripe.resume(PRODUCT_KEY);
     if(!payment.returnedFromStripe)return;
     if(payment.used){
+      if(savedBudget()){recoverBudget();return;}
       freezeBudgetAfterPaidReturn();
       showStep(5);
       $('generateBudget').style.display='none';
@@ -896,10 +963,7 @@ refreshAdminInterface();
     freezeBudgetAfterPaidReturn();
     showStep(5);
     setGenerationStatus('loading','Paiement validé','Paiement confirmé. Génération automatique de votre budget en cours…');
-    setTimeout(()=>{
-      const btn=$('generateBudget');
-      if(btn){btn.disabled=false;btn.click();}
-    },150);
+    setTimeout(()=>{generateBudgetFromServer();},150);
   }catch(e){console.error(e);setGenerationStatus('error','Paiement impossible à vérifier',e.message||'Une erreur est survenue.');}
 })();
 </script>
