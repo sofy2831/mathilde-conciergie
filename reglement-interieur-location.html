@@ -185,13 +185,27 @@ function waitStart(phase='Création du règlement…'){
  waitTimer=setInterval(()=>{waitPercent=Math.min(95,waitPercent+(waitPercent<75?2:0.6));$('rulesWaitFill').style.width=waitPercent+'%';$('rulesWaitPercent').textContent=Math.floor(waitPercent)+' %';},600);
 }
 function waitEnd(){clearInterval(waitTimer);waitTimer=null;document.documentElement.classList.remove('rules-returning');}
+async function ensureAdminToken(){
+ const api=await waitForAdminAuth();
+ if(!api||!await api.isAdmin())throw new Error('Connexion administrateur requise pour reprendre le paiement TEST.');
+ const {getAuth}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+ const auth=getAuth();
+ let user=auth.currentUser;
+ if(!user){
+  const {onAuthStateChanged}=await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js');
+  user=await new Promise(resolve=>{let unsub=()=>{};const timer=setTimeout(()=>{unsub();resolve(null)},6000);unsub=onAuthStateChanged(auth,u=>{clearTimeout(timer);unsub();resolve(u)},()=>{clearTimeout(timer);unsub();resolve(null)})});
+ }
+ if(!user)throw new Error('Session Firebase administrateur introuvable. Reconnectez-vous depuis votre administration.');
+ const token=await user.getIdToken();
+ if(!token)throw new Error('Jeton Firebase administrateur indisponible.');
+ // Le module Stripe partagé utilise cette méthode pour vérifier la session TEST.
+ api.getIdToken=async()=>user.getIdToken();
+ return token;
+}
 async function adminHeaders(){
  const headers={'Content-Type':'application/json'};
  if(!stripeTest)return headers;
- const api=await waitForAdminAuth();
- if(!api||!await api.isAdmin())throw new Error('Accès au test réservé à l’administrateur. Reconnectez-vous à l’administration.');
- const token=await api.getIdToken?.();
- if(!token)throw new Error('Jeton administrateur indisponible. Reconnectez-vous à l’administration.');
+ const token=await ensureAdminToken();
  headers.Authorization='Bearer '+token;
  return headers;
 }
@@ -364,7 +378,7 @@ if(loadRules())$('rulesRecovery').classList.add('show');
  if(adminBypass()){document.getElementById('generateDoc').textContent='Générer mon règlement — Admin →';setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
  try{
   if(new URLSearchParams(location.search).has('session_id') && stripeTest){
-   if(!api||!await api.isAdmin()||!await api.getIdToken?.())throw new Error('Connexion administrateur requise pour reprendre le paiement TEST.');
+   await ensureAdminToken();
   }
   const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe){waitEnd();return;}
   if(payment.used){if(loadRules())recoverRules();else setStripeStatus('Ce paiement a déjà été utilisé.',false);waitEnd();return;}
