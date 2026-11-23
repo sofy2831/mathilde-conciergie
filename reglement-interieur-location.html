@@ -8,7 +8,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>if(new URLSearchParams(location.search).has('session_id'))document.documentElement.classList.add('rules-returning');</script>
 <style>
+.rules-returning .site-header,.rules-returning .page{visibility:hidden}
+#rulesWait{display:none;position:fixed;inset:0;z-index:1000;background:#F7F3EE;align-items:center;justify-content:center;padding:20px}
+.rules-returning #rulesWait{display:flex}
+.rules-wait-card{width:min(520px,100%);background:white;border:1px solid #E4D9CF;border-radius:24px;padding:34px;text-align:center;box-shadow:0 22px 60px #3e2d251a}
+.rules-wait-card h2{font-family:"DM Serif Display",serif;font-weight:400;color:#3E2D25;font-size:30px}
+.rules-wait-card p{font-size:13px;line-height:1.7;color:#766C66}
+.rules-track{height:10px;border-radius:12px;background:#F5EFE7;overflow:hidden;margin:14px 0}
+#rulesWaitFill{height:100%;width:0;background:linear-gradient(90deg,#B96F52,#D39980);transition:width .6s}
+.rules-recovery{display:none;align-items:center;justify-content:space-between;gap:16px;background:#E7EEE5;border:1px solid #7E927C;border-radius:16px;padding:17px 20px;margin-bottom:22px}
+.rules-recovery.show{display:flex}.rules-recovery strong{display:block;font-size:15px;color:#3E2D25}.rules-recovery small{display:block;margin-top:5px;color:#536B52;line-height:1.5}
+@media(max-width:680px){.rules-recovery{flex-direction:column;align-items:stretch}.rules-recovery button{width:100%}}
+@media print{#rulesRecovery,#rulesWait{display:none!important}}
+
 :root{--brown:#3E2D25;--brown2:#5A4033;--sand:#E9DDCF;--beige:#F5EFE7;--cream:#FCFAF7;--white:#fff;--taupe:#8C7B70;--terracotta:#B96F52;--terracottaSoft:#F5E4DC;--sage:#7E927C;--sageSoft:#E7EEE5;--gold:#B88635;--goldSoft:#FAF1DC;--text:#2F2926;--muted:#766C66;--line:#E4D9CF;--shadow:0 22px 60px rgba(62,45,37,.10);--soft:0 10px 28px rgba(62,45,37,.07);--radius:24px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 5% 0%,rgba(233,221,207,.8),transparent 28%),radial-gradient(circle at 100% 10%,rgba(245,228,220,.8),transparent 30%),#F7F3EE;color:var(--text)}
 button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.hidden{display:none!important}
@@ -35,7 +49,7 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 </head>
 <body>
 <header class="site-header"><div class="header-inner"><a class="brand" href="les-indispensables-du-proprietaire.html"><div class="brand-mark">⌂</div><div class="brand-text"><strong>CleanUp</strong><span>MANAGER</span></div></a><div class="header-actions"><a class="back-link" href="les-indispensables-du-proprietaire.html">← Les indispensables</a><div class="header-pill"><i></i> Sans abonnement</div></div></div></header>
-<main class="page">
+<main class="page"><div class="rules-recovery" id="rulesRecovery"><div><strong>Votre règlement est disponible</strong><small>Retrouvez votre règlement sauvegardé sur cet appareil, sans nouveau paiement.</small></div><button type="button" class="btn primary" id="recoverRules">Récupérer mon règlement</button></div>
 <section class="hero"><div><div class="eyebrow">Les indispensables du propriétaire</div><h1>Règlement intérieur <span>personnalisé</span></h1><p>Créez un document complet, accueillant et adapté à votre logement : règles de séjour, voisinage, équipements, sécurité et consignes de départ.</p><div class="benefits"><div class="benefit">✓ Parcours guidé</div><div class="benefit">✓ Rédaction professionnelle</div><div class="benefit">✓ Export PDF A4</div><div class="benefit">✓ Prêt à transmettre</div></div></div><aside class="hero-card"><div class="price">9 € <small>TTC</small></div><h3>Un vrai règlement, pas une simple liste</h3><p>Le document est structuré selon les caractéristiques du logement et les règles réellement choisies.</p><ul><li>7 rubriques essentielles</li><li>Document conçu pour 2 pages A4</li><li>Ton adapté aux voyageurs</li></ul></aside></section>
 
 <nav class="stepper"><button class="step active" data-step="1">1. Logement</button><button class="step" data-step="2">2. Séjour</button><button class="step" data-step="3">3. Règles</button><button class="step" data-step="4">4. Équipements</button><button class="step" data-step="5">5. Départ</button><button class="step" data-step="6">6. Document</button></nav>
@@ -155,10 +169,45 @@ h1{margin:12px 0 16px;font-family:"DM Serif Display",serif;font-size:58px;line-h
 <aside class="assistant-card"><div class="assistant-head"><strong>Assistant CleanUp</strong></div><div class="assistant-body"><div class="ai-message" id="assistantText">Commencez par identifier le logement et le contact utile.</div><ul class="check-list"><li>Seules les règles sélectionnées sont utilisées</li><li>Aucune pénalité inventée</li><li>Document à relire avant diffusion</li></ul></div></aside>
 </div>
 </main>
+<div id="rulesWait" role="status" aria-live="polite"><div class="rules-wait-card"><h2>Préparation de votre règlement</h2><p id="rulesWaitText">Nous vérifions votre paiement et préparons le document. Ne fermez pas cette page.</p><div style="display:flex;justify-content:space-between;font-size:12px;color:#5A4033"><span id="rulesWaitPhase">Vérification du paiement…</span><strong id="rulesWaitPercent">0 %</strong></div><div class="rules-track"><div id="rulesWaitFill"></div></div><small style="color:#766C66">Environ 30 secondes à titre indicatif ; le traitement peut durer plus longtemps.</small></div></div>
 <script src="stripe-checkout.js"></script>
 <script>
 const PRODUCT_KEY="reglement";
-let paidSessionId="",cleanupAdminMode=false;
+let paidSessionId="",cleanupAdminMode=false,generationInProgress=false;
+const stripeTest=new URLSearchParams(location.search).get('stripe_test')==='1';
+const adminBypass=()=>cleanupAdminMode&&!stripeTest;
+const RULES_SAVED_KEY='cleanup_rules_saved_v1';
+let waitTimer=null,waitPercent=0;
+function waitStart(phase='Création du règlement…'){
+ document.documentElement.classList.add('rules-returning');
+ $('rulesWaitPhase').textContent=phase;
+ if(waitTimer)return;
+ waitTimer=setInterval(()=>{waitPercent=Math.min(95,waitPercent+(waitPercent<75?2:0.6));$('rulesWaitFill').style.width=waitPercent+'%';$('rulesWaitPercent').textContent=Math.floor(waitPercent)+' %';},600);
+}
+function waitEnd(){clearInterval(waitTimer);waitTimer=null;document.documentElement.classList.remove('rules-returning');}
+async function adminHeaders(){
+ const headers={'Content-Type':'application/json'};
+ if(!stripeTest)return headers;
+ const api=await waitForAdminAuth();
+ if(!api||!await api.isAdmin())throw new Error('Accès au test réservé à l’administrateur. Reconnectez-vous à l’administration.');
+ const token=await api.getIdToken?.();
+ if(!token)throw new Error('Jeton administrateur indisponible. Reconnectez-vous à l’administration.');
+ headers.Authorization='Bearer '+token;
+ return headers;
+}
+function saveRules(){
+ if(!generated)return;
+ try{localStorage.setItem(RULES_SAVED_KEY,JSON.stringify({savedAt:new Date().toISOString(),formState:collectFormState(),generated}));$('rulesRecovery').classList.add('show');}
+ catch(e){console.warn('Sauvegarde locale impossible',e);setStripeStatus('Règlement généré, mais la sauvegarde locale a échoué. Téléchargez le PDF maintenant.',false);}
+}
+function loadRules(){try{const item=JSON.parse(localStorage.getItem(RULES_SAVED_KEY)||'null');return item?.generated?item:null}catch(e){return null}}
+function recoverRules(){
+ const saved=loadRules();if(!saved)return alert('Aucun règlement sauvegardé sur cet appareil.');
+ restoreFormState(saved.formState);generated=saved.generated;
+ $('resultArea').innerHTML=renderDocument(generated);$('printPdf').disabled=false;
+ documentLocked=true;showStep(6);setStripeStatus('Règlement récupéré depuis ce navigateur · aucun paiement demandé');
+}
+
 const API_URL="https://europe-west9-cleanup-diagnostic.cloudfunctions.net/generateHouseRules";
 const $=id=>document.getElementById(id);
 const val=id=>($(id)?.value||"").trim();
@@ -200,11 +249,11 @@ function setStripeStatus(message,ok=true){
 }
 async function ensurePayment(){
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode||paidSessionId)return true;
+ if(adminBypass()||paidSessionId)return true;
  await CleanUpStripe.start({productKey:PRODUCT_KEY,payload:{formState:collectFormState({currentStep}),pendingAction:'generate'},successUrl:location.href,cancelUrl:location.href});
  return false;
 }
-function securePayload(data){return cleanupAdminMode?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
+function securePayload(data){return adminBypass()?data:CleanUpStripe.addPaymentSessionToPayload(data,paidSessionId);}
 
 const messages=["Identifiez le logement et la personne à contacter.","Précisez les horaires et les conditions d'occupation.","Sélectionnez les règles essentielles réellement applicables.","Ajoutez les consignes liées aux équipements présents.","Définissez les consignes de départ et la gestion des incidents.","Relisez le règlement avant de l'enregistrer en PDF."];
 
@@ -271,20 +320,24 @@ function renderDocument(ai){
 
 $("generateDoc").onclick=async()=>{
  if(!validateStep(1)||!validateStep(2)||!validateStep(3))return;
+ if(generationInProgress)return;
  if(!await ensurePayment())return;
+ generationInProgress=true;
+ if(paidSessionId)waitStart();
  $("resultArea").innerHTML='<div class="loading"><div><div class="spinner"></div><strong>CleanUp prépare votre règlement…</strong><p>Les règles sont structurées selon vos réponses.</p></div></div>';
  showStep(6);
  try{
-  const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(securePayload(payload()))});
+  const response=await fetch(API_URL,{method:"POST",headers:await adminHeaders(),body:JSON.stringify(securePayload(payload()))});
   const data=await response.json().catch(()=>({}));
   if(!response.ok||!data.ok)throw new Error(data.error||"La génération a échoué.");
   generated=data.ai;
   $("resultArea").innerHTML=renderDocument(generated);
   $("printPdf").disabled=false;
-  if(!cleanupAdminMode){CleanUpStripe.complete(PRODUCT_KEY);setStripeStatus("Paiement validé · règlement généré");}else setStripeStatus("Règlement généré en mode administrateur");
+  saveRules();
+  if(!adminBypass()){CleanUpStripe.complete(PRODUCT_KEY);paidSessionId="";setStripeStatus("Paiement validé · règlement généré");}else setStripeStatus("Règlement généré en mode administrateur");
  }catch(error){
   $("resultArea").innerHTML=`<div class="error-box"><strong>Impossible de générer le règlement.</strong><br>${esc(error.message)}</div>`;
- }
+ }finally{generationInProgress=false;waitEnd();}
 };
 
 $("printPdf").onclick=()=>{
@@ -295,26 +348,32 @@ $("printPdf").onclick=()=>{
 
 $("resetForm").onclick=async()=>{
  const api=await waitForAdminAuth();const admin=api?await api.isAdmin():false;
- if(admin){if(confirm('Réinitialiser ce règlement en mode administrateur ?'))location.reload();return;}
+ if(admin&&!stripeTest){if(confirm('Réinitialiser ce règlement en mode administrateur ?'))location.reload();return;}
  if(!confirm('Un nouveau règlement nécessite un nouveau paiement. Continuer ?'))return;
  CleanUpStripe.clearCheckoutState(PRODUCT_KEY);location.reload();
 };
 showStep(1);
+$('recoverRules').onclick=recoverRules;
+if(loadRules())$('rulesRecovery').classList.add('show');
 </script>
 <script type="module" src="admin-auth.js"></script>
 
 <script type="module">
 (async()=>{
  const api=await waitForAdminAuth();cleanupAdminMode=api?await api.isAdmin():false;
- if(cleanupAdminMode){document.getElementById('generateDoc').textContent='Générer mon règlement — Admin →';setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
+ if(adminBypass()){document.getElementById('generateDoc').textContent='Générer mon règlement — Admin →';setStripeStatus('Connexion Firebase vérifiée · aucun paiement demandé');}
  try{
-  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe)return;
-  if(payment.used)return setStripeStatus('Ce paiement a déjà été utilisé.',false);
-  if(!payment.paid)return setStripeStatus('Le paiement n’a pas été confirmé.',false);
+  if(new URLSearchParams(location.search).has('session_id') && stripeTest){
+   if(!api||!await api.isAdmin()||!await api.getIdToken?.())throw new Error('Connexion administrateur requise pour reprendre le paiement TEST.');
+  }
+  const payment=await CleanUpStripe.resume(PRODUCT_KEY);if(!payment.returnedFromStripe){waitEnd();return;}
+  if(payment.used){if(loadRules())recoverRules();else setStripeStatus('Ce paiement a déjà été utilisé.',false);waitEnd();return;}
+  if(!payment.paid){setStripeStatus('Le paiement n’a pas été confirmé.',false);waitEnd();return;}
+  waitStart('Paiement confirmé — restauration des informations…');
   paidSessionId=payment.sessionId;const saved=payment.payload||{};restoreFormState(saved.formState||saved);
   if(saved.formState?.currentStep)showStep(saved.formState.currentStep);
-  setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>document.getElementById('generateDoc')?.click(),150);
- }catch(e){console.error(e);setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
+  setStripeStatus('Paiement validé · génération en cours');setTimeout(()=>{if(!validateStep(1)||!validateStep(2)||!validateStep(3)){waitEnd();setStripeStatus('Certaines informations sont manquantes. Complétez-les pour générer votre règlement.',false);return;}document.getElementById('generateDoc')?.click();},150);
+ }catch(e){console.error(e);waitEnd();setStripeStatus(e.message||'Impossible de vérifier le paiement.',false);}
 })();
 </script>
 
